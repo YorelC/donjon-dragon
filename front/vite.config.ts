@@ -9,12 +9,12 @@ export default defineConfig({
     alias: { '@': '/src' },
   },
   server: {
-      allowedHosts: true,
-      proxy: {
-        '/api': {
-          target: 'http://localhost:3000',
-          changeOrigin: true,
-        },
+    allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
       },
     },
+  },
 })
