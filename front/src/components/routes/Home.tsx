@@ -1,5 +1,5 @@
-import Button from "../components/bases/buttons/Buttons";
-import { labelAndStylesButtonBase } from "../components/bases/buttons/buttonsUtils";
+import Button from "../../components/bases/buttons/Buttons";
+import { labelAndStylesButtonBase } from "../../components/bases/buttons/buttonsUtils";
 
 function Home() {
   const label: labelAndStylesButtonBase = {
@@ -8,10 +8,11 @@ function Home() {
 
   return (
     <section>
-      <Button
+      {/* <Button
         labelAndStylesButtonBase={label}
         onClick={() => console.log("Créer un personnage")}
-      />
+      /> */}
+      <h1>Personnage Joueurs</h1>
     </section>
   );
 }

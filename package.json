@@ -1,0 +1,10 @@
+{
+  "name": "donjon-dragon",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  }
+}
