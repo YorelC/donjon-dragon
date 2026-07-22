@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "back",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@donjon-dragon/back", "dev"],
+      "port": 3000
+    },
+    {
+      "name": "front",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@donjon-dragon/front", "dev"],
+      "port": 5173
+    }
+  ]
+}
