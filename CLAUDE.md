@@ -48,9 +48,6 @@ Full local stack (builds back, starts back on :3000 and front on :5173, bound to
 - `back/` — NestJS. Entry point is `src/main.ts` → `AppModule` (`src/app.module.ts`), which wires feature modules (`CharacterModule`, `CombatModule`).
 - `front/` — Vite + React 18 SPA using shadcn/ui (`style: new-york`, Tailwind v4 via `@tailwindcss/vite`, no `tailwind.config.js`). Path alias `@` → `front/src`.
 
-### Backend has dead legacy code
-`back/src/server.js`, `config/database.js`, `routes/characterRoutes.js`, and `models/Character.js` are a leftover Fastify + Sequelize/Postgres prototype and are **not** wired into the app — `back/package.json`'s `dev`/`build` scripts only ever invoke `nest build`/`nest start`, starting from `main.ts`. `back/.env`'s `DATABASE_URL` (Postgres) is likewise a leftover from that prototype; the target datastore is MongoDB (see below). Don't extend the `.js` files — build out the NestJS module structure instead, and flag this cruft for removal if you're asked to clean up the backend.
-
 ### Target architecture (hexagonal, per `_bmad-output/planning-artifacts/`)
 The project has planning docs (`ARCHITECTURE-SPINE.md`, `SPEC.md`, `SPEC-SHADCN-ATOMICS.md`, `stories/STORIES.md`) that define the intended architecture; only a small slice is built so far (`CharacterModule`'s controller stub, `CombatModule` is empty, `character.entity.ts`'s pure functions). When adding backend features, follow this layering per module:
 ```
