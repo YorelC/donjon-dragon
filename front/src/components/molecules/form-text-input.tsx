@@ -9,18 +9,20 @@ interface FormTextInputProps<
 > {
   label: string;
   error?: string;
+  type?: string;
   field: ControllerRenderProps<TFieldValues, TName>;
 }
 
 function FormTextInput<TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>({
   label,
   error,
+  type = "text",
   field,
 }: FormTextInputProps<TFieldValues, TName>) {
   return (
     <div className="grid gap-1.5">
       <Label htmlFor={field.name}>{label}</Label>
-      <Input id={field.name} aria-invalid={!!error} {...field} />
+      <Input id={field.name} type={type} aria-invalid={!!error} {...field} />
       <FieldError message={error} />
     </div>
   );

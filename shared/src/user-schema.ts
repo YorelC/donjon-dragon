@@ -5,6 +5,7 @@ export const UserSchema = z.object({
   email: z.string().email(),
   displayName: z.string().min(2).max(50),
   passwordHash: z.string(),
+  emailVerified: z.boolean(),
   createdAt: z.string().datetime(),
 });
 
@@ -15,6 +16,9 @@ export const RegisterSchema = z.object({
   email: z.string().email(),
   displayName: z.string().min(2).max(50),
   password: z.string().min(8).max(128),
+  // Origine (window.location.origin) envoyée par le front pour construire
+  // le lien de vérification — marche en local/LAN/tunnel Cloudflare sans config.
+  appOrigin: z.string().url(),
 });
 
 export const LoginSchema = z.object({

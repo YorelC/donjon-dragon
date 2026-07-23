@@ -7,12 +7,17 @@ import {
   ConflictException,
   UnauthorizedException,
   NotFoundException,
+  ForbiddenException,
   Inject,
 } from '@nestjs/common';
 import type { RegisterDto, LoginDto } from '@donjon-dragon/shared/user-schema';
-import type { RefreshDto } from '@donjon-dragon/shared/auth-schema';
-import { EmailAlreadyInUseError, InvalidCredentialsError } from '../domain/auth.errors';
+import type { RefreshDto, VerifyEmailDto } from '@donjon-dragon/shared/auth-schema';
 import {
+  EmailAlreadyInUseError,
+  InvalidCredentialsError,
+  EmailNotVerifiedError,
+  InvalidVerificationTokenError,
+  VerificationTokenExpiredError,
   InvalidRefreshTokenError,
   TokenReuseDetectedError,
   RefreshTokenExpiredError,
@@ -20,6 +25,7 @@ import {
 } from '../domain/auth.errors';
 import { RegisterUseCase } from '../application/register.use-case';
 import { LoginUseCase } from '../application/login.use-case';
+import { VerifyEmailUseCase } from '../application/verify-email.use-case';
 import { RefreshTokensUseCase } from '../application/refresh-tokens.use-case';
 import { LogoutUseCase } from '../application/logout.use-case';
 import { IssueReadonlyTokenUseCase } from '../application/issue-readonly-token.use-case';
@@ -32,6 +38,7 @@ export class AuthController {
   constructor(
     @Inject(RegisterUseCase) private registerUseCase: RegisterUseCase,
     @Inject(LoginUseCase) private loginUseCase: LoginUseCase,
+    @Inject(VerifyEmailUseCase) private verifyEmailUseCase: VerifyEmailUseCase,
     @Inject(RefreshTokensUseCase) private refreshTokensUseCase: RefreshTokensUseCase,
     @Inject(LogoutUseCase) private logoutUseCase: LogoutUseCase,
     @Inject(IssueReadonlyTokenUseCase)
@@ -57,6 +64,27 @@ export class AuthController {
     } catch (err) {
       if (err instanceof InvalidCredentialsError) {
         throw new UnauthorizedException(err.message);
+      }
+      if (err instanceof EmailNotVerifiedError) {
+        throw new ForbiddenException(err.message);
+      }
+      throw err;
+    }
+  }
+
+  @Post('verify-email')
+  async verifyEmail(@Body() dto: VerifyEmailDto) {
+    try {
+      return await this.verifyEmailUseCase.execute(dto.token);
+    } catch (err) {
+      if (
+        err instanceof InvalidVerificationTokenError ||
+        err instanceof VerificationTokenExpiredError
+      ) {
+        throw new UnauthorizedException(err.message);
+      }
+      if (err instanceof UserNotFoundError) {
+        throw new NotFoundException(err.message);
       }
       throw err;
     }

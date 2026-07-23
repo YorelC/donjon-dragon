@@ -4,7 +4,7 @@ import type { UserRepositoryPort } from '../../user/domain/user.repository.port'
 import type { RefreshTokenRepositoryPort } from '../domain/refresh-token.repository.port';
 import type { PasswordHasherPort } from '../domain/password-hasher.port';
 import type { TokenServicePort } from '../domain/token-service.port';
-import { InvalidCredentialsError } from '../domain/auth.errors';
+import { InvalidCredentialsError, EmailNotVerifiedError } from '../domain/auth.errors';
 import { toPublicUser } from '../../user/domain/user.entity';
 import { createRefreshTokenRecord } from '../domain/refresh-token.entity';
 
@@ -25,6 +25,8 @@ export class LoginUseCase {
       user.passwordHash,
     );
     if (!validPassword) throw new InvalidCredentialsError();
+
+    if (!user.emailVerified) throw new EmailNotVerifiedError();
 
     const payload = {
       userId: user.id,

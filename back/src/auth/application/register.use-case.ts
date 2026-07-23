@@ -1,22 +1,24 @@
-import type { RegisterDto } from '@donjon-dragon/shared/user-schema';
-import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
+import type { RegisterDto, PublicUser } from '@donjon-dragon/shared/user-schema';
 import type { UserRepositoryPort } from '../../user/domain/user.repository.port';
-import type { RefreshTokenRepositoryPort } from '../domain/refresh-token.repository.port';
+import type { EmailVerificationTokenRepositoryPort } from '../domain/email-verification-token.repository.port';
 import type { PasswordHasherPort } from '../domain/password-hasher.port';
-import type { TokenServicePort } from '../domain/token-service.port';
+import type { EmailSenderPort } from '../domain/email-sender.port';
 import { EmailAlreadyInUseError } from '../domain/auth.errors';
+import {
+  createEmailVerificationToken,
+  hashVerificationToken,
+} from '../domain/email-verification-token.entity.js';
 import { createUser, toPublicUser } from '../../user/domain/user.entity';
-import { createRefreshTokenRecord } from '../domain/refresh-token.entity';
 
 export class RegisterUseCase {
   constructor(
     private readonly userRepo: UserRepositoryPort,
-    private readonly refreshRepo: RefreshTokenRepositoryPort,
+    private readonly verificationRepo: EmailVerificationTokenRepositoryPort,
     private readonly passwordHasher: PasswordHasherPort,
-    private readonly tokenService: TokenServicePort,
+    private readonly emailSender: EmailSenderPort,
   ) {}
 
-  async execute(dto: RegisterDto): Promise<AuthTokens> {
+  async execute(dto: RegisterDto): Promise<PublicUser> {
     const existing = await this.userRepo.findByEmail(dto.email);
     if (existing) throw new EmailAlreadyInUseError();
 
@@ -28,20 +30,12 @@ export class RegisterUseCase {
     });
     await this.userRepo.save(user);
 
-    const payload = {
-      userId: user.id,
-      role: 'player' as const,
-      tier: 'full' as const,
-    };
-    const accessToken = this.tokenService.signAccessToken(payload);
+    const { record, plainToken } = createEmailVerificationToken(user.id);
+    await this.verificationRepo.save(record);
 
-    const { record, plainToken } = createRefreshTokenRecord(user.id);
-    await this.refreshRepo.save(record);
+    const verificationUrl = `${dto.appOrigin}/verify-email?token=${plainToken}`;
+    await this.emailSender.sendVerificationEmail(user.email, verificationUrl);
 
-    return {
-      accessToken,
-      refreshToken: plainToken,
-      user: toPublicUser(user),
-    };
+    return toPublicUser(user);
   }
 }

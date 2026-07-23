@@ -13,6 +13,8 @@ export function createUser(params: CreateUserParams): User {
     email: params.email,
     displayName: params.displayName,
     passwordHash: params.passwordHash,
+    // Toujours false à la création : la vérification d'email l'active.
+    emailVerified: false,
     createdAt: new Date().toISOString(),
   };
 }

@@ -8,7 +8,10 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 
 import { LoginUseCase } from '../../../../src/auth/application/login.use-case.js';
-import { InvalidCredentialsError } from '../../../../src/auth/domain/auth.errors.js';
+import {
+  InvalidCredentialsError,
+  EmailNotVerifiedError,
+} from '../../../../src/auth/domain/auth.errors.js';
 import { hashRefreshToken } from '../../../../src/auth/domain/refresh-token.entity.js';
 import { createUser } from '../../../../src/user/domain/user.entity.js';
 import { InMemoryUserRepository } from '../../../../src/user/infrastructure/in-memory-user.repository.js';
@@ -28,14 +31,16 @@ describe('LoginUseCase', () => {
   beforeEach(async () => {
     userRepo = new InMemoryUserRepository();
     refreshRepo = new InMemoryRefreshTokenRepository();
-    // seed : passwordHash cohérent avec FakePasswordHasher
-    await userRepo.save(
-      createUser({
+    // seed : passwordHash cohérent avec FakePasswordHasher, email vérifié
+    // (spread manuel car createUser force emailVerified:false à la création)
+    await userRepo.save({
+      ...createUser({
         email: credentials.email,
         displayName: 'Aragorn',
         passwordHash: 'hashed:secret123',
       }),
-    );
+      emailVerified: true,
+    });
     useCase = new LoginUseCase(
       userRepo,
       refreshRepo,
@@ -68,6 +73,32 @@ describe('LoginUseCase', () => {
   it('email inconnu → InvalidCredentialsError', async () => {
     await expect(
       useCase.execute({ email: 'sauron@mordor.me', password: 'secret123' }),
+    ).rejects.toThrow(InvalidCredentialsError);
+  });
+
+  it('user non-vérifié → EmailNotVerifiedError (après validation du mot de passe)', async () => {
+    await userRepo.save(
+      createUser({
+        email: 'legolas@mirkwood.me',
+        displayName: 'Legolas',
+        passwordHash: 'hashed:secret123',
+      }),
+    );
+    await expect(
+      useCase.execute({ email: 'legolas@mirkwood.me', password: 'secret123' }),
+    ).rejects.toThrow(EmailNotVerifiedError);
+  });
+
+  it('mauvais mot de passe prime sur email non-vérifié (pas de leak)', async () => {
+    await userRepo.save(
+      createUser({
+        email: 'gimli@erebor.me',
+        displayName: 'Gimli',
+        passwordHash: 'hashed:secret123',
+      }),
+    );
+    await expect(
+      useCase.execute({ email: 'gimli@erebor.me', password: 'wrong-pass' }),
     ).rejects.toThrow(InvalidCredentialsError);
   });
 });

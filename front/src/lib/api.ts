@@ -1,3 +1,13 @@
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(path, {
     headers: { "Content-Type": "application/json" },
@@ -5,7 +15,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    throw new Error(`API error ${res.status}: ${await res.text()}`);
+    throw new ApiError(res.status, `API error ${res.status}: ${await res.text()}`);
   }
   if (res.status === 204) {
     return undefined as T;

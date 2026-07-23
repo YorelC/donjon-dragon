@@ -42,3 +42,24 @@ export class UserNotFoundError extends Error {
     this.name = 'UserNotFoundError';
   }
 }
+
+export class InvalidVerificationTokenError extends Error {
+  constructor() {
+    super('Invalid verification token');
+    this.name = 'InvalidVerificationTokenError';
+  }
+}
+
+export class VerificationTokenExpiredError extends Error {
+  constructor() {
+    super('Verification token expired');
+    this.name = 'VerificationTokenExpiredError';
+  }
+}
+
+export class EmailNotVerifiedError extends Error {
+  constructor() {
+    super('Email not verified');
+    this.name = 'EmailNotVerifiedError';
+  }
+}

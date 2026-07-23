@@ -17,6 +17,10 @@
   --color-accent-foreground: oklch(0.205 0.042 265.755);
   --color-destructive: oklch(0.577 0.245 27.325);
   --color-destructive-foreground: oklch(0.577 0.245 27.325);
+  --color-success: oklch(0.6 0.177 142.476);
+  --color-success-foreground: oklch(0.985 0 0);
+  --color-error: oklch(0.577 0.245 27.325);
+  --color-error-foreground: oklch(0.985 0 0);
   --color-border: oklch(0.922 0.024 270.291);
   --color-input: oklch(0.922 0.024 270.291);
   --color-ring: oklch(0.708 0.049 264.777);
@@ -43,3 +47,25 @@
 }
 
 @variant dark (&:is(.dark *));
+
+@layer components {
+  .auth-container {
+    @apply flex flex-col gap-4 max-w-md mx-auto;
+  }
+
+  .auth-footer {
+    @apply text-center text-sm;
+  }
+
+  .auth-links {
+    @apply flex gap-2 justify-center text-sm;
+  }
+
+  .alert-success {
+    @apply border-success bg-success/10;
+  }
+
+  .alert-error {
+    @apply border-error bg-error/10;
+  }
+}
