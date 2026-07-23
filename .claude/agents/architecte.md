@@ -22,6 +22,10 @@ Tu ne fais PAS :
 - Les composants UI
 - Les migrations DB directes
 
+Story qui touche `front/src` → dans ta spec pour l'ouvrier, précise quel(s) skill(s) il doit invoquer :
+`/subcomponent-split` + `/design-system` (tout composant), `/react-architecture` (refactor structurel),
+`/ui-review` (passe visuelle). Toi tu ne les invoques pas — c'est l'ouvrier qui exécute.
+
 ## Stack
 
 - Back: NestJS + MongoDB/Mongoose + Redis/ioredis + Socket.IO + JWT

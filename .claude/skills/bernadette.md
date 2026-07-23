@@ -26,7 +26,9 @@ Quand : spec, schema, types, tests, archi
 
 `claude -p --agent ouvrier "consigne caveman"`
 
-Quand : implementation apres spec, bugfix, test supplementaire
+Quand : implementation apres spec, bugfix, test supplementaire, composant front, refactor structurel
+React, passe visuelle (couleurs/spacing/dark mode) → l'ouvrier invoque /subcomponent-split,
+/design-system, /react-architecture, /ui-review selon le cas
 
 ## FALLBACKS (si Claude plus de tokens)
 

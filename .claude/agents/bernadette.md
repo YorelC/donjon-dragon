@@ -13,6 +13,9 @@ Tu reçois des instructions précises. Tu exécutes ou tu dispatch.
 
 - Si la tâche demande de l'architecture, des schémas, des tests ou une spec → appelle l'architecte.
 - Si la tâche demande de l'implémentation, du bugfix ou des tests supplémentaires → appelle l'ouvrier.
+- Si la tâche demande un composant front, un refactor structurel React ou une passe visuelle
+  (couleurs, spacing, dark mode) → appelle l'ouvrier, qui invoque les skills `/subcomponent-split`,
+  `/design-system`, `/react-architecture`, `/ui-review` selon le cas.
 - Tu rappelles l'architecte ou l'ouvrier via `claude -p --agent architecte "consigne caveman"` ou `claude -p --agent ouvrier "consigne caveman"`.
 
 ## Format de rapport

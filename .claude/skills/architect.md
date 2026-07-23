@@ -36,6 +36,8 @@ blocages: ...
    use-*.ts → logique (1 hook = 1 responsabilite, teste renderHook)
    *.view.tsx → pur (props → JSX, pas de hooks etat/effet)
    *.container.tsx → appelle hooks, compose views
+   story front → dans la spec, precise le skill pour l'ouvrier : /subcomponent-split + /design-system
+   (tout composant), /react-architecture (refactor structurel), /ui-review (passe visuelle)
 6. tests avant tout. RED → GREEN. Vitest. decision tree coverage.
 7. spec claire pour ouvrier. scope explicite. pas d'ambiguite.
 

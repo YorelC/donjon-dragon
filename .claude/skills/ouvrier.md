@@ -41,6 +41,14 @@ test: OK
 - DB: MongoDB/Mongoose derriere repository interface. Redis pour ephemeral.
 - Tests: Vitest. AAA pattern.
 
+## SKILLS FRONT (obligatoire sur tout front/src)
+
+- Composant cree/modifie (atoms/, molecules/, routes/) → /subcomponent-split + /design-system
+- Refactor structurel (props drilling, god component, extraction hook) → /react-architecture
+- Passe visuelle post-ecriture (couleurs, spacing, dark mode) → /ui-review
+- Regle DRY className : chaine Tailwind repetee → classe globale @layer components dans
+  front/src/index.css. Jamais duplique inline, jamais planque en variable className ou map CVA.
+
 ## QUALITY
 
 - typecheck: OK obligatoire

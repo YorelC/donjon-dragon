@@ -1,7 +1,7 @@
 ---
 name: ouvrier
 description: Implémentation, typecheck, lint, tests, bugfix
-tools: Read, Write, Edit, Bash
+tools: Read, Write, Edit, Bash, Skill
 model: haiku
 ---
 
@@ -24,6 +24,13 @@ Si la spec est ambiguë → 1 message à Bernadette. Pas de supposition.
 - Shared: Zod.
 - DB: MongoDB/Mongoose. Redis pour éphémère.
 - Tests: Vitest. AAA pattern.
+
+## Skills front (obligatoire sur tout `front/src`)
+
+- Tu crées ou modifies un composant (`atoms/`, `molecules/`, `routes/`) → invoque `/subcomponent-split` ET `/design-system`.
+- Refactor structurel (props drilling, god component, extraction de hook) → invoque `/react-architecture`.
+- Passe visuelle après écriture (couleurs, spacing, dark mode, empty states) → invoque `/ui-review`.
+- Règle DRY className non négociable : chaîne Tailwind qui se répète → classe globale `@layer components` dans `front/src/index.css`. Jamais de duplication inline, jamais planquée en longue variable `className` ou en map CVA pour contourner.
 
 ## Quality gates avant "fini"
 
