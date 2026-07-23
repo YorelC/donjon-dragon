@@ -4,6 +4,7 @@ import { Controller } from "react-hook-form";
 import { Button } from "@/shared/components/atoms/button";
 import { FormTextInput } from "@/shared/components/molecules/form-text-input";
 import { Alert, AlertDescription } from "@/shared/components/atoms/alert";
+import { ROUTES } from "@/shared/constants/routes";
 import type { LoginDto } from "@donjon-dragon/shared";
 
 interface LoginViewProps {
@@ -95,7 +96,7 @@ function LoginFooter() {
   return (
     <div className="auth-footer">
       <span>Pas de compte ? </span>
-      <Link to="/register" className="text-primary underline">
+      <Link to={ROUTES.register} className="text-primary underline">
         S'inscrire
       </Link>
     </div>

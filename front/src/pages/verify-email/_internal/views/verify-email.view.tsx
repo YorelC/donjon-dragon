@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Alert, AlertDescription } from "@/shared/components/atoms/alert";
+import { ROUTES } from "@/shared/constants/routes";
 
 interface VerifyEmailViewProps {
   isLoading: boolean;
@@ -42,11 +43,11 @@ function VerifyEmailError({ message }: VerifyEmailErrorProps) {
         <AlertDescription>{message}</AlertDescription>
       </Alert>
       <div className="auth-links">
-        <Link to="/login" className="text-primary underline">
+        <Link to={ROUTES.login} className="text-primary underline">
           Connexion
         </Link>
         <span className="text-muted-foreground">/</span>
-        <Link to="/register" className="text-primary underline">
+        <Link to={ROUTES.register} className="text-primary underline">
           Inscription
         </Link>
       </div>

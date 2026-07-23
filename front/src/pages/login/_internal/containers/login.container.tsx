@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, type LoginDto } from "@donjon-dragon/shared";
 import { ApiError } from "../../../../shared/api/api";
 import { useAuthStore } from "../../../../shared/stores/auth.store";
+import { ROUTES } from "../../../../shared/constants/routes";
 import { LoginView } from "../views/login.view";
 import { useLogin } from "../hooks/use-login";
 
@@ -27,7 +28,7 @@ export function LoginContainer() {
     try {
       const tokens = await loginMutation.mutateAsync(values);
       setAuth(tokens);
-      navigate("/characters");
+      navigate(ROUTES.characters);
     } catch (err) {
       if (err instanceof ApiError && err.status === 403) {
         setErrorMessage("Ton email n'est pas encore vérifié. Vérifie ta boîte mail.");

@@ -57,18 +57,42 @@ that need to build absolute links (e.g. registration's email-verification link):
 - `back/` — NestJS. Entry point is `src/main.ts` → `AppModule` (`src/app.module.ts`), which wires feature modules (`CharacterModule`, `CombatModule`).
 - `front/` — Vite + React 18 SPA using shadcn/ui (`style: new-york`, Tailwind v4 via `@tailwindcss/vite`, no `tailwind.config.js`). Path alias `@` → `front/src`.
 
-### Target architecture (hexagonal, per `_bmad-output/planning-artifacts/`)
-The project has planning docs (`ARCHITECTURE-SPINE.md`, `SPEC.md`, `SPEC-SHADCN-ATOMICS.md`, `stories/STORIES.md`) that define the intended architecture; only a small slice is built so far (`CharacterModule`'s controller stub, `CombatModule` is empty, `character.entity.ts`'s pure functions). When adding backend features, follow this layering per module:
+### Backend architecture (hexagonal, per `_bmad-output/planning-artifacts/ARCHITECTURE-SPINE.md`)
+Four modules exist: `auth/`, `user/`, `character/`, `combat/`. Each follows the same layering, folders
+**numbered by execution order** (a request enters at `01-`, flows down to `04-`):
 ```
 back/src/<module>/
-  domain/          # entities, pure functions, repository port interfaces — no I/O, no framework deps
-  application/      # use-cases orchestrating domain + ports
-  infrastructure/   # adapters implementing ports (Mongo repository, Redis adapter, in-memory fakes for tests)
-  interface/        # NestJS controllers, WebSocket gateways, module wiring
+  01-interface/      # entry point — NestJS controllers, WebSocket gateways, guards, decorators, module wiring
+  02-application/     # use-cases — orchestrate domain + ports, called by interface/
+  03-domain/           # entities, pure functions, repository port interfaces — no I/O, no framework deps
+  04-infrastructure/    # adapters implementing domain's ports (Mongo repository, in-memory fakes, external
+                        # services) — invoked via the port from application/, never imported by it directly
 ```
+**Call order vs. dependency direction — these are opposite, that's the point.** A request is handled
+`01 → 02 → (03 and 04)`: the controller (01) calls the use-case (02), which calls domain pure functions (03)
+and persists via a port (03's interface, satisfied by 04). But `02-application/` and `04-infrastructure/`
+never import each other directly — both only import types from `03-domain/`. The only file that knows both
+the abstract port AND its concrete implementation is `01-interface/<module>.module.ts` (NestJS `providers`
+wiring). This is what makes swapping `MongoUserRepository` for `InMemoryUserRepository` in tests possible
+without touching a single line of `02-application/`.
+
+**Subfolder by scope once a layer gets dense** — `auth/` is the only module big enough to need this so far:
+```
+auth/01-interface/
+  guards/          # jwt-auth.guard.ts, tier.guard.ts
+  decorators/       # current-user.decorator.ts
+  (flat: auth.controller.ts, auth.module.ts, auth.tokens.ts — module-wide, not owned by one guard/decorator)
+auth/03-domain/ and auth/04-infrastructure/
+  email/           # everything about sending/verifying the email-verification token
+  token/            # everything about refresh/access tokens
+  (flat: auth.errors.ts, password-hasher.port.ts, bcrypt-password-hasher.ts — single file, no group yet)
+```
+Don't create a scope subfolder for a single file — `character/`, `combat/`, `user/` currently have ≤5 files
+per layer and stay flat; only split when a layer has enough files that a flat list stops being scannable.
+
 Rules driving this (from `ARCHITECTURE-SPINE.md`):
-- **Repository pattern is mandatory**: services/controllers depend on a port interface in `domain/`, never on Mongoose/Redis directly. Adapters live in `infrastructure/`.
-- **Game rules are pure functions**: D&D 5e mechanics (dice, combat resolution) live in `domain/` as `(state, action) => newState`, deterministic, no DB/I/O — see `back/src/character/domain/character.entity.ts` for the existing style (e.g. `calculateModifier`, `calculateHitPoints`, `createCharacter`).
+- **Repository pattern is mandatory**: services/controllers depend on a port interface in `03-domain/`, never on Mongoose/Redis directly. Adapters live in `04-infrastructure/`.
+- **Game rules are pure functions**: D&D 5e mechanics (dice, combat resolution) live in `03-domain/` as `(state, action) => newState`, deterministic, no DB/I/O — see `back/src/character/03-domain/character.entity.ts` for the existing style (e.g. `calculateModifier`, `calculateHitPoints`, `createCharacter`).
 - **Datastore**: MongoDB via Mongoose (abstracted behind ports), Redis for ephemeral combat state. Not Postgres/Sequelize.
 - **Auth**: self-managed JWT (access + refresh), two tiers (`full`, `readonly`); no third-party auth provider (no Auth0/Clerk/Supabase).
 - **Real-time**: Socket.IO, one namespace per room (game session), typed discriminated-union events (`player:join`, `combat:action`, `dice:roll`, etc.) broadcasting state diffs — not polling/SSE, not untyped `message` events.
@@ -79,6 +103,12 @@ Rules driving this (from `ARCHITECTURE-SPINE.md`):
 - `any` is disallowed — use `unknown` + type guards.
 - File naming is kebab-case with role suffixes: `.controller.ts`, `.service.ts`, `.repository.ts`, `.container.tsx`, `.view.tsx`, `.test.ts`.
 - TDD workflow: tests are written before implementation (see `character.entity.test.ts`'s "RED" header comment for the convention used in this repo).
+- **`02-application/` and `04-infrastructure/` must never import from each other directly.** Both may only
+  import from `03-domain/` (types/ports for `application/`, ports it implements for `infrastructure/`). The
+  concrete pairing (which `infrastructure/` class satisfies which `domain/` port) is decided in exactly one
+  place: `01-interface/<module>.module.ts`'s NestJS `providers` wiring. A `02-application/*.use-case.ts` that
+  imports anything from `04-infrastructure/` is a violation — fix by depending on the `03-domain/` port
+  instead and letting the module wiring inject the concrete adapter.
 
 ### Frontend page organization (Next.js-inspired, route-oriented)
 Every route lives under `front/src/pages/`, one folder per route segment — `features/` does not exist,

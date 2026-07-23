@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../../../../shared/stores/auth.store";
+import { ROUTES } from "../../../../shared/constants/routes";
 import { VerifyEmailView } from "../views/verify-email.view";
 import { useVerifyEmail } from "../hooks/use-verify-email";
 
@@ -22,7 +23,7 @@ export function VerifyEmailContainer() {
       onSuccess: (tokens) => {
         setAuth(tokens);
         setTimeout(() => {
-          navigate("/characters");
+          navigate(ROUTES.characters);
         }, 1000);
       },
       onError: () => {

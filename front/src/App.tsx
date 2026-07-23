@@ -6,6 +6,7 @@ import { CombatPage } from "./pages/combat/combat.page";
 import { RegisterPage } from "./pages/register/register.page";
 import { LoginPage } from "./pages/login/login.page";
 import { VerifyEmailPage } from "./pages/verify-email/verify-email.page";
+import { ROUTES } from "./shared/constants/routes";
 
 const queryClient = new QueryClient();
 
@@ -17,19 +18,19 @@ function App() {
           Donjons & Dragons
         </h1>
         <nav className="flex justify-center gap-4 pb-6">
-          <Link to="/">Accueil</Link>
-          <Link to="/characters">Personnages</Link>
-          <Link to="/combat">Combat</Link>
-          <Link to="/register">S'inscrire</Link>
-          <Link to="/login">Connexion</Link>
+          <Link to={ROUTES.home}>Accueil</Link>
+          <Link to={ROUTES.characters}>Personnages</Link>
+          <Link to={ROUTES.combat}>Combat</Link>
+          <Link to={ROUTES.register}>S'inscrire</Link>
+          <Link to={ROUTES.login}>Connexion</Link>
         </nav>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/characters" element={<CharactersPage />} />
-          <Route path="/combat" element={<CombatPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path={ROUTES.home} element={<Home />} />
+          <Route path={ROUTES.characters} element={<CharactersPage />} />
+          <Route path={ROUTES.combat} element={<CombatPage />} />
+          <Route path={ROUTES.register} element={<RegisterPage />} />
+          <Route path={ROUTES.login} element={<LoginPage />} />
+          <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

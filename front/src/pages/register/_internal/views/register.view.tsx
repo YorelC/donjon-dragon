@@ -4,6 +4,7 @@ import { Controller } from "react-hook-form";
 import { Button } from "@/shared/components/atoms/button";
 import { FormTextInput } from "@/shared/components/molecules/form-text-input";
 import { Alert, AlertDescription } from "@/shared/components/atoms/alert";
+import { ROUTES } from "@/shared/constants/routes";
 import type { RegisterDto } from "@donjon-dragon/shared";
 
 type RegisterFormValues = Omit<RegisterDto, "appOrigin">;
@@ -49,7 +50,7 @@ function RegistrationSuccess() {
         </AlertDescription>
       </Alert>
       <div className="auth-footer">
-        <Link to="/login" className="text-primary underline">
+        <Link to={ROUTES.login} className="text-primary underline">
           Retour à la connexion
         </Link>
       </div>
@@ -133,7 +134,7 @@ function RegistrationFooter() {
   return (
     <div className="auth-footer">
       <span>Déjà inscrit ? </span>
-      <Link to="/login" className="text-primary underline">
+      <Link to={ROUTES.login} className="text-primary underline">
         Se connecter
       </Link>
     </div>
