@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [tailwindcss(), react()],
   resolve: {
     alias: {
-      '@': '/src',
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@donjon-dragon/shared': fileURLToPath(new URL('../shared/src/index.ts', import.meta.url)),
     },
   },

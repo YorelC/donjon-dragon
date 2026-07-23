@@ -1,6 +1,6 @@
 # shadcn/ui Component Patterns — donjon-dragon front
 
-## Prefer shadcn primitives from `components/atoms`
+## Prefer shadcn primitives from `shared/components/atoms`
 | Need | Use |
 |---|---|
 | Modal | `<Dialog>` |
@@ -11,12 +11,12 @@
 | Loading | `<Skeleton>` |
 | Command palette | `<Command>` (project has `cmdk`) |
 
-Check `components/atoms` before installing — if the primitive already exists, edit in place, don't wrap it.
+Check `shared/components/atoms` before installing — if the primitive already exists, edit in place, don't wrap it.
 Missing? `npx shadcn@latest add <component>`.
 
 ## cn() — always for class merging
 ```tsx
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/utils/utils';
 <div className={cn('rounded-lg border bg-card p-6', className)} />
 ```
 

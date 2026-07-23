@@ -38,7 +38,7 @@ use `text-success`/`bg-success`. Don't invent a one-off inline color.
 - `leading-tight` headings · `leading-relaxed` body.
 - Native tags (`<h1>`–`<h6>`, `<p>`, `<label>`) styled via `@layer base` in `front/src/index.css` — don't
   recreate a heading/label wrapper component just to hold a text-stack className; if one doesn't exist yet in
-  `components/atoms`, add the base-layer rule instead of inline overrides scattered per component.
+  `shared/components/atoms`, add the base-layer rule instead of inline overrides scattered per component.
 
 ## Border radius
 `--radius-*` scale already defined in `@theme` (`sm` → `4xl`). Default `rounded-md` · Cards `rounded-lg` ·

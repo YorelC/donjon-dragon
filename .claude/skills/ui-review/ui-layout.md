@@ -1,6 +1,6 @@
 # Layout Patterns — donjon-dragon front
 
-## Page shell (`components/routes/*`)
+## Page shell (`pages/<segment>/<segment>.page.tsx` and its `_internal/views/`)
 ```tsx
 <div className="flex flex-1 flex-col gap-6 p-6 md:p-8">
   <div className="flex items-center justify-between">

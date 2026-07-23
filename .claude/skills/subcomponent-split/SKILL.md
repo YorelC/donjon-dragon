@@ -6,9 +6,9 @@ allowed-tools: Read, Grep, Glob, Edit, Write
 
 # SUBCOMPONENT SPLIT — donjon-dragon
 
-Front only (`front/src`). Applies to `components/atoms` (shadcn primitives — edit in place, rarely split),
-`components/molecules` (D&D composites: dice-roller, combat-log, hit-points, spell-card, item-card,
-ability-score, skill-check), `components/routes` (pages).
+Front only (`front/src`). Applies to `shared/components/atoms` (shadcn primitives — edit in place, rarely
+split), `shared/components/molecules` (D&D composites: dice-roller, combat-log, hit-points, spell-card,
+item-card, ability-score, skill-check), and any page's `_internal/views/` (`pages/<segment>/_internal/views/`).
 
 ## RULES
 
@@ -24,7 +24,7 @@ ability-score, skill-check), `components/routes` (pages).
 - Order: exported component top → subcomponents → helpers bottom
 - Name = what it **represents** (DiceResultRow, SpellCardHeader) — not what it does
 - `key` = stable data id, never index
-- shadcn primitive exists in `components/atoms`? Use it. Never restyle a raw `<input>` or `<div>`.
+- shadcn primitive exists in `shared/components/atoms`? Use it. Never restyle a raw `<input>` or `<div>`.
 - Repeated Tailwind chain across subcomponents → follow `/design-system` (global `@apply` class in
   `front/src/index.css`), not a copy-pasted className.
 

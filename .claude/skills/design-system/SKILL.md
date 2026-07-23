@@ -7,12 +7,13 @@ allowed-tools: Read, Grep, Glob, Write, Edit, MultiEdit
 # DESIGN SYSTEM GUARDIAN — donjon-dragon
 
 Front only (`front/`). Stack: React 18 + Vite SPA, shadcn/ui style « new-york », Tailwind v4 via
-`@tailwindcss/vite` (NO `tailwind.config.js`, NO `globals.css`). `cn()` = `front/src/lib/utils.ts`.
+`@tailwindcss/vite` (NO `tailwind.config.js`, NO `globals.css`). `cn()` = `front/src/shared/utils/utils.ts`.
 
 ## BEFORE TOUCH CODE
 - Read `front/src/index.css` → tokens live in `@theme { --color-* }`, dark mode via `@variant dark`.
-- Glob `front/src/components/atoms/` → shadcn primitives already installed (edit in place, never wrap).
-- `molecules/` = D&D composites (dice-roller, combat-log, hit-points…). `routes/` = pages.
+- Glob `front/src/shared/components/atoms/` → shadcn primitives already installed (edit in place, never wrap).
+- `shared/components/molecules/` = D&D composites (dice-roller, combat-log, hit-points…). `pages/<segment>/`
+  = routes (`<segment>.page.tsx` + `_internal/{hooks,containers,views}/`).
 
 ## RULES
 
@@ -37,7 +38,7 @@ Front only (`front/`). Stack: React 18 + Vite SPA, shadcn/ui style « new-york �
 (`cn('stat-card', isActive && 'ring-2 ring-ring')`). NOT for de-duplicating a static recurring chain — that
 goes to a global class.
 
-**shadcn owned.** Primitive exists? Use `front/src/components/atoms/*`. Install: `npx shadcn@latest add <c>`.
+**shadcn owned.** Primitive exists? Use `front/src/shared/components/atoms/*`. Install: `npx shadcn@latest add <c>`.
 
 ## CHECKLIST BEFORE SHIP
 - [ ] Zero raw palette utilities (no `bg-<color>-<n>`) in app components

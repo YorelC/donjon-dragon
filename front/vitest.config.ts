@@ -11,6 +11,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@': path.resolve(__dirname, './src'),
       '@donjon-dragon/shared': path.resolve(__dirname, '../shared/src'),
     },
   },
