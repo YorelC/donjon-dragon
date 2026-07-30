@@ -5,9 +5,7 @@ import { Button } from "@/shared/components/atoms/button";
 import { FormTextInput } from "@/shared/components/molecules/form-text-input";
 import { Alert, AlertDescription } from "@/shared/components/atoms/alert";
 import { ROUTES } from "@/shared/constants/routes";
-import type { RegisterDto } from "@donjon-dragon/shared";
-
-type RegisterFormValues = Omit<RegisterDto, "appOrigin">;
+import type { RegisterFormValues } from "../types/register-form-schema";
 
 interface RegisterViewProps {
   control: Control<RegisterFormValues>;
@@ -110,6 +108,19 @@ function RegistrationForm({
               field={field}
               type="password"
               error={errors.password?.message}
+            />
+          )}
+        />
+
+        <Controller
+          name="confirmPassword"
+          control={control}
+          render={({ field }) => (
+            <FormTextInput
+              label="Confirmation du mot de passe"
+              field={field}
+              type="password"
+              error={errors.confirmPassword?.message}
             />
           )}
         />
