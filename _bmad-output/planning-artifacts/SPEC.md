@@ -119,6 +119,8 @@ donjon-dragon/
 | Nommage fichiers | kebab-case |
 | TDD | Tests AVANT code, chaque commit = RED → GREEN |
 | Clean Code | Noms explicites, pas de commentaires superflus, SRP |
+| Stepdown Rule | Dans un fichier, les fonctions/composants sont ordonnés du plus haut niveau d'abstraction vers le plus bas — la fonction "chef d'orchestre" en premier, ses détails/helpers en dessous, comme un article de journal (titre → résumé → détails). Convention *Clean Code*, Robert C. Martin. |
+| Pas de route en dur | Routes front centralisées dans `ROUTES`, routes API/namespaces WS appelées par le front centralisées dans `API_ROUTES`/`WS_NAMESPACES`. Aucune chaîne littérale de route au point d'appel. |
 
 ### 1.3 Contrats d'interface
 
