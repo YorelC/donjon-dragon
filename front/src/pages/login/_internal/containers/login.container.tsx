@@ -28,7 +28,7 @@ export function LoginContainer() {
     try {
       const tokens = await loginMutation.mutateAsync(values);
       setAuth(tokens);
-      navigate(ROUTES.characters);
+      navigate(ROUTES.campaigns);
     } catch (err) {
       if (err instanceof ApiError && err.status === 403) {
         setErrorMessage("Ton email n'est pas encore vérifié. Vérifie ta boîte mail.");

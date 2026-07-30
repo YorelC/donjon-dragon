@@ -1,9 +1,7 @@
+import { HomeContainer } from "./_internal/containers/home.container";
+
 function Home() {
-  return (
-    <section>
-      <h1>Personnage Joueurs</h1>
-    </section>
-  );
+  return <HomeContainer />;
 }
 
 export default Home;
