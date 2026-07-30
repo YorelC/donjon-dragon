@@ -1,3 +1,41 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"C:\\\\_work\\\\my_projects\\\\donjon-dragon\" show HEAD:CLAUDE.md)",
+      "Bash(npx tsc *)",
+      "Skill(design-system)",
+      "Bash(npx vitest *)",
+      "Bash(netstat -ano)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:5173)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000)",
+      "Bash(hermes --help)",
+      "Bash(hermes skills *)",
+      "Read(//c/Users/Leroy/**)",
+      "Read(//c/Users/Leroy/AppData/Local/hermes/**)",
+      "Read(//c/Users/Leroy/AppData/Roaming/**)",
+      "Bash(export COLUMNS=200)",
+      "Bash(pnpm typecheck *)",
+      "Bash(pnpm lint *)",
+      "Bash(pnpm test *)",
+      "Bash(pnpm --filter back test)",
+      "Bash(pnpm --filter front test)",
+      "Bash(git add *)",
+      "Bash(git commit -q -m '@ *)",
+      "Bash(git commit *)",
+      "Bash(pnpm add *)",
+      "Bash(node -e ' *)",
+      "Bash(node *)",
+      "Bash(npx eslint *)",
+      "Bash(git rm *)",
+      "Bash(pnpm --filter front remove socket.io-client @shadcn/react)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(pnpm --filter front typecheck)",
+      "Bash(pnpm --filter back remove ioredis socket.io @nestjs/websockets @nestjs/platform-socket.io @nestjs/passport)",
+      "Bash(echo \"lint_exit=$?\")",
+      "Bash(pnpm --filter back typecheck)",
+      "Bash(echo \"pages_ok=$?\")",
+      "Bash(git reset *)"
+    ]
+  },
   "agents": {}
 }
