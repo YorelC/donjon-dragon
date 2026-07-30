@@ -1,0 +1,29 @@
+Package 4: Multi-Tenant Isolation.
+
+Contexte: donjon-dragon SaaS. Auth JWT deja en place avec tenantId dans le payload. Architecture hexagonale.
+
+A FAIRE:
+
+1. Cree back/src/common/interface/interceptors/tenant-context.interceptor.ts:
+   - Injectable() implemente NestInterceptor
+   - intercept: extrait request.user?.tenantId, attache a request.tenantId
+   - Passe au handler
+
+2. Cree back/src/common/interface/guards/tenant-ownership.guard.ts:
+   - Injectable() implemente CanActivate
+   - Recupere tenantId du request.user
+   - Recupere resourceId des params de la requete
+   - Verifie que la resource appartient au tenant (via repository injecte)
+   - Throw ForbiddenException si pas ownership
+
+3. Cree back/src/common/infrastructure/tenant-cache.service.ts:
+   - Injectable()
+   - Wrapper autour de ioredis
+   - Toutes les clés prefixees avec tenantId: set(tenantId, key, value), get(tenantId, key), del(tenantId, key)
+
+4. Dans tous les repositories existants (character, combat), ajoute tenantId dans les filtres:
+   - Le repository port interface prend deja un tenantId optionnel en parametre
+   - Chaque query MongoDB filtre par tenantId
+   - Si pas de tenantId fourni, throw Error('tenantId required')
+
+Execute: pnpm typecheck && cd back && pnpm test.

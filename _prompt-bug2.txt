@@ -1,0 +1,17 @@
+2 bugs lies sur page /profile/friends :
+
+BUG 1 (resolu) : 'Chargement...' bloqué a cause de retry:3 de TanStack Query. Fix : retry:false ajoute.
+
+BUG 2 (nouveau) : maintenant le message d'erreur s'affiche : "Erreur lors du chargement des amis." Cause probable : l'appel API GET /api/friends renvoie 401 car l'utilisateur n'est pas connecte ou le JWT est manquant/invalide.
+
+DIAGNOSTIC A FAIRE :
+1. Verifier ce que renvoie curl -H "Authorization: Bearer $TOKEN" http://localhost:3000/api/friends avec un vrai token
+2. Verifier si le JWT est bien envoye par le frontend (api.ts prend le token du authStore)
+3. Verifier la reponse exacte de l'API (status + body)
+
+SOLUTIONS POSSIBLES :
+- Proteger la route /profile par un auth guard frontend (ProtectedRoute) qui redirige vers /login si pas connecte
+- Ou gerer le 401 dans le container friends pour afficher un message "Connecte-toi pour voir tes amis"
+- Ou les deux
+
+Fais analyser par l'architecte la meilleure approche, puis implemente par l'ouvrier. typecheck + tests OK.

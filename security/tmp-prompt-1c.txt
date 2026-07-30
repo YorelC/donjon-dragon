@@ -1,0 +1,35 @@
+Deja existant:
+- shared/src/auth-schema.ts (Zod schemas)
+- back/src/auth/domain/ (repository port, entity)
+- back/src/auth/infrastructure/ (Mongo schemas, repository impl, JWT strategy)
+
+1. Cree back/src/auth/application/auth.service.ts:
+   - register(dto: RegisterDto): Promise<{ accessToken, refreshToken, user }>
+     - check if email already exists → ConflictException
+     - createUser + authRepository.create
+     - sign JWT (access token 15min, payload: { sub: user.id, email, tier, tenantId })
+     - saveRefreshToken (7 days)
+     - return { accessToken, refreshToken, user: { id, email, username, tier, tenantId } }
+   - login(dto: LoginDto): Promise<{ accessToken, refreshToken, user }>
+     - findByEmail
+     - validatePassword → UnauthorizedException si invalide
+     - sign JWT access token + save refresh token
+   - refreshToken(dto: RefreshDto): Promise<{ accessToken, refreshToken }>
+     - findRefreshToken → UnauthorizedException si invalide/expiré
+     - revoke old, save new refresh token
+     - sign new access token
+   - validateUser(payload: TokenPayload): Promise<{ userId, email, tier, tenantId }>
+     - verifie que le user existe encore
+   - getProfile(userId: string): Promise<{ id, email, username, tier, tenantId, createdAt }>
+   - Injecte IAuthRepository, JwtService
+
+2. Cree back/src/auth/application/index.ts
+
+3. Tests: back/src/auth/application/auth.service.test.ts:
+   - Mock IAuthRepository
+   - register: success, email exists error
+   - login: success, wrong password error
+   - refreshToken: success, invalid token error
+
+Contraintes: fonctions ≤ 20 lignes, fichiers ≤ 150 lignes, any interdit, kebab-case.
+Apres: pnpm typecheck && pnpm test

@@ -1,0 +1,53 @@
+Deja existant:
+- shared/src/auth-schema.ts (Zod schemas)
+- back/src/auth/domain/ (repository port, entity)
+- back/src/auth/infrastructure/ (Mongo schemas, repository impl, JWT strategy)
+- back/src/auth/application/ (auth.service)
+
+1. Cree back/src/auth/interface/guards/jwt-auth.guard.ts:
+   - extends AuthGuard('jwt')
+   - handleRequest: si err ou !user → throw UnauthorizedException
+
+2. Cree back/src/auth/interface/guards/roles.guard.ts:
+   - Implemente CanActivate
+   - Reflect.getMetadata('roles', context.getHandler())
+   - Si pas de roles requis → allow
+   - Check: user.tier in requiredRoles
+   - Sinon → ForbiddenException
+
+3. Cree back/src/auth/interface/decorators/roles.decorator.ts:
+   - @Roles(...tiers: string[]) => SetMetadata('roles', tiers)
+
+4. Cree back/src/auth/interface/decorators/public.decorator.ts:
+   - @Public() => SetMetadata('isPublic', true)
+
+5. Cree back/src/auth/interface/decorators/current-user.decorator.ts:
+   - @CurrentUser() => extractUser(context) (return request.user)
+   - custom parameter decorator
+
+6. Cree back/src/auth/interface/auth.controller.ts:
+   - POST /auth/register: @Body(RegisterDto) → authService.register
+   - POST /auth/login: @Body(LoginDto) → authService.login
+   - POST /auth/refresh: @Body(RefreshDto) → authService.refreshToken
+   - GET /auth/me: @UseGuards(JwtAuthGuard) @CurrentUser() → authService.getProfile
+   - Décorateur @Public() sur register et login
+
+7. Cree back/src/auth/interface/auth.module.ts:
+   - Importe: MongooseModule.forFeature([{name: 'User', schema: userSchema}, {name: 'RefreshToken', schema: refreshTokenSchema}]), JwtModule.register({ secret: process.env.JWT_SECRET || 'dev-secret-change-me', signOptions: { expiresIn: '15m' } }), PassportModule
+   - Providers: AuthService, JwtStrategy, { provide: AUTH_REPOSITORY, useClass: AuthMongoRepository }
+   - Controllers: AuthController
+   - Exports: AuthService (si besoin ailleurs)
+
+8. Modifie back/src/app.module.ts:
+   - Importe AuthModule
+   - Ajoute APP_GUARD provider: { provide: APP_GUARD, useClass: JwtAuthGuard }
+
+9. Cree back/src/auth/interface/auth.controller.test.ts:
+   - Test register endpoint
+   - Test login endpoint
+   - Test me endpoint (with mock JWT)
+
+10. Cree back/src/auth/interface/index.ts
+
+Contraintes: fonctions ≤ 20 lignes, fichiers ≤ 150 lignes, any interdit, kebab-case.
+Apres: pnpm typecheck && pnpm test
