@@ -1,5 +1,13 @@
 # Audit de dégraissage — back + front
 
+> **Mise à jour du 2026-07-30, après décision produit.** Charly a tranché : le
+> périmètre applicatif d'aujourd'hui est *landing, inscription, connexion,
+> vérification d'email, accueil, campagnes, profil et amis*. Personnages et
+> combat étaient de l'ancien dev et ont été supprimés (3 lots, § 8), ce qui
+> périme une partie de l'audit ci-dessous. Les § 1 à 7 sont conservés tels
+> quels comme état des lieux initial ; le § 8 donne l'état réel et le plan qui
+> reste.
+
 Mesuré le 2026-07-30 sur `main` (après `chore(lint)` + `docs(agents)`).
 Source des chiffres : ESLint fraîchement installé, `depcheck`, et un scan
 d'imports (aucun module n'est déclaré mort sans vérification manuelle).
@@ -214,3 +222,80 @@ découpes de fonctions — de la plus isolée à la plus large.
 
 Deux décisions m'attendent avant L3 et L4 : le sort des adapters in-memory du
 back, et celui d'`ioredis`.
+
+---
+
+## 8. Après la décision produit — état réel et plan restant
+
+### 8a. Ce qui a été exécuté
+
+Trois lots de suppression, un commit chacun, DoD vérifiée après chaque lot.
+
+| Commit | Périmètre | Supprimé |
+|---|---|---|
+| `refactor(front)` | pages personnages et combat | 2 pages complètes, 7 molecules D&D, `form-number-input`, `form-select-input`, `shared/types/`, `shared/hooks/`, `constants/translations/` ; deps `socket.io-client`, `@shadcn/react` |
+| `refactor(back)` | modules `character` et `combat` | 2 modules complets, `null-email-sender`, `in-memory-refresh-token.repository` ; deps `ioredis`, `socket.io`, `@nestjs/websockets`, `@nestjs/platform-socket.io`, `@nestjs/passport` |
+| `refactor(shared)` | schémas `character` et `combat` | 2 schémas Zod + leurs exports |
+
+**58 fichiers supprimés, 3 146 lignes en moins.** Il reste 2 813 lignes au back,
+5 164 au front (dont ~2 500 d'atoms shadcn générés), 128 en shared.
+
+Cela absorbe les lots L1 (molecules mortes), L3 (adapters in-memory) et L4
+(dépendances) du plan initial, et rend caduque une partie de L6, L7 et L8.
+
+### 8b. Métriques avant / après
+
+| Mesure | Avant | Après |
+|---|---|---|
+| Fonctions hors limite — back | 7 | **6** |
+| Fonctions hors limite — front (hors atoms générés) | 19 | **10** |
+| Modules jamais importés | 27 (dont 16 atoms) | **16 atoms** (catalogue shadcn, conservé) |
+| Dépendances mortes | 7 | **0** |
+| Overrides ESLint de dette | 13 globs de dossiers | **7 listes de fichiers** |
+| Violations de structure front | 5 | **3** (F2, F3, F4 ; F1 et F5 supprimées avec `pages/combat` et `shared/hooks/`) |
+
+### 8c. Violations restantes
+
+**Back — 9** : `login.use-case`, `refresh-tokens.use-case`, `verify-email.use-case`
+(23 à 27 lignes) ; les 3 méthodes de `friendship.controller` (23 à 26 lignes,
+même patron de mapping d'erreurs) ; 3 imports morts.
+
+**Front — 19** : `App` (25), `LoginContainer` (39), `FriendsContainer` (63),
+`FriendsView` (84), `RegisterContainer` (24), `useRegisterForm` (46),
+`RegistrationForm` (70), `performRefresh` (21), `Nav` (29), `MobileNav` (33) ;
+4 imports morts, 4 `prefer-const`, 1 franchissement de frontière (F2).
+
+### 8d. Plan restant
+
+| Lot | Périmètre | Contenu | Risque |
+|---|---|---|---|
+| **L0** | `shared/package.json`, `front/src/shared/api/refresh.ts` | Débloquer la DoD : `--passWithNoTests` sur shared, corriger le `.finally()` détaché (§ 5). Fait aussi tomber `performRefresh` sous 20 lignes | faible |
+| **L2** | 6 fichiers back + front | Supprimer les 7 imports morts et les 4 `prefer-const` (`--fix` sur la majorité) | faible |
+| **L5** | `back/src/friendship/01-interface/` | Extraire le mapping erreur domaine → exception HTTP, partagé par les 3 méthodes du controller | faible |
+| **L6** | `back/src/auth/02-application/` | Découper les 3 `execute` > 20 lignes en sous-fonctions nommées | moyen — cœur métier auth, 3 tests seulement |
+| **L7** | `front/src/pages/{login,register,profile/friends}/` | Découper les 4 containers et 1 hook > 20 lignes | moyen |
+| **L8** | `front/src/pages/{register,profile/friends}/_internal/views/`, `App.tsx` | Découper `FriendsView` (84) et `RegistrationForm` (70) en sous-views ; alléger `App` | moyen |
+| **L9** | `front/src/shared/components/layout/`, `pages/login/_internal/queries/` | **Corrige F2** : remonter `use-logout` vers `shared/`, puis découper `Nav` et `MobileNav` | faible |
+
+### 8e. Point d'attention
+
+`pages/campaigns/` n'a aucune entrée de navigation propre au moment de la
+suppression : elle n'était atteignable que par la redirection post-connexion.
+Le lien « Campagnes » a été ajouté à `nav.tsx` en remplacement de
+« Personnages » / « Combat », et l'accueil pointe désormais vers campagnes et
+profil. À valider côté produit.
+
+### 8f. Les 3 règles que les futurs agents violeront le plus
+
+1. **La pureté des views.** C'était déjà la violation la plus grave de l'audit
+   (des `useState` dans une `.view.tsx`). Le réflexe « j'ai juste besoin d'un
+   petit état local ici » est irrésistible : la règle doit être répétée dans le
+   prompt de l'`ouvrier`, pas seulement dans AGENTS.md.
+2. **Les 20 lignes par fonction.** 25 fonctions sur 65 dépassaient. Un container
+   qui grossit de 3 lignes à chaque ticket franchit la limite sans que personne
+   ne le décide. Seul le lint l'attrape — d'où l'interdiction d'ajouter un
+   override.
+3. **La frontière `_internal`.** `nav.tsx` importe le `use-logout` d'une page
+   parce que c'était le chemin le plus court. Quand un agent a besoin d'un hook
+   d'ailleurs, il l'importe au lieu de le remonter dans `shared/` : le coût du
+   « bon » geste (un commit dédié) est plus élevé que celui du raccourci.
