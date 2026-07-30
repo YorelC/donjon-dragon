@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { PublicUser, AuthTokens } from "@donjon-dragon/shared";
 
 interface AuthState {
@@ -9,20 +10,25 @@ interface AuthState {
   clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  accessToken: null,
-  refreshToken: null,
-  user: null,
-  setAuth: (tokens: AuthTokens) =>
-    set({
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-      user: tokens.user,
-    }),
-  clearAuth: () =>
-    set({
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
       accessToken: null,
       refreshToken: null,
       user: null,
+      setAuth: (tokens: AuthTokens) =>
+        set({
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+          user: tokens.user,
+        }),
+      clearAuth: () =>
+        set({
+          accessToken: null,
+          refreshToken: null,
+          user: null,
+        }),
     }),
-}));
+    { name: "auth-storage" },
+  ),
+);
