@@ -38,6 +38,26 @@ on n'en ajoute.
 - `*.view.tsx` : composant PUR. Entrée = props, sortie = JSX. Interdits dans une
   view : hooks, stores, fetch, effets. Une view se construit UNIQUEMENT avec les
   composants de `shared/components` et les views locales de sa page.
+- Une view **n'importe jamais un container**. Une zone à logique lui arrive en
+  prop `ReactNode` (slot nommé ou `children`), injectée par le container parent
+  ou par la page. Corollaire : une zone de page qui a sa propre logique mérite
+  sa propre paire container + view dans `_internal/` ; la composition de ces
+  zones se fait au niveau container ou page, jamais dans une view.
+
+```tsx
+// ✗ la view compose — elle devient dépendante de la logique
+import { FriendsListContainer } from "../containers/friends-list.container";
+export function FriendsView() {
+  return <section><FriendsListContainer /></section>;
+}
+
+// ✓ la view reçoit un slot — elle reste pure et testable sans provider
+export function FriendsView({ friendsList }: { friendsList: ReactNode }) {
+  return <section>{friendsList}</section>;
+}
+// et la page (ou le container parent) compose :
+<FriendsView friendsList={<FriendsListContainer />} />
+```
 - Hooks : **20 lignes de corps maximum**. Un hook qui grossit se découpe en
   hooks et fonctions pures nommées qu'il compose.
 - Fonctions front : 20 lignes maximum, comme au back. Les views et les pages ont

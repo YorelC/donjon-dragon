@@ -108,6 +108,11 @@ partout** : 11 pages, 11 `.page.tsx`, tous de 5 à 7 lignes et sans logique,
 | F3 | Import direct d'une primitive hors wrapper | `pages/profile/_internal/views/profile-layout.view.tsx:2` (`lucide-react`), `pages/profile/friends/…/queries/use-send-friend-request.ts:2` (`sonner`) | faible — icônes et fonction `toast()`, pas des primitives de rendu ; carve-out assumé, la règle ne cible que radix/shadcn/cmdk |
 | F4 | Hooks appelés hors container | `App.tsx` (`useAuthStore` dans `HomeRoute`) | faible — `HomeRoute` est un aiguillage de route, pas une view |
 | F5 | Nommage de fichier hors convention kebab-case | `shared/hooks/useLocalStorage.tsx` (et extension `.tsx` sans JSX) | faible |
+| F6 | Une view importe un container | **aucune occurrence** — les 8 imports de container viennent tous d'un `.page.tsx` | — |
+
+Sur F6 : la règle a été ajoutée au périmètre après coup et le code la respectait
+déjà. Elle est désormais armée (`frontViewPurityConfig`), sans aucun override de
+dette — toute régression cassera le lint immédiatement.
 
 ## 4. Le gras
 
@@ -253,6 +258,7 @@ Cela absorbe les lots L1 (molecules mortes), L3 (adapters in-memory) et L4
 | Dépendances mortes | 7 | **0** |
 | Overrides ESLint de dette | 13 globs de dossiers | **7 listes de fichiers** |
 | Violations de structure front | 5 | **3** (F2, F3, F4 ; F1 et F5 supprimées avec `pages/combat` et `shared/hooks/`) |
+| Règle « une view n'importe pas de container » | non armée | **armée, 0 violation** (F6) |
 
 ### 8c. Violations restantes
 
@@ -287,10 +293,13 @@ profil. À valider côté produit.
 
 ### 8f. Les 3 règles que les futurs agents violeront le plus
 
-1. **La pureté des views.** C'était déjà la violation la plus grave de l'audit
-   (des `useState` dans une `.view.tsx`). Le réflexe « j'ai juste besoin d'un
-   petit état local ici » est irrésistible : la règle doit être répétée dans le
-   prompt de l'`ouvrier`, pas seulement dans AGENTS.md.
+1. **La pureté des views**, sous ses deux formes. L'état local d'abord (des
+   `useState` dans une `.view.tsx` était la violation la plus grave de l'audit) ;
+   la composition ensuite — importer un container depuis une view est le
+   raccourci naturel quand une zone de page a besoin de sa propre logique, alors
+   qu'il faut passer un slot `ReactNode`. Le réflexe « j'ai juste besoin de ça
+   ici » est irrésistible : la règle doit être répétée dans le prompt de
+   l'`ouvrier`, pas seulement dans AGENTS.md.
 2. **Les 20 lignes par fonction.** 25 fonctions sur 65 dépassaient. Un container
    qui grossit de 3 lignes à chaque ticket franchit la limite sans que personne
    ne le décide. Seul le lint l'attrape — d'où l'interdiction d'ajouter un
