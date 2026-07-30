@@ -3,14 +3,15 @@ import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import type { User } from '@donjon-dragon/shared/user-schema';
 
-import type { UserRepositoryPort } from '../03-domain/user.repository.port';
 import { MongoUserRepository } from '../04-infrastructure/mongo-user.repository';
 import { USER_MODEL, UserSchema } from '../04-infrastructure/user.schema';
 
 export const USER_REPOSITORY = 'USER_REPOSITORY';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: USER_MODEL, schema: UserSchema }])],
+  imports: [
+    MongooseModule.forFeature([{ name: USER_MODEL, schema: UserSchema }]),
+  ],
   providers: [
     {
       provide: USER_REPOSITORY,

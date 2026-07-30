@@ -23,6 +23,7 @@ import {
   RefreshTokenExpiredError,
   UserNotFoundError,
 } from '../03-domain/auth.errors';
+import { DisplayNameAlreadyTakenError } from '../../user/03-domain/user.errors';
 import { RegisterUseCase } from '../02-application/register.use-case';
 import { LoginUseCase } from '../02-application/login.use-case';
 import { VerifyEmailUseCase } from '../02-application/verify-email.use-case';
@@ -50,7 +51,7 @@ export class AuthController {
     try {
       return await this.registerUseCase.execute(dto);
     } catch (err) {
-      if (err instanceof EmailAlreadyInUseError) {
+      if (err instanceof EmailAlreadyInUseError || err instanceof DisplayNameAlreadyTakenError) {
         throw new ConflictException(err.message);
       }
       throw err;

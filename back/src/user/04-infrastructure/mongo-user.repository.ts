@@ -20,4 +20,22 @@ export class MongoUserRepository implements UserRepositoryPort {
     const doc = await this.model.findOne({ email }).select('-_id').lean<User>();
     return doc ?? null;
   }
+
+  async findByDisplayName(displayName: string): Promise<User | null> {
+    const doc = await this.model.findOne({ displayName }).select('-_id').lean<User>();
+    return doc ?? null;
+  }
+
+  async searchByDisplayName(query: string, limit: number): Promise<User[]> {
+    return this.model
+      .find({ displayName: { $regex: escapeRegex(query), $options: 'i' } })
+      .limit(limit)
+      .select('-_id')
+      .lean<User[]>();
+  }
+}
+
+// Empêche l'injection de méta-caractères regex dans la recherche user.
+function escapeRegex(input: string): string {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

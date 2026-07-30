@@ -7,7 +7,7 @@ export const UserSchema = new Schema<User>(
   {
     id: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
-    displayName: { type: String, required: true },
+    displayName: { type: String, required: true, unique: true },
     passwordHash: { type: String, required: true },
     emailVerified: { type: Boolean, required: true, default: false },
     createdAt: { type: String, required: true },

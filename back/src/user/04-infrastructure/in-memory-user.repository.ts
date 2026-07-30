@@ -17,4 +17,17 @@ export class InMemoryUserRepository implements UserRepositoryPort {
   async findByEmail(email: string): Promise<User | null> {
     return [...this.users.values()].find((user) => user.email === email) ?? null;
   }
+
+  async findByDisplayName(displayName: string): Promise<User | null> {
+    return (
+      [...this.users.values()].find((user) => user.displayName === displayName) ?? null
+    );
+  }
+
+  async searchByDisplayName(query: string, limit: number): Promise<User[]> {
+    const needle = query.toLowerCase();
+    return [...this.users.values()]
+      .filter((user) => user.displayName.toLowerCase().includes(needle))
+      .slice(0, limit);
+  }
 }
