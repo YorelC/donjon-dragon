@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import type { RefreshTokenRecord, EmailVerificationTokenRecord } from '@donjon-dragon/shared/auth-schema';
@@ -13,7 +12,6 @@ import type { PasswordHasherPort } from '../03-domain/password-hasher.port';
 import type { TokenServicePort } from '../03-domain/token/token-service.port';
 import type { EmailSenderPort } from '../03-domain/email/email-sender.port';
 import { BcryptPasswordHasher } from '../04-infrastructure/bcrypt-password-hasher';
-import { JwtTokenService } from '../04-infrastructure/token/jwt-token.service';
 import { MongoRefreshTokenRepository } from '../04-infrastructure/token/mongo-refresh-token.repository';
 import { REFRESH_TOKEN_MODEL, RefreshTokenSchema } from '../04-infrastructure/token/refresh-token.schema';
 import { MongoEmailVerificationTokenRepository } from '../04-infrastructure/email/mongo-email-verification-token.repository';
@@ -26,8 +24,7 @@ import { LogoutUseCase } from '../02-application/logout.use-case';
 import { IssueReadonlyTokenUseCase } from '../02-application/issue-readonly-token.use-case';
 import { VerifyEmailUseCase } from '../02-application/verify-email.use-case';
 import { AuthController } from './auth.controller';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { TierGuard } from './guards/tier.guard';
+import { AuthGuardsModule } from './auth-guards.module';
 import {
   PASSWORD_HASHER,
   TOKEN_SERVICE,
@@ -36,12 +33,10 @@ import {
   EMAIL_SENDER,
 } from './auth.tokens';
 
-const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-change-in-production';
-
 @Module({
   imports: [
     UserModule,
-    JwtModule.register({ secret: JWT_SECRET }),
+    AuthGuardsModule,
     MongooseModule.forFeature([
       { name: REFRESH_TOKEN_MODEL, schema: RefreshTokenSchema },
       { name: EMAIL_VERIFICATION_TOKEN_MODEL, schema: EmailVerificationTokenSchema },
@@ -52,10 +47,6 @@ const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-change-in-production';
     {
       provide: PASSWORD_HASHER,
       useClass: BcryptPasswordHasher,
-    },
-    {
-      provide: TOKEN_SERVICE,
-      useClass: JwtTokenService,
     },
     {
       provide: REFRESH_TOKEN_REPOSITORY,
@@ -134,9 +125,6 @@ const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-change-in-production';
         new IssueReadonlyTokenUseCase(userRepo, tokenService),
       inject: [USER_REPOSITORY, TOKEN_SERVICE],
     },
-    JwtAuthGuard,
-    TierGuard,
   ],
-  exports: [TOKEN_SERVICE, JwtAuthGuard, TierGuard],
 })
 export class AuthModule {}
