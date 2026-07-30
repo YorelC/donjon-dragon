@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useWebSocket } from "@/shared/hooks/use-websocket";
+import { WS_NAMESPACES } from "@/shared/constants/api-routes";
 import { useCombatStore } from "../stores/combat.store";
 import type { RollDicePayload, RollDiceResult } from "../queries/use-dice";
 import type { Combatant } from "../types/combat-schema";
@@ -7,7 +8,7 @@ import type { Combatant } from "../types/combat-schema";
 type Advantage = "none" | "advantage" | "disadvantage";
 
 export function useCombat(roomId: string) {
-  const { socket } = useWebSocket("combat");
+  const { socket } = useWebSocket(WS_NAMESPACES.combat);
   const { setCurrentCombat, clearCombat } = useCombatStore();
 
   useEffect(() => {

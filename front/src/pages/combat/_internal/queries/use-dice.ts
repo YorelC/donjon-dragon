@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useWebSocket } from "@/shared/hooks/use-websocket";
+import { WS_NAMESPACES } from "@/shared/constants/api-routes";
 import type { DiceType } from "../types/combat-schema";
 
 export interface RollDicePayload {
@@ -18,7 +19,7 @@ export interface RollDiceResult {
 }
 
 export function useRollDice() {
-  const { socket } = useWebSocket("combat");
+  const { socket } = useWebSocket(WS_NAMESPACES.combat);
 
   return useMutation({
     mutationFn: (payload: RollDicePayload) =>
