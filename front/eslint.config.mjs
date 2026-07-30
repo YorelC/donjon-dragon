@@ -3,6 +3,7 @@ import {
   frontConfig,
   frontPagesConfig,
   frontViewConfig,
+  frontViewPurityConfig,
   ignores,
 } from "../eslint.config.base.mjs";
 
@@ -56,6 +57,7 @@ export default [
   ...frontConfig,
   ...frontPagesConfig,
   ...frontViewConfig,
+  ...frontViewPurityConfig,
   ...vendoredShadcn,
   ...debt,
 ];
