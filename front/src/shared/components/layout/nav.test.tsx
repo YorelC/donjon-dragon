@@ -75,7 +75,7 @@ describe("Nav", () => {
     const trigger = screen.getByRole("button", { name: /menu/i });
     await user.click(trigger);
 
-    const links = screen.getAllByRole("link", { name: /Personnages/i });
+    const links = screen.getAllByRole("link", { name: /Campagnes/i });
     expect(links.length).toBeGreaterThan(0);
 
     const logoutButtons = screen.getAllByRole("button", {

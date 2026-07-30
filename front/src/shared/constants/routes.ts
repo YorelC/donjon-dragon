@@ -1,8 +1,6 @@
 export const ROUTES = {
   home: "/",
   campaigns: "/campaigns",
-  characters: "/characters",
-  combat: "/combat",
   profile: "/profile",
   profileFriends: "/profile/friends",
   profileSettings: "/profile/parametres",

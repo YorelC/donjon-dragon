@@ -50,11 +50,8 @@ function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
       <Link to={ROUTES.home} onClick={onLinkClick}>
         Accueil
       </Link>
-      <Link to={ROUTES.characters} onClick={onLinkClick}>
-        Personnages
-      </Link>
-      <Link to={ROUTES.combat} onClick={onLinkClick}>
-        Combat
+      <Link to={ROUTES.campaigns} onClick={onLinkClick}>
+        Campagnes
       </Link>
       <Link to={ROUTES.profile} onClick={onLinkClick}>
         Profil

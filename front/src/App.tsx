@@ -3,8 +3,6 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/home/home.page";
 import { LandingPage } from "./pages/landing/landing.page";
 import { CampaignsPage } from "./pages/campaigns/campaigns.page";
-import { CharactersPage } from "./pages/characters/characters.page";
-import { CombatPage } from "./pages/combat/combat.page";
 import { FriendsPage } from "./pages/profile/friends/friends.page";
 import { RegisterPage } from "./pages/register/register.page";
 import { LoginPage } from "./pages/login/login.page";
@@ -29,8 +27,6 @@ function App() {
           <Route path={ROUTES.home} element={<HomeRoute />} />
           <Route element={<PrivateRoute />}>
             <Route path={ROUTES.campaigns} element={<CampaignsPage />} />
-            <Route path={ROUTES.characters} element={<CharactersPage />} />
-            <Route path={ROUTES.combat} element={<CombatPage />} />
             <Route path={ROUTES.profile} element={<ProfilePage />}>
               <Route index element={<Navigate to={ROUTES.profileFriends} />} />
               <Route path={ROUTES.profileFriends} element={<FriendsPage />} />

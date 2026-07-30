@@ -8,10 +8,10 @@ export function HomeView() {
       <h2 className="hero-title">Bon retour, aventurier.</h2>
       <div className="flex gap-4">
         <Button asChild size="lg">
-          <Link to={ROUTES.characters}>Mes personnages</Link>
+          <Link to={ROUTES.campaigns}>Mes campagnes</Link>
         </Button>
         <Button asChild size="lg" variant="outline">
-          <Link to={ROUTES.combat}>Combat</Link>
+          <Link to={ROUTES.profile}>Mon profil</Link>
         </Button>
       </div>
     </section>

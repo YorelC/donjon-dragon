@@ -21,27 +21,26 @@ const debt = [
   {
     files: [
       "src/App.tsx",
-      "src/pages/**/containers/**",
-      "src/pages/**/hooks/**",
-      "src/pages/**/views/**",
+      "src/pages/login/_internal/containers/login.container.tsx",
+      "src/pages/profile/friends/_internal/containers/friends.container.tsx",
+      "src/pages/profile/friends/_internal/views/friends.view.tsx",
+      "src/pages/register/_internal/containers/register.container.tsx",
+      "src/pages/register/_internal/hooks/use-register-form.ts",
+      "src/pages/register/_internal/views/register.view.tsx",
       "src/shared/api/refresh.ts",
-      "src/shared/components/layout/**",
-      "src/shared/components/molecules/**",
+      "src/shared/components/layout/nav.tsx",
     ],
     rules: { "max-lines-per-function": "off" },
   },
   {
     files: [
-      "src/pages/characters/_internal/containers/character-form.container.tsx",
       "src/pages/login/_internal/containers/login.container.tsx",
       "src/shared/api/*.test.ts",
       "src/shared/components/layout/nav.test.tsx",
-      "src/shared/components/molecules/**",
     ],
     rules: {
       "@typescript-eslint/no-unused-vars": "off",
       "prefer-const": "off",
-      "no-useless-assignment": "off",
     },
   },
   {

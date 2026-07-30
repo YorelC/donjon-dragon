@@ -11,7 +11,7 @@ export function useVerifyEmailRedirect(query: ReturnType<typeof useVerifyEmail>)
   useEffect(() => {
     if (!query.isSuccess) return;
     setAuth(query.data);
-    const timeoutId = setTimeout(() => navigate(ROUTES.characters), 1000);
+    const timeoutId = setTimeout(() => navigate(ROUTES.campaigns), 1000);
     return () => clearTimeout(timeoutId);
   }, [query.isSuccess, query.data, navigate, setAuth]);
 }
