@@ -30,7 +30,7 @@ export function CharacterSheetView({ character }: CharacterSheetViewProps) {
           <span>{character.name}</span>
           <Badge variant="outline">Niveau {character.level}</Badge>
         </CardTitle>
-        <p className="text-sm text-muted-foreground">
+        <p className="muted-text">
           {character.race} · {character.class}
         </p>
       </CardHeader>
@@ -43,9 +43,9 @@ export function CharacterSheetView({ character }: CharacterSheetViewProps) {
         <div className="grid grid-cols-3 gap-2">
           {statKeys.map((key) => (
             <div key={key} className="rounded-md border p-2 text-center">
-              <div className="text-xs text-muted-foreground">{STAT_LABELS[key]}</div>
+              <div className="muted-text-xs">{STAT_LABELS[key]}</div>
               <div className="text-lg font-bold">{character.stats[key]}</div>
-              <div className="text-xs text-muted-foreground">{modifier(character.stats[key])}</div>
+              <div className="muted-text-xs">{modifier(character.stats[key])}</div>
             </div>
           ))}
         </div>

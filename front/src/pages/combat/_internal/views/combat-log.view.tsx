@@ -17,7 +17,7 @@ export function CombatLogView({ entries }: CombatLogViewProps) {
         <ScrollArea className="h-64">
           <div className="space-y-2 pr-2">
             {entries.length === 0 && (
-              <p className="text-sm italic text-muted-foreground">Aucun événement pour le moment</p>
+              <p className="empty-state-text">Aucun événement pour le moment</p>
             )}
             {entries.map((entry, index) => (
               <div key={index} className="flex items-start justify-between gap-2 text-sm">

@@ -49,6 +49,34 @@
 @variant dark (&:is(.dark *));
 
 @layer components {
+  .page-title {
+    @apply text-3xl font-bold underline text-center pb-8;
+  }
+
+  .hero-title {
+    @apply text-2xl font-semibold;
+  }
+
+  .hero-subtitle {
+    @apply max-w-md text-muted-foreground;
+  }
+
+  .section-title {
+    @apply mb-3 text-lg font-semibold;
+  }
+
+  .muted-text {
+    @apply text-sm text-muted-foreground;
+  }
+
+  .muted-text-xs {
+    @apply text-xs text-muted-foreground;
+  }
+
+  .empty-state-text {
+    @apply text-sm italic text-muted-foreground;
+  }
+
   .auth-container {
     @apply flex flex-col gap-4 max-w-md mx-auto;
   }

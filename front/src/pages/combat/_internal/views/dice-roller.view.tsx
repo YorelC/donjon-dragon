@@ -72,14 +72,14 @@ export function DiceRollerView({ onRoll, result, isRolling }: DiceRollerViewProp
         {result && (
           <div className="rounded-lg border p-4">
             <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
+              <p className="muted-text">
                 {result.count}
                 {result.die}
                 {result.modifier !== 0 && `${result.modifier > 0 ? "+" : ""}${result.modifier}`}
               </p>
               <Badge variant="outline">Total: {result.total}</Badge>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">Lancers: [{result.rolls.join(", ")}]</p>
+            <p className="mt-2 muted-text-xs">Lancers: [{result.rolls.join(", ")}]</p>
           </div>
         )}
       </CardContent>

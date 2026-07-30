@@ -16,13 +16,13 @@ export function CharactersContainer() {
   return (
     <div className="mx-auto grid max-w-4xl gap-6 p-6 md:grid-cols-2">
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Nouveau personnage</h2>
+        <h2 className="section-title">Nouveau personnage</h2>
         <CharacterFormContainer userId={userId} />
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Mes personnages</h2>
-        {isLoading && <p>Chargement...</p>}
+        <h2 className="section-title">Mes personnages</h2>
+        {isLoading && <p className="muted-text">Chargement...</p>}
         <ul className="flex flex-col gap-2">
           {characters?.map((character) => (
             <li key={character.id} className="flex items-center justify-between rounded-md border p-2">

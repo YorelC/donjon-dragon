@@ -26,7 +26,7 @@ function VerifyEmailLoading() {
   return (
     <div className="auth-container">
       <div className="text-center">
-        <p className="text-sm text-muted-foreground">Vérification en cours...</p>
+        <p className="muted-text">Vérification en cours...</p>
       </div>
     </div>
   );
