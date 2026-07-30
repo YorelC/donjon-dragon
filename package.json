@@ -7,5 +7,11 @@
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
     "seed": "pnpm --filter back seed"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.8.0",
+    "globals": "^17.8.0",
+    "typescript-eslint": "^8.65.0"
   }
 }
