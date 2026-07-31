@@ -5,10 +5,7 @@ import type { PasswordHasherPort } from '../03-domain/password-hasher.port';
 import type { EmailSenderPort } from '../03-domain/email/email-sender.port';
 import { EmailAlreadyInUseError } from '../03-domain/auth.errors';
 import { DisplayNameAlreadyTakenError } from '../../user/03-domain/user.errors';
-import {
-  createEmailVerificationToken,
-  hashVerificationToken,
-} from '../03-domain/email/email-verification-token.entity.js';
+import { createEmailVerificationToken } from '../03-domain/email/email-verification-token.entity.js';
 import { createUser, toPublicUser } from '../../user/03-domain/user.entity';
 
 export class RegisterUseCase {

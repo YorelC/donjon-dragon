@@ -1,4 +1,8 @@
-import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
+import type {
+  AuthTokens,
+  EmailVerificationTokenRecord,
+} from '@donjon-dragon/shared/auth-schema';
+import type { User } from '@donjon-dragon/shared/user-schema';
 import type { UserRepositoryPort } from '../../user/03-domain/user.repository.port';
 import type { EmailVerificationTokenRepositoryPort } from '../03-domain/email/email-verification-token.repository.port';
 import type { RefreshTokenRepositoryPort } from '../03-domain/token/refresh-token.repository.port';
@@ -14,6 +18,7 @@ import {
 } from '../03-domain/email/email-verification-token.entity.js';
 import { toPublicUser } from '../../user/03-domain/user.entity';
 import { createRefreshTokenRecord } from '../03-domain/token/refresh-token.entity';
+import { createAccessTokenPayload } from '../03-domain/token/access-token-payload';
 
 export class VerifyEmailUseCase {
   constructor(
@@ -24,6 +29,16 @@ export class VerifyEmailUseCase {
   ) {}
 
   async execute(plainToken: string): Promise<AuthTokens> {
+    const record = await this.readVerificationToken(plainToken);
+    const verifiedUser = await this.markEmailVerified(record.userId);
+    await this.verificationRepo.deleteById(record.id);
+
+    return this.issueTokens(verifiedUser);
+  }
+
+  private async readVerificationToken(
+    plainToken: string,
+  ): Promise<EmailVerificationTokenRecord> {
     const tokenHash = hashVerificationToken(plainToken);
     const record = await this.verificationRepo.findByTokenHash(tokenHash);
     if (!record) throw new InvalidVerificationTokenError();
@@ -32,29 +47,31 @@ export class VerifyEmailUseCase {
       throw new VerificationTokenExpiredError();
     }
 
-    const user = await this.userRepo.findById(record.userId);
+    return record;
+  }
+
+  private async markEmailVerified(userId: string): Promise<User> {
+    const user = await this.userRepo.findById(userId);
     if (!user) throw new UserNotFoundError();
 
-    const updated = { ...user, emailVerified: true as const };
-    await this.userRepo.save(updated);
+    const verified = { ...user, emailVerified: true as const };
+    await this.userRepo.save(verified);
 
-    await this.verificationRepo.deleteById(record.id);
+    return verified;
+  }
 
-    const payload = {
-      userId: user.id,
-      role: 'player' as const,
-      tier: 'full' as const,
-    };
-    const accessToken = this.tokenService.signAccessToken(payload);
+  private async issueTokens(user: User): Promise<AuthTokens> {
+    const accessToken = this.tokenService.signAccessToken(
+      createAccessTokenPayload(user.id),
+    );
 
-    const { record: refreshRecord, plainToken: refreshToken } =
-      createRefreshTokenRecord(user.id);
-    await this.refreshRepo.save(refreshRecord);
+    const { record, plainToken } = createRefreshTokenRecord(user.id);
+    await this.refreshRepo.save(record);
 
     return {
       accessToken,
-      refreshToken,
-      user: toPublicUser(updated),
+      refreshToken: plainToken,
+      user: toPublicUser(user),
     };
   }
 }
