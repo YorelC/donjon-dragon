@@ -43,6 +43,12 @@ export class InMemoryFriendshipRepository implements FriendshipRepositoryPort {
     );
   }
 
+  async countPendingReceived(userId: string): Promise<number> {
+    return [...this.friendships.values()].filter(
+      (f) => f.status === 'pending' && f.recipientId === userId,
+    ).length;
+  }
+
   async deleteById(id: string): Promise<void> {
     this.friendships.delete(id);
   }

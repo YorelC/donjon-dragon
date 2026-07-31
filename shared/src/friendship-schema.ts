@@ -26,7 +26,27 @@ export const SearchUsersSchema = z.object({
   query: z.string().min(1).max(50),
 });
 
+// ── Suppression d'ami (UA-003) ──────────────────────────────────────────────
+/** INV-002 [UA-003] : friendshipId doit être un UUID valide. */
+export const DeleteFriendParamsSchema = z.object({
+  friendshipId: z.string().uuid(),
+});
+
+// ── Badge compteur de demandes reçues (UA-006, UA-008) ──────────────────────
+/** INV-001 [UA-008] : count est un entier >= 0. */
+export const PendingReceivedCountSchema = z.object({
+  count: z.number().int().min(0),
+});
+
 export type FriendshipStatus = z.infer<typeof FriendshipStatusEnum>;
 export type Friendship = z.infer<typeof FriendshipSchema>;
 export type SendFriendRequestDto = z.infer<typeof SendFriendRequestSchema>;
 export type SearchUsersDto = z.infer<typeof SearchUsersSchema>;
+export type DeleteFriendParams = z.infer<typeof DeleteFriendParamsSchema>;
+export type PendingReceivedCount = z.infer<typeof PendingReceivedCountSchema>;
+
+// ── Matrice UA → INV ────────────────────────────────────────────────────────
+// UA-003 (DELETE)       → INV-002 (DeleteFriendParamsSchema)
+// UA-006 (badge >0)     → couvert par INV-001 + logique front (UA-006, UA-010)
+// UA-007 (badge 9+)     → purement front (truncation d'affichage)
+// UA-008 (query count)  → INV-001 (PendingReceivedCountSchema)

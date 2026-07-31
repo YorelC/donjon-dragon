@@ -17,5 +17,9 @@ export interface FriendshipRepositoryPort {
   // Demandes 'pending' envoyées (requesterId === userId).
   listPendingSent(userId: string): Promise<Friendship[]>;
 
+  /** INV-001 [UA-008] : retourne le nombre exact de demandes 'pending' reçues
+   *  pour userId. Doit utiliser un countDocuments (pas un find + length). */
+  countPendingReceived(userId: string): Promise<number>;
+
   deleteById(id: string): Promise<void>;
 }

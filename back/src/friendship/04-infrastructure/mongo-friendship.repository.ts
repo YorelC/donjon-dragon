@@ -59,6 +59,13 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
       .lean<Friendship[]>();
   }
 
+  async countPendingReceived(userId: string): Promise<number> {
+    return this.model.countDocuments({
+      status: 'pending',
+      recipientId: userId,
+    });
+  }
+
   async deleteById(id: string): Promise<void> {
     await this.model.deleteOne({ id });
   }
