@@ -5,25 +5,14 @@ export function RegisterContainer() {
   const { control, errors, onSubmit, isSubmitting, errorMessage, success } =
     useRegisterForm();
 
-  if (success) {
-    return (
-      <RegisterView
-        showSuccessMessage
-        control={control}
-        errors={errors}
-        onFormSubmit={onSubmit}
-        isSubmitting={isSubmitting}
-      />
-    );
-  }
-
   return (
     <RegisterView
+      showSuccessMessage={success}
       control={control}
       errors={errors}
       onFormSubmit={onSubmit}
       isSubmitting={isSubmitting}
-      errorMessage={errorMessage}
+      errorMessage={success ? undefined : errorMessage}
     />
   );
 }

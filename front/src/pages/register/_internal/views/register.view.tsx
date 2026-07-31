@@ -74,55 +74,35 @@ function RegistrationForm({
   return (
     <div className="auth-container">
       <form onSubmit={onFormSubmit} className="flex flex-col gap-4">
-        <Controller
+        <RegisterField
           name="email"
+          label="Adresse email"
+          type="email"
           control={control}
-          render={({ field }) => (
-            <FormTextInput
-              label="Adresse email"
-              field={field}
-              type="email"
-              error={errors.email?.message}
-            />
-          )}
+          error={errors.email?.message}
         />
 
-        <Controller
+        <RegisterField
           name="displayName"
+          label="Nom d'affichage"
           control={control}
-          render={({ field }) => (
-            <FormTextInput
-              label="Nom d'affichage"
-              field={field}
-              error={errors.displayName?.message}
-            />
-          )}
+          error={errors.displayName?.message}
         />
 
-        <Controller
+        <RegisterField
           name="password"
+          label="Mot de passe"
+          type="password"
           control={control}
-          render={({ field }) => (
-            <FormTextInput
-              label="Mot de passe"
-              field={field}
-              type="password"
-              error={errors.password?.message}
-            />
-          )}
+          error={errors.password?.message}
         />
 
-        <Controller
+        <RegisterField
           name="confirmPassword"
+          label="Confirmation du mot de passe"
+          type="password"
           control={control}
-          render={({ field }) => (
-            <FormTextInput
-              label="Confirmation du mot de passe"
-              field={field}
-              type="password"
-              error={errors.confirmPassword?.message}
-            />
-          )}
+          error={errors.confirmPassword?.message}
         />
 
         {errorMessage && (
@@ -138,6 +118,32 @@ function RegistrationForm({
 
       <RegistrationFooter />
     </div>
+  );
+}
+
+interface RegisterFieldProps {
+  name: keyof RegisterFormValues;
+  label: string;
+  control: Control<RegisterFormValues>;
+  error?: string;
+  type?: string;
+}
+
+function RegisterField({
+  name,
+  label,
+  control,
+  error,
+  type,
+}: RegisterFieldProps) {
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <FormTextInput label={label} field={field} type={type} error={error} />
+      )}
+    />
   );
 }
 

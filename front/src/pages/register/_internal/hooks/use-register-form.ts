@@ -6,53 +6,65 @@ import {
   RegisterFormSchema,
   type RegisterFormValues,
 } from "../types/register-form-schema";
-import { useRegister } from "./use-register";
+import { useRegister } from "../queries/use-register";
 
 export function useRegisterForm() {
-  const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const {
-    control,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterFormValues>({
+  const form = useForm<RegisterFormValues>({
     resolver: zodResolver(RegisterFormSchema),
-    defaultValues: {
-      email: "",
-      displayName: "",
-      password: "",
-      confirmPassword: "",
-    },
+    defaultValues: EMPTY_REGISTER_FORM,
   });
-  const registerMutation = useRegister();
-
-  const onSubmit = handleSubmit(async (values) => {
-    setErrorMessage("");
-    try {
-      await registerMutation.mutateAsync({
-        email: values.email,
-        displayName: values.displayName,
-        password: values.password,
-        appOrigin: window.location.origin,
-      });
-      reset();
-      setSuccess(true);
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 409) {
-        setErrorMessage("Cette adresse email est déjà utilisée.");
-      } else {
-        setErrorMessage("Erreur lors de l'inscription. Réessaye.");
-      }
-    }
-  });
+  const { submit, isPending, errorMessage, success } = useRegisterSubmit(
+    form.reset,
+  );
 
   return {
-    control,
-    errors,
-    onSubmit,
-    isSubmitting: isSubmitting || registerMutation.isPending,
+    control: form.control,
+    errors: form.formState.errors,
+    onSubmit: form.handleSubmit(submit),
+    isSubmitting: form.formState.isSubmitting || isPending,
     errorMessage,
     success,
   };
+}
+
+const EMPTY_REGISTER_FORM: RegisterFormValues = {
+  email: "",
+  displayName: "",
+  password: "",
+  confirmPassword: "",
+};
+
+function useRegisterSubmit(reset: () => void) {
+  const registerMutation = useRegister();
+  const [success, setSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const submit = async (values: RegisterFormValues) => {
+    setErrorMessage("");
+    try {
+      await registerMutation.mutateAsync(toRegisterDto(values));
+      reset();
+      setSuccess(true);
+    } catch (err) {
+      setErrorMessage(toRegisterErrorMessage(err));
+    }
+  };
+
+  return { submit, isPending: registerMutation.isPending, errorMessage, success };
+}
+
+function toRegisterDto(values: RegisterFormValues) {
+  return {
+    email: values.email,
+    displayName: values.displayName,
+    password: values.password,
+    appOrigin: window.location.origin,
+  };
+}
+
+function toRegisterErrorMessage(err: unknown): string {
+  if (err instanceof ApiError && err.status === 409) {
+    return "Cette adresse email est déjà utilisée.";
+  }
+  return "Erreur lors de l'inscription. Réessaye.";
 }
