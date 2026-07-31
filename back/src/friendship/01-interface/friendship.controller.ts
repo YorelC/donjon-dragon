@@ -6,25 +6,11 @@ import {
   Param,
   Query,
   UseGuards,
-  BadRequestException,
-  ConflictException,
-  NotFoundException,
-  ForbiddenException,
   Inject,
 } from '@nestjs/common';
-import type { SendFriendRequestDto } from '@donjon-dragon/shared/friendship-schema';
 import type { TokenPayload } from '@donjon-dragon/shared/auth-schema';
 
-import {
-  CannotFriendSelfError,
-  RecipientNotFoundError,
-  FriendshipNotFoundError,
-  FriendRequestAlreadyExistsError,
-  AlreadyFriendsError,
-  FriendRequestNotPendingError,
-  NotRequestRecipientError,
-  NotFriendshipParticipantError,
-} from '../03-domain/friendship.errors';
+import { throwAsHttpException } from './friendship-error.mapper';
 import { SendFriendRequestUseCase } from '../02-application/send-friend-request.use-case';
 import { AcceptFriendRequestUseCase } from '../02-application/accept-friend-request.use-case';
 import { RefuseFriendRequestUseCase } from '../02-application/refuse-friend-request.use-case';
@@ -69,19 +55,7 @@ export class FriendshipController {
         displayName,
       });
     } catch (err) {
-      if (err instanceof CannotFriendSelfError) {
-        throw new BadRequestException(err.message);
-      }
-      if (err instanceof RecipientNotFoundError) {
-        throw new NotFoundException(err.message);
-      }
-      if (
-        err instanceof FriendRequestAlreadyExistsError ||
-        err instanceof AlreadyFriendsError
-      ) {
-        throw new ConflictException(err.message);
-      }
-      throw err;
+      throwAsHttpException(err);
     }
   }
 
@@ -96,19 +70,7 @@ export class FriendshipController {
         actingUserId: user.userId,
       });
     } catch (err) {
-      if (err instanceof FriendshipNotFoundError) {
-        throw new NotFoundException(err.message);
-      }
-      if (
-        err instanceof FriendRequestNotPendingError ||
-        err instanceof AlreadyFriendsError
-      ) {
-        throw new ConflictException(err.message);
-      }
-      if (err instanceof NotRequestRecipientError) {
-        throw new ForbiddenException(err.message);
-      }
-      throw err;
+      throwAsHttpException(err);
     }
   }
 
@@ -123,16 +85,7 @@ export class FriendshipController {
         actingUserId: user.userId,
       });
     } catch (err) {
-      if (err instanceof FriendshipNotFoundError) {
-        throw new NotFoundException(err.message);
-      }
-      if (err instanceof FriendRequestNotPendingError) {
-        throw new ConflictException(err.message);
-      }
-      if (err instanceof NotRequestRecipientError) {
-        throw new ForbiddenException(err.message);
-      }
-      throw err;
+      throwAsHttpException(err);
     }
   }
 
@@ -173,13 +126,7 @@ export class FriendshipController {
         friendshipId,
       });
     } catch (err) {
-      if (err instanceof FriendshipNotFoundError) {
-        throw new NotFoundException(err.message);
-      }
-      if (err instanceof NotFriendshipParticipantError) {
-        throw new ForbiddenException(err.message);
-      }
-      throw err;
+      throwAsHttpException(err);
     }
   }
 }
