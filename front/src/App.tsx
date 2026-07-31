@@ -23,23 +23,29 @@ function App() {
       <BrowserRouter>
         <h1 className="page-title">Donjons & Dragons</h1>
         <Nav />
-        <Routes>
-          <Route path={ROUTES.home} element={<HomeRoute />} />
-          <Route element={<PrivateRoute />}>
-            <Route path={ROUTES.campaigns} element={<CampaignsPage />} />
-            <Route path={ROUTES.profile} element={<ProfilePage />}>
-              <Route index element={<Navigate to={ROUTES.profileFriends} />} />
-              <Route path={ROUTES.profileFriends} element={<FriendsPage />} />
-              <Route path={ROUTES.profileSettings} element={<SettingsPage />} />
-            </Route>
-          </Route>
-          <Route path={ROUTES.register} element={<RegisterPage />} />
-          <Route path={ROUTES.login} element={<LoginPage />} />
-          <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
-        </Routes>
+        <AppRoutes />
       </BrowserRouter>
       <Toaster />
     </QueryClientProvider>
+  );
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route path={ROUTES.home} element={<HomeRoute />} />
+      <Route element={<PrivateRoute />}>
+        <Route path={ROUTES.campaigns} element={<CampaignsPage />} />
+        <Route path={ROUTES.profile} element={<ProfilePage />}>
+          <Route index element={<Navigate to={ROUTES.profileFriends} />} />
+          <Route path={ROUTES.profileFriends} element={<FriendsPage />} />
+          <Route path={ROUTES.profileSettings} element={<SettingsPage />} />
+        </Route>
+      </Route>
+      <Route path={ROUTES.register} element={<RegisterPage />} />
+      <Route path={ROUTES.login} element={<LoginPage />} />
+      <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
+    </Routes>
   );
 }
 

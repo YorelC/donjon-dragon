@@ -1,14 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import { Nav } from "./nav";
 import { useAuthStore } from "@/shared/stores/auth.store";
 
-vi.mock("@/pages/login/_internal/queries/use-logout", () => ({
-  useLogout: () => ({
-    mutate: vi.fn(),
-  }),
+vi.mock("@/shared/hooks/use-logout", () => ({
+  useLogout: () => vi.fn(),
 }));
 
 const authenticatedUser = {
