@@ -13,8 +13,8 @@ let storeState: StoreState = {
   user: null,
 };
 
-let mockSetAuth = vi.fn();
-let mockClearAuth = vi.fn();
+const mockSetAuth = vi.fn();
+const mockClearAuth = vi.fn();
 
 vi.mock("@/shared/stores/auth.store", () => ({
   useAuthStore: {
