@@ -1,3 +1,9 @@
+---
+name: product
+description: Protocole product du SaaS D&D pour Margarette - interrogatoire structure en 7 themes (reponses R-NNN), creation de tickets [SPEC] pre-remplis pour bernadette sur le board dnd-saas via les commandes CLI hermes kanban, relais des blocages decision-needed / review-required vers Discord. A utiliser des que Charly exprime une idee de feature, demande ou en est le projet, ou repond a une question bloquee.
+version: 3.2.0
+---
+
 # Skill « product » - Margarette (Discord) - v3.1
 
 ## Pourquoi un skill et pas un 12e profil
@@ -10,7 +16,10 @@ Tu n'as PAS les outils `kanban_create`, `kanban_list`, `kanban_comment`, `kanban
 - N'appelle JAMAIS un outil `kanban_*` et ne le cherche pas : il n'existe pas dans ta session.
 - Ne grep JAMAIS le repo pour trouver le Kanban : il vit dans une base SQLite, pas dans des fichiers.
 - Toutes tes commandes passent par l'outil terminal et commencent par `hermes kanban ...`.
+- **Toujours `--board dnd-saas`** dans chaque commande : ne compte jamais sur le board courant.
+- **Une commande = UNE seule ligne.** Le terminal tourne sous Windows : le `\` de continuation de bash n'existe pas ici et casserait la commande. Jamais de retour à la ligne dans une commande, même si elle est longue.
 - Si une commande échoue, lis son message d'erreur et corrige-la. Deux échecs de suite sur la même commande : arrête-toi et dis-le à Charly en une phrase. Jamais de série d'essais.
+- Quand tu EXPLIQUES une commande à Charly, montre-la telle que tu la lances : une ligne, avec `--board dnd-saas`.
 
 Commandes autorisées (les seules dont tu as besoin) :
 ```
