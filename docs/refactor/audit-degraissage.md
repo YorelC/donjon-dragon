@@ -20,6 +20,9 @@ d'imports (aucun module n'est déclaré mort sans vérification manuelle).
 | `pnpm lint` | ✅ (avec les overrides de dette du § 6) |
 | `pnpm test` | ❌ — 2 causes pré-existantes, voir § 5 |
 
+> Ces trois lignes datent de l'audit. État actuel après le § 8d : les trois
+> commandes passent, sans aucun override de dette.
+
 ---
 
 ## 1. Violations de structure — back
@@ -260,7 +263,7 @@ Cela absorbe les lots L1 (molecules mortes), L3 (adapters in-memory) et L4
 | Violations de structure front | 5 | **3** (F2, F3, F4 ; F1 et F5 supprimées avec `pages/combat` et `shared/hooks/`) |
 | Règle « une view n'importe pas de container » | non armée | **armée, 0 violation** (F6) |
 
-### 8c. Violations restantes
+### 8c. Violations restantes (avant les lots du § 8d, toutes résorbées depuis)
 
 **Back — 9** : `login.use-case`, `refresh-tokens.use-case`, `verify-email.use-case`
 (23 à 27 lignes) ; les 3 méthodes de `friendship.controller` (23 à 26 lignes,
@@ -271,17 +274,34 @@ même patron de mapping d'erreurs) ; 3 imports morts.
 `RegistrationForm` (70), `performRefresh` (21), `Nav` (29), `MobileNav` (33) ;
 4 imports morts, 4 `prefer-const`, 1 franchissement de frontière (F2).
 
-### 8d. Plan restant
+### 8d. Plan restant — exécuté le 2026-07-30
 
-| Lot | Périmètre | Contenu | Risque |
-|---|---|---|---|
-| **L0** | `shared/package.json`, `front/src/shared/api/refresh.ts` | Débloquer la DoD : `--passWithNoTests` sur shared, corriger le `.finally()` détaché (§ 5). Fait aussi tomber `performRefresh` sous 20 lignes | faible |
-| **L2** | 6 fichiers back + front | Supprimer les 7 imports morts et les 4 `prefer-const` (`--fix` sur la majorité) | faible |
-| **L5** | `back/src/friendship/01-interface/` | Extraire le mapping erreur domaine → exception HTTP, partagé par les 3 méthodes du controller | faible |
-| **L6** | `back/src/auth/02-application/` | Découper les 3 `execute` > 20 lignes en sous-fonctions nommées | moyen — cœur métier auth, 3 tests seulement |
-| **L7** | `front/src/pages/{login,register,profile/friends}/` | Découper les 4 containers et 1 hook > 20 lignes | moyen |
-| **L8** | `front/src/pages/{register,profile/friends}/_internal/views/`, `App.tsx` | Découper `FriendsView` (84) et `RegistrationForm` (70) en sous-views ; alléger `App` | moyen |
-| **L9** | `front/src/shared/components/layout/`, `pages/login/_internal/queries/` | **Corrige F2** : remonter `use-logout` vers `shared/`, puis découper `Nav` et `MobileNav` | faible |
+Tous les lots sont passés, DoD (`typecheck` → `lint` → `test`) vérifiée après
+chacun. **Il ne reste aucun override de dette** : `front/eslint.config.mjs` n'a
+plus que le carve-out shadcn généré, `back/eslint.config.mjs` plus que
+`src/scripts/**`.
+
+| Lot | Périmètre | Ce qui a été fait |
+|---|---|---|
+| **L0** ✅ | `shared/package.json`, `front/src/shared/api/refresh.ts` | `--passWithNoTests` sur shared ; `.finally()` chaîné sur la promesse stockée (la version détachée laissait un rejet non traité) ; `requestNewTokens` extrait pour repasser sous 20 lignes. **`pnpm test` est vert** |
+| **L2** ✅ | 6 fichiers back + front | 5 imports morts et 4 `let` → `const` supprimés |
+| **L5** ✅ | `back/src/friendship/01-interface/` | `friendship-error.mapper.ts` : table erreur domaine → exception HTTP, `throwAsHttpException` utilisé par les 4 méthodes qui répétaient la cascade de `instanceof` |
+| **L6** ✅ | `back/src/auth/02-application/` | `login` → `authenticate` + `issueTokens` ; `refresh-tokens` → `consumePresentedToken` + `rotate` ; `verify-email` → `readVerificationToken` + `markEmailVerified` + `issueTokens`. Payload d'access token trois fois dupliqué → `03-domain/token/access-token-payload.ts` |
+| **L7** ✅ | `front/src/pages/{login,register,profile/friends}/` | `use-login-form.ts` créé (le container login ne fait plus que composer) ; `use-register-form` découpé en `useRegisterSubmit` + fonctions pures ; `FriendsContainer` (63 lignes, 25 props) éclaté en 4 containers de zone |
+| **L8** ✅ | `front/src/pages/register/_internal/views/`, `App.tsx` | `RegisterField` factorise les 4 `Controller` identiques ; `AppRoutes` sort le bloc `<Routes>` de `App` |
+| **L9** ✅ | `front/src/shared/`, `pages/login/_internal/queries/` | **F2 corrigée** : `use-logout` remonté dans `shared/hooks/`, enrichi de la révocation + purge du store + redirection ; `queries/` de la page login supprimé (vide) ; `MobileNavMenu` extrait de `MobileNav` |
+
+**FriendsView est passée de 25 props à 6** : elle reçoit maintenant les quatre
+panneaux en slots `ReactNode` (`friendsPanel`, `receivedPanel`, `sentPanel`,
+`searchPanel`), conformément à la règle de pureté des views. Chaque panneau a sa
+paire container + view et porte ses propres queries : les drapeaux `enabled`
+liés à l'onglet actif disparaissent, un panneau ne se monte que lorsque son
+onglet est actif. `pendingRecipientIds` est calculé dans
+`search-users.container.tsx`, qui lit `useSentRequests` (même clé TanStack que
+le panneau « Envoyées », donc dédupliqué).
+
+**Non couvert par les tests** : la page amis n'a aucun test de composant. Le
+changement de montage des panneaux est à valider à la main.
 
 ### 8e. Point d'attention
 
