@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { Button } from "@/shared/components/atoms/button";
 import { Card, CardContent } from "@/shared/components/atoms/card";
 import type { AcceptedFriend } from "../types/friends-schema";
-import { RemoveFriendModalView } from "./remove-friend-modal.view";
 
 interface FriendsListViewProps {
   friends: AcceptedFriend[];
@@ -19,17 +17,6 @@ export function FriendsListView({
   onRemove,
   removeMutationPending,
 }: FriendsListViewProps) {
-  const [openModal, setOpenModal] = useState(false);
-  const [friendToRemove, setFriendToRemove] = useState<string | null>(null);
-
-  const handlers = createHandlers(
-    friends,
-    onRemove,
-    setOpenModal,
-    setFriendToRemove,
-    friendToRemove,
-  );
-
   if (loading) return <div className="empty-state-text">Chargement...</div>;
   if (error) return <div className="empty-state-text">Erreur lors du chargement des amis.</div>;
   if (friends.length === 0) {
@@ -37,66 +24,22 @@ export function FriendsListView({
   }
 
   return (
-    <>
-      <div className="space-y-2">
-        {friends.map(({ friendshipId, friend }) => (
-          <Card key={friendshipId}>
-            <CardContent className="flex items-center justify-between p-4">
-              <span className="font-medium">{friend.displayName}</span>
-              <Button
-                onClick={() => handlers.onRemoveClick(friendshipId, friend.displayName)}
-                disabled={removeMutationPending}
-                variant="destructive"
-                size="sm"
-              >
-                {removeMutationPending ? "Suppression..." : "Supprimer"}
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      <RemoveFriendModalView
-        open={openModal}
-        onOpenChange={handlers.onCloseModal}
-        friendDisplayName={friendToRemove ?? ""}
-        onConfirm={handlers.onConfirmRemove}
-        isDeleting={removeMutationPending}
-      />
-    </>
+    <div className="space-y-2">
+      {friends.map(({ friendshipId, friend }) => (
+        <Card key={friendshipId}>
+          <CardContent className="flex items-center justify-between p-4">
+            <span className="font-medium">{friend.displayName}</span>
+            <Button
+              onClick={() => onRemove(friendshipId)}
+              disabled={removeMutationPending}
+              variant="destructive"
+              size="sm"
+            >
+              {removeMutationPending ? "Suppression..." : "Supprimer"}
+            </Button>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
-}
-
-interface Handlers {
-  onRemoveClick: (friendshipId: string, friendName: string) => void;
-  onConfirmRemove: () => void;
-  onCloseModal: () => void;
-}
-
-function createHandlers(
-  friends: AcceptedFriend[],
-  onRemove: (friendshipId: string) => void,
-  setOpenModal: (open: boolean) => void,
-  setFriendToRemove: (name: string | null) => void,
-  currentFriendToRemove: string | null,
-): Handlers {
-  return {
-    onRemoveClick(friendshipId: string, friendName: string) {
-      setFriendToRemove(friendName);
-      setOpenModal(true);
-    },
-    onConfirmRemove() {
-      if (currentFriendToRemove) {
-        const friendId = friends.find((f) => f.friend.displayName === currentFriendToRemove)?.friendshipId;
-        if (friendId) {
-          onRemove(friendId);
-        }
-      }
-      setOpenModal(false);
-      setFriendToRemove(null);
-    },
-    onCloseModal() {
-      setOpenModal(false);
-      setFriendToRemove(null);
-    },
-  };
 }

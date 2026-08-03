@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Badge } from "@/shared/components/atoms/badge";
 import {
   Tabs,
   TabsContent,
@@ -16,7 +15,6 @@ interface FriendsViewProps {
   receivedPanel: ReactNode;
   sentPanel: ReactNode;
   searchPanel: ReactNode;
-  receivedBadge?: string;
 }
 
 export function FriendsView({
@@ -26,7 +24,6 @@ export function FriendsView({
   receivedPanel,
   sentPanel,
   searchPanel,
-  receivedBadge,
 }: FriendsViewProps) {
   return (
     <div className="max-w-2xl mx-auto p-6">
@@ -35,7 +32,7 @@ export function FriendsView({
         value={activeTab}
         onValueChange={(tab) => onTabChange(tab as FriendsTab)}
       >
-        <FriendsTabsList receivedBadge={receivedBadge} />
+        <FriendsTabsList />
         <TabsContent value="friends" className="mt-6">
           {friendsPanel}
         </TabsContent>
@@ -53,14 +50,11 @@ export function FriendsView({
   );
 }
 
-function FriendsTabsList({ receivedBadge }: { receivedBadge?: string }) {
+function FriendsTabsList() {
   return (
     <TabsList className="grid w-full grid-cols-4">
       <TabsTrigger value="friends">Amis</TabsTrigger>
-      <TabsTrigger value="received">
-        Reçues
-        {receivedBadge && <Badge variant="secondary" className="ml-1">{receivedBadge}</Badge>}
-      </TabsTrigger>
+      <TabsTrigger value="received">Reçues</TabsTrigger>
       <TabsTrigger value="sent">Envoyées</TabsTrigger>
       <TabsTrigger value="search">Chercher</TabsTrigger>
     </TabsList>
