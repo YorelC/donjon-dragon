@@ -133,8 +133,25 @@ describe("friendship-schema", () => {
       expect(() => DeleteFriendParamsSchema.parse({ friendshipId: "not-a-uuid" })).toThrow();
     });
 
+    it.each([
+      { id: "12345", reason: "chiffres seuls" },
+      { id: "", reason: "vide" },
+      { id: "550e8400-e29b-41d4-a716-44665544000Z", reason: "UUID avec caractere invalide (Z)" },
+      { id: "  550e8400-e29b-41d4-a716-446655440000  ", reason: "UUID avec espaces" },
+    ])("rejette $reason : $id", ({ id }) => {
+      expect(() => DeleteFriendParamsSchema.parse({ friendshipId: id })).toThrow();
+    });
+
     it("should reject missing friendshipId", () => {
       expect(() => DeleteFriendParamsSchema.parse({} as const)).toThrow();
+    });
+
+    it("should reject null", () => {
+      expect(() => DeleteFriendParamsSchema.parse(null)).toThrow();
+    });
+
+    it("should reject undefined", () => {
+      expect(() => DeleteFriendParamsSchema.parse(undefined)).toThrow();
     });
   });
 

@@ -31,21 +31,6 @@ const mockFriend = (friendshipId: string, displayName: string) => ({
   },
 });
 
-const mockRequest = (id: string, displayName: string) => ({
-  id,
-  requesterId: `user-${id}`,
-  recipientId: "me",
-  status: "pending" as const,
-  createdAt: "2025-01-01T00:00:00Z",
-  updatedAt: "2025-01-01T00:00:00Z",
-  requester: {
-    id: `user-${id}`,
-    email: `${displayName.toLowerCase()}@example.com`,
-    displayName,
-    createdAt: "2025-01-01T00:00:00Z",
-    emailVerified: true,
-  },
-});
 
 const mockFriends = [
   mockFriend("uuid-1", "Gandalf"),

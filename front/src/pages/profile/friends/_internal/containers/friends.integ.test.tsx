@@ -441,6 +441,180 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
         3,
       );
     });
+
+    it("INTEG-009: suppression optimiste — Gandalf disparaît de la liste avant la réponse API", async () => {
+      // On retarde la réponse DELETE pour vérifier l'optimistic update
+      let resolveDelete: (() => void) | null = null;
+      const deletePromise = new Promise<void>((resolve) => {
+        resolveDelete = resolve;
+      });
+
+      fetchSpy?.mockRestore();
+      fetchSpy = vi
+        .spyOn(global, "fetch")
+        .mockImplementation(
+          async (url: RequestInfo | URL, options?: RequestInit) => {
+            const urlStr = typeof url === "string" ? url : url.toString();
+            const method = options?.method ?? "GET";
+
+            if (method === "GET" && urlStr === "/api/friends") {
+              return new Response(JSON.stringify(FRIENDS), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            if (method === "GET" && urlStr === "/api/friends/requests/incoming") {
+              return new Response(JSON.stringify([]), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            if (method === "GET" && urlStr === "/api/friends/requests/incoming/count") {
+              return new Response(JSON.stringify({ count: 0 }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            if (method === "DELETE" && urlStr.startsWith("/api/friends/")) {
+              await deletePromise;
+              return new Response(null, { status: 204 });
+            }
+            return new Response(JSON.stringify({ error: "not mocked" }), {
+              status: 404,
+            });
+          },
+        ) as unknown as ReturnType<typeof vi.spyOn>;
+
+      const user = userEvent.setup();
+      renderWithProviders();
+
+      await waitFor(() => {
+        expect(screen.getByText("Gandalf")).toBeInTheDocument();
+      });
+
+      // Ouvrir la modale sur Gandalf
+      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      await user.click(removeButtons[0]!);
+
+      expect(
+        screen.getByText("Voulez-vous vraiment supprimer Gandalf ?"),
+      ).toBeInTheDocument();
+
+      // Clic "Supprimer" dans la modale
+      await user.click(screen.getByRole("button", { name: /^Supprimer$/i }));
+
+      // La modale se ferme immédiatement
+      await waitFor(() => {
+        expect(
+          screen.queryByText("Voulez-vous vraiment supprimer Gandalf ?"),
+        ).not.toBeInTheDocument();
+      });
+
+      // Gandalf disparaît de la liste (effet optimiste avant la réponse DELETE)
+      expect(screen.queryByText("Gandalf")).not.toBeInTheDocument();
+
+      // Frodon et Aragorn sont toujours là
+      expect(screen.getByText("Frodon Sacquet")).toBeInTheDocument();
+      expect(screen.getByText("Aragorn")).toBeInTheDocument();
+
+      // Les boutons affichent "Suppression..." (isPending)
+      const suppressionButtons = screen.getAllByRole("button", {
+        name: /Suppression\.\.\./i,
+      });
+      expect(suppressionButtons.length).toBeGreaterThan(0);
+      suppressionButtons.forEach((btn) => expect(btn).toBeDisabled());
+
+      // Vérifier que l'appel DELETE a bien été initié
+      expect(fetchSpy).toHaveBeenCalledWith(
+        "/api/friends/uuid-gandalf",
+        expect.objectContaining({ method: "DELETE" }),
+      );
+
+      // Libérer la requête DELETE pour que le test se termine proprement
+      resolveDelete!();
+    });
+
+    it("INTEG-010: rollback API — Gandalf réapparaît à sa position précédente (première)", async () => {
+      let deleteCalled = false;
+
+      fetchSpy?.mockRestore();
+      fetchSpy = vi
+        .spyOn(global, "fetch")
+        .mockImplementation(
+          async (url: RequestInfo | URL, options?: RequestInit) => {
+            const urlStr = typeof url === "string" ? url : url.toString();
+            const method = options?.method ?? "GET";
+
+            if (method === "GET" && urlStr === "/api/friends") {
+              return new Response(JSON.stringify(FRIENDS), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            if (method === "GET" && urlStr === "/api/friends/requests/incoming") {
+              return new Response(JSON.stringify([]), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            if (method === "GET" && urlStr === "/api/friends/requests/incoming/count") {
+              return new Response(JSON.stringify({ count: 0 }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            if (method === "DELETE" && urlStr.startsWith("/api/friends/")) {
+              deleteCalled = true;
+              return new Response(JSON.stringify({ error: "Server error" }), {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            return new Response(JSON.stringify({ error: "not mocked" }), {
+              status: 404,
+            });
+          },
+        ) as unknown as ReturnType<typeof vi.spyOn>;
+
+      const user = userEvent.setup();
+      renderWithProviders();
+
+      await waitFor(() => {
+        expect(screen.getByText("Gandalf")).toBeInTheDocument();
+      });
+
+      // Ouvrir la modale → confirmer
+      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      await user.click(removeButtons[0]!);
+      await user.click(screen.getByRole("button", { name: /^Supprimer$/i }));
+
+      // Attendre que le DELETE soit appelé
+      await waitFor(() => {
+        expect(deleteCalled).toBe(true);
+      });
+
+      // Attendre le toast d'erreur (rollback effectué)
+      await waitFor(
+        () => {
+          expect(
+            screen.getByText("Erreur lors de la suppression. Veuillez réessayer."),
+          ).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
+
+      // Vérifier l'ordre des amis dans la liste : Gandalf, Frodon, Aragorn
+      const friendCards = screen.getAllByText(/Gandalf|Frodon Sacquet|Aragorn/);
+      expect(friendCards).toHaveLength(3);
+      expect(friendCards[0]).toHaveTextContent("Gandalf");
+      expect(friendCards[1]).toHaveTextContent("Frodon Sacquet");
+      expect(friendCards[2]).toHaveTextContent("Aragorn");
+
+      // Chacun a son propre bouton Supprimer
+      expect(screen.getAllByRole("button", { name: /Supprimer/i })).toHaveLength(
+        3,
+      );
+    });
   });
 
   // ── Feature: Badge de demandes en attente ────────────────────────────────
@@ -606,6 +780,8 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
 //  ✓ Annulation sans appel API (INTEG-002)
 //  ✓ État isPending / bouton désactivé (INTEG-003)
 //  ✓ Échec API + toast d'erreur + rollback (INTEG-004)
+//  ✓ Disparition optimiste avant réponse API (INTEG-009)
+//  ✓ Rollback préserve la position dans la liste (INTEG-010)
 //
 // Feature: Badge de demandes en attente
 //  ✓ Badge "3" pour 3 demandes (INTEG-005)
