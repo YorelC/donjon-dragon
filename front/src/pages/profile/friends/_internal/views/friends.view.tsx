@@ -5,12 +5,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/atoms/tabs";
+import { Badge } from "@/shared/components/atoms/badge";
 
 type FriendsTab = "friends" | "received" | "sent" | "search";
 
 interface FriendsViewProps {
   activeTab: FriendsTab;
   onTabChange: (tab: FriendsTab) => void;
+  receivedCount?: number;
   friendsPanel: ReactNode;
   receivedPanel: ReactNode;
   sentPanel: ReactNode;
@@ -20,6 +22,7 @@ interface FriendsViewProps {
 export function FriendsView({
   activeTab,
   onTabChange,
+  receivedCount,
   friendsPanel,
   receivedPanel,
   sentPanel,
@@ -32,7 +35,7 @@ export function FriendsView({
         value={activeTab}
         onValueChange={(tab) => onTabChange(tab as FriendsTab)}
       >
-        <FriendsTabsList />
+        <FriendsTabsList receivedCount={receivedCount} />
         <TabsContent value="friends" className="mt-6">
           {friendsPanel}
         </TabsContent>
@@ -50,11 +53,29 @@ export function FriendsView({
   );
 }
 
-function FriendsTabsList() {
+function FriendsTabsList({
+  receivedCount,
+}: {
+  receivedCount?: number;
+}) {
   return (
     <TabsList className="grid w-full grid-cols-4">
       <TabsTrigger value="friends">Amis</TabsTrigger>
-      <TabsTrigger value="received">Reçues</TabsTrigger>
+      <TabsTrigger value="received">
+        Reçues
+        {receivedCount !== undefined && receivedCount > 0 && (
+          <Badge
+            variant="default"
+            aria-label={
+              receivedCount > 9
+                ? "Plus de 9 demandes en attente"
+                : `${receivedCount} demandes en attente`
+            }
+          >
+            {receivedCount > 9 ? "9+" : receivedCount}
+          </Badge>
+        )}
+      </TabsTrigger>
       <TabsTrigger value="sent">Envoyées</TabsTrigger>
       <TabsTrigger value="search">Chercher</TabsTrigger>
     </TabsList>
