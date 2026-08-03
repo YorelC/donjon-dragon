@@ -46,7 +46,13 @@ export type DeleteFriendParams = z.infer<typeof DeleteFriendParamsSchema>;
 export type PendingReceivedCount = z.infer<typeof PendingReceivedCountSchema>;
 
 // ── Matrice UA → INV ────────────────────────────────────────────────────────
-// UA-003 (DELETE)       → INV-002 (DeleteFriendParamsSchema)
-// UA-006 (badge >0)     → couvert par INV-001 + logique front (UA-006, UA-010)
-// UA-007 (badge 9+)     → purement front (truncation d'affichage)
-// UA-008 (query count)  → INV-001 (PendingReceivedCountSchema)
+// UA-001 (ouverture modale)      → INV-006 [ADR-002] : displayName dans le titre
+// UA-002 (fermeture annuler)     → INV-005 [ADR-002] : pas d'appel API, état null
+// UA-003 (DELETE optimiste)      → INV-002 (DeleteFriendParamsSchema) + INV-003 [ADR-002] : bouton disabled pendant mutation
+// UA-004 (toast succès)          → purement front (sonner, pas d'INV Zod)
+// UA-005 (toast échec + rollback)→ INV-004 [ADR-002] : restauration snapshot à la position d'origine
+// UA-006 (badge >0)              → INV-001 (count >= 0) + INV-007 [ADR-002] : rendu conditionnel
+// UA-007 (badge 9+)              → INV-008 [ADR-002] : truncation "9+" + aria-label
+// UA-008 (query count)           → INV-001 (PendingReceivedCountSchema)
+// UA-009 (refetch onglet reçues) → purement front (refetch TanStack Query, pas d'INV Zod)
+// UA-010 (badge caché si 0)      → INV-007 [ADR-002] : pas de rendu si count === 0
