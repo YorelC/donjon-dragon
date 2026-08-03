@@ -4,7 +4,7 @@ description: Protocole product du SaaS D&D pour Margarette - interrogatoire stru
 version: 3.4.0
 ---
 
-# Skill « product » - Margarette (Discord) - v3.1
+# Skill « product » - Margarette (Discord) - v3.4
 
 ## Pourquoi un skill et pas un 12e profil
 Margarette est l'agent conversationnel de Charly sur Discord : sa valeur est le dialogue et sa mémoire persistante. Le skill lui donne le protocole d'interrogatoire, le format des tickets et l'accès au Kanban, sans lui faire franchir l'étape de Bernadette (règle AGENTS.md).

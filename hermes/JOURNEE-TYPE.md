@@ -46,12 +46,8 @@ hermes kanban watch        # flux des événements en direct
 | `hermes\deploy.ps1` | À chaque modification d'un prompt dans `hermes\prompts\` (les SOUL des profils sont des copies : sans ça, tes modifications restent lettre morte). Déploie aussi la skill de Margarette et redémarre la gateway | Toi |
 | `hermes\set-mode.ps1 -Mode cloud\|local` | Pour basculer les profils de code entre DeepSeek et le Qwen local. `cloud` est le mode nominal | Toi |
 | `ia_automation_code\local-llm\start-qwen-coder.ps1` | Uniquement en mode local, en premier, dans un terminal dédié | Toi |
+| `hermes\setup-veille.ps1` | Une seule fois : crée le job cron qui réveille Margarette pour surveiller les tickets bloqués | Toi, une fois |
 | `scripts\claude-task.ps1` | Jamais toi (sauf debug) : c'est le pont que `dev-senior` et `revieweur` exécutent pour appeler `claude -p`. Exit 42 = quota épuisé → bascule `MODE` en dégradé | Les agents |
-| `hermes\setup-veille.ps1` | Déjà fait. Crée le cron qui réveille Margarette pour surveiller les tickets bloqués | Toi, une fois |
-| `hermes\rebuild-board.ps1` | Ponctuel : reconstruit une chaîne de tickets dont le graphe de parenté est cassé | Toi, en cas d'incident |
-| `hermes\trim-toolsets.ps1` | Ponctuel : dégraisse les toolsets d'un profil (`-Apply -Key toolsets.cli -Value "terminal,file,skills"`) | Toi, rarement |
-| `hermes\fix-souls.ps1` | Remplacé par `deploy.ps1`, gardé comme secours | Toi, rarement |
-| `hermes\setup-hermes.ps1`, `scripts\bootstrap-board.ps1` | Déjà joués (installation, création du board). Aide-mémoire uniquement | Toi, jamais en routine |
 | `scripts\claude-task.sh` | Équivalent bash du pont (WSL/Git Bash), non utilisé sous Windows natif | Personne pour l'instant |
 
 ## Dépannage express

@@ -15,8 +15,8 @@ function Step($msg) { Write-Host "" ; Write-Host "=== $msg ===" -ForegroundColor
 # Modele attendu par profil (profil = assignee Kanban)
 $attendu = [ordered]@{
   "orchestrateur" = "deepseek";  "bernadette" = "deepseek";  "architecte" = "deepseek"
-  "designer"      = "deepseek";  "dev-senior" = "deepseek";  "ouvrier"    = "qwen3-coder-next"
-  "testeur"       = "qwen3-coder-next"; "revieweur" = "deepseek"; "devops" = "qwen3-coder-next"
+  "designer"      = "deepseek";  "dev-senior" = "deepseek";  "ouvrier"    = "MODE"
+  "testeur"       = "MODE"; "revieweur" = "deepseek"; "devops" = "MODE"
   "securite"      = "deepseek";  "scribe"     = "deepseek"
 }
 
@@ -38,7 +38,7 @@ foreach ($n in $attendu.Keys) {
   if (-not (Test-Path $soul)) { Ko "profil '$n' : SOUL.md manquant" ; continue }
   $l1 = (Get-Content $soul -TotalCount 1)
   if ($l1 -match "Profil : $n") { Ok "profil '$n' : SOUL v3 en place" }
-  else { Ko "profil '$n' : SOUL.md inattendu (1re ligne : $l1) - relance fix-souls.ps1" }
+  else { Ko "profil '$n' : SOUL.md inattendu (1re ligne : $l1) - relance deploy.ps1" }
 }
 
 Step "3. Modele de chaque profil (config.yaml)"
@@ -48,8 +48,14 @@ foreach ($n in $attendu.Keys) {
   $bloc = (Get-Content $cfg -Raw)
   if ($bloc -match "(?s)model:\s*\n(.*?)\n\S") { $bloc = $Matches[1] }
   $motif = $attendu[$n]
-  if ($bloc -match [regex]::Escape($motif)) { Ok ("profil '{0}' : modele contient '{1}'" -f $n, $motif) }
-  else { Ko ("profil '{0}' : modele attendu '{1}' non trouve dans le bloc model: - verifier avec: hermes -p {0} config show" -f $n, $motif) }
+  if ($motif -eq "MODE") {
+    # profil de code : deepseek (mode cloud) ou qwen3-coder-next (mode local), les deux sont valides
+    if ($bloc -match "deepseek")             { Ok ("profil '{0}' : deepseek (mode cloud)" -f $n) }
+    elseif ($bloc -match "qwen3-coder-next") { Ok ("profil '{0}' : qwen local (mode degrade)" -f $n) }
+    else { Ko ("profil '{0}' : ni deepseek ni qwen - verifier: hermes -p {0} config show" -f $n) }
+  }
+  elseif ($bloc -match [regex]::Escape($motif)) { Ok ("profil '{0}' : modele contient '{1}'" -f $n, $motif) }
+  else { Ko ("profil '{0}' : modele attendu '{1}' non trouve - verifier: hermes -p {0} config show" -f $n, $motif) }
 }
 
 Step "4. Margarette (profil par defaut)"

@@ -8,11 +8,11 @@ Le pipeline v3 est installé : 11 profils Hermès (voir `01-equipe.md`), board K
 
 Modèles (depuis le 03/08, voir `ANALYSE-ORCHESTRATION.md`) : **tous les profils sur DeepSeek via OpenRouter** en mode nominal — `deepseek-v4-pro` pour `bernadette`, `architecte` et `securite`, `deepseek-v4-flash` pour les autres, ponts `claude -p` pour `dev-senior` et `revieweur`. Le Qwen3-Coder-Next local (llama-server sur `127.0.0.1:8001`) est sorti du chemin critique : il ne sert plus qu'en mode dégradé, via `hermes\set-mode.ps1 -Mode local`. Motif : à 0,002 $ le ticket, le local n'économisait rien de significatif mais créait une contention GPU et des timeouts.
 
-Documentation : `JOURNEE-TYPE.md` (routine quotidienne et rôle de chaque script), `output_installation_agents.md` (rapport d'installation), `02-workflow-kanban.md` (conventions du board), `..\04-granularite.md` (la chaîne de traçabilité R → UA → INV → E → ticket → test).
+Documentation : `JOURNEE-TYPE.md` (routine quotidienne et rôle de chaque script), `02-workflow-kanban.md` (conventions du board), `..\04-granularite.md` (la chaîne de traçabilité R → UA → INV → E → ticket → test).
 
 ## Incident majeur résolu le 03/08 : graphe de parenté inversé
 
-Les liens du Kanban avaient été créés à l'envers (`hermes kanban link <nouveau> <spec>` au lieu de `<spec> <nouveau>`), rendant la spec enfant de tous les autres tickets. Conséquence : aucun ticket n'avait de parent, tous devenaient `ready` simultanément, et la chaîne de production n'existait pas. Symptômes : REVIEW lancé avant le code, DOC relancé 17 fois, TEST en timeout. Corrigé par `rebuild-board.ps1` et prévenu par une règle dure dans le prompt de l'orchestrateur (`--parent` à la création, jamais `link` après coup ; test de contrôle : si [DOC] est `ready`, le graphe est inversé).
+Les liens du Kanban avaient été créés à l'envers (`hermes kanban link <nouveau> <spec>` au lieu de `<spec> <nouveau>`), rendant la spec enfant de tous les autres tickets. Conséquence : aucun ticket n'avait de parent, tous devenaient `ready` simultanément, et la chaîne de production n'existait pas. Symptômes : REVIEW lancé avant le code, DOC relancé 17 fois, TEST en timeout. Corrigé en reconstruisant la chaîne, et prévenu par une règle dure dans le prompt de l'orchestrateur (`--parent` à la création, jamais `link` après coup ; test de contrôle : si [DOC] est `ready`, le graphe est inversé).
 
 ## Ce qui reste à faire
 
