@@ -15,4 +15,5 @@ export const FriendshipSchema = new Schema<Friendship>(
 
 // Indexes for performance
 FriendshipSchema.index({ requesterId: 1, recipientId: 1 });
+FriendshipSchema.index({ recipientId: 1, status: 1 });
 FriendshipSchema.index({ status: 1 });

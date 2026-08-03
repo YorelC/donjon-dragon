@@ -18,9 +18,10 @@ import { ListFriendsUseCase } from '../02-application/list-friends.use-case';
 import { ListPendingReceivedUseCase } from '../02-application/list-pending-received.use-case';
 import { ListPendingSentUseCase } from '../02-application/list-pending-sent.use-case';
 import { RemoveFriendUseCase } from '../02-application/remove-friend.use-case';
+import { SearchUsersUseCase } from '../02-application/search-users.use-case';
+import { CountPendingReceivedUseCase } from '../02-application/count-pending-received.use-case';
 import { JwtAuthGuard } from '../../auth/01-interface/guards/jwt-auth.guard';
 import { CurrentUser } from '../../auth/01-interface/decorators/current-user.decorator';
-import { SearchUsersUseCase } from '../02-application/search-users.use-case';
 
 @Controller('api/friends')
 @UseGuards(JwtAuthGuard)
@@ -42,6 +43,8 @@ export class FriendshipController {
     private removeFriendUseCase: RemoveFriendUseCase,
     @Inject(SearchUsersUseCase)
     private searchUsersUseCase: SearchUsersUseCase,
+    @Inject(CountPendingReceivedUseCase)
+    private countPendingReceivedUseCase: CountPendingReceivedUseCase,
   ) {}
 
   @Post('request/:displayName')
@@ -103,6 +106,11 @@ export class FriendshipController {
   @Get()
   async listFriends(@CurrentUser() user: TokenPayload) {
     return this.listFriendsUseCase.execute({ userId: user.userId });
+  }
+
+  @Get('requests/incoming/count')
+  async countPendingReceived(@CurrentUser() user: TokenPayload) {
+    return this.countPendingReceivedUseCase.execute({ userId: user.userId });
   }
 
   @Get('requests/incoming')

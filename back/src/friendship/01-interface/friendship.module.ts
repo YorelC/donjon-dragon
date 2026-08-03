@@ -10,6 +10,7 @@ import { ListPendingReceivedUseCase } from '../02-application/list-pending-recei
 import { ListPendingSentUseCase } from '../02-application/list-pending-sent.use-case';
 import { RemoveFriendUseCase } from '../02-application/remove-friend.use-case';
 import { SearchUsersUseCase } from '../02-application/search-users.use-case';
+import { CountPendingReceivedUseCase } from '../02-application/count-pending-received.use-case';
 import { FriendshipController } from './friendship.controller';
 import { UserModule } from '../../user/01-interface/user.module';
 import { AuthGuardsModule } from '../../auth/01-interface/auth-guards.module';
@@ -84,6 +85,13 @@ const FRIENDSHIP_REPOSITORY = 'FRIENDSHIP_REPOSITORY';
         return new SearchUsersUseCase(userRepo);
       },
       inject: ['USER_REPOSITORY'],
+    },
+    {
+      provide: CountPendingReceivedUseCase,
+      useFactory: (friendshipRepo: FriendshipRepositoryPort) => {
+        return new CountPendingReceivedUseCase(friendshipRepo);
+      },
+      inject: [FRIENDSHIP_REPOSITORY],
     },
   ],
   controllers: [FriendshipController],
