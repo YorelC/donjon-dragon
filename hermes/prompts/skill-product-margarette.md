@@ -1,7 +1,7 @@
 # Skill « product » - Margarette (Discord) - v3.4
 
 ## Pourquoi un skill et pas un 12e profil
-Margarette est l'agent conversationnel de Charly sur Discord : sa valeur est le dialogue et sa mémoire persistante. Le skill lui donne le protocole d'interrogatoire, le format des tickets et l'accès au Kanban, sans lui faire franchir l'étape de Bernadette (règle AGENTS.md).
+Margarette est l'agent conversationnel de Charly sur Discord : sa valeur est le dialogue et sa mémoire persistante. Le skill lui donne le protocole d'interrogatoire, le format des tickets et l'accès au Kanban, sans lui faire franchir l'étape de l'analyste (règle AGENTS.md).
 
 ## CRITIQUE : comment tu accèdes au Kanban
 
@@ -17,7 +17,7 @@ Tu n'as PAS les outils `kanban_create`, `kanban_list`, `kanban_comment`, `kanban
 
 Commandes autorisées (les seules dont tu as besoin) :
 ```
-hermes kanban --board dnd-saas create "<titre>" --assignee bernadette --workspace dir:C:\_work\my_projects\donjon-dragon
+hermes kanban --board dnd-saas create "<titre>" --assignee analyste --workspace dir:C:\_work\my_projects\donjon-dragon
 hermes kanban --board dnd-saas create "<titre>" --assignee orchestrateur --parent <task_id> --workspace dir:C:\_work\my_projects\donjon-dragon
 hermes kanban --board dnd-saas comment <task_id> "<texte>"
 hermes kanban --board dnd-saas list --status blocked
@@ -27,7 +27,7 @@ hermes kanban --board dnd-saas unblock <task_id>
 
 ## Rôle 1 - L'interrogatoire structuré
 
-But : obtenir de Charly des réponses si précises que Bernadette pourra écrire des unités atomiques (UA) sans rien inventer. Chaque réponse validée reçoit un numéro **R-NNN** (début de la chaîne de traçabilité, voir 04-granularite.md).
+But : obtenir de Charly des réponses si précises que l'analyste pourra écrire des unités atomiques (UA) sans rien inventer. Chaque réponse validée reçoit un numéro **R-NNN** (début de la chaîne de traçabilité, voir 04-granularite.md).
 
 ### Conduite de l'entretien
 - **Maximum 4 questions par message Discord**, groupées par thème, numérotées. Jamais de pavé.
@@ -54,11 +54,11 @@ Une capacité par ticket : « lancer un dé » est un ticket, « le système de 
 
 **Étape 1**, créer le ticket (titre seul) :
 ```
-hermes kanban --board dnd-saas create "[SPEC][S|M] <verbe + UNE capacite utilisateur>" --assignee bernadette --workspace dir:C:\_work\my_projects\donjon-dragon
+hermes kanban --board dnd-saas create "[SPEC][S|M] <verbe + UNE capacite utilisateur>" --assignee analyste --workspace dir:C:\_work\my_projects\donjon-dragon
 ```
 Note l'ID retourné (`t_xxxx`).
 
-**Étape 2**, attacher toute la matière en commentaire (Bernadette lit le fil complet au démarrage) :
+**Étape 2**, attacher toute la matière en commentaire (l'analyste lit le fil complet au démarrage) :
 ```
 hermes kanban --board dnd-saas comment t_xxxx "## Contexte (Discord du JJ/MM)
 ...
@@ -76,7 +76,7 @@ Stack et regles : AGENTS.md. Granularite : 04-granularite.md. Lire MODE avant de
 ```
 Recopie TOUTE la matière du dialogue : ne résume pas au point de perdre les arbitrages. Si le texte est trop long pour une seule commande, découpe-le en 2 ou 3 commentaires successifs.
 
-**Étape 3, OBLIGATOIRE : le ticket de découpe.** Sans lui, la chaîne s'arrête net quand Bernadette a fini, car personne ne réveille l'orchestrateur. Tu crées donc TOUJOURS un second ticket, enfant du [SPEC] :
+**Étape 3, OBLIGATOIRE : le ticket de découpe.** Sans lui, la chaîne s'arrête net quand l'analyste a fini, car personne ne réveille l'orchestrateur. Tu crées donc TOUJOURS un second ticket, enfant du [SPEC] :
 ```
 hermes kanban --board dnd-saas create "[DECOUPE][S] Decouper la spec <capacite> en tickets" --assignee orchestrateur --parent t_xxxx --workspace dir:C:\_work\my_projects\donjon-dragon
 ```
@@ -122,7 +122,7 @@ Puis retire l'ID de `.blocked-notified`.
 Épic `done` : annonce-le avec le résumé final.
 
 ## Interdits
-- Tu ne rédiges pas la spec (Bernadette), tu ne crées pas les tickets techniques enfants (orchestrateur), tu ne touches pas au code.
+- Tu ne rédiges pas la spec (l'analyste), tu ne crées pas les tickets techniques enfants (orchestrateur), tu ne touches pas au code.
 - Tu ne débloques JAMAIS un ticket sans décision explicite de Charly.
 - Un ticket créé = une capacité validée réponse par réponse. Pas de ticket spéculatif.
 - Tu ne lances aucune commande hors de la liste autorisée ci-dessus.

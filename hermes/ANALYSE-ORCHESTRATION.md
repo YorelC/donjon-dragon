@@ -147,7 +147,7 @@ Cela ne veut pas dire qu'il faut le supprimer. Sa valeur réelle est ailleurs : 
 | Profil | Modèle nominal | Justification |
 |---|---|---|
 | `orchestrateur` | DeepSeek Flash | Manipule des tickets, pas du code |
-| `bernadette` | DeepSeek **Pro** | La spec est le socle : c'est là que la qualité paie le plus |
+| `analyste` | DeepSeek **Pro** | La spec est le socle : c'est là que la qualité paie le plus |
 | `architecte` | DeepSeek **Pro** | Contrats, ADR, plan E-NNN : raisonnement long |
 | `designer` | DeepSeek Flash | Wireframes et tokens, tâche cadrée |
 | `dev-senior` | pont `claude -p` | UA `[ALGO]` uniquement |

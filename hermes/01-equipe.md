@@ -8,14 +8,14 @@ Projet pilote : **SaaS D&D simplifié** — repo `C:\_work\my_projects\donjon-dr
 
 ## 0. Margarette — la porte d'entrée (hors des 11 profils)
 
-Margarette est ton agent Hermès conversationnel (Discord). Elle ne prend PAS un des 11 profils : elle est l'interface entre toi et le board. Elle charge le **skill `product`** (fichier `prompts/skill-product-margarette.md`) qui lui donne trois pouvoirs : clarifier tes idées en direct, créer des tickets [SPEC] pré-remplis pour `bernadette` (zéro retransmission : toute la matière du dialogue Discord part dans le body du ticket), et relayer sur Discord les tickets `blocked` qui t'attendent (`decision-needed:`, `review-required:`). Voir la justification complète dans le skill.
+Margarette est ton agent Hermès conversationnel (Discord). Elle ne prend PAS un des 11 profils : elle est l'interface entre toi et le board. Elle charge le **skill `product`** (fichier `prompts/skill-product-margarette.md`) qui lui donne trois pouvoirs : clarifier tes idées en direct, créer des tickets [SPEC] pré-remplis pour `analyste` (zéro retransmission : toute la matière du dialogue Discord part dans le body du ticket), et relayer sur Discord les tickets `blocked` qui t'attendent (`decision-needed:`, `review-required:`). Voir la justification complète dans le skill.
 
 ## 1. Les 11 agents (profils Hermès = assignees Kanban)
 
 | # | Profil (assignee) | Modèle | Métiers couverts |
 |---|---|---|---|
 | 1 | `orchestrateur` | deepseek-v4-flash | Chef de projet : triage, découpe, routage, gestion des modes |
-| 2 | `bernadette` | deepseek-v4-pro | Spec fonctionnelle (rôle déjà prévu dans ton AGENTS.md), user stories, MoSCoW, UX research |
+| 2 | `analyste` | deepseek-v4-pro | Spec fonctionnelle (rôle déjà prévu dans ton AGENTS.md), user stories, MoSCoW, UX research |
 | 3 | `architecte` | deepseek-v4-pro | Architecture hexagonale, ADR, contrats Zod dans `shared`, ports du domaine, modélisation Mongo/Redis |
 | 4 | `designer` | deepseek-v4-pro | UX/UI sur base shadcn/ui + Tailwind v4, wireframes, **accessibilité (a11y)** |
 | 5 | `dev-senior` | **pont → `claude -p`** | Code complexe : moteur de combat, Socket.IO temps réel, auth JWT, domaine métier |
@@ -27,15 +27,15 @@ Margarette est ton agent Hermès conversationnel (Discord). Elle ne prend PAS un
 | 11 | `scribe` | deepseek-v4-flash | Doc technique et utilisateur, changelog |
 
 ### Métiers ajoutés à ta liste initiale
-Product Owner/priorisation (→ `orchestrateur` + `bernadette`), revue de code (→ `revieweur`), DBA/modélisation (→ `architecte`), accessibilité — obligation légale European Accessibility Act (→ `designer`), observabilité/SRE (→ `devops`), RGPD/conformité (→ `securite`), FinOps (→ `devops`), documentation (→ `scribe`), UX research/feedback (→ `bernadette`).
+Product Owner/priorisation (→ `orchestrateur` + `analyste`), revue de code (→ `revieweur`), DBA/modélisation (→ `architecte`), accessibilité — obligation légale European Accessibility Act (→ `designer`), observabilité/SRE (→ `devops`), RGPD/conformité (→ `securite`), FinOps (→ `devops`), documentation (→ `scribe`), UX research/feedback (→ `analyste`).
 
 ## 2. Flux nominal
 
 ```
 Toi (Discord) ⇄ Margarette [skill product] ── clarification en direct
-  │  crée le ticket [SPEC] pré-rempli (assignee: bernadette)
+  │  crée le ticket [SPEC] pré-rempli (assignee: analyste)
   ▼
-bernadette ── spec fonctionnelle ──────────► specs/
+analyste ── spec fonctionnelle ──────────► specs/
   │
   ▼
 architecte ─ ADR + schémas Zod (shared) + ports domaine ─► docs/adr/ + shared/src/

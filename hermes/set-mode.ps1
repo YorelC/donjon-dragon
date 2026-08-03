@@ -56,12 +56,12 @@ else {
 # Profils de reflexion : toujours dans le nuage, ils ne touchent pas au GPU
 Write-Host ""
 Write-Host "=== Profils de reflexion (inchanges par la bascule) ===" -ForegroundColor Cyan
-$pro = @("bernadette","architecte","securite")
+$pro = @("analyste","architecte")
 foreach ($p in $pro) {
   hermes -p $p config set model.default deepseek/deepseek-v4-pro
   Ok "$p -> deepseek-v4-pro"
 }
-foreach ($p in @("orchestrateur","designer","scribe","dev-senior","revieweur")) {
+foreach ($p in @("orchestrateur","designer","scribe","dev-senior","revieweur","securite")) {
   hermes -p $p config set model.default deepseek/deepseek-v4-flash
   Ok "$p -> deepseek-v4-flash"
 }
@@ -72,7 +72,7 @@ hermes gateway restart
 
 Write-Host ""
 Write-Host "=== Verification ===" -ForegroundColor Cyan
-foreach ($p in @("orchestrateur","bernadette","architecte","designer","dev-senior","ouvrier","testeur","revieweur","devops","securite","scribe")) {
+foreach ($p in @("orchestrateur","analyste","architecte","designer","dev-senior","ouvrier","testeur","revieweur","devops","securite","scribe")) {
   $m = (Get-Content "$env:LOCALAPPDATA\hermes\profiles\$p\config.yaml" -ErrorAction SilentlyContinue |
         Select-String "default:" | Select-Object -First 1) -replace '.*default:\s*',''
   Write-Host ("  {0,-14} {1}" -f $p, $m.Trim())

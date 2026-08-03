@@ -27,7 +27,7 @@ hermes kanban watch        # flux des événements en direct
 ## Ensuite : tout passe par Margarette, sur Discord
 
 1. **Donne l'idée** en langage naturel : « Nouvelle feature : ... ». Elle charge sa skill product et déroule l'interrogatoire (7 thèmes, 4 questions max par message, défauts proposés — tu peux répondre « ok défauts » pour accélérer).
-2. **Valide sa synthèse** R-001…R-NNN. Elle crée alors le ticket [SPEC] pour `bernadette`, et la chaîne se déroule seule : spec en UA → contrats → découpe → dev ∥ tests → intégration → revue → déploiement → doc.
+2. **Valide sa synthèse** R-001…R-NNN. Elle crée alors le ticket [SPEC] pour `analyste`, et la chaîne se déroule seule : spec en UA → contrats → découpe → dev ∥ tests → intégration → revue → déploiement → doc.
 3. **Dans la journée, tu n'interviens que sur ses pings** : `decision-needed:` (arbitrage produit) et `review-required:` (auth, suppressions de données, migrations, CI, NO-GO sécurité). Réponds-lui, elle commente et débloque le ticket. C'est TA seule charge de travail.
 4. **Si tu veux voir où ça en est** : demande-lui « où en est-on ? », ou lis `STATUS.md`, ou le terminal 3.
 

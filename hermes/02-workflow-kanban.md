@@ -79,7 +79,7 @@ Lire le fichier MODE à la racine avant de commencer.
 ### Feature complète (le [SPEC] est créé par Margarette depuis Discord)
 ```bash
 # Margarette (via son skill product) :
-#   kanban_create title="[SPEC][M] Spec: fiche de personnage simplifiée" assignee=bernadette workspace=dir:C:\_work\my_projects\donjon-dragon
+#   kanban_create title="[SPEC][M] Spec: fiche de personnage simplifiée" assignee=analyste workspace=dir:C:\_work\my_projects\donjon-dragon
 
 # Puis l'orchestrateur enchaîne :
 hermes kanban create "[ARCH][M] Schemas Zod + ports: personnage" --assignee architecte --parent <id_spec> --workspace dir:C:\_work\my_projects\donjon-dragon

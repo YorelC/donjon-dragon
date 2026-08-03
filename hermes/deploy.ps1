@@ -18,7 +18,7 @@ function Ko($m) { Write-Host "  [ECHEC] $m" -ForegroundColor Red   ; $script:ko+
 
 $map = [ordered]@{
   "orchestrateur" = "00-orchestrateur.md"
-  "bernadette"    = "01-bernadette.md"
+  "analyste"      = "01-analyste.md"
   "architecte"    = "02-architecte.md"
   "designer"      = "03-designer.md"
   "dev-senior"    = "04-dev-senior.md"
@@ -47,6 +47,18 @@ foreach ($name in $map.Keys) {
   Copy-Item $src $soul -Force
   Ok ("{0,-14} <- {1}" -f $name, $map[$name])
 }
+
+Write-Host ""
+Write-Host "=== SOUL de Margarette (profil par defaut) ===" -ForegroundColor Cyan
+$soulMargSrc = "C:\_work\my_projects\ia_automation_code\hermes-profiles\margarette.md"
+$soulMargDst = Join-Path $HermesRoot "SOUL.md"
+if (Test-Path $soulMargSrc) {
+  if (Test-Path $soulMargDst) {
+    $a = (Get-FileHash $soulMargSrc).Hash ; $b = (Get-FileHash $soulMargDst).Hash
+    if ($a -eq $b) { Write-Host "  [=]     deja a jour" -ForegroundColor DarkGray }
+    else { Copy-Item $soulMargDst "$soulMargDst.bak" -Force ; Copy-Item $soulMargSrc $soulMargDst -Force ; Ok "SOUL.md racine mis a jour" }
+  } else { Copy-Item $soulMargSrc $soulMargDst -Force ; Ok "SOUL.md racine cree" }
+} else { Ko "source absente : $soulMargSrc" }
 
 Write-Host ""
 Write-Host "=== Skill product (Margarette) ===" -ForegroundColor Cyan

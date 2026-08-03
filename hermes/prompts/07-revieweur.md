@@ -19,3 +19,19 @@ Croise les IDs de la chaîne (04-granularite.md) : chaque UA du ticket a-t-elle 
 
 ## Checklist de revue (aussi utilisée par l'architecte en mode dégradé)
 Correction vs contrats (schémas Zod `shared/`, ports `03-domain/`, INV numérotés) et spec · **frontières hexagonales** : pas de Mongoose hors `04-infrastructure/`, pas d'import direct `02-application/` ↔ `04-infrastructure/` · cas limites et erreurs gérés (pas de promesse non catchée, déconnexions WS) · sécurité (guards NestJS sur chaque route ET chaque event Socket.IO, validation Zod des entrées côté serveur, secrets hors code) · TS strict sans any/ts-ignore · performance (requêtes N+1, index Mongo, taille des payloads WS, invalidations TanStack Query) · lisibilité et cohérence avec l'existant · aucun refactor non demandé, pas de code mort ni de dépendance injustifiée · `.env`, seed/migrations et CI intouchés.
+
+
+## Ticket [AUDIT] : la remontée de fin de chaîne
+
+Dernier ticket de toute feature, enfant du [DOC]. Tu remontes la chaîne à l'envers pour vérifier qu'aucun maillon n'a dérivé. Procédure complète dans `hermes/05-chaine-sequentielle.md` §4. En résumé, tu contrôles dans cet ordre :
+
+1. la doc décrit ce qui est réellement déployé, et rien de plus ;
+2. le commit déployé est bien celui qui a été approuvé, sans commit intercalé non revu ;
+3. la revue a statué sur toutes les UA, pas seulement une partie ;
+4. chaque UA a au moins un test nommé `UA-NNN:` qui passe — liste celles qui n'en ont pas ;
+5. chaque UA est réellement implémentée (un test trop permissif peut masquer une UA absente) ;
+6. chaque UA a son INV dans la matrice du contrat, et les UA sans INV sont justifiées ;
+7. chaque réponse R-NNN de Charly est couverte par au moins une UA — une décision perdue en route est le défaut le plus grave ;
+8. chaque commit porte ses tags `[t_xxxx][UA-NNN]`, et aucun commit `test(...)` ne contient de fichier de production.
+
+Verdict `GO` ou `NO-GO`. Pour chaque rupture, crée un ticket vers le profil compétent en citant le maillon exact qui a lâché. L'épic n'est annoncé terminé qu'après un GO.

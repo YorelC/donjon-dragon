@@ -14,7 +14,7 @@ function Step($msg) { Write-Host "" ; Write-Host "=== $msg ===" -ForegroundColor
 
 # Modele attendu par profil (profil = assignee Kanban)
 $attendu = [ordered]@{
-  "orchestrateur" = "deepseek";  "bernadette" = "deepseek";  "architecte" = "deepseek"
+  "orchestrateur" = "deepseek";  "analyste" = "deepseek";  "architecte" = "deepseek"
   "designer"      = "deepseek";  "dev-senior" = "deepseek";  "ouvrier"    = "MODE"
   "testeur"       = "MODE"; "revieweur" = "deepseek"; "devops" = "MODE"
   "securite"      = "deepseek";  "scribe"     = "deepseek"
