@@ -10,120 +10,162 @@ describe("friends-schema", () => {
   describe("ReceivedRequestSchema", () => {
     it("should parse a valid received request", () => {
       const valid = {
-        id: "a1b2c3d4-e5f6-4a5b-9c3d-2e1f0a1b2c3d",
-        requesterId: "b2c3d4e5-f6a7-5b6c-0d4e-3f2a1b2c3d4e",
-        recipientId: "c3d4e5f6-a7b8-6c7d-1e5f-4a3b2c3d4e5f",
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        requesterId: "550e8400-e29b-41d4-a716-446655440001",
+        recipientId: "550e8400-e29b-41d4-a716-446655440002",
         status: "pending",
-        createdAt: "2024-01-01T00:00:00Z",
-        updatedAt: "2024-01-01T00:00:00Z",
+        createdAt: "2025-01-01T00:00:00Z",
+        updatedAt: "2025-01-01T00:00:00Z",
         requester: {
-          id: "b2c3d4e5-f6a7-5b6c-0d4e-3f2a1b2c3d4e",
-          email: "test@example.com",
-          displayName: "TestUser",
+          id: "550e8400-e29b-41d4-a716-446655440001",
+          email: "gandalf@example.com",
+          displayName: "Gandalf",
+          createdAt: "2025-01-01T00:00:00Z",
           emailVerified: true,
-          createdAt: "2024-01-01T00:00:00Z",
         },
       };
-      expect(ReceivedRequestSchema.safeParse(valid).success).toBe(true);
+
+      expect(ReceivedRequestSchema.parse(valid)).toEqual(valid);
     });
 
-    it("should reject without requester", () => {
+    it("should reject missing requester field", () => {
       const invalid = {
-        id: "a1b2c3d4-e5f6-4a5b-9c3d-2e1f0a1b2c3d",
-        requesterId: "b2c3d4e5-f6a7-5b6c-0d4e-3f2a1b2c3d4e",
-        recipientId: "c3d4e5f6-a7b8-6c7d-1e5f-4a3b2c3d4e5f",
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        requesterId: "550e8400-e29b-41d4-a716-446655440001",
+        recipientId: "550e8400-e29b-41d4-a716-446655440002",
         status: "pending",
-        createdAt: "2024-01-01T00:00:00Z",
-        updatedAt: "2024-01-01T00:00:00Z",
+        createdAt: "2025-01-01T00:00:00Z",
+        updatedAt: "2025-01-01T00:00:00Z",
       };
-      expect(ReceivedRequestSchema.safeParse(invalid).success).toBe(false);
+
+      expect(() => ReceivedRequestSchema.parse(invalid)).toThrow();
+    });
+
+    it("should reject invalid status", () => {
+      const invalid = {
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        requesterId: "550e8400-e29b-41d4-a716-446655440001",
+        recipientId: "550e8400-e29b-41d4-a716-446655440002",
+        status: "invalid",
+        createdAt: "2025-01-01T00:00:00Z",
+        updatedAt: "2025-01-01T00:00:00Z",
+        requester: {
+          id: "550e8400-e29b-41d4-a716-446655440001",
+          email: "gandalf@example.com",
+          displayName: "Gandalf",
+          createdAt: "2025-01-01T00:00:00Z",
+          emailVerified: true,
+        },
+      };
+
+      expect(() => ReceivedRequestSchema.parse(invalid)).toThrow();
     });
   });
 
   describe("SentRequestSchema", () => {
     it("should parse a valid sent request", () => {
       const valid = {
-        id: "a1b2c3d4-e5f6-4a5b-9c3d-2e1f0a1b2c3d",
-        requesterId: "b2c3d4e5-f6a7-5b6c-0d4e-3f2a1b2c3d4e",
-        recipientId: "c3d4e5f6-a7b8-6c7d-1e5f-4a3b2c3d4e5f",
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        requesterId: "550e8400-e29b-41d4-a716-446655440001",
+        recipientId: "550e8400-e29b-41d4-a716-446655440002",
         status: "pending",
-        createdAt: "2024-01-01T00:00:00Z",
-        updatedAt: "2024-01-01T00:00:00Z",
+        createdAt: "2025-01-01T00:00:00Z",
+        updatedAt: "2025-01-01T00:00:00Z",
         recipient: {
-          id: "c3d4e5f6-a7b8-6c7d-1e5f-4a3b2c3d4e5f",
-          email: "recipient@example.com",
-          displayName: "RecipientUser",
+          id: "550e8400-e29b-41d4-a716-446655440002",
+          email: "frodon@example.com",
+          displayName: "Frodon",
+          createdAt: "2025-01-01T00:00:00Z",
           emailVerified: true,
-          createdAt: "2024-01-01T00:00:00Z",
         },
       };
-      expect(SentRequestSchema.safeParse(valid).success).toBe(true);
+
+      expect(SentRequestSchema.parse(valid)).toEqual(valid);
     });
 
-    it("should reject without recipient", () => {
+    it("should reject missing recipient field", () => {
       const invalid = {
-        id: "a1b2c3d4-e5f6-4a5b-9c3d-2e1f0a1b2c3d",
-        requesterId: "b2c3d4e5-f6a7-5b6c-0d4e-3f2a1b2c3d4e",
-        recipientId: "c3d4e5f6-a7b8-6c7d-1e5f-4a3b2c3d4e5f",
+        id: "550e8400-e29b-41d4-a716-446655440000",
+        requesterId: "550e8400-e29b-41d4-a716-446655440001",
+        recipientId: "550e8400-e29b-41d4-a716-446655440002",
         status: "pending",
-        createdAt: "2024-01-01T00:00:00Z",
-        updatedAt: "2024-01-01T00:00:00Z",
+        createdAt: "2025-01-01T00:00:00Z",
+        updatedAt: "2025-01-01T00:00:00Z",
       };
-      expect(SentRequestSchema.safeParse(invalid).success).toBe(false);
+
+      expect(() => SentRequestSchema.parse(invalid)).toThrow();
     });
   });
 
   describe("AcceptedFriendSchema", () => {
     it("should parse a valid accepted friend", () => {
       const valid = {
-        friendshipId: "a1b2c3d4-e5f6-4a5b-9c3d-2e1f0a1b2c3d",
+        friendshipId: "550e8400-e29b-41d4-a716-446655440000",
         friend: {
-          id: "b2c3d4e5-f6a7-5b6c-0d4e-3f2a1b2c3d4e",
-          email: "friend@example.com",
-          displayName: "FriendUser",
+          id: "550e8400-e29b-41d4-a716-446655440001",
+          email: "gandalf@example.com",
+          displayName: "Gandalf",
+          createdAt: "2025-01-01T00:00:00Z",
           emailVerified: true,
-          createdAt: "2024-01-01T00:00:00Z",
         },
       };
-      expect(AcceptedFriendSchema.safeParse(valid).success).toBe(true);
+
+      expect(AcceptedFriendSchema.parse(valid)).toEqual(valid);
     });
 
-    it("should reject without friend", () => {
-      const invalid = {
-        friendshipId: "a1b2c3d4-e5f6-4a5b-9c3d-2e1f0a1b2c3d",
-      };
-      expect(AcceptedFriendSchema.safeParse(invalid).success).toBe(false);
-    });
-
-    it("should reject without friendshipId", () => {
+    it("should reject missing friendshipId", () => {
       const invalid = {
         friend: {
-          id: "b2c3d4e5-f6a7-5b6c-0d4e-3f2a1b2c3d4e",
-          email: "friend@example.com",
-          displayName: "FriendUser",
+          id: "550e8400-e29b-41d4-a716-446655440001",
+          email: "gandalf@example.com",
+          displayName: "Gandalf",
+          createdAt: "2025-01-01T00:00:00Z",
           emailVerified: true,
-          createdAt: "2024-01-01T00:00:00Z",
         },
       };
-      expect(AcceptedFriendSchema.safeParse(invalid).success).toBe(false);
+
+      expect(() => AcceptedFriendSchema.parse(invalid)).toThrow();
+    });
+
+    it("should reject invalid friendshipId (not UUID)", () => {
+      const invalid = {
+        friendshipId: "not-a-uuid",
+        friend: {
+          id: "550e8400-e29b-41d4-a716-446655440001",
+          email: "gandalf@example.com",
+          displayName: "Gandalf",
+          createdAt: "2025-01-01T00:00:00Z",
+          emailVerified: true,
+        },
+      };
+
+      expect(() => AcceptedFriendSchema.parse(invalid)).toThrow();
     });
   });
 
   describe("SearchFormSchema", () => {
     it("should parse a valid search query", () => {
-      expect(SearchFormSchema.safeParse({ query: "ab" }).success).toBe(true);
-      expect(SearchFormSchema.safeParse({ query: "John" }).success).toBe(true);
+      expect(SearchFormSchema.parse({ query: "Gandalf" })).toEqual({
+        query: "Gandalf",
+      });
     });
 
-    it("should reject query too short", () => {
-      expect(SearchFormSchema.safeParse({ query: "a" }).success).toBe(false);
+    it("should reject query too short (< 2 chars)", () => {
+      expect(() => SearchFormSchema.parse({ query: "A" })).toThrow();
     });
 
-    it("should reject query too long", () => {
-      const longQuery = "a".repeat(51);
-      expect(SearchFormSchema.safeParse({ query: longQuery }).success).toBe(
-        false
-      );
+    it("should reject query too long (> 50 chars)", () => {
+      const longQuery = "A".repeat(51);
+      expect(() => SearchFormSchema.parse({ query: longQuery })).toThrow();
+    });
+
+    it("should reject empty query", () => {
+      expect(() => SearchFormSchema.parse({ query: "" })).toThrow();
     });
   });
 });
+
+// ── Matrice de couverture UA ─────────────────────────────────────────────────
+// Aucune UA couverte directement ici : ces schémas valident les données mais
+// ne couvrent pas la logique métier (modale, badge, etc.).
+// INV-001 (PendingReceivedCountSchema) est couvert dans shared/friendship-schema.test.ts.
