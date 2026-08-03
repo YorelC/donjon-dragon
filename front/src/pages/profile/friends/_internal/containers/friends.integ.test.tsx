@@ -201,6 +201,9 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
         if (method === "GET" && url === "/api/friends/requests/incoming") {
           return { status: 200, body: [] };
         }
+        if (method === "GET" && url === "/api/friends/requests/incoming/count") {
+          return { status: 200, body: { count: 0 } };
+        }
         if (method === "DELETE" && url.startsWith("/api/friends/")) {
           return { status: 204, body: undefined };
         }
@@ -314,6 +317,12 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
                 headers: { "Content-Type": "application/json" },
               });
             }
+            if (method === "GET" && urlStr === "/api/friends/requests/incoming/count") {
+              return new Response(JSON.stringify({ count: 0 }), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
             if (method === "DELETE" && urlStr.startsWith("/api/friends/")) {
               await deletePromise;
               return new Response(null, { status: 204 });
@@ -369,6 +378,12 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
             }
             if (method === "GET" && urlStr === "/api/friends/requests/incoming") {
               return new Response(JSON.stringify([]), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            if (method === "GET" && urlStr === "/api/friends/requests/incoming/count") {
+              return new Response(JSON.stringify({ count: 0 }), {
                 status: 200,
                 headers: { "Content-Type": "application/json" },
               });
@@ -439,6 +454,9 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
         if (method === "GET" && url === "/api/friends/requests/incoming") {
           return { status: 200, body: REQUESTS_3 };
         }
+        if (method === "GET" && url === "/api/friends/requests/incoming/count") {
+          return { status: 200, body: { count: 3 } };
+        }
         return { status: 404, body: { error: "not mocked" } };
       });
 
@@ -480,6 +498,9 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
         if (method === "GET" && url === "/api/friends/requests/incoming") {
           return { status: 200, body: fifteenRequests };
         }
+        if (method === "GET" && url === "/api/friends/requests/incoming/count") {
+          return { status: 200, body: { count: 15 } };
+        }
         return { status: 404, body: { error: "not mocked" } };
       });
 
@@ -498,6 +519,9 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
         if (method === "GET" && url === "/api/friends/requests/incoming") {
           return { status: 200, body: [] };
         }
+        if (method === "GET" && url === "/api/friends/requests/incoming/count") {
+          return { status: 200, body: { count: 0 } };
+        }
         return { status: 404, body: { error: "not mocked" } };
       });
 
@@ -513,6 +537,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
     it("INTEG-008: refetch au clic sur l'onglet 'Reçues' — le badge se met à jour", async () => {
       // Premier appel : 3 demandes. Deuxième appel (refetch) : 1 demande.
       let incomingCallCount = 0;
+      let countCallCount = 0;
 
       fetchSpy = vi
         .spyOn(global, "fetch")
@@ -531,6 +556,14 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
               incomingCallCount++;
               const body =
                 incomingCallCount === 1 ? REQUESTS_3 : REQUESTS_3.slice(0, 1);
+              return new Response(JSON.stringify(body), {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
+              });
+            }
+            if (method === "GET" && urlStr === "/api/friends/requests/incoming/count") {
+              countCallCount++;
+              const body = countCallCount === 1 ? { count: 3 } : { count: 1 };
               return new Response(JSON.stringify(body), {
                 status: 200,
                 headers: { "Content-Type": "application/json" },
@@ -556,7 +589,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
 
       // Le refetch est déclenché → le badge se met à jour (1 demande restante)
       await waitFor(() => {
-        expect(incomingCallCount).toBeGreaterThanOrEqual(2);
+        expect(countCallCount).toBeGreaterThanOrEqual(2);
       });
 
       // Après refetch, le badge passe à "1"
