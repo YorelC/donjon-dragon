@@ -4,342 +4,130 @@
 **ADR** : `docs/adr/001-friends-count-endpoint.md`, `docs/adr/002-friends-modal-optimistic-delete.md`
 **Ticket** : t_68908c1c
 **UA couvertes** : UA-001 à UA-010
+**Statut global** : ✅ TERMINÉ — `pnpm typecheck && pnpm lint && pnpm test` passent (330 tests)
 
 ---
 
-## Pré-requis (déjà livrés par l'architecte précédent)
+## Pré-requis (livrés par l'architecte)
 
 - `shared/src/friendship-schema.ts` : `DeleteFriendParamsSchema`, `PendingReceivedCountSchema` + matrice UA→INV
 - `back/src/friendship/03-domain/friendship.repository.port.ts` : `countPendingReceived()` (INV-001)
-- `back/src/friendship/04-infrastructure/mongo-friendship.repository.ts` : `countPendingReceived()` implémenté
-- `back/src/friendship/04-infrastructure/in-memory-friendship.repository.ts` : `countPendingReceived()` implémenté
-- `back/src/friendship/02-application/remove-friend.use-case.ts` : use case DELETE existant
-- `back/src/friendship/01-interface/friendship.controller.ts` : endpoint `DELETE :friendshipId` existant (UA-003)
-- `back/src/friendship/01-interface/friendship.module.ts` : module câblé avec tous les use cases sauf `CountPendingReceivedUseCase`
+- ADR 001 + ADR 002 acceptés
 
 ---
 
-## Phase 1 — Back-end : endpoint count (UA-008)
+## Phase 1 — Back-end : endpoint count (UA-008) ✅
 
-### E-001 — [FAIT] Implémenter `countPendingReceived` dans MongoFriendshipRepository
-- **Statut** : ✅ Déjà livré.
-- **Fichier** : `back/src/friendship/04-infrastructure/mongo-friendship.repository.ts`
-- **INV** : INV-001
+| Étape | Fichier | Statut |
+|---|---|---|
+| E-001 | `back/src/friendship/04-infrastructure/mongo-friendship.repository.ts` | ✅ FAIT |
+| E-002 | `back/src/friendship/04-infrastructure/in-memory-friendship.repository.ts` | ✅ FAIT |
+| E-003 | `back/src/friendship/02-application/count-pending-received.use-case.ts` | ✅ FAIT |
+| E-004 | `back/src/friendship/01-interface/friendship.controller.ts` (+`GET .../count`) | ✅ FAIT |
+| E-005 | `back/src/friendship/01-interface/friendship.module.ts` (provider CountPendingReceivedUseCase) | ✅ FAIT |
+| E-005b | `back/src/friendship/04-infrastructure/friendship.schema.ts` (index `{recipientId:1,status:1}`) | ✅ FAIT |
 
-### E-002 — [FAIT] Implémenter `countPendingReceived` dans InMemoryFriendshipRepository
-- **Statut** : ✅ Déjà livré.
-- **Fichier** : `back/src/friendship/04-infrastructure/in-memory-friendship.repository.ts`
-- **INV** : INV-001
-
-### E-003 — Créer le use case CountPendingReceivedUseCase
-- **Fichier** : `back/src/friendship/02-application/count-pending-received.use-case.ts` (NOUVEAU)
-- **Action** : Créer la classe avec `execute(dto: { userId: string }): Promise<PendingReceivedCount>`.
-- **INV** : INV-001
-- **Contenu attendu** (~15 lignes) :
-```ts
-import type { FriendshipRepositoryPort } from '../03-domain/friendship.repository.port';
-import type { PendingReceivedCount } from '@donjon-dragon/shared/friendship-schema';
-
-export interface CountPendingReceivedDto {
-  userId: string;
-}
-
-export class CountPendingReceivedUseCase {
-  constructor(private readonly friendshipRepo: FriendshipRepositoryPort) {}
-
-  async execute(dto: CountPendingReceivedDto): Promise<PendingReceivedCount> {
-    const count = await this.friendshipRepo.countPendingReceived(dto.userId);
-    return { count };
-  }
-}
-```
-
-### E-004 — Ajouter l'endpoint GET /api/friends/requests/incoming/count
-- **Fichier** : `back/src/friendship/01-interface/friendship.controller.ts`
-- **Action** : Ajouter une méthode `countPendingReceived()` avec `@Get('requests/incoming/count')`.
-- **INV** : INV-001
-- **Piège** : L'ordre des décorateurs `@Get()` compte. `@Get('requests/incoming/count')` doit être placé AVANT `@Get('requests/incoming')` sinon NestJS route `.../count` vers `listPendingReceived`.
-- **Contenu attendu** (~15 lignes) : ajouter dans la classe :
-```ts
-@Get('requests/incoming/count')
-async countPendingReceived(@CurrentUser() user: TokenPayload) {
-  return this.countPendingReceivedUseCase.execute({ userId: user.userId });
-}
-```
-+ injection dans le constructeur :
-```ts
-@Inject(CountPendingReceivedUseCase)
-private countPendingReceivedUseCase: CountPendingReceivedUseCase,
-```
-+ import de `CountPendingReceivedUseCase`.
-
-### E-005 — Enregistrer CountPendingReceivedUseCase dans le module
-- **Fichier** : `back/src/friendship/01-interface/friendship.module.ts`
-- **Action** : Ajouter un bloc provider pour `CountPendingReceivedUseCase`.
-- **Contenu attendu** (~10 lignes) :
-```ts
-{
-  provide: CountPendingReceivedUseCase,
-  useFactory: (friendshipRepo: FriendshipRepositoryPort) => {
-    return new CountPendingReceivedUseCase(friendshipRepo);
-  },
-  inject: [FRIENDSHIP_REPOSITORY],
-},
-```
-+ import.
-
-### E-005b — Ajouter l'index MongoDB { recipientId: 1, status: 1 }
-- **Fichier** : `back/src/friendship/04-infrastructure/friendship.schema.ts`
-- **Action** : Ajouter `FriendshipSchema.index({ recipientId: 1, status: 1 });` après les index existants.
-- **Justification** : ADR 001 — optimise `countPendingReceived` (countDocuments sur `{ status: 'pending', recipientId: userId }`). Index-only query, pas de fetch de documents.
-- **INV** : INV-001
-- **Contenu attendu** (~1 ligne) :
+**INV couverts** : INV-001, INV-002
 
 ---
 
-## Phase 2 — Front : hook de compteur + badge (UA-006, UA-007, UA-008, UA-010)
+## Phase 2 — Front : hook de compteur + badge (UA-006, UA-007, UA-008, UA-010) ✅
 
-### E-006 — Ajouter la route API côté front
-- **Fichier** : `front/src/shared/constants/api-routes.ts` (MODIFIER si existe, sinon NOUVEAU dans `_internal/`)
-- **Action** : Ajouter `incomingCount` dans l'objet `friends` de `API_ROUTES`.
-- **Contenu attendu** (~1 ligne) :
-```ts
-incomingCount: "/api/friends/requests/incoming/count",
-```
+| Étape | Fichier | Statut |
+|---|---|---|
+| E-006 | `front/src/shared/constants/api-routes.ts` (+`incomingCount`) | ✅ FAIT |
+| E-007 | `front/src/pages/profile/friends/_internal/queries/use-received-count.ts` | ✅ FAIT |
+| E-008 | `front/src/pages/profile/friends/_internal/views/friends.view.tsx` (+badge) | ✅ FAIT |
+| E-009 | `front/src/pages/profile/friends/_internal/containers/friends.container.tsx` (+count, refetch) | ✅ FAIT |
 
-### E-007 — Créer le hook useReceivedCount
-- **Fichier** : `front/src/pages/profile/friends/_internal/queries/use-received-count.ts` (NOUVEAU)
-- **Action** : Créer un hook TanStack Query qui appelle `API_ROUTES.friends.incomingCount`.
-- **INV** : INV-001
-- **Contenu attendu** (~20 lignes) :
-```ts
-import { useQuery } from "@tanstack/react-query";
-import { api } from "@/shared/api/api";
-import { API_ROUTES } from "@/shared/constants/api-routes";
-import type { PendingReceivedCount } from "@donjon-dragon/shared";
-
-export function useReceivedCount() {
-  return useQuery({
-    queryKey: ["friends", "received", "count"],
-    queryFn: () => api.get<PendingReceivedCount>(API_ROUTES.friends.incomingCount),
-    staleTime: 30_000,
-    retry: false,
-  });
-}
-```
-
-### E-008 — Modifier FriendsView pour afficher le badge
-- **Fichier** : `front/src/pages/profile/friends/_internal/views/friends.view.tsx`
-- **Action** : Ajouter une prop `receivedCount?: number` et afficher un `Badge` dans le `TabsTrigger` "Reçues".
-- **INV** : INV-007, INV-008
-- **Piège** : La view est PURE — pas de hook. Le container parent injecte `receivedCount`. Le badge est conditionnel : `{receivedCount > 0 && <Badge>...</Badge>}`.
-- **Contenu attendu** (~20 lignes) :
-  - Props : `+ receivedCount?: number`
-  - Dans le `TabsTrigger value="received"` :
-```tsx
-Reçues
-{receivedCount !== undefined && receivedCount > 0 && (
-  <Badge
-    variant="default"
-    aria-label={
-      receivedCount > 9
-        ? "Plus de 9 demandes en attente"
-        : `${receivedCount} demandes en attente`
-    }
-  >
-    {receivedCount > 9 ? "9+" : receivedCount}
-  </Badge>
-)}
-```
-
-### E-009 — Modifier FriendsContainer pour injecter le count et le refetch
-- **Fichier** : `front/src/pages/profile/friends/_internal/containers/friends.container.tsx`
-- **Action** : Utiliser `useReceivedCount()` + passer `receivedCount` à `FriendsView`. Gérer le refetch au clic sur l'onglet "Reçues" (UA-009).
-- **INV** : UA-008, UA-009
-- **Contenu attendu** (~10 lignes) :
-```ts
-const { data: countData, refetch: refetchCount } = useReceivedCount();
-// ...
-const handleTabChange = (value: string) => {
-  if (value === "received") refetchCount();
-};
-// ...
-<FriendsView
-  receivedCount={countData?.count}
-  onTabChange={handleTabChange}
-  // ...props existantes
-/>
-```
+**INV couverts** : INV-001, INV-007, INV-008
 
 ---
 
-## Phase 3 — Front : modale de suppression + mutation optimiste (UA-001 à UA-005)
+## Phase 3 — Front : modale de suppression + mutation optimiste (UA-001 à UA-005) ✅
 
-### E-010 — Modifier le hook useRemoveFriend (mutation optimiste)
-- **Fichier** : `front/src/pages/profile/friends/_internal/queries/use-remove-friend.ts` (MODIFIER)
-- **Action** : Mutation TanStack Query avec `onMutate` (retrait optimiste), `onSuccess` (toast + invalidation count), `onError` (rollback + toast), `onSettled` (invalidation liste).
-- **INV** : INV-002, INV-003, INV-004
-- **Pièges** :
-  - Le query key de la liste d'amis est `["friends", "list"]` (utilisé par `useFriends`) — NE PAS utiliser `["friends"]` seul.
-  - Le snapshot `previous` doit capturer TOUTE la liste (pas juste l'élément supprimé) — pour le rollback intégral.
-  - `cancelQueries` avant le `setQueryData` pour éviter une race condition.
-  - Le toast d'erreur utilise le message exact de la spec : `"Erreur lors de la suppression. Veuillez réessayer."`
-  - Invalider `["friends", "received", "count"]` au `onSuccess` (un ami supprimé ne génère pas de demande, mais par hygiène).
-- **Contenu attendu** (~30 lignes) :
-```ts
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { api } from "@/shared/api/api";
-import { API_ROUTES } from "@/shared/constants/api-routes";
-import type { AcceptedFriend } from "../types/friends-schema";
+| Étape | Fichier | Statut |
+|---|---|---|
+| E-010 | `front/src/pages/profile/friends/_internal/queries/use-remove-friend.ts` | ✅ FAIT |
+| E-011 | `front/src/pages/profile/friends/_internal/views/friends-list.view.tsx` (+AlertDialog) | ✅ FAIT |
+| E-012 | `front/src/pages/profile/friends/_internal/containers/friends-list.container.tsx` (+état modale) | ✅ FAIT |
 
-export function useRemoveFriend() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: (friendshipId: string) =>
-      api.delete(API_ROUTES.friends.remove(friendshipId)),
-    onMutate: async (friendshipId) => {
-      await queryClient.cancelQueries({ queryKey: ["friends", "list"] });
-      const previous = queryClient.getQueryData<AcceptedFriend[]>(["friends", "list"]);
-      queryClient.setQueryData<AcceptedFriend[]>(["friends", "list"], (old) =>
-        old?.filter((f) => f.friendshipId !== friendshipId) ?? []
-      );
-      return { previous };
-    },
-    onSuccess: () => {
-      toast.success("Ami supprimé");
-      queryClient.invalidateQueries({ queryKey: ["friends", "received", "count"] });
-    },
-    onError: (_err, _friendshipId, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(["friends", "list"], context.previous);
-      }
-      toast.error("Erreur lors de la suppression. Veuillez réessayer.");
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["friends", "list"] });
-    },
-  });
-}
-```
-
-### E-011 — Modifier FriendsListView pour wrapper AlertDialog
-- **Fichier** : `front/src/pages/profile/friends/_internal/views/friends-list.view.tsx`
-- **Action** : Wrapper le bouton "Supprimer" dans un `AlertDialog`. Ajouter les props `selectedFriendDisplayName`, `isDeletePending`, `onDeleteClick`, `onDeleteConfirm`, `onDeleteCancel`.
-- **INV** : INV-005, INV-006
-- **Piège** : Le `AlertDialogTrigger` est sur le bouton "Supprimer" de chaque carte. L'état `open` est contrôlé par le container via une prop `selectedFriendId` — on utilise `AlertDialog` en mode contrôlé (`open` + `onOpenChange`).
-- **Contenu attendu** (~35 lignes) :
-  - Ajouter aux props : `selectedFriendId: string | null`, `friendDisplayName: (id: string) => string`, `isDeletePending: boolean`, `onDeleteClick: (id: string) => void`, `onDeleteConfirm: () => void`, `onOpenChange: (open: boolean) => void`
-  - Remplacer le bouton "Supprimer" dans chaque carte par :
-```tsx
-<AlertDialog open={selectedFriendId === friend.id} onOpenChange={(open) => {
-  if (!open) onDeleteCancel();
-  else onDeleteClick(friend.id);
-}}>
-  <AlertDialogTrigger asChild>
-    <Button variant="destructive" size="sm" disabled={isDeletePending}>
-      Supprimer
-    </Button>
-  </AlertDialogTrigger>
-  <AlertDialogContent size="sm">
-    <AlertDialogHeader>
-      <AlertDialogTitle>Supprimer {friendDisplayName(friend.id)} ?</AlertDialogTitle>
-      <AlertDialogDescription>
-        Voulez-vous vraiment supprimer {friendDisplayName(friend.id)} ?
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel onClick={onDeleteCancel}>Annuler</AlertDialogCancel>
-      <AlertDialogAction variant="destructive" onClick={onDeleteConfirm} disabled={isDeletePending}>
-        Supprimer
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
-```
-
-### E-012 — Modifier FriendsListContainer pour gérer l'état de la modale
-- **Fichier** : `front/src/pages/profile/friends/_internal/containers/friends-list.container.tsx`
-- **Action** : Ajouter l'état `selectedFriendId`, appeler `useRemoveFriend()`, connecter les callbacks aux props de la view.
-- **INV** : INV-003, INV-005
-- **Contenu attendu** (~25 lignes) :
-```ts
-const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
-const { mutate: removeFriend, isPending: isDeletePending } = useRemoveFriend();
-
-const handleDeleteClick = (id: string) => setSelectedFriendId(id);
-const handleDeleteConfirm = () => {
-  if (selectedFriendId) {
-    removeFriend(selectedFriendId);
-    setSelectedFriendId(null);
-  }
-};
-const handleDeleteCancel = () => setSelectedFriendId(null);
-
-// ...
-<FriendsListView
-  selectedFriendId={selectedFriendId}
-  isDeletePending={isDeletePending}
-  onDeleteClick={handleDeleteClick}
-  onDeleteConfirm={handleDeleteConfirm}
-  onDeleteCancel={handleDeleteCancel}
-  friendDisplayName={(id) => /* lookup displayName from data */ }
-  // ...props existantes
-/>
-```
+**INV couverts** : INV-002, INV-003, INV-004, INV-005, INV-006
 
 ---
 
-## Ordre d'exécution
+## Phase 4 — AUDIT de clôture 🔍
 
-```
-Phase 1 (back) :  E-003 → E-004 → E-005 → [pnpm typecheck back]
-Phase 2 (front) : E-006 → E-007 → E-008 → E-009 → [pnpm typecheck front]
-Phase 3 (front) : E-010 → E-011 → E-012 → [pnpm typecheck all]
-```
+### A-001 — Vérifier la matrice UA → test
+Vérifier que chaque UA de la spec a au moins un test qui la couvre.
+- **Fichier** : tous les `*.test.*` du module friendship (back + front + shared)
+- **INV** : tous (INV-001 à INV-008)
 
-Les phases 1 et 2 sont indépendantes (peuvent être parallélisées).
-La phase 3 dépend conceptuellement de la phase 2 (le badge est un prérequis visuel de la page amis) mais techniquement indépendante.
+### A-002 — Vérifier les cas limites
+Checklist issue de la spec :
+
+| Cas limite | UA | Attendu |
+|---|---|---|
+| Count = 0 → badge caché | UA-010 | Pas de `<Badge>` dans le DOM |
+| Count = 1..9 → badge "{n}" | UA-006 | Badge avec le chiffre exact |
+| Count ≥ 10 → badge "9+" | UA-007 | Badge "9+" + aria-label "Plus de 9 demandes" |
+| DELETE friendshipId invalide | UA-003 | 400 Bad Request |
+| DELETE friendshipId inexistant | UA-003 | 404 Not Found |
+| DELETE non-participant | UA-003 | 403 Forbidden |
+| Bouton Supprimer disabled pendant mutation | UA-003 | Pas de double-clic |
+| Escape ferme modale sans API | UA-002 | Aucun appel DELETE |
+| Clic Annuler ferme sans API | UA-002 | Aucun appel DELETE |
+| Échec API → rollback + toast erreur | UA-005 | Ami réapparaît, toast rouge |
+| Succès API → toast succès | UA-004 | "Ami supprimé", vert, 3s |
+
+### A-003 — Vérifier les frontières hexagonales
+- Aucun import Mongoose dans `02-application/`
+- Aucun import croisé `02-application/` ↔ `04-infrastructure/`
+- Front n'importe que `@donjon-dragon/shared`, jamais les types back
+
+### A-004 — Vérifier `pnpm typecheck && pnpm lint && pnpm test`
+Doit passer au vert. Actuellement : ✅ 330 tests, 0 échec.
 
 ---
 
-## Vérification
+## Ordre d'exécution (linéaire strict)
 
-```bash
-pnpm typecheck && pnpm lint && pnpm test
+```
+Phase 1 (back)  →  Phase 2 (front)  →  Phase 3 (front)  →  Phase 4 (AUDIT)
+      ✅                 ✅                    ✅                 🔍 restant
 ```
 
-**Cas limites à tester (testeur)** :
-- Count = 0 → badge caché (UA-010)
-- Count = 1..9 → badge "{n}" (UA-006)
-- Count ≥ 10 → badge "9+" (UA-007)
-- Count après acceptation d'une demande → décrémenté
-- Count après refus d'une demande → décrémenté
-- DELETE avec friendshipId invalide (pas un UUID) → 400 Bad Request
-- DELETE d'un friendshipId inexistant → 404 Not Found
-- DELETE par un non-participant → 403 Forbidden
-- Modale : le bouton "Supprimer" est disabled pendant la mutation (pas de double-clic)
-- Modale : Escape ferme sans appel API
-- Modale : clic "Annuler" ferme sans appel API
-- Modale : après échec API, l'ami réapparaît à sa position d'origine
-- Toast succès : message exact "Ami supprimé", vert, 3 secondes
-- Toast erreur : message exact "Erreur lors de la suppression. Veuillez réessayer.", rouge, 3 secondes
-- Badge : aria-label correct pour count ≤ 9 et count > 9
+**Rappel chaîne linéaire** (Charly) :
+> Un ticket par parent, TEST avant les FEAT, [AUDIT] en clôture. Pas de parallélisme.
+
+Pour les features futures, l'ordre canonique est :
+1. `[TEST]` — testeur écrit les tests (lecture `shared/` + `03-domain/` uniquement)
+2. `[FEAT]` — dev implémente (lecture contrats + tests)
+3. `[INTEG]` — revieweur fusionne tests + code
+4. `[AUDIT]` — vérification finale de conformité à la spec
 
 ---
 
 ## Matrice UA → INV → Étapes
 
-| UA | INV | Étapes |
-|---|---|---|
-| UA-001 (ouverture modale) | INV-006 | E-011, E-012 |
-| UA-002 (fermeture annuler) | INV-005 | E-011, E-012 |
-| UA-003 (DELETE optimiste) | INV-002, INV-003 | E-010, E-012 |
-| UA-004 (toast succès) | — | E-010 |
-| UA-005 (toast échec + rollback) | INV-004 | E-010 |
-| UA-006 (badge >0) | INV-001, INV-007 | E-006, E-007, E-008, E-009 |
-| UA-007 (badge 9+) | INV-008 | E-008 |
-| UA-008 (query count) | INV-001 | E-003, E-004, E-005, E-006, E-007 |
-| UA-009 (refetch onglet) | — | E-009 |
-| UA-010 (badge caché si 0) | INV-007 | E-008 |
+| UA | INV | Étapes | Tests |
+|---|---|---|---|
+| UA-001 (ouverture modale) | INV-006 | E-011, E-012 | `friends-list.view.test.tsx`, `friends-list.container.test.tsx` |
+| UA-002 (fermeture annuler) | INV-005 | E-011, E-012 | `friends-list.view.test.tsx`, `friends-list.container.test.tsx` |
+| UA-003 (DELETE optimiste) | INV-002, INV-003 | E-010, E-012 | `use-remove-friend.test.tsx`, `remove-friend.use-case.test.ts` |
+| UA-004 (toast succès) | — | E-010 | `use-remove-friend.test.tsx` |
+| UA-005 (toast échec + rollback) | INV-004 | E-010 | `use-remove-friend.test.tsx` |
+| UA-006 (badge >0) | INV-001, INV-007 | E-006..E-009 | `friends.view.test.tsx`, `use-received-count.test.tsx` |
+| UA-007 (badge 9+) | INV-008 | E-008 | `friends.view.test.tsx` |
+| UA-008 (query count) | INV-001 | E-003..E-007 | `count-pending-received.use-case.test.ts`, `use-received-count.test.tsx` |
+| UA-009 (refetch onglet) | — | E-009 | `friends.container.test.tsx` |
+| UA-010 (badge caché si 0) | INV-007 | E-008 | `friends.view.test.tsx` |
+
+---
+
+## Vérification finale
+
+```bash
+pnpm typecheck && pnpm lint && pnpm test
+# Résultat 2026-08-03 : ✅ 33 fichiers, 330 tests passent
+```
