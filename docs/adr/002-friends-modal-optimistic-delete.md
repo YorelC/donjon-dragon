@@ -32,7 +32,7 @@ Le `AlertDialog` shadcn fournit nativement :
 - `AlertDialogCancel` pour "Annuler" et `AlertDialogAction` pour "Supprimer"
 
 Aucune customisation nécessaire — le composant standard satisfait tous les
-critères a11y de la spec d'interaction (`docs/design/interaction-spec.md` §4).
+critères a11y requis (rôle `alertdialog`, focus trap natif, retour de focus).
 
 Les props critiques :
 - `AlertDialogContent` en `size="sm"` (centré, compact)
@@ -65,26 +65,29 @@ useMutation({
     api.delete(API_ROUTES.friends.remove(friendshipId)),
   onMutate: async (friendshipId) => {
     // Annuler les queries en cours pour éviter un écrasement du snapshot
-    await queryClient.cancelQueries({ queryKey: ["friends"] });
+    await queryClient.cancelQueries({ queryKey: ["friends", "list"] });
     // Snapshot de la liste avant retrait
-    const previous = queryClient.getQueryData(["friends"]);
+    const previous = queryClient.getQueryData(["friends", "list"]);
     // Retrait optimiste
-    queryClient.setQueryData(["friends"], (old) =>
+    queryClient.setQueryData(["friends", "list"], (old) =>
       old?.filter((f) => f.id !== friendshipId) ?? []
     );
     return { previous }; // contexte pour onError
   },
+  onSuccess: () => {
+    toast.success("Ami supprimé");
+    queryClient.invalidateQueries({ queryKey: ["friends", "received", "count"] });
+  },
   onError: (_err, _friendshipId, context) => {
     // Rollback : restaurer le snapshot
     if (context?.previous) {
-      queryClient.setQueryData(["friends"], context.previous);
+      queryClient.setQueryData(["friends", "list"], context.previous);
     }
     toast.error("Erreur lors de la suppression. Veuillez réessayer.");
   },
   onSettled: () => {
     // Invalider pour resynchroniser avec le serveur
-    queryClient.invalidateQueries({ queryKey: ["friends"] });
-    queryClient.invalidateQueries({ queryKey: ["friends", "received", "count"] });
+    queryClient.invalidateQueries({ queryKey: ["friends", "list"] });
   },
 });
 ```
@@ -122,7 +125,7 @@ Pas de `onSuccess` toast explicite nécessaire si le succès est implicite
 
 | Fichier | Action | UA |
 |---|---|---|
-| `front/src/pages/profile/friends/_internal/hooks/use-remove-friend.ts` | NOUVEAU : mutation TanStack Query avec onMutate/onError/onSettled | UA-003, UA-004, UA-005 |
+| `front/src/pages/profile/friends/_internal/queries/use-remove-friend.ts` | MODIFIÉ : mutation TanStack Query avec onMutate/onError/onSuccess/onSettled | UA-003, UA-004, UA-005 |
 | `front/src/pages/profile/friends/_internal/containers/friends-list.container.tsx` | MODIFIÉ : remplacer le bouton "Supprimer" direct par ouverture d'AlertDialog + état `selectedFriend` | UA-001, UA-002, UA-003 |
 | `front/src/pages/profile/friends/_internal/views/friends-list.view.tsx` | MODIFIÉ : wrapper AlertDialog autour du bouton Supprimer, passer `onDeleteConfirm` | UA-001, UA-002 |
 | `front/src/pages/profile/friends/_internal/views/friends.view.tsx` | MODIFIÉ : prop `receivedCount` + badge dans TabsTrigger | UA-006, UA-007, UA-010 |

@@ -175,22 +175,23 @@ const handleTabChange = (value: string) => {
 
 ## Phase 3 — Front : modale de suppression + mutation optimiste (UA-001 à UA-005)
 
-### E-010 — Créer le hook useRemoveFriend (mutation optimiste)
-- **Fichier** : `front/src/pages/profile/friends/_internal/hooks/use-remove-friend.ts` (NOUVEAU)
-- **Action** : Mutation TanStack Query avec `onMutate` (retrait optimiste), `onError` (rollback + toast), `onSuccess` (toast succès + invalidation count).
+### E-010 — Modifier le hook useRemoveFriend (mutation optimiste)
+- **Fichier** : `front/src/pages/profile/friends/_internal/queries/use-remove-friend.ts` (MODIFIER)
+- **Action** : Mutation TanStack Query avec `onMutate` (retrait optimiste), `onSuccess` (toast + invalidation count), `onError` (rollback + toast), `onSettled` (invalidation liste).
 - **INV** : INV-002, INV-003, INV-004
 - **Pièges** :
+  - Le query key de la liste d'amis est `["friends", "list"]` (utilisé par `useFriends`) — NE PAS utiliser `["friends"]` seul.
   - Le snapshot `previous` doit capturer TOUTE la liste (pas juste l'élément supprimé) — pour le rollback intégral.
   - `cancelQueries` avant le `setQueryData` pour éviter une race condition.
   - Le toast d'erreur utilise le message exact de la spec : `"Erreur lors de la suppression. Veuillez réessayer."`
-  - Invalider aussi `["friends", "received", "count"]` au `onSettled` (un ami supprimé ne génère pas de demande, mais par hygiène).
+  - Invalider `["friends", "received", "count"]` au `onSuccess` (un ami supprimé ne génère pas de demande, mais par hygiène).
 - **Contenu attendu** (~30 lignes) :
 ```ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/shared/api/api";
 import { API_ROUTES } from "@/shared/constants/api-routes";
-import type { Friendship } from "@donjon-dragon/shared";
+import type { AcceptedFriend } from "../types/friends-schema";
 
 export function useRemoveFriend() {
   const queryClient = useQueryClient();
@@ -199,25 +200,25 @@ export function useRemoveFriend() {
     mutationFn: (friendshipId: string) =>
       api.delete(API_ROUTES.friends.remove(friendshipId)),
     onMutate: async (friendshipId) => {
-      await queryClient.cancelQueries({ queryKey: ["friends"] });
-      const previous = queryClient.getQueryData<Friendship[]>(["friends"]);
-      queryClient.setQueryData<Friendship[]>(["friends"], (old) =>
-        old?.filter((f) => f.id !== friendshipId) ?? []
+      await queryClient.cancelQueries({ queryKey: ["friends", "list"] });
+      const previous = queryClient.getQueryData<AcceptedFriend[]>(["friends", "list"]);
+      queryClient.setQueryData<AcceptedFriend[]>(["friends", "list"], (old) =>
+        old?.filter((f) => f.friendshipId !== friendshipId) ?? []
       );
       return { previous };
-    },
-    onError: (_err, _friendshipId, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(["friends"], context.previous);
-      }
-      toast.error("Erreur lors de la suppression. Veuillez réessayer.");
     },
     onSuccess: () => {
       toast.success("Ami supprimé");
       queryClient.invalidateQueries({ queryKey: ["friends", "received", "count"] });
     },
+    onError: (_err, _friendshipId, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["friends", "list"], context.previous);
+      }
+      toast.error("Erreur lors de la suppression. Veuillez réessayer.");
+    },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["friends"] });
+      queryClient.invalidateQueries({ queryKey: ["friends", "list"] });
     },
   });
 }

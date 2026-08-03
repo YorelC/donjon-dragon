@@ -46,7 +46,7 @@ export type DeleteFriendParams = z.infer<typeof DeleteFriendParamsSchema>;
 export type PendingReceivedCount = z.infer<typeof PendingReceivedCountSchema>;
 
 // ── Matrice UA → INV ────────────────────────────────────────────────────────
-// UA-001 (ouverture modale)      → INV-006 [ADR-002] : displayName dans le titre
+// UA-001 (ouverture modale)      → INV-006 [ADR-002] : titre "Voulez-vous vraiment supprimer {displayName} ?"
 // UA-002 (fermeture annuler)     → INV-005 [ADR-002] : pas d'appel API, état null
 // UA-003 (DELETE optimiste)      → INV-002 (DeleteFriendParamsSchema) + INV-003 [ADR-002] : bouton disabled pendant mutation
 // UA-004 (toast succès)          → purement front (sonner, pas d'INV Zod)
