@@ -19,10 +19,10 @@ Margarette est ton agent Hermès conversationnel (Discord). Elle ne prend PAS un
 | 3 | `architecte` | deepseek-v4-pro | Architecture hexagonale, ADR, contrats Zod dans `shared`, ports du domaine, modélisation Mongo/Redis |
 | 4 | `designer` | deepseek-v4-pro | UX/UI sur base shadcn/ui + Tailwind v4, wireframes, **accessibilité (a11y)** |
 | 5 | `dev-senior` | **pont → `claude -p`** | Code complexe : moteur de combat, Socket.IO temps réel, auth JWT, domaine métier |
-| 6 | `ouvrier` | qwen3-coder-next | Code simple : CRUD, composants UI, adapters d'infrastructure, refactos mécaniques |
-| 7 | `testeur` | qwen3-coder-next | Tests Vitest unitaires/intégration + e2e Playwright — méthode **dual-sandbox** |
+| 6 | `ouvrier` | deepseek-v4-flash | Code simple : CRUD, composants UI, adapters d'infrastructure, refactos mécaniques |
+| 7 | `testeur` | deepseek-v4-flash | Tests Vitest unitaires/intégration + e2e Playwright — méthode **dual-sandbox** |
 | 8 | `revieweur` | **pont → `claude -p`** | Revue critique : frontières hexagonales, sécurité, qualité |
-| 9 | `devops` | qwen3-coder-next | CI/CD, déploiement (Docker : back+Redis+Mongo, front statique), **observabilité, FinOps** |
+| 9 | `devops` | deepseek-v4-flash | CI/CD, déploiement (Docker : back+Redis+Mongo, front statique), **observabilité, FinOps** |
 | 10 | `securite` | deepseek-v4-pro | OWASP (dont WebSocket), **RGPD**, audit dépendances |
 | 11 | `scribe` | deepseek-v4-flash | Doc technique et utilisateur, changelog |
 
@@ -52,7 +52,7 @@ dev-senior    ouvrier            testeur          ← EN PARALLÈLE (dual-sandbo
   │              │                Zod partagés, SANS lire
   └──────┬───────┘                l'implémentation)
          ▼                          │
-     revieweur ◄────────────────────┘  (fusion : tests + code)
+     revieweur ◄────────────────────┘  (fusion tests+code, puis [INTEG])
          │  kanban_block("review-required: ...") si humain requis
          ▼
       devops ── CI verte → déploiement → monitoring
@@ -75,11 +75,20 @@ dev-senior    ouvrier            testeur          ← EN PARALLÈLE (dual-sandbo
 
 Objectif : **≤ 30 % des tickets de code consomment du quota Claude Pro.**
 
-## 4. Modes nominal / dégradé (quota Claude Pro)
+## 4. Modes nominal / dégradé
 
-- **NOMINAL** : `dev-senior` et `revieweur` appellent `claude -p` via `scripts/claude-task.ps1`.
-- **DÉGRADÉ** (exit 42 du script) : fichier `MODE` → `degrade|reset=...` ; les tickets L/XL passent au binôme `architecte` (plan d'implémentation ultra-fin) + `ouvrier` (exécution), revue par `architecte` ; l'`orchestrateur` re-bascule après l'heure de reset (fenêtres de 5 h du plan Pro).
+Deux axes indépendants, à ne pas confondre.
+
+**Axe Claude (quota du plan Pro).**
+- NOMINAL : `dev-senior` et `revieweur` appellent `claude -p` via `scripts/claude-task.ps1`.
+- DÉGRADÉ (exit 42 du script) : fichier `MODE` → `degrade|reset=...` ; les tickets `[ALGO]` passent au binôme `architecte` (plan d'implémentation ultra-fin) + `ouvrier` (exécution), revue par `architecte` ; l'`orchestrateur` re-bascule après l'heure de reset (fenêtres de 5 h).
 - Tous les agents lisent `MODE` en début de tâche.
+
+**Axe modèle de code (nuage ou local).** Bascule par `hermes/set-mode.ps1`.
+- `-Mode cloud` (nominal) : `ouvrier`, `testeur` et `devops` sur DeepSeek Flash. Aucun besoin du serveur llama.cpp, aucune contention GPU, `max_in_progress: 3`. Coût mesuré : de l'ordre de 0,002 $ par ticket, soit quelques dollars par mois.
+- `-Mode local` (dégradé) : les mêmes profils sur Qwen3-Coder-Next local, `max_in_progress: 1` (le GPU est partagé, un seul worker à la fois). À utiliser hors réseau, en cas d'indisponibilité d'OpenRouter, ou par choix délibéré de coût nul.
+
+Le LLM local n'est donc plus sur le chemin critique. Son rôle est celui d'un filet : garantir que la production continue sans réseau et sans compte.
 
 ## 5. Escalade et blocage
 

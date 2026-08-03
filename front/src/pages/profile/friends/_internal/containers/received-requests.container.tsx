@@ -4,7 +4,7 @@ import { useRefuseFriendRequest } from "../queries/use-refuse-friend-request";
 import { ReceivedRequestsView } from "../views/received-requests.view";
 
 export function ReceivedRequestsContainer() {
-  const receivedQuery = useReceivedRequests(true);
+  const receivedQuery = useReceivedRequests();
   const acceptMutation = useAcceptFriendRequest();
   const refuseMutation = useRefuseFriendRequest();
 

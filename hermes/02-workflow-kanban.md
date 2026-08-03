@@ -90,7 +90,8 @@ hermes kanban create "[FEAT][L] Editeur de fiche interactif (front)" --assignee 
 hermes kanban create "[REVIEW] Revue: feature personnage" --assignee revieweur --parent <id_feat_s> --workspace dir:C:\_work\my_projects\donjon-dragon
 hermes kanban link <id_feat_l> <id_review>
 hermes kanban link <id_test> <id_review>
-hermes kanban create "[OPS][S] Deployer + smoke test" --assignee devops --parent <id_review> --workspace dir:C:\_work\my_projects\donjon-dragon
+hermes kanban create "[INTEG][M] Parcours complet: fiche personnage" --assignee testeur --parent <id_review> --workspace dir:C:\_work\my_projects\donjon-dragon
+hermes kanban create "[OPS][S] Deployer + smoke test" --assignee devops --parent <id_integ> --workspace dir:C:\_work\my_projects\donjon-dragon
 hermes kanban create "[DOC][S] Changelog + doc utilisateur" --assignee scribe --parent <id_ops> --workspace dir:C:\_work\my_projects\donjon-dragon
 ```
 

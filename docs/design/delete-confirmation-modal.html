@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wireframe — Modale de confirmation suppression (AlertDialog)</title>
+  <!-- Tailwind v4 CDN (via @tailwindcss/cdn) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    /* Tokens du projet (extrait de front/src/index.css) */
+    @theme {
+      --color-background: oklch(1 0 0);
+      --color-foreground: oklch(0.145 0 0);
+      --color-card: oklch(1 0 0);
+      --color-card-foreground: oklch(0.145 0 0);
+      --color-popover: oklch(1 0 0);
+      --color-popover-foreground: oklch(0.145 0 0);
+      --color-primary: oklch(0.205 0.042 265.755);
+      --color-primary-foreground: oklch(0.985 0 0);
+      --color-secondary: oklch(0.965 0.021 266.286);
+      --color-secondary-foreground: oklch(0.205 0.042 265.755);
+      --color-muted: oklch(0.708 0.049 264.777);
+      --color-destructive: oklch(0.577 0.245 27.325);
+      --color-destructive-foreground: oklch(0.985 0 0);
+      --color-success: oklch(0.6 0.177 142.476);
+      --color-success-foreground: oklch(0.985 0 0);
+      --color-border: oklch(0.922 0.024 270.291);
+      --color-ring: oklch(0.708 0.049 264.777);
+      --radius-sm: 0.25rem;
+      --radius-md: 0.375rem;
+      --radius-lg: 0.5rem;
+    }
+
+    /* Focus visible ring (a11y) */
+    *:focus-visible {
+      outline: 2px solid var(--color-ring);
+      outline-offset: 2px;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--color-background);
+      color: var(--color-foreground);
+    }
+
+    /* Overlay pour simuler le fond bloquant de l'AlertDialog */
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Contenu du dialog (copie du style shadcn AlertDialogContent size="sm") */
+    .dialog-content {
+      width: 100%;
+      max-width: 20rem; /* max-w-xs pour size="sm" */
+      background: var(--color-background);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      display: grid;
+      gap: 1rem;
+    }
+
+    .empty-state-text {
+      font-size: 0.875rem;
+      font-style: italic;
+      color: var(--color-muted);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+  <!-- Contexte : la page Amis (simplifiée) -->
+  <div class="w-full max-w-xl mx-auto space-y-6">
+
+    <h1 class="text-2xl font-bold">Amis</h1>
+
+    <!-- Barre d'onglets (copie de friends.view.tsx) -->
+    <div class="flex rounded-lg bg-secondary p-[3px] w-full">
+      <button class="flex-1 rounded-md px-2 py-1 text-sm font-medium text-foreground bg-background shadow-sm" aria-current="page">Amis</button>
+      <button class="flex-1 rounded-md px-2 py-1 text-sm font-medium text-muted-foreground hover:text-foreground">Reçues</button>
+      <button class="flex-1 rounded-md px-2 py-1 text-sm font-medium text-muted-foreground hover:text-foreground">Envoyées</button>
+      <button class="flex-1 rounded-md px-2 py-1 text-sm font-medium text-muted-foreground hover:text-foreground">Chercher</button>
+    </div>
+
+    <!-- Carte d'un ami (avec bouton supprimer) -->
+    <div class="border border-border rounded-lg p-4 flex items-center justify-between">
+      <span class="font-medium">Gandalf</span>
+      <button
+        class="inline-flex items-center justify-center rounded-md bg-destructive text-white px-3 py-1.5 text-sm font-medium hover:bg-destructive/90 focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label="Supprimer Gandalf"
+        onclick="document.getElementById('modal-overlay').classList.remove('hidden')"
+      >
+        Supprimer
+      </button>
+    </div>
+
+    <div class="border border-border rounded-lg p-4 flex items-center justify-between">
+      <span class="font-medium">Frodon Sacquet</span>
+      <button
+        class="inline-flex items-center justify-center rounded-md bg-destructive text-white px-3 py-1.5 text-sm font-medium hover:bg-destructive/90 focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label="Supprimer Frodon Sacquet"
+        onclick="document.getElementById('modal-overlay').classList.remove('hidden')"
+      >
+        Supprimer
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ALERTDIALOG — Modale de confirmation (composant cible)        -->
+  <!-- État : ouvert, affiché après clic "Supprimer"               -->
+  <!-- Correspond au composant shadcn AlertDialog size="sm"         -->
+  <!-- ============================================================ -->
+
+  <div id="modal-overlay" class="dialog-overlay hidden" role="dialog" aria-modal="true" aria-label="Confirmation de suppression" aria-describedby="dialog-desc">
+    <div class="dialog-content" role="alertdialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc">
+
+      <!-- AlertDialogHeader (version size="sm" → centré) -->
+      <div class="text-center space-y-1.5">
+        <!-- AlertDialogTitle -->
+        <h2 id="dialog-title" class="text-lg font-semibold">Supprimer Gandalf ?</h2>
+        <!-- AlertDialogDescription -->
+        <p id="dialog-desc" class="text-sm text-muted-foreground">
+          Voulez-vous vraiment supprimer Gandalf ?
+        </p>
+      </div>
+
+      <!-- AlertDialogFooter (size="sm" → grid 2 colonnes) -->
+      <div class="grid grid-cols-2 gap-2 mt-2">
+        <!-- AlertDialogCancel (bouton "Annuler") -->
+        <button
+          class="inline-flex items-center justify-center rounded-md border border-border bg-background px-3 py-2 text-sm font-medium hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Annuler la suppression"
+          onclick="document.getElementById('modal-overlay').classList.add('hidden')"
+        >
+          Annuler
+        </button>
+
+        <!-- AlertDialogAction variant="destructive" (bouton "Supprimer") -->
+        <button
+          class="inline-flex items-center justify-center rounded-md bg-destructive text-white px-3 py-2 text-sm font-medium hover:bg-destructive/90 focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Confirmer la suppression"
+          onclick="document.getElementById('toast-success').classList.remove('hidden'); document.getElementById('modal-overlay').classList.add('hidden');"
+        >
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SIMULATION TOAST (pour démo visuelle uniquement)              -->
+  <!-- Le vrai toast est géré par sonner via toast.success()         -->
+  <!-- ============================================================ -->
+
+  <div id="toast-success" class="hidden fixed top-4 right-4 z-[100] flex items-center gap-2 rounded-xl border border-border bg-background px-4 py-3 shadow-lg text-sm">
+    <svg class="size-4 text-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+    </svg>
+    <span>Ami supprimé</span>
+  </div>
+
+  <!-- Instructions -->
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-card border border-border rounded-lg p-3 text-xs text-muted-foreground shadow-lg max-w-md text-center">
+    <strong class="text-foreground">Wireframe — Composant cible : shadcn/ui AlertDialog size="sm"</strong><br />
+    Cliquez "Supprimer" sur un ami → la modale s'ouvre.<br />
+    "Annuler" ferme sans action. "Supprimer" ferme + déclenche la suppression optimiste + toast.<br />
+    <span class="text-destructive">UA-001 → UA-003 (ouverture, annulation, confirmation)</span>
+  </div>
+
+  <script>
+    // Fermeture par Escape (ARIA obligatoire : l'AlertDialog Radix le fait nativement)
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.getElementById('modal-overlay').classList.add('hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

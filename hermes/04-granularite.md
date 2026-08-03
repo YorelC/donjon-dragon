@@ -57,7 +57,9 @@ le système DOIT rejeter avec l'erreur DICE_COUNT_INVALID sans émettre d'évén
 
 ## 4. Le filet anti-couture : le ticket [INTEG]
 
-Le risque de l'hyper-granularité n'est pas dans les briques mais dans les jointures (chaque pièce correcte, l'ensemble faux). Parade : chaque feature se termine par UN ticket `[INTEG][M]` (assigné à `testeur`, parent = tous les FEAT de la feature) qui écrit les tests de bout en bout traversant TOUTES les couches (front → API → domaine → Mongo/Redis → WS retour), en suivant les parcours Gherkin de la spec — pas les UA une à une. Le ticket [REVIEW] a le [INTEG] en parent.
+Le risque de l'hyper-granularité n'est pas dans les briques mais dans les jointures (chaque pièce correcte, l'ensemble faux). Parade : chaque feature comporte UN ticket `[INTEG][M]` (assigné à `testeur`) qui écrit les tests de bout en bout traversant TOUTES les couches (front → API → domaine → Mongo/Redis → WS retour), en suivant les parcours Gherkin de la spec, pas les UA une à une.
+
+**Ordre impératif : `FEAT ∥ TEST → REVIEW → INTEG → OPS → DOC`.** Le [REVIEW] a tous les FEAT et le TEST pour parents, le [INTEG] a le [REVIEW] pour parent. Placer [INTEG] avant [REVIEW] crée une impasse : quand un FEAT bloque sur une divergence entre le code et les tests (le cas normal du dual-sandbox), le revieweur qui doit trancher n'est jamais déclenché, et toute la chaîne aval gèle.
 
 ## 5. Coût assumé de la granularité
 

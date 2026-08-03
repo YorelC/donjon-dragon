@@ -1,4 +1,4 @@
-# Reprise de contexte (état au 30/07/2026)
+# Reprise de contexte (état au 03/08/2026)
 
 Point d'entrée pour toute nouvelle session (Claude Code, Hermès, ou autre) : où en est le pipeline d'agents, ce qui reste à faire.
 
@@ -6,15 +6,19 @@ Point d'entrée pour toute nouvelle session (Claude Code, Hermès, ou autre) : o
 
 Le pipeline v3 est installé : 11 profils Hermès (voir `01-equipe.md`), board Kanban `dnd-saas`, Margarette en porte d'entrée Discord avec sa skill `product`, ponts `claude -p` pour `dev-senior` et `revieweur` via `..\scripts\claude-task.ps1`, bascule automatique en mode dégradé sur épuisement du quota Pro (fichier `MODE` à la racine).
 
-Modèles : `ouvrier`, `testeur`, `devops` sur Qwen3-Coder-Next **local** (llama-server sur `127.0.0.1:8001`, lancé par `C:\_work\my_projects\ia_automation_code\local-llm\start-qwen-coder.ps1`) ; les huit autres sur DeepSeek via OpenRouter.
+Modèles (depuis le 03/08, voir `ANALYSE-ORCHESTRATION.md`) : **tous les profils sur DeepSeek via OpenRouter** en mode nominal — `deepseek-v4-pro` pour `bernadette`, `architecte` et `securite`, `deepseek-v4-flash` pour les autres, ponts `claude -p` pour `dev-senior` et `revieweur`. Le Qwen3-Coder-Next local (llama-server sur `127.0.0.1:8001`) est sorti du chemin critique : il ne sert plus qu'en mode dégradé, via `hermes\set-mode.ps1 -Mode local`. Motif : à 0,002 $ le ticket, le local n'économisait rien de significatif mais créait une contention GPU et des timeouts.
 
 Documentation : `JOURNEE-TYPE.md` (routine quotidienne et rôle de chaque script), `output_installation_agents.md` (rapport d'installation), `02-workflow-kanban.md` (conventions du board), `..\04-granularite.md` (la chaîne de traçabilité R → UA → INV → E → ticket → test).
+
+## Incident majeur résolu le 03/08 : graphe de parenté inversé
+
+Les liens du Kanban avaient été créés à l'envers (`hermes kanban link <nouveau> <spec>` au lieu de `<spec> <nouveau>`), rendant la spec enfant de tous les autres tickets. Conséquence : aucun ticket n'avait de parent, tous devenaient `ready` simultanément, et la chaîne de production n'existait pas. Symptômes : REVIEW lancé avant le code, DOC relancé 17 fois, TEST en timeout. Corrigé par `rebuild-board.ps1` et prévenu par une règle dure dans le prompt de l'orchestrateur (`--parent` à la création, jamais `link` après coup ; test de contrôle : si [DOC] est `ready`, le graphe est inversé).
 
 ## Ce qui reste à faire
 
 1. **Dégraissage du code** : `..\_prompt-degraissage.md` lancé en session Claude Code interactive. Vérifier où il en est (phase 2 = audit avec point d'arrêt, phase 3 = exécution par lots). Le complément « view n'importe jamais un container, les zones à logique arrivent en slots ReactNode » doit être intégré à AGENTS.md et à la config ESLint.
 2. **Suppression définitive** de `..\.claude\_to_delete\` (11 skills website-pme + 6 fichiers de l'ancienne chaîne, déjà sortis du périmètre de découverte) : `Remove-Item -Recurse -Force`.
-3. **Dégraissage des toolsets Hermès** : les 11 profils ont hérité des skills et outils du profil default. Les schémas d'outils pèsent ~42 Ko par prompt (mesuré par `hermes -p testeur prompt-size`). Couper `browser`, `session_search`, `delegation`, `vision`, `clarify` sur les workers via `hermes -p <profil> tools` (plateforme CLI). Garder `web` pour `securite`.
+3. **Dégraissage des toolsets Hermès** (partiellement fait : `architecte` et `ouvrier` restaient à traiter) : les 11 profils ont hérité des skills et outils du profil default. Les schémas d'outils pèsent ~42 Ko par prompt (mesuré par `hermes -p testeur prompt-size`). Couper `browser`, `session_search`, `delegation`, `vision`, `clarify` sur les workers via `hermes -p <profil> tools` (plateforme CLI). Garder `web` pour `securite`.
 4. **Épic pilote** : « lancer de dés partagé en temps réel », à lancer par Margarette sur Discord une fois le dégraissage commité et `preflight.ps1` tout vert.
 5. **À valider au premier épuisement réel de quota** : les motifs de détection dans `..\scripts\claude-task.ps1` (`$quotaPatterns`) correspondent-ils aux messages actuels du CLI Claude ?
 
@@ -23,8 +27,10 @@ Documentation : `JOURNEE-TYPE.md` (routine quotidienne et rôle de chaque script
 - **Scripts PowerShell** : PowerShell 5.1 lit l'UTF-8 sans BOM comme du Windows-1252 ; un tiret cadratin dans un `.ps1` casse le parsing en cascade. Tous les `.ps1` du projet sont en ASCII pur + BOM. Ne jamais y remettre de caractère non-ASCII.
 - **`Where-Object` dans un pipeline** déballe un résultat unique en chaîne : `$dirs[0]` renvoie alors le premier caractère. Toujours envelopper dans `@(...)`.
 - **Outils `kanban_*`** : injectés uniquement dans les workers spawnés par le dispatcher (variable `HERMES_KANBAN_TASK`). Une session de chat (Margarette) doit passer par le CLI `hermes kanban --board dnd-saas ...`. Lui demander d'appeler `kanban_create()` la fait boucler.
-- **Les SOUL.md des profils sont des copies** de `prompts\` : après toute modification d'un prompt, relancer `fix-souls.ps1`. Idem pour la skill product : `copy prompts\SKILL-product.md %LOCALAPPDATA%\hermes\skills\product\SKILL.md` puis `hermes gateway restart`.
-- **Serveur Qwen éteint** = `ouvrier`, `testeur`, `devops` plantent au démarrage (WinError 10061, connexion refusée lors de la lecture de la taille de contexte du modèle).
+- **Les SOUL.md des profils sont des copies** de `prompts\` : après toute modification d'un prompt, relancer `deploy.ps1` (qui déploie aussi la skill product et redémarre la gateway).
+- **Serveur Qwen éteint** = plantage au démarrage (WinError 10061, lors de la lecture de la taille de contexte du modèle). Ne concerne plus que le mode local depuis le 03/08.
+- **`hermes kanban link <parent> <child>` se lit à l'envers de l'intuition** : `link(A, B)` signifie « B attend A ». Toujours préférer `--parent` à la création.
+- **Corps de ticket trop maigres** : un ticket qui référence « UA-006 » et un chemin de spec oblige l'agent à explorer le dépôt, ce qui provoque les timeouts. Le corps doit recopier le texte intégral des UA.
 - **Gateway éteint** = aucun ticket Kanban ne part (le dispatcher vit dedans).
 
 ## Décisions structurantes prises

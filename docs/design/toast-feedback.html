@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wireframe — Toast succès / erreur (sonner)</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    @theme {
+      --color-background: oklch(1 0 0);
+      --color-foreground: oklch(0.145 0 0);
+      --color-popover: oklch(1 0 0);
+      --color-popover-foreground: oklch(0.145 0 0);
+      --color-success: oklch(0.6 0.177 142.476);
+      --color-success-foreground: oklch(0.985 0 0);
+      --color-error: oklch(0.577 0.245 27.325);
+      --color-border: oklch(0.922 0.024 270.291);
+      --color-ring: oklch(0.708 0.049 264.777);
+      --radius-xl: 0.75rem;
+    }
+    *:focus-visible {
+      outline: 2px solid var(--color-ring);
+      outline-offset: 2px;
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f5f5f5;
+      color: var(--color-foreground);
+    }
+
+    /* Style sonner toast (copie des classes générées) */
+    .toast-wrapper {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+    .toast {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--color-popover);
+      color: var(--color-popover-foreground);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      font-size: 0.875rem;
+      max-width: 360px;
+      transition: all 0.2s ease;
+    }
+    .toast.success {
+      border-left: 3px solid var(--color-success);
+    }
+    .toast.error {
+      border-left: 3px solid var(--color-error);
+    }
+    .toast-icon {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+    .toast-icon.success { color: var(--color-success); }
+    .toast-icon.error { color: var(--color-error); }
+  </style>
+</head>
+<body class="min-h-screen p-6">
+
+  <div class="max-w-xl mx-auto">
+    <h1 class="text-2xl font-bold mb-2">Toast Feedback — sonner</h1>
+    <p class="text-sm text-muted-foreground mb-6">
+      Composant cible : <code>sonner</code> (déjà câblé dans <code>App.tsx → Toaster</code>).<br />
+      Utilisation : <code>toast.success("Ami supprimé")</code> ou <code>toast.error("...")</code>.<br />
+      Position : haut à droite. Durée : 3s (défaut sonner). Icônes via lucide-react.
+    </p>
+
+    <!-- Boutons de démonstration -->
+    <div class="flex gap-4">
+      <button
+        class="inline-flex items-center gap-2 rounded-md bg-success text-white px-4 py-2 text-sm font-medium hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
+        onclick="showToast('success')"
+      >
+        Afficher toast succès
+      </button>
+      <button
+        class="inline-flex items-center gap-2 rounded-md bg-error text-white px-4 py-2 text-sm font-medium hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
+        onclick="showToast('error')"
+      >
+        Afficher toast erreur
+      </button>
+    </div>
+
+    <!-- Zone d'explication des cas -->
+    <div class="mt-8 space-y-4">
+      <div class="border border-border rounded-lg p-4 bg-white">
+        <h2 class="font-semibold mb-1">Toast succès ← UA-004</h2>
+        <table class="text-sm w-full">
+          <tr><td class="pr-4 text-muted-foreground">Message</td><td><code>"Ami supprimé"</code></td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Position</td><td>haut à droite</td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Durée</td><td>3 secondes</td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Style</td><td>vert (succès) — bordure gauche <span class="text-success">●</span></td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Action</td><td>aucun bouton</td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Déclenché par</td><td>Appel API DELETE 2xx (optimiste : ami déjà retiré de la liste)</td></tr>
+        </table>
+      </div>
+
+      <div class="border border-border rounded-lg p-4 bg-white">
+        <h2 class="font-semibold mb-1">Toast erreur ← UA-005</h2>
+        <table class="text-sm w-full">
+          <tr><td class="pr-4 text-muted-foreground">Message</td><td><code>"Erreur lors de la suppression. Veuillez réessayer."</code></td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Position</td><td>haut à droite</td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Durée</td><td>3 secondes</td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Style</td><td>rouge (erreur) — bordure gauche <span class="text-error">●</span></td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Action</td><td>aucun bouton</td></tr>
+          <tr><td class="pr-4 text-muted-foreground">Déclenché par</td><td>Appel API DELETE 4xx/5xx ou erreur réseau → rollback optimiste + toast</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container (simulation) -->
+  <div id="toast-container" class="toast-wrapper"></div>
+
+  <script>
+    function showToast(type) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.setAttribute('role', 'status');
+      toast.setAttribute('aria-live', 'polite');
+
+      const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      icon.setAttribute('class', `toast-icon ${type}`);
+      icon.setAttribute('viewBox', '0 0 24 24');
+      icon.setAttribute('fill', 'none');
+      icon.setAttribute('stroke', 'currentColor');
+      icon.setAttribute('stroke-width', '2');
+      icon.setAttribute('stroke-linecap', 'round');
+      icon.setAttribute('stroke-linejoin', 'round');
+
+      if (type === 'success') {
+        icon.innerHTML = '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>';
+        toast.appendChild(icon);
+        toast.appendChild(document.createTextNode('Ami supprimé'));
+      } else {
+        icon.innerHTML = '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>';
+        toast.appendChild(icon);
+        toast.appendChild(document.createTextNode('Erreur lors de la suppression. Veuillez réessayer.'));
+      }
+
+      container.appendChild(toast);
+
+      // Auto-disparition après 3s
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 200);
+      }, 3000);
+    }
+  </script>
+
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white border border-border rounded-lg p-3 text-xs text-muted-foreground shadow-lg max-w-md text-center">
+    <strong class="text-foreground">Wireframe — Toast via sonner (déjà câblé)</strong><br />
+    Utiliser <code>toast.success("Ami supprimé")</code> (UA-004) et <code>toast.error("Erreur lors de la suppression. Veuillez réessayer.")</code> (UA-005).<br />
+    Durée 3s = défaut sonner. Aucun bouton d'action. Aucun son. Icônes : lucide-react CircleCheck / OctagonX.
+  </div>
+
+</body>
+</html>

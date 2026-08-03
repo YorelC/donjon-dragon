@@ -2,22 +2,23 @@
 
 Pré-condition (une fois) : le dégraissage est terminé, ses lots sont commités, et `preflight.ps1` est tout vert.
 
-## Le matin : 3 terminaux, 4 commandes
+## Le matin : 2 terminaux, 3 commandes
 
-**Terminal 1, le moteur local (reste ouvert toute la journée) :**
+En mode nominal (`set-mode.ps1 -Mode cloud`), tous les profils de code tournent sur DeepSeek : **le serveur local n'a plus besoin d'être lancé**. Il ne sert qu'en mode dégradé (hors réseau, ou bascule volontaire par `set-mode.ps1 -Mode local`), et dans ce cas seulement, il faut le démarrer en premier dans son propre terminal :
+
 ```powershell
+# UNIQUEMENT en mode local
 powershell -ExecutionPolicy Bypass -File C:\_work\my_projects\ia_automation_code\local-llm\start-qwen-coder.ps1
 ```
-Sans lui, `ouvrier`, `testeur` et `devops` meurent au spawn (WinError 10061).
 
-**Terminal 2, le contrôle puis le dispatcher :**
+**Terminal 1, le contrôle puis le dispatcher :**
 ```powershell
 powershell -ExecutionPolicy Bypass -File C:\_work\my_projects\donjon-dragon\hermes\preflight.ps1
 hermes gateway start
 ```
-Le pré-vol doit être tout vert AVANT le gateway. Le gateway héberge le dispatcher Kanban ET Margarette sur Discord : il reste ouvert. Un échec sur les SOUL ? `fix-souls.ps1`. Un échec sur un modèle ? `set-qwen-profiles.ps1` ou `hermes -p <profil> config show`.
+Le pré-vol doit être tout vert AVANT le gateway. Le gateway héberge le dispatcher Kanban ET Margarette sur Discord : il reste ouvert. Un échec sur les SOUL ? `deploy.ps1`. Un échec sur un modèle ? `set-mode.ps1 -Mode cloud`. (En mode nominal, le pré-vol signalera le serveur Qwen éteint : c'est normal et sans conséquence.)
 
-**Terminal 3 (optionnel), la vigie :**
+**Terminal 2 (optionnel), la vigie :**
 ```powershell
 hermes kanban watch        # flux des événements en direct
 # ou : hermes dashboard    # vue graphique du board
@@ -41,13 +42,16 @@ hermes kanban watch        # flux des événements en direct
 
 | Script | Quand le lancer | Qui le lance |
 |---|---|---|
-| `ia_automation_code\local-llm\start-qwen-coder.ps1` | Chaque matin, en premier | Toi (terminal dédié) |
 | `hermes\preflight.ps1` | Chaque matin, avant le gateway ; après tout changement de config | Toi |
+| `hermes\deploy.ps1` | À chaque modification d'un prompt dans `hermes\prompts\` (les SOUL des profils sont des copies : sans ça, tes modifications restent lettre morte). Déploie aussi la skill de Margarette et redémarre la gateway | Toi |
+| `hermes\set-mode.ps1 -Mode cloud\|local` | Pour basculer les profils de code entre DeepSeek et le Qwen local. `cloud` est le mode nominal | Toi |
+| `ia_automation_code\local-llm\start-qwen-coder.ps1` | Uniquement en mode local, en premier, dans un terminal dédié | Toi |
 | `scripts\claude-task.ps1` | Jamais toi (sauf debug) : c'est le pont que `dev-senior` et `revieweur` exécutent pour appeler `claude -p`. Exit 42 = quota épuisé → bascule `MODE` en dégradé | Les agents |
-| `hermes\fix-souls.ps1` | À chaque fois que tu modifies un prompt dans `hermes\prompts\` (les SOUL des profils sont des copies : sans ça, tes modifications restent lettre morte) | Toi |
-| `hermes\set-qwen-profiles.ps1` | Déjà fait. À relancer seulement si tu changes le serveur local (port, nouveau modèle) ou recrées un profil | Toi, rarement |
-| `scripts\bootstrap-board.ps1` | Déjà fait (le board `dnd-saas` existe). Garde-le comme AIDE-MÉMOIRE : ses commandes commentées montrent comment créer une chaîne de tickets à la main si un jour tu veux court-circuiter Margarette | Toi, jamais en routine |
-| `hermes\setup-hermes.ps1` | Déjà fait. Uniquement en cas de réinstallation complète | Toi, jamais en routine |
+| `hermes\setup-veille.ps1` | Déjà fait. Crée le cron qui réveille Margarette pour surveiller les tickets bloqués | Toi, une fois |
+| `hermes\rebuild-board.ps1` | Ponctuel : reconstruit une chaîne de tickets dont le graphe de parenté est cassé | Toi, en cas d'incident |
+| `hermes\trim-toolsets.ps1` | Ponctuel : dégraisse les toolsets d'un profil (`-Apply -Key toolsets.cli -Value "terminal,file,skills"`) | Toi, rarement |
+| `hermes\fix-souls.ps1` | Remplacé par `deploy.ps1`, gardé comme secours | Toi, rarement |
+| `hermes\setup-hermes.ps1`, `scripts\bootstrap-board.ps1` | Déjà joués (installation, création du board). Aide-mémoire uniquement | Toi, jamais en routine |
 | `scripts\claude-task.sh` | Équivalent bash du pont (WSL/Git Bash), non utilisé sous Windows natif | Personne pour l'instant |
 
 ## Dépannage express
