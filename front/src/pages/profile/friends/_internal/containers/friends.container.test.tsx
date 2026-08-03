@@ -10,11 +10,13 @@ import * as useFriendsTabsModule from "../hooks/use-friends-tabs";
 import * as useReceivedRequestsModule from "../queries/use-received-requests";
 import * as useFriendsModule from "../queries/use-friends";
 import * as useRemoveFriendModule from "../queries/use-remove-friend";
+import * as useReceivedCountModule from "../queries/use-received-count";
 
 vi.mock("../hooks/use-friends-tabs");
 vi.mock("../queries/use-received-requests");
 vi.mock("../queries/use-friends");
 vi.mock("../queries/use-remove-friend");
+vi.mock("../queries/use-received-count");
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -103,6 +105,11 @@ describe("FriendsContainer", () => {
       activeTab: "friends",
       setActiveTab: vi.fn(),
     });
+
+    vi.mocked(useReceivedCountModule.useReceivedCount).mockReturnValue({
+      data: undefined,
+      refetch: vi.fn(),
+    } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
   });
 
   // ── UA-001 à UA-005 : Modale de suppression d'ami ───────────────────────────
@@ -219,18 +226,12 @@ describe("FriendsContainer", () => {
       ])(
         "UA-006: affiche le badge '$label' pour $count demande(s) reçue(s)",
         ({ count, label }) => {
-          const requests = Array.from({ length: count }, (_, i) =>
-            mockRequest(`req-${i}`, `User ${i}`),
-          );
-
           vi.mocked(
-            useReceivedRequestsModule.useReceivedRequests,
+            useReceivedCountModule.useReceivedCount,
           ).mockReturnValue({
-            data: requests,
-            isLoading: false,
-            isError: false,
+            data: { count },
             refetch: vi.fn(),
-          } as unknown as ReturnType<typeof useReceivedRequestsModule.useReceivedRequests>);
+          } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
 
           renderWithProviders();
 
@@ -247,18 +248,12 @@ describe("FriendsContainer", () => {
       ])(
         "UA-007: affiche '$label' pour $count demandes reçues",
         ({ count, label }) => {
-          const requests = Array.from({ length: count }, (_, i) =>
-            mockRequest(`req-${i}`, `User ${i}`),
-          );
-
           vi.mocked(
-            useReceivedRequestsModule.useReceivedRequests,
+            useReceivedCountModule.useReceivedCount,
           ).mockReturnValue({
-            data: requests,
-            isLoading: false,
-            isError: false,
+            data: { count },
             refetch: vi.fn(),
-          } as unknown as ReturnType<typeof useReceivedRequestsModule.useReceivedRequests>);
+          } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
 
           renderWithProviders();
 
@@ -267,45 +262,40 @@ describe("FriendsContainer", () => {
       );
     });
 
-    describe("UA-008 — Rechargement des demandes au chargement de la page", () => {
-      it("UA-008: appelle useReceivedRequests lors du montage quel que soit l'onglet actif", () => {
-        // L'onglet actif est "friends" par défaut dans le mock
+    describe("UA-008 — Rechargement du count au chargement de la page", () => {
+      it("UA-008: appelle useReceivedCount lors du montage quel que soit l'onglet actif", () => {
         vi.mocked(useFriendsTabsModule.useFriendsTabs).mockReturnValue({
           activeTab: "friends",
           setActiveTab: vi.fn(),
         });
 
-        const useReceivedRequestsSpy = vi.fn();
+        const useReceivedCountSpy = vi.fn();
         vi.mocked(
-          useReceivedRequestsModule.useReceivedRequests,
+          useReceivedCountModule.useReceivedCount,
         ).mockImplementation(() => {
-          useReceivedRequestsSpy();
+          useReceivedCountSpy();
           return {
-            data: [],
-            isLoading: false,
-            isError: false,
+            data: undefined,
             refetch: vi.fn(),
-          } as unknown as ReturnType<typeof useReceivedRequestsModule.useReceivedRequests>;
+          } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>;
         });
 
         renderWithProviders();
 
         // La query doit avoir été appelée pendant le rendu
-        expect(useReceivedRequestsSpy).toHaveBeenCalled();
+        expect(useReceivedCountSpy).toHaveBeenCalled();
       });
     });
 
-    describe("UA-009 — Rafraîchissement des demandes au clic sur l'onglet 'Reçues'", () => {
+    describe("UA-009 — Rafraîchissement du count au clic sur l'onglet 'Reçues'", () => {
       it("UA-009: appelle refetch quand on clique sur l'onglet 'Reçues'", async () => {
         const mockRefetch = vi.fn();
         vi.mocked(
-          useReceivedRequestsModule.useReceivedRequests,
+          useReceivedCountModule.useReceivedCount,
         ).mockReturnValue({
-          data: [],
-          isLoading: false,
-          isError: false,
+          data: { count: 5 },
           refetch: mockRefetch,
-        } as unknown as ReturnType<typeof useReceivedRequestsModule.useReceivedRequests>);
+        } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
 
         const mockSetActiveTab = vi.fn();
         vi.mocked(useFriendsTabsModule.useFriendsTabs).mockReturnValue({
@@ -328,13 +318,25 @@ describe("FriendsContainer", () => {
     describe("UA-010 — Masquage du badge à zéro demande", () => {
       it("UA-010: n'affiche aucun badge quand count est 0", () => {
         vi.mocked(
-          useReceivedRequestsModule.useReceivedRequests,
+          useReceivedCountModule.useReceivedCount,
         ).mockReturnValue({
-          data: [],
-          isLoading: false,
-          isError: false,
+          data: { count: 0 },
           refetch: vi.fn(),
-        } as unknown as ReturnType<typeof useReceivedRequestsModule.useReceivedRequests>);
+        } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
+
+        renderWithProviders();
+
+        expect(screen.queryByText(/^[0-9]+$/)).not.toBeInTheDocument();
+        expect(screen.queryByText("9+")).not.toBeInTheDocument();
+      });
+
+      it("UA-010: n'affiche aucun badge quand le count n'est pas encore chargé (data undefined)", () => {
+        vi.mocked(
+          useReceivedCountModule.useReceivedCount,
+        ).mockReturnValue({
+          data: undefined,
+          refetch: vi.fn(),
+        } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
 
         renderWithProviders();
 
@@ -354,20 +356,20 @@ describe("FriendsContainer", () => {
 //   → clic "Supprimer" → modale fermée, mutate(friendshipId) appelé
 //   → isPending=true → boutons désactivés + texte "Suppression..."
 // UA-004 — Toast de succès après suppression : NON COUVERT (logique dans useRemoveFriend, pas dans FriendsContainer)
-//   → testé dans use-remove-friend.test.ts (à faire dans ticket dédié)
+//   → testé dans use-remove-friend.test.ts
 // UA-005 — Toast d'échec et rollback : NON COUVERT (logique dans useRemoveFriend, pas dans FriendsContainer)
-//   → testé dans use-remove-friend.test.ts (à faire dans ticket dédié)
+//   → testé dans use-remove-friend.test.ts
 // UA-006 — Affichage du badge de demandes sur l'onglet "Reçues" : COUVERT
-//   → table-driven : 1, 3, 9
+//   → table-driven via useReceivedCount mock : 1, 3, 9
 // UA-007 — Truncation du badge à "9+" : COUVERT
-//   → table-driven : 10, 15, 99
-// UA-008 — Rechargement des demandes au chargement de la page : COUVERT
-//   → useReceivedRequests appelée au montage, même avec onglet "friends" actif
-// UA-009 — Rafraîchissement des demandes au clic sur l'onglet "Reçues" : COUVERT
+//   → table-driven via useReceivedCount mock : 10, 15, 99
+// UA-008 — Rechargement du count au chargement de la page : COUVERT
+//   → useReceivedCount appelée au montage, même avec onglet "friends" actif
+// UA-009 — Rafraîchissement du count au clic sur l'onglet "Reçues" : COUVERT
 //   → refetch appelé lors du clic sur l'onglet "Reçues"
 // UA-010 — Masquage du badge à zéro demande : COUVERT
 //   → aucun badge affiché quand count === 0
+//   → aucun badge affiché quand data === undefined (pas encore chargé)
 //
 // UA-004 et UA-005 nécessitent un test de la mutation useRemoveFriend
-// (comportement onSuccess/onError avec toast et rollback) — à faire dans un
-// fichier use-remove-friend.test.ts dédié.
+// (comportement onSuccess/onError avec toast et rollback) — voir use-remove-friend.test.tsx
