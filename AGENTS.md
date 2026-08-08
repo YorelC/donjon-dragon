@@ -108,7 +108,7 @@ Il n'existe pas de script `build` à la racine : ne pas l'invoquer.
 
 ## Chaîne de production (pipeline v3, détail dans hermes/01-equipe.md)
 Charly ⇄ `margarette` (clarification, réponses R-NNN via skill product) → ticket [SPEC] →
-`bernadette` (spec en unités atomiques UA-NNN, `specs/`) →
+`analyste` (spec en unités atomiques UA-NNN, `specs/`) →
 `architecte` (ADR, schémas Zod `shared/`, ports `03-domain/`, plan E-NNN) → [`designer` si UI] →
 `orchestrateur` (découpe en tickets de 1 à 3 UA) →
 [`testeur` ∥ `ouvrier`/`dev-senior`] en dual-sandbox → ticket [INTEG] →

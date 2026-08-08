@@ -7,7 +7,7 @@ Objectif : un découpage si fin que l'exécution devient mécanique — les agen
 ```
 R-NNN     Réponse de Charly à une question de Margarette (Discord, dans le ticket [SPEC])
   ▼
-UA-NNN    Unité Atomique de spec (Bernadette) : UN comportement observable, en EARS + Gherkin + table de valeurs
+UA-NNN    Unité Atomique de spec (l'analyste) : UN comportement observable, en EARS + Gherkin + table de valeurs
   ▼
 INV-NNN   Invariant de contrat (architecte) : schéma Zod / port du domaine, avec mapping UA → INV
   ▼
@@ -48,7 +48,7 @@ le système DOIT rejeter avec l'erreur DICE_COUNT_INVALID sans émettre d'évén
 | Objet | Limite | Si dépassée |
 |---|---|---|
 | Ticket [SPEC] | 1 capacité utilisateur (« lancer un dé », pas « le système de combat ») | Margarette découpe en plusieurs [SPEC] |
-| Spec de Bernadette | ≤ 15 UA par spec | scinder en spec-partie-1/2 avec dépendances |
+| Spec de l'analyste | ≤ 15 UA par spec | scinder en spec-partie-1/2 avec dépendances |
 | Ticket de code | 1 à 3 UA, diff attendu ≤ ~80 lignes, 1 seule couche hexagonale (domaine OU application OU infra OU front) | l'orchestrateur redécoupe |
 | Ticket [TEST] | les UA d'UN ticket de code miroir | idem |
 | Plan de l'architecte (mode dégradé) | 1 étape E-NNN = 1 fichier, ≤ 20 lignes modifiées | redécouper le plan |
