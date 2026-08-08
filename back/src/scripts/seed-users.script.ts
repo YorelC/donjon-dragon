@@ -2,10 +2,10 @@ import 'dotenv/config';
 import { connect } from 'mongoose';
 import type { Model } from 'mongoose';
 import type { User } from '@donjon-dragon/shared/user-schema';
-import { UserSchema, USER_MODEL } from '../user/04-infrastructure/user.schema';
-import { MongoUserRepository } from '../user/04-infrastructure/mongo-user.repository';
-import { BcryptPasswordHasher } from '../auth/04-infrastructure/bcrypt-password-hasher';
-import { createUser } from '../user/03-domain/user.entity';
+import { UserSchema, USER_MODEL } from '@modules/user/infrastructure/persistence/user.schema';
+import { MongoUserRepository } from '@modules/user/infrastructure/persistence/mongo-user.repository';
+import { BcryptPasswordHasher } from '@modules/auth/infrastructure/crypto/bcrypt-password-hasher';
+import { createUser } from '@modules/user/domain/user.entity';
 
 interface SeedUser {
   email: string;
