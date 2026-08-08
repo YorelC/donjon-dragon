@@ -1,15 +1,10 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Delete,
-  Param,
-  Query,
-  Inject,
-} from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Inject } from '@nestjs/common';
 import type { TokenPayload } from '@donjon-dragon/shared/auth-schema';
+import { z } from 'zod';
 
-import { throwAsHttpException } from './friendship-error.mapper';
+import { CurrentUser } from '@common/decorators/current-user.decorator';
+import { ZodQuery } from '@common/decorators/zod-validated.decorator';
+import { RequireTier } from '@common/guards/tier.guard';
 import { SendFriendRequestUseCase } from '../application/use-cases/send-friend-request.use-case';
 import { AcceptFriendRequestUseCase } from '../application/use-cases/accept-friend-request.use-case';
 import { RefuseFriendRequestUseCase } from '../application/use-cases/refuse-friend-request.use-case';
@@ -19,10 +14,20 @@ import { ListPendingSentUseCase } from '../application/use-cases/list-pending-se
 import { RemoveFriendUseCase } from '../application/use-cases/remove-friend.use-case';
 import { SearchUsersUseCase } from '../application/use-cases/search-users.use-case';
 import { CountPendingReceivedUseCase } from '../application/use-cases/count-pending-received.use-case';
-import { CurrentUser } from '@common/decorators/current-user.decorator';
 
-// Aucun @UseGuards : le JwtAuthGuard est monté en APP_GUARD dans app.module.
-@Controller('api/friends')
+// Déclaré avant la classe : un argument de décorateur est évalué au moment de
+// la définition de celle-ci. `q` absent faisait planter escapeRegex sur
+// undefined, donc un 500 sur /api/friends/search sans paramètre — désormais 400.
+const SearchQuerySchema = z.object({ q: z.string().min(1).max(64) });
+
+type SearchQuery = z.infer<typeof SearchQuerySchema>;
+
+/**
+ * Traduction HTTP seule. Les erreurs métier remontent telles quelles : le
+ * DomainExceptionFilter (APP_FILTER) les convertit en statut.
+ * Aucun @UseGuards : le JwtAuthGuard est monté en APP_GUARD dans app.module.
+ */
+@Controller('friends')
 export class FriendshipController {
   constructor(
     @Inject(SendFriendRequestUseCase)
@@ -45,60 +50,48 @@ export class FriendshipController {
     private countPendingReceivedUseCase: CountPendingReceivedUseCase,
   ) {}
 
+  @RequireTier('full')
   @Post('request/:displayName')
   async sendFriendRequest(
     @CurrentUser() user: TokenPayload,
     @Param('displayName') displayName: string,
   ) {
-    try {
-      return await this.sendFriendRequestUseCase.execute({
-        requesterId: user.userId,
-        displayName,
-      });
-    } catch (err) {
-      throwAsHttpException(err);
-    }
+    return this.sendFriendRequestUseCase.execute({
+      requesterId: user.userId,
+      displayName,
+    });
   }
 
+  @RequireTier('full')
   @Post('accept/:friendshipId')
   async acceptFriendRequest(
     @CurrentUser() user: TokenPayload,
     @Param('friendshipId') friendshipId: string,
   ) {
-    try {
-      return await this.acceptFriendRequestUseCase.execute({
-        friendshipId,
-        actingUserId: user.userId,
-      });
-    } catch (err) {
-      throwAsHttpException(err);
-    }
+    return this.acceptFriendRequestUseCase.execute({
+      friendshipId,
+      actingUserId: user.userId,
+    });
   }
 
+  @RequireTier('full')
   @Post('refuse/:friendshipId')
   async refuseFriendRequest(
     @CurrentUser() user: TokenPayload,
     @Param('friendshipId') friendshipId: string,
   ) {
-    try {
-      return await this.refuseFriendRequestUseCase.execute({
-        friendshipId,
-        actingUserId: user.userId,
-      });
-    } catch (err) {
-      throwAsHttpException(err);
-    }
+    return this.refuseFriendRequestUseCase.execute({
+      friendshipId,
+      actingUserId: user.userId,
+    });
   }
 
   @Get('search')
   async searchUsers(
     @CurrentUser() user: TokenPayload,
-    @Query('q') q: string,
+    @ZodQuery(SearchQuerySchema) query: SearchQuery,
   ) {
-    return this.searchUsersUseCase.execute({
-      userId: user.userId,
-      query: q,
-    });
+    return this.searchUsersUseCase.execute({ userId: user.userId, query: query.q });
   }
 
   @Get()
@@ -121,18 +114,12 @@ export class FriendshipController {
     return this.listPendingSentUseCase.execute({ userId: user.userId });
   }
 
+  @RequireTier('full')
   @Delete(':friendshipId')
   async removeFriend(
     @CurrentUser() user: TokenPayload,
     @Param('friendshipId') friendshipId: string,
   ) {
-    try {
-      await this.removeFriendUseCase.execute({
-        userId: user.userId,
-        friendshipId,
-      });
-    } catch (err) {
-      throwAsHttpException(err);
-    }
+    await this.removeFriendUseCase.execute({ userId: user.userId, friendshipId });
   }
 }

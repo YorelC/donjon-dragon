@@ -12,11 +12,19 @@ export class LogoutUseCase {
     private readonly refreshRepo: RefreshTokenRepositoryPort,
   ) {}
 
-  async execute(plainToken: string): Promise<void> {
-    const tokenHash = hashRefreshToken(plainToken);
-    const record = await this.refreshRepo.findByTokenHash(tokenHash);
-    if (record) {
-      await this.refreshRepo.revokeFamily(record.familyId);
-    }
+  /**
+   * `userId` vient du JWT, `plainToken` du corps de la requête : on ne révoque
+   * que si les deux désignent la même personne. Sans ce contrôle, présenter le
+   * refresh token d'autrui révoquait toute sa famille de tokens.
+   *
+   * Volontairement idempotent et muet : un token inconnu ou appartenant à
+   * quelqu'un d'autre ne produit pas d'erreur — se déconnecter réussit toujours,
+   * et la réponse ne révèle pas si un token existe.
+   */
+  async execute(userId: string, plainToken: string): Promise<void> {
+    const record = await this.refreshRepo.findByTokenHash(hashRefreshToken(plainToken));
+    if (record?.userId !== userId) return;
+
+    await this.refreshRepo.revokeFamily(record.familyId);
   }
 }

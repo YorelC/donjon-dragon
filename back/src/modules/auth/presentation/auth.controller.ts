@@ -1,39 +1,40 @@
+import { Controller, Post, HttpCode, Inject } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
-  Controller,
-  Post,
-  Body,
-  HttpCode,
-  ConflictException,
-  UnauthorizedException,
-  NotFoundException,
-  ForbiddenException,
-  Inject,
-} from '@nestjs/common';
-import type { RegisterDto, LoginDto } from '@donjon-dragon/shared/user-schema';
-import type { RefreshDto, VerifyEmailDto } from '@donjon-dragon/shared/auth-schema';
+  LoginSchema,
+  RegisterSchema,
+  type LoginDto,
+  type RegisterDto,
+} from '@donjon-dragon/shared/user-schema';
 import {
-  EmailAlreadyInUseError,
-  InvalidCredentialsError,
-  EmailNotVerifiedError,
-  InvalidVerificationTokenError,
-  VerificationTokenExpiredError,
-  InvalidRefreshTokenError,
-  TokenReuseDetectedError,
-  RefreshTokenExpiredError,
-  UserNotFoundError,
-} from '../domain/auth.errors';
-import { DisplayNameAlreadyTakenError } from '@modules/user/domain/user.errors';
+  RefreshSchema,
+  VerifyEmailSchema,
+  type RefreshDto,
+  type TokenPayload,
+  type VerifyEmailDto,
+} from '@donjon-dragon/shared/auth-schema';
+
+import { CurrentUser } from '@common/decorators/current-user.decorator';
+import { Public } from '@common/decorators/public.decorator';
+import { ZodBody } from '@common/decorators/zod-validated.decorator';
 import { RegisterUseCase } from '../application/use-cases/register.use-case';
 import { LoginUseCase } from '../application/use-cases/login.use-case';
 import { VerifyEmailUseCase } from '../application/use-cases/verify-email.use-case';
 import { RefreshTokensUseCase } from '../application/use-cases/refresh-tokens.use-case';
 import { LogoutUseCase } from '../application/use-cases/logout.use-case';
 import { IssueReadonlyTokenUseCase } from '../application/use-cases/issue-readonly-token.use-case';
-import { Public } from '@common/decorators/public.decorator';
-import { CurrentUser } from '@common/decorators/current-user.decorator';
-import type { TokenPayload } from '@donjon-dragon/shared/auth-schema';
 
-@Controller('api/auth')
+/**
+ * Traduction HTTP seule. Les erreurs métier remontent telles quelles : le
+ * DomainExceptionFilter (APP_FILTER) les convertit en statut. Les routes non
+ * annotées @Public() sont protégées par le JwtAuthGuard global.
+ */
+// Routes non authentifiées et devinables : elles se prêtent à la force brute
+// (mot de passe) et à l'énumération (email déjà pris). D'où une limite bien
+// plus serrée que le garde-fou global.
+const AUTH_THROTTLE = { default: { limit: 10, ttl: 60_000 } };
+
+@Controller('auth')
 export class AuthController {
   constructor(
     @Inject(RegisterUseCase) private registerUseCase: RegisterUseCase,
@@ -46,85 +47,44 @@ export class AuthController {
   ) {}
 
   @Public()
+  @Throttle(AUTH_THROTTLE)
   @Post('register')
-  async register(@Body() dto: RegisterDto) {
-    try {
-      return await this.registerUseCase.execute(dto);
-    } catch (err) {
-      if (err instanceof EmailAlreadyInUseError || err instanceof DisplayNameAlreadyTakenError) {
-        throw new ConflictException(err.message);
-      }
-      throw err;
-    }
+  async register(@ZodBody(RegisterSchema) dto: RegisterDto) {
+    return this.registerUseCase.execute(dto);
   }
 
   @Public()
+  @Throttle(AUTH_THROTTLE)
   @Post('login')
-  async login(@Body() dto: LoginDto) {
-    try {
-      return await this.loginUseCase.execute(dto);
-    } catch (err) {
-      if (err instanceof InvalidCredentialsError) {
-        throw new UnauthorizedException(err.message);
-      }
-      if (err instanceof EmailNotVerifiedError) {
-        throw new ForbiddenException(err.message);
-      }
-      throw err;
-    }
+  async login(@ZodBody(LoginSchema) dto: LoginDto) {
+    return this.loginUseCase.execute(dto);
   }
 
   @Public()
+  @Throttle(AUTH_THROTTLE)
   @Post('verify-email')
-  async verifyEmail(@Body() dto: VerifyEmailDto) {
-    try {
-      return await this.verifyEmailUseCase.execute(dto.token);
-    } catch (err) {
-      if (
-        err instanceof InvalidVerificationTokenError ||
-        err instanceof VerificationTokenExpiredError
-      ) {
-        throw new UnauthorizedException(err.message);
-      }
-      if (err instanceof UserNotFoundError) {
-        throw new NotFoundException(err.message);
-      }
-      throw err;
-    }
+  async verifyEmail(@ZodBody(VerifyEmailSchema) dto: VerifyEmailDto) {
+    return this.verifyEmailUseCase.execute(dto.token);
   }
 
   @Public()
+  @Throttle(AUTH_THROTTLE)
   @Post('refresh')
-  async refresh(@Body() dto: RefreshDto) {
-    try {
-      return await this.refreshTokensUseCase.execute(dto.refreshToken);
-    } catch (err) {
-      if (
-        err instanceof InvalidRefreshTokenError ||
-        err instanceof TokenReuseDetectedError ||
-        err instanceof RefreshTokenExpiredError
-      ) {
-        throw new UnauthorizedException(err.message);
-      }
-      throw err;
-    }
+  async refresh(@ZodBody(RefreshSchema) dto: RefreshDto) {
+    return this.refreshTokensUseCase.execute(dto.refreshToken);
   }
 
   @Post('logout')
   @HttpCode(204)
-  async logout(@Body() dto: RefreshDto) {
-    await this.logoutUseCase.execute(dto.refreshToken);
+  async logout(
+    @CurrentUser() user: TokenPayload,
+    @ZodBody(RefreshSchema) dto: RefreshDto,
+  ) {
+    await this.logoutUseCase.execute(user.userId, dto.refreshToken);
   }
 
   @Post('readonly-token')
   async readonlyToken(@CurrentUser() user: TokenPayload) {
-    try {
-      return await this.issueReadonlyTokenUseCase.execute(user.userId);
-    } catch (err) {
-      if (err instanceof UserNotFoundError) {
-        throw new NotFoundException(err.message);
-      }
-      throw err;
-    }
+    return this.issueReadonlyTokenUseCase.execute(user.userId);
   }
 }

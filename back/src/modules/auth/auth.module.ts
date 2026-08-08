@@ -58,7 +58,13 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
     // modules aient à importer quoi que ce soit d'auth.
     JwtStrategy,
     { provide: TOKEN_SERVICE, useClass: JwtTokenService },
-    { provide: PASSWORD_HASHER, useClass: BcryptPasswordHasher },
+    // useFactory assumé : l'adapter reçoit une valeur primitive, pas un service.
+    {
+      provide: PASSWORD_HASHER,
+      useFactory: (config: ConfigService) =>
+        new BcryptPasswordHasher(config.getOrThrow<number>('security.bcryptRounds')),
+      inject: [ConfigService],
+    },
     { provide: EMAIL_SENDER, useClass: NodemailerEmailSender },
     { provide: REFRESH_TOKEN_REPOSITORY, useClass: MongoRefreshTokenRepository },
     {

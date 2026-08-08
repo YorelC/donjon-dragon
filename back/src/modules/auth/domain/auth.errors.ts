@@ -1,65 +1,64 @@
-// Modes d'échec du domaine auth — pinnés par les tests, mappés en codes
-// HTTP par l'interface (GREEN). Zéro I/O.
+// Modes d'échec du domaine auth — purs, zéro I/O.
+// Chacun déclare sa nature via la classe dont il hérite ; la traduction en
+// statut HTTP est faite une seule fois par common/filters/domain-exception.filter.
 
-export class InvalidCredentialsError extends Error {
-  constructor() {
-    super('Invalid credentials');
-    this.name = 'InvalidCredentialsError';
-  }
-}
+import {
+  ConflictDomainError,
+  NotFoundDomainError,
+  ForbiddenDomainError,
+  UnauthorizedDomainError,
+} from '@kernel/domain/domain.error';
 
-export class EmailAlreadyInUseError extends Error {
+export class EmailAlreadyInUseError extends ConflictDomainError {
   constructor() {
     super('Email already in use');
-    this.name = 'EmailAlreadyInUseError';
   }
 }
 
-export class InvalidRefreshTokenError extends Error {
-  constructor() {
-    super('Invalid refresh token');
-    this.name = 'InvalidRefreshTokenError';
-  }
-}
-
-export class TokenReuseDetectedError extends Error {
-  constructor() {
-    super('Refresh token reuse detected');
-    this.name = 'TokenReuseDetectedError';
-  }
-}
-
-export class RefreshTokenExpiredError extends Error {
-  constructor() {
-    super('Refresh token expired');
-    this.name = 'RefreshTokenExpiredError';
-  }
-}
-
-export class UserNotFoundError extends Error {
+export class UserNotFoundError extends NotFoundDomainError {
   constructor() {
     super('User not found');
-    this.name = 'UserNotFoundError';
   }
 }
 
-export class InvalidVerificationTokenError extends Error {
-  constructor() {
-    super('Invalid verification token');
-    this.name = 'InvalidVerificationTokenError';
-  }
-}
-
-export class VerificationTokenExpiredError extends Error {
-  constructor() {
-    super('Verification token expired');
-    this.name = 'VerificationTokenExpiredError';
-  }
-}
-
-export class EmailNotVerifiedError extends Error {
+export class EmailNotVerifiedError extends ForbiddenDomainError {
   constructor() {
     super('Email not verified');
-    this.name = 'EmailNotVerifiedError';
+  }
+}
+
+export class InvalidCredentialsError extends UnauthorizedDomainError {
+  constructor() {
+    super('Invalid credentials');
+  }
+}
+
+export class InvalidRefreshTokenError extends UnauthorizedDomainError {
+  constructor() {
+    super('Invalid refresh token');
+  }
+}
+
+export class TokenReuseDetectedError extends UnauthorizedDomainError {
+  constructor() {
+    super('Refresh token reuse detected');
+  }
+}
+
+export class RefreshTokenExpiredError extends UnauthorizedDomainError {
+  constructor() {
+    super('Refresh token expired');
+  }
+}
+
+export class InvalidVerificationTokenError extends UnauthorizedDomainError {
+  constructor() {
+    super('Invalid verification token');
+  }
+}
+
+export class VerificationTokenExpiredError extends UnauthorizedDomainError {
+  constructor() {
+    super('Verification token expired');
   }
 }

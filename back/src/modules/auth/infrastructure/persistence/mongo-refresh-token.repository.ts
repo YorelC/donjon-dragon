@@ -4,22 +4,32 @@ import type { Model } from 'mongoose';
 import type { RefreshTokenRecord } from '@donjon-dragon/shared/auth-schema';
 
 import type { RefreshTokenRepositoryPort } from '../../application/ports/refresh-token.repository.port';
-import { REFRESH_TOKEN_MODEL } from './refresh-token.schema';
+import {
+  REFRESH_TOKEN_MODEL,
+  type RefreshTokenDocument,
+} from './refresh-token.schema';
 
 @Injectable()
 export class MongoRefreshTokenRepository implements RefreshTokenRepositoryPort {
   constructor(
     @InjectModel(REFRESH_TOKEN_MODEL)
-    private readonly model: Model<RefreshTokenRecord>,
+    private readonly model: Model<RefreshTokenDocument>,
   ) {}
 
   async save(record: RefreshTokenRecord): Promise<RefreshTokenRecord> {
-    await this.model.findOneAndUpdate({ id: record.id }, record, { upsert: true });
+    // `expiresOn` est la projection Date de `expiresAt`, uniquement pour que
+    // l'index TTL de la collection puisse agir (cf. refresh-token.schema.ts).
+    const document = { ...record, expiresOn: new Date(record.expiresAt) };
+
+    await this.model.findOneAndUpdate({ id: record.id }, document, { upsert: true });
     return record;
   }
 
   async findByTokenHash(tokenHash: string): Promise<RefreshTokenRecord | null> {
-    const doc = await this.model.findOne({ tokenHash }).select('-_id').lean<RefreshTokenRecord>();
+    const doc = await this.model
+      .findOne({ tokenHash })
+      .select('-_id -expiresOn')
+      .lean<RefreshTokenRecord>();
     return doc ?? null;
   }
 

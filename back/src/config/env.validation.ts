@@ -14,6 +14,15 @@ const EnvSchema = z.object({
   JWT_SECRET: z.string().min(32, 'JWT_SECRET doit faire au moins 32 caracteres'),
   ACCESS_TOKEN_TTL: z.string().min(1).default('15m'),
 
+  // Cout du hash de mot de passe. bcryptjs est du JS pur, donc plus lent que
+  // le binding natif : 12 est un compromis raisonnable ici.
+  BCRYPT_ROUNDS: z.coerce.number().int().min(10).max(15).default(12),
+
+  // Garde-fou global. Les routes auth resserrent la limite par decorateur :
+  // c'est une constante de securite, pas un reglage de deploiement.
+  THROTTLE_TTL_MS: z.coerce.number().int().positive().default(60_000),
+  THROTTLE_LIMIT: z.coerce.number().int().positive().default(300),
+
   EMAIL_USER: z.string().min(1),
   EMAIL_APP_PASSWORD: z.string().min(1),
 

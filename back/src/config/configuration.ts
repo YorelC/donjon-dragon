@@ -23,9 +23,17 @@ export const jwtConfig = registerAs('jwt', () => {
   };
 });
 
-export const securityConfig = registerAs('security', () => ({
-  corsOrigin: validateEnv(process.env).CORS_ORIGIN,
-}));
+export const securityConfig = registerAs('security', () => {
+  const env = validateEnv(process.env);
+  return {
+    corsOrigin: env.CORS_ORIGIN,
+    bcryptRounds: env.BCRYPT_ROUNDS,
+    throttle: {
+      ttl: env.THROTTLE_TTL_MS,
+      limit: env.THROTTLE_LIMIT,
+    },
+  };
+});
 
 export const mailConfig = registerAs('mail', () => {
   const env = validateEnv(process.env);
