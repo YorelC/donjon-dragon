@@ -11,7 +11,7 @@ import { ListPendingSentUseCase } from '../application/use-cases/list-pending-se
 import { RemoveFriendUseCase } from '../application/use-cases/remove-friend.use-case';
 import { SearchUsersUseCase } from '../application/use-cases/search-users.use-case';
 import { CountPendingReceivedUseCase } from '../application/use-cases/count-pending-received.use-case';
-import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
+import { IS_PUBLIC_KEY } from '@common/decorators/public.decorator';
 
 const mockUseCase = (): { execute: ReturnType<typeof vi.fn> } => ({
   execute: vi.fn(),
@@ -41,10 +41,7 @@ describe('FriendshipController — countPendingReceived', () => {
         { provide: SearchUsersUseCase, useValue: mockUseCase() },
         { provide: CountPendingReceivedUseCase, useValue: mockUseCase() },
       ],
-    })
-      .overrideGuard(JwtAuthGuard)
-      .useValue({ canActivate: vi.fn(() => true) })
-      .compile();
+    }).compile();
 
     controller = module.get<FriendshipController>(FriendshipController);
     countPendingReceived = module.get<CountPendingReceivedUseCase>(CountPendingReceivedUseCase);
@@ -89,13 +86,36 @@ describe('FriendshipController — countPendingReceived', () => {
   });
 });
 
-describe('FriendshipController — JwtAuthGuard', () => {
-  it('applique JwtAuthGuard sur le controller (toutes les routes)', () => {
-    const guards = Reflect.getMetadata('__guards__', FriendshipController);
-    expect(guards).toBeDefined();
-    const hasJwtGuard = guards.some(
-      (guard: new (...args: never[]) => unknown) => guard === JwtAuthGuard,
+// Le JwtAuthGuard est monté en APP_GUARD : la protection ne s'assert plus par
+// la présence d'un @UseGuards, mais par l'ABSENCE de @Public(). C'est
+// l'invariant qui compte maintenant — un @Public() posé par erreur ici
+// ouvrirait la route au monde.
+describe('FriendshipController — protection des routes', () => {
+  const ROUTES = [
+    'sendFriendRequest',
+    'acceptFriendRequest',
+    'refuseFriendRequest',
+    'searchUsers',
+    'listFriends',
+    'countPendingReceived',
+    'listPendingReceived',
+    'listPendingSent',
+    'removeFriend',
+  ] as const;
+
+  it('ne déclare pas @Public() au niveau du controller', () => {
+    expect(Reflect.getMetadata(IS_PUBLIC_KEY, FriendshipController)).toBeUndefined();
+  });
+
+  it.each(ROUTES)('ne déclare pas @Public() sur %s', (route) => {
+    const handler = FriendshipController.prototype[route];
+    expect(Reflect.getMetadata(IS_PUBLIC_KEY, handler)).toBeUndefined();
+  });
+
+  it('couvre bien toutes les routes du controller', () => {
+    const handlers = Object.getOwnPropertyNames(FriendshipController.prototype).filter(
+      (name) => name !== 'constructor',
     );
-    expect(hasJwtGuard).toBe(true);
+    expect(handlers.sort()).toEqual([...ROUTES].sort());
   });
 });

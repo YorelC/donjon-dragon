@@ -2,7 +2,6 @@ import {
   Controller,
   Post,
   Body,
-  UseGuards,
   HttpCode,
   ConflictException,
   UnauthorizedException,
@@ -30,7 +29,7 @@ import { VerifyEmailUseCase } from '../application/use-cases/verify-email.use-ca
 import { RefreshTokensUseCase } from '../application/use-cases/refresh-tokens.use-case';
 import { LogoutUseCase } from '../application/use-cases/logout.use-case';
 import { IssueReadonlyTokenUseCase } from '../application/use-cases/issue-readonly-token.use-case';
-import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
+import { Public } from '@common/decorators/public.decorator';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import type { TokenPayload } from '@donjon-dragon/shared/auth-schema';
 
@@ -46,6 +45,7 @@ export class AuthController {
     private issueReadonlyTokenUseCase: IssueReadonlyTokenUseCase,
   ) {}
 
+  @Public()
   @Post('register')
   async register(@Body() dto: RegisterDto) {
     try {
@@ -58,6 +58,7 @@ export class AuthController {
     }
   }
 
+  @Public()
   @Post('login')
   async login(@Body() dto: LoginDto) {
     try {
@@ -73,6 +74,7 @@ export class AuthController {
     }
   }
 
+  @Public()
   @Post('verify-email')
   async verifyEmail(@Body() dto: VerifyEmailDto) {
     try {
@@ -91,6 +93,7 @@ export class AuthController {
     }
   }
 
+  @Public()
   @Post('refresh')
   async refresh(@Body() dto: RefreshDto) {
     try {
@@ -108,14 +111,12 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   async logout(@Body() dto: RefreshDto) {
     await this.logoutUseCase.execute(dto.refreshToken);
   }
 
   @Post('readonly-token')
-  @UseGuards(JwtAuthGuard)
   async readonlyToken(@CurrentUser() user: TokenPayload) {
     try {
       return await this.issueReadonlyTokenUseCase.execute(user.userId);

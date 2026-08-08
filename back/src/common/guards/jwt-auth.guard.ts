@@ -1,30 +1,26 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Inject } from '@nestjs/common';
-import type { Request } from 'express';
-import {
-  TOKEN_SERVICE,
-  type TokenServicePort,
-} from '@modules/auth/application/ports/token-service.port';
+import { Injectable, type ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
 
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+
+/**
+ * Monte en APP_GUARD : protege TOUTES les routes, y compris celles qu'on
+ * ajoutera demain sans y penser. Seul @Public() ouvre une exception, lue au
+ * niveau du handler ET de la classe.
+ */
 @Injectable()
-export class JwtAuthGuard implements CanActivate {
-  constructor(@Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort) {}
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(private readonly reflector: Reflector) {
+    super();
+  }
 
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<Request>();
-    const authHeader = request.headers.authorization;
+  canActivate(context: ExecutionContext) {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Missing or invalid Authorization header');
-    }
-
-    const token = authHeader.slice(7);
-
-    try {
-      const payload = this.tokenService.verifyAccessToken(token);
-      request.user = payload;
-      return true;
-    } catch {
-      throw new UnauthorizedException('Invalid or expired access token');
-    }
+    return isPublic ? true : super.canActivate(context);
   }
 }

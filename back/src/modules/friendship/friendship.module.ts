@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { UserModule } from '@modules/user/user.module';
-import { AuthGuardsModule } from '@modules/auth/auth-guards.module';
 import { FRIEND_DIRECTORY } from './application/ports/friend-directory.port';
 import { FRIENDSHIP_REPOSITORY } from './application/ports/friendship.repository.port';
 import { SendFriendRequestUseCase } from './application/use-cases/send-friend-request.use-case';
@@ -28,7 +27,6 @@ import { FriendshipController } from './presentation/friendship.controller';
       { name: FRIENDSHIP_MODEL, schema: FriendshipSchema },
     ]),
     UserModule,
-    AuthGuardsModule,
   ],
   controllers: [FriendshipController],
   providers: [

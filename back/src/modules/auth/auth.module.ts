@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { PassportModule } from '@nestjs/passport';
 
 import { UserModule } from '@modules/user/user.module';
 import { EMAIL_SENDER } from './application/ports/email-sender.port';
 import { EMAIL_VERIFICATION_TOKEN_REPOSITORY } from './application/ports/email-verification-token.repository.port';
 import { PASSWORD_HASHER } from './application/ports/password-hasher.port';
 import { REFRESH_TOKEN_REPOSITORY } from './application/ports/refresh-token.repository.port';
+import { TOKEN_SERVICE } from './application/ports/token-service.port';
 import { RegisterUseCase } from './application/use-cases/register.use-case';
 import { LoginUseCase } from './application/use-cases/login.use-case';
 import { VerifyEmailUseCase } from './application/use-cases/verify-email.use-case';
@@ -24,13 +28,21 @@ import {
   REFRESH_TOKEN_MODEL,
   RefreshTokenSchema,
 } from './infrastructure/persistence/refresh-token.schema';
+import { JwtTokenService } from './infrastructure/token/jwt-token.service';
 import { AuthController } from './presentation/auth.controller';
-import { AuthGuardsModule } from './auth-guards.module';
+import { JwtStrategy } from './presentation/strategies/jwt.strategy';
 
 @Module({
   imports: [
     UserModule,
-    AuthGuardsModule,
+    PassportModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.getOrThrow<string>('jwt.secret'),
+      }),
+    }),
     MongooseModule.forFeature([
       { name: REFRESH_TOKEN_MODEL, schema: RefreshTokenSchema },
       {
@@ -41,6 +53,11 @@ import { AuthGuardsModule } from './auth-guards.module';
   ],
   controllers: [AuthController],
   providers: [
+    // La stratégie s'enregistre auprès de Passport sous le nom 'jwt' : c'est ce
+    // qui permet au JwtAuthGuard global de fonctionner sans que les autres
+    // modules aient à importer quoi que ce soit d'auth.
+    JwtStrategy,
+    { provide: TOKEN_SERVICE, useClass: JwtTokenService },
     { provide: PASSWORD_HASHER, useClass: BcryptPasswordHasher },
     { provide: EMAIL_SENDER, useClass: NodemailerEmailSender },
     { provide: REFRESH_TOKEN_REPOSITORY, useClass: MongoRefreshTokenRepository },

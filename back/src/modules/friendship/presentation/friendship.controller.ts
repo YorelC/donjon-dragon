@@ -5,7 +5,6 @@ import {
   Delete,
   Param,
   Query,
-  UseGuards,
   Inject,
 } from '@nestjs/common';
 import type { TokenPayload } from '@donjon-dragon/shared/auth-schema';
@@ -20,11 +19,10 @@ import { ListPendingSentUseCase } from '../application/use-cases/list-pending-se
 import { RemoveFriendUseCase } from '../application/use-cases/remove-friend.use-case';
 import { SearchUsersUseCase } from '../application/use-cases/search-users.use-case';
 import { CountPendingReceivedUseCase } from '../application/use-cases/count-pending-received.use-case';
-import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 
+// Aucun @UseGuards : le JwtAuthGuard est monté en APP_GUARD dans app.module.
 @Controller('api/friends')
-@UseGuards(JwtAuthGuard)
 export class FriendshipController {
   constructor(
     @Inject(SendFriendRequestUseCase)
