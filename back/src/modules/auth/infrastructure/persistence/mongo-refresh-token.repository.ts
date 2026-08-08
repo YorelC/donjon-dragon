@@ -28,7 +28,7 @@ export class MongoRefreshTokenRepository implements RefreshTokenRepositoryPort {
   async findBySecret(secret: TokenSecret): Promise<RefreshToken | null> {
     const doc = await this.model
       .findOne({ tokenHash: secret.hash })
-      .select('-_id -expiresOn')
+      .select('-_id')
       .lean<RefreshTokenDocument>();
 
     return doc ? toDomain(doc) : null;

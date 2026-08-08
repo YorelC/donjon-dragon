@@ -10,12 +10,12 @@ export const RefreshTokenSchema = new Schema<RefreshTokenDocument>(
     userId: { type: String, required: true, index: true },
     tokenHash: { type: String, required: true, unique: true },
     familyId: { type: String, required: true, index: true },
-    expiresAt: { type: String, required: true },
     revokedAt: { type: String },
     createdAt: { type: String, required: true },
 
-    // Purge automatique — voir refresh-token.mapper.ts pour la raison du champ.
-    expiresOn: { type: Date, required: true, expires: 0 },
+    // `expires: 0` purge le document à l'instant porté par le champ. Requiert un
+    // type Date — voir refresh-token.mapper.ts.
+    expiresAt: { type: Date, required: true, expires: 0 },
   },
   { versionKey: false },
 );

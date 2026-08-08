@@ -28,35 +28,13 @@ export const VerifyEmailSchema = z.object({
   token: z.string(),
 });
 
-// Refresh token persisté (stateful) pour révocation/rotation.
-// On stocke le hash SHA-256 du token, jamais le token brut.
-export const RefreshTokenRecordSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  tokenHash: z.string(),
-  familyId: z.string().uuid(),
-  expiresAt: z.string().datetime(),
-  revokedAt: z.string().datetime().optional(),
-  createdAt: z.string().datetime(),
-});
-
-// Token de vérification d'email persisté (stateful, usage unique).
-// Pas de rotation, pas de familyId, pas de revokedAt — supprimé après usage.
-// On stocke le hash SHA-256 du token, jamais le token brut.
-export const EmailVerificationTokenRecordSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  tokenHash: z.string(),
-  expiresAt: z.string().datetime(),
-  createdAt: z.string().datetime(),
-});
+// Les formes persistées des refresh tokens et des tokens de vérification ne
+// vivent plus ici : elles ne traversent jamais le réseau, donc elles n'ont rien
+// à faire dans le contrat front↔back. Ce sont désormais les snapshots de leurs
+// agrégats respectifs, dans back/src/modules/auth/domain/.
 
 export type TokenTier = z.infer<typeof TokenTierEnum>;
 export type TokenPayload = z.infer<typeof TokenPayloadSchema>;
 export type AuthTokens = z.infer<typeof AuthTokensSchema>;
 export type RefreshDto = z.infer<typeof RefreshSchema>;
 export type VerifyEmailDto = z.infer<typeof VerifyEmailSchema>;
-export type RefreshTokenRecord = z.infer<typeof RefreshTokenRecordSchema>;
-export type EmailVerificationTokenRecord = z.infer<
-  typeof EmailVerificationTokenRecordSchema
->;

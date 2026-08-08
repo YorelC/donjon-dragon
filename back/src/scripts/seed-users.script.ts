@@ -39,19 +39,47 @@ async function seedUsers(): Promise<void> {
   console.log('🌱 Seeding users...\n');
 
   for (const seedUser of SEED_USERS) {
-    const hashedPassword = await passwordHasher.hash(seedUser.password);
-    const user = User.register({
-      email: Email.create(seedUser.email),
-      displayName: DisplayName.create(seedUser.displayName),
-      passwordHash: hashedPassword,
-    });
-
+    const user = await buildVerifiedUser(seedUser, passwordHasher, repository);
     await repository.save(user);
     console.log(`✅ ${seedUser.displayName} | password: ${seedUser.password}`);
   }
 
   console.log('\n✨ Seeding complete!');
   await connection.disconnect();
+}
+
+/**
+ * Le seed doit être rejouable. `save` faisant un upsert par `id`, un compte
+ * regénéré avec un id neuf tombait sur l'index unique de l'email : le second
+ * lancement échouait toujours en DuplicateKey. On réutilise donc l'id existant,
+ * ce qui met à jour le compte au lieu d'en insérer un doublon — et préserve les
+ * amitiés qui référencent cet id.
+ */
+async function buildVerifiedUser(
+  seedUser: SeedUser,
+  passwordHasher: BcryptPasswordHasher,
+  repository: MongoUserRepository,
+): Promise<User> {
+  const email = Email.create(seedUser.email);
+  const passwordHash = await passwordHasher.hash(seedUser.password);
+
+  const existing = await repository.findByEmail(email);
+  if (existing) {
+    return User.restore({ ...existing.snapshot(), passwordHash, emailVerified: true });
+  }
+
+  const user = User.register({
+    email,
+    displayName: DisplayName.create(seedUser.displayName),
+    passwordHash,
+  });
+
+  // Sans ça, aucun compte seedé ne peut se connecter : le login exige un email
+  // vérifié, et il n'y a pas de mail à cliquer en local. Le seed était donc
+  // inutilisable pour se connecter en développement.
+  user.markEmailVerified();
+
+  return user;
 }
 
 seedUsers().catch((err: unknown) => {
