@@ -7,7 +7,7 @@ import { InMemoryUserRepository } from '@modules/user/testing/in-memory-user.rep
 import { InMemoryEmailVerificationTokenRepository } from '../../testing/in-memory-email-verification-token.repository';
 import { InMemoryPasswordHasher } from '../../testing/in-memory-password-hasher';
 import { InMemoryEmailSender } from '../../testing/in-memory-email-sender';
-import { hashVerificationToken } from '../../domain/email/email-verification-token.entity';
+import { TokenSecret } from '../../domain/token-secret';
 import { RegisterUseCase } from './register.use-case';
 
 // Ce use-case ORCHESTRE : hash, delegation de la creation a user, envoi du lien.
@@ -72,9 +72,9 @@ describe('RegisterUseCase', () => {
     ).searchParams.get('token');
     expect(plainToken).toBeTruthy();
 
-    const record = await verificationRepo.findByTokenHash(
-      hashVerificationToken(plainToken as string),
+    const token = await verificationRepo.findBySecret(
+      TokenSecret.fromPlain(plainToken as string),
     );
-    expect(record?.userId).toBe(result.id);
+    expect(token?.userId.value).toBe(result.id);
   });
 });

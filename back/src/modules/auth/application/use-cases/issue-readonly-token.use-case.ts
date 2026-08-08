@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UserId } from '@kernel/domain/user-id';
 
 import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
 import { UserNotFoundError } from '@modules/user/domain/user.errors';
@@ -18,7 +19,7 @@ export class IssueReadonlyTokenUseCase {
 
     return {
       accessToken: this.tokenService.signAccessToken(
-        createReadonlyTokenPayload(user.id),
+        createReadonlyTokenPayload(UserId.create(user.id)),
       ),
     };
   }

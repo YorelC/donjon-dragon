@@ -1,9 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type {
-  AuthTokens,
-  EmailVerificationTokenRecord,
-} from '@donjon-dragon/shared/auth-schema';
+import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import { MarkEmailVerifiedUseCase } from '@modules/user/application/use-cases/mark-email-verified.use-case';
 import {
@@ -19,11 +17,9 @@ import {
   InvalidVerificationTokenError,
   VerificationTokenExpiredError,
 } from '../../domain/auth.errors';
-import {
-  hashVerificationToken,
-  isExpired,
-} from '../../domain/email/email-verification-token.entity';
-import { createRefreshTokenRecord } from '../../domain/token/refresh-token.entity';
+import type { EmailVerificationToken } from '../../domain/email/email-verification-token';
+import { RefreshToken } from '../../domain/token/refresh-token';
+import { TokenSecret } from '../../domain/token-secret';
 import { createAccessTokenPayload } from '../../domain/token/access-token-payload';
 
 @Injectable()
@@ -38,36 +34,38 @@ export class VerifyEmailUseCase {
   ) {}
 
   async execute(plainToken: string): Promise<AuthTokens> {
-    const record = await this.readVerificationToken(plainToken);
+    const token = await this.readVerificationToken(plainToken);
     // La transition appartient à user ; auth ne fait que la déclencher.
-    const verifiedUser = await this.markEmailVerified.execute(record.userId);
-    await this.verificationRepo.deleteById(record.id);
+    const verifiedUser = await this.markEmailVerified.execute(token.userId.value);
+    // Usage unique : le lien est consommé, donc supprimé.
+    await this.verificationRepo.delete(token);
 
     return this.issueTokens(verifiedUser);
   }
 
   private async readVerificationToken(
     plainToken: string,
-  ): Promise<EmailVerificationTokenRecord> {
-    const tokenHash = hashVerificationToken(plainToken);
-    const record = await this.verificationRepo.findByTokenHash(tokenHash);
-    if (!record) throw new InvalidVerificationTokenError();
+  ): Promise<EmailVerificationToken> {
+    const token = await this.verificationRepo.findBySecret(
+      TokenSecret.fromPlain(plainToken),
+    );
+    if (!token) throw new InvalidVerificationTokenError();
 
-    if (isExpired(record, new Date())) {
-      throw new VerificationTokenExpiredError();
-    }
+    if (token.isExpired(new Date())) throw new VerificationTokenExpiredError();
 
-    return record;
+    return token;
   }
 
   private async issueTokens(user: PublicUser): Promise<AuthTokens> {
-    const accessToken = this.tokenService.signAccessToken(
-      createAccessTokenPayload(user.id),
-    );
+    const userId = UserId.create(user.id);
 
-    const { record, plainToken } = createRefreshTokenRecord(user.id);
-    await this.refreshRepo.save(record);
+    const { token, plainToken } = RefreshToken.issue(userId);
+    await this.refreshRepo.save(token);
 
-    return { accessToken, refreshToken: plainToken, user };
+    return {
+      accessToken: this.tokenService.signAccessToken(createAccessTokenPayload(userId)),
+      refreshToken: plainToken,
+      user,
+    };
   }
 }

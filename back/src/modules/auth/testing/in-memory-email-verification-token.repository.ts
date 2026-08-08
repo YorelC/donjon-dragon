@@ -1,28 +1,23 @@
-import type { EmailVerificationTokenRecord } from '@donjon-dragon/shared/auth-schema';
-
 import type { EmailVerificationTokenRepositoryPort } from '../application/ports/email-verification-token.repository.port';
+import type { EmailVerificationToken } from '../domain/email/email-verification-token';
+import type { TokenSecret } from '../domain/token-secret';
 
 export class InMemoryEmailVerificationTokenRepository
   implements EmailVerificationTokenRepositoryPort
 {
-  private readonly records = new Map<string, EmailVerificationTokenRecord>();
+  private readonly tokens = new Map<string, EmailVerificationToken>();
 
-  async save(
-    record: EmailVerificationTokenRecord,
-  ): Promise<EmailVerificationTokenRecord> {
-    this.records.set(record.id, record);
-    return record;
+  async save(token: EmailVerificationToken): Promise<void> {
+    this.tokens.set(token.id, token);
   }
 
-  async findByTokenHash(
-    tokenHash: string,
-  ): Promise<EmailVerificationTokenRecord | null> {
+  async findBySecret(secret: TokenSecret): Promise<EmailVerificationToken | null> {
     return (
-      [...this.records.values()].find((r) => r.tokenHash === tokenHash) ?? null
+      [...this.tokens.values()].find((token) => token.secret.equals(secret)) ?? null
     );
   }
 
-  async deleteById(id: string): Promise<void> {
-    this.records.delete(id);
+  async delete(token: EmailVerificationToken): Promise<void> {
+    this.tokens.delete(token.id);
   }
 }

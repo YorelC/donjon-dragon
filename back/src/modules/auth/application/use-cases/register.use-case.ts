@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { RegisterDto, PublicUser } from '@donjon-dragon/shared/user-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import { RegisterUserUseCase } from '@modules/user/application/use-cases/register-user.use-case';
 import {
@@ -8,7 +9,7 @@ import {
 } from '../ports/email-verification-token.repository.port';
 import { PASSWORD_HASHER, type PasswordHasherPort } from '../ports/password-hasher.port';
 import { EMAIL_SENDER, type EmailSenderPort } from '../ports/email-sender.port';
-import { createEmailVerificationToken } from '../../domain/email/email-verification-token.entity';
+import { EmailVerificationToken } from '../../domain/email/email-verification-token';
 
 /**
  * Orchestre l'inscription : hash du mot de passe (préoccupation d'auth), puis
@@ -43,8 +44,10 @@ export class RegisterUseCase {
     user: PublicUser,
     appOrigin: string,
   ): Promise<void> {
-    const { record, plainToken } = createEmailVerificationToken(user.id);
-    await this.verificationRepo.save(record);
+    const { token, plainToken } = EmailVerificationToken.issue(
+      UserId.create(user.id),
+    );
+    await this.verificationRepo.save(token);
 
     await this.emailSender.sendVerificationEmail(
       user.email,

@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
-import type { RefreshTokenRecord } from '@donjon-dragon/shared/auth-schema';
 
 import type { RefreshTokenRepositoryPort } from '../../application/ports/refresh-token.repository.port';
+import type { RefreshToken } from '../../domain/token/refresh-token';
+import type { TokenFamilyId } from '../../domain/token/token-family-id';
+import type { TokenSecret } from '../../domain/token-secret';
 import {
-  REFRESH_TOKEN_MODEL,
+  toDomain,
+  toPersistence,
   type RefreshTokenDocument,
-} from './refresh-token.schema';
+} from './refresh-token.mapper';
+import { REFRESH_TOKEN_MODEL } from './refresh-token.schema';
 
 @Injectable()
 export class MongoRefreshTokenRepository implements RefreshTokenRepositoryPort {
@@ -16,30 +20,23 @@ export class MongoRefreshTokenRepository implements RefreshTokenRepositoryPort {
     private readonly model: Model<RefreshTokenDocument>,
   ) {}
 
-  async save(record: RefreshTokenRecord): Promise<RefreshTokenRecord> {
-    // `expiresOn` est la projection Date de `expiresAt`, uniquement pour que
-    // l'index TTL de la collection puisse agir (cf. refresh-token.schema.ts).
-    const document = { ...record, expiresOn: new Date(record.expiresAt) };
-
-    await this.model.findOneAndUpdate({ id: record.id }, document, { upsert: true });
-    return record;
+  async save(token: RefreshToken): Promise<void> {
+    const document = toPersistence(token);
+    await this.model.findOneAndUpdate({ id: document.id }, document, { upsert: true });
   }
 
-  async findByTokenHash(tokenHash: string): Promise<RefreshTokenRecord | null> {
+  async findBySecret(secret: TokenSecret): Promise<RefreshToken | null> {
     const doc = await this.model
-      .findOne({ tokenHash })
+      .findOne({ tokenHash: secret.hash })
       .select('-_id -expiresOn')
-      .lean<RefreshTokenRecord>();
-    return doc ?? null;
+      .lean<RefreshTokenDocument>();
+
+    return doc ? toDomain(doc) : null;
   }
 
-  async revokeById(id: string): Promise<void> {
-    await this.model.updateOne({ id }, { $set: { revokedAt: new Date().toISOString() } });
-  }
-
-  async revokeFamily(familyId: string): Promise<void> {
+  async revokeFamily(familyId: TokenFamilyId): Promise<void> {
     await this.model.updateMany(
-      { familyId },
+      { familyId: familyId.value, revokedAt: { $exists: false } },
       { $set: { revokedAt: new Date().toISOString() } },
     );
   }

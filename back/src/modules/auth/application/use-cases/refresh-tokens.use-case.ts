@@ -1,8 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type {
-  AuthTokens,
-  RefreshTokenRecord,
-} from '@donjon-dragon/shared/auth-schema';
+import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
 import { UserNotFoundError } from '@modules/user/domain/user.errors';
@@ -16,11 +14,8 @@ import {
   TokenReuseDetectedError,
   RefreshTokenExpiredError,
 } from '../../domain/auth.errors';
-import {
-  hashRefreshToken,
-  createRefreshTokenRecord,
-  isExpired,
-} from '../../domain/token/refresh-token.entity';
+import { RefreshToken } from '../../domain/token/refresh-token';
+import { TokenSecret } from '../../domain/token-secret';
 import { createAccessTokenPayload } from '../../domain/token/access-token-payload';
 
 @Injectable()
@@ -33,46 +28,52 @@ export class RefreshTokensUseCase {
   ) {}
 
   async execute(plainToken: string): Promise<AuthTokens> {
-    const record = await this.consumePresentedToken(plainToken);
-    const newPlainToken = await this.rotate(record);
+    const presented = await this.consumePresentedToken(plainToken);
+    const rotated = await this.rotate(presented);
 
-    const user = await this.getUserProfile.byId(record.userId);
+    const user = await this.getUserProfile.byId(presented.userId.value);
     if (!user) throw new UserNotFoundError();
 
-    const accessToken = this.tokenService.signAccessToken(
-      createAccessTokenPayload(record.userId),
-    );
-
-    return { accessToken, refreshToken: newPlainToken, user };
+    return {
+      accessToken: this.tokenService.signAccessToken(
+        createAccessTokenPayload(presented.userId),
+      ),
+      refreshToken: rotated,
+      user,
+    };
   }
 
-  // Valide le token présenté et le révoque : toute réutilisation ultérieure
-  // fera tomber la famille entière.
-  private async consumePresentedToken(
-    plainToken: string,
-  ): Promise<RefreshTokenRecord> {
-    const tokenHash = hashRefreshToken(plainToken);
-    const record = await this.refreshRepo.findByTokenHash(tokenHash);
-    if (!record) throw new InvalidRefreshTokenError();
+  /**
+   * Valide le token présenté et le consomme. Un token déjà révoqué signifie
+   * qu'il a fuité ou qu'il est rejoué : on fait alors tomber la lignée entière,
+   * ce qui déconnecte l'attaquant ET la victime.
+   */
+  private async consumePresentedToken(plainToken: string): Promise<RefreshToken> {
+    const token = await this.refreshRepo.findBySecret(
+      TokenSecret.fromPlain(plainToken),
+    );
+    if (!token) throw new InvalidRefreshTokenError();
 
-    if (record.revokedAt) {
-      await this.refreshRepo.revokeFamily(record.familyId);
+    if (token.isRevoked) {
+      await this.refreshRepo.revokeFamily(token.familyId);
       throw new TokenReuseDetectedError();
     }
 
-    if (isExpired(record, new Date())) throw new RefreshTokenExpiredError();
+    if (token.isExpired(new Date())) throw new RefreshTokenExpiredError();
 
-    await this.refreshRepo.revokeById(record.id);
+    token.revoke();
+    await this.refreshRepo.save(token);
 
-    return record;
+    return token;
   }
 
-  private async rotate(record: RefreshTokenRecord): Promise<string> {
-    const { record: newRecord, plainToken } = createRefreshTokenRecord(
-      record.userId,
-      record.familyId,
+  /** Nouveau token dans la MÊME lignée : c'est ce qui rend la fuite détectable. */
+  private async rotate(consumed: RefreshToken): Promise<string> {
+    const { token, plainToken } = RefreshToken.issue(
+      UserId.create(consumed.userId.value),
+      consumed.familyId,
     );
-    await this.refreshRepo.save(newRecord);
+    await this.refreshRepo.save(token);
 
     return plainToken;
   }

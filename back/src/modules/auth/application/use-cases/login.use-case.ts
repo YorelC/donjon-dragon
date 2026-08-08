@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { LoginDto, PublicUser } from '@donjon-dragon/shared/user-schema';
 import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import { GetUserCredentialsUseCase } from '@modules/user/application/use-cases/get-user-credentials.use-case';
 import {
@@ -10,7 +11,7 @@ import {
 import { PASSWORD_HASHER, type PasswordHasherPort } from '../ports/password-hasher.port';
 import { TOKEN_SERVICE, type TokenServicePort } from '../ports/token-service.port';
 import { InvalidCredentialsError, EmailNotVerifiedError } from '../../domain/auth.errors';
-import { createRefreshTokenRecord } from '../../domain/token/refresh-token.entity';
+import { RefreshToken } from '../../domain/token/refresh-token';
 import { createAccessTokenPayload } from '../../domain/token/access-token-payload';
 
 @Injectable()
@@ -43,14 +44,17 @@ export class LoginUseCase {
     return credentials.profile;
   }
 
+  /** Nouvelle connexion : nouvelle lignée de refresh tokens. */
   private async issueTokens(user: PublicUser): Promise<AuthTokens> {
-    const accessToken = this.tokenService.signAccessToken(
-      createAccessTokenPayload(user.id),
-    );
+    const userId = UserId.create(user.id);
 
-    const { record, plainToken } = createRefreshTokenRecord(user.id);
-    await this.refreshRepo.save(record);
+    const { token, plainToken } = RefreshToken.issue(userId);
+    await this.refreshRepo.save(token);
 
-    return { accessToken, refreshToken: plainToken, user };
+    return {
+      accessToken: this.tokenService.signAccessToken(createAccessTokenPayload(userId)),
+      refreshToken: plainToken,
+      user,
+    };
   }
 }
