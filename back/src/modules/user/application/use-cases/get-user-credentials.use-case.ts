@@ -5,12 +5,13 @@ import {
   USER_REPOSITORY,
   type UserRepositoryPort,
 } from '../ports/user-repository.port';
+import { Email } from '../../domain/email';
 import { toPublicUser } from '../user.mapper';
 
 /**
  * Le hash sort du module, mais seul et nommé : c'est le strict nécessaire pour
  * que auth vérifie un mot de passe. Le reste du profil est déjà sérialisé, donc
- * aucun appelant n'a à manipuler l'entité User complète.
+ * aucun appelant n'a à manipuler l'agrégat complet.
  */
 export interface UserCredentials {
   profile: PublicUser;
@@ -24,7 +25,9 @@ export class GetUserCredentialsUseCase {
   ) {}
 
   async execute(email: string): Promise<UserCredentials | null> {
-    const user = await this.userRepo.findByEmail(email);
+    // Email.create normalise : une adresse tapée avec des majuscules retrouve
+    // bien le compte créé en minuscules.
+    const user = await this.userRepo.findByEmail(Email.create(email));
     if (!user) return null;
 
     return { profile: toPublicUser(user), passwordHash: user.passwordHash };

@@ -1,14 +1,12 @@
-import type { PublicUser, User } from '@donjon-dragon/shared/user-schema';
+import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+
+import type { User } from '../domain/user';
 
 /**
- * Sérialisation, pas domaine : retire le hash du mot de passe avant que
- * l'utilisateur ne quitte le module.
- *
- * Vit dans application/ et non presentation/ parce que ce sont les use-cases
- * qui produisent des PublicUser — l'inverse inverserait le sens des flèches à
- * l'intérieur du module.
+ * Agrégat → contrat HTTP. C'est le SEUL endroit qui retire le hash du mot de
+ * passe : l'agrégat le porte, la réponse ne le montre jamais.
  */
 export function toPublicUser(user: User): PublicUser {
-  const { passwordHash: _passwordHash, ...publicUser } = user;
+  const { passwordHash: _passwordHash, ...publicUser } = user.snapshot();
   return publicUser;
 }

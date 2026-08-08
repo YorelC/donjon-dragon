@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser } from '@modules/user/domain/user.entity';
+import { aUser } from '@modules/user/testing/user.fixture';
 import {
   FriendshipNotFoundError,
   NotFriendshipParticipantError,
@@ -13,25 +13,25 @@ import { pendingRequest, accept } from '../../testing/friendship.fixture';
 describe('RemoveFriendUseCase', () => {
   let useCase: RemoveFriendUseCase;
   let friendshipRepo: InMemoryFriendshipRepository;
-  let alice: ReturnType<typeof createUser>;
-  let bob: ReturnType<typeof createUser>;
-  let charlie: ReturnType<typeof createUser>;
+  let alice: ReturnType<typeof aUser>;
+  let bob: ReturnType<typeof aUser>;
+  let charlie: ReturnType<typeof aUser>;
 
   beforeEach(async () => {
     friendshipRepo = new InMemoryFriendshipRepository();
     useCase = new RemoveFriendUseCase(friendshipRepo);
 
-    alice = createUser({
+    alice = aUser({
       email: 'alice@example.com',
       displayName: 'alice',
       passwordHash: 'hashedpw',
     });
-    bob = createUser({
+    bob = aUser({
       email: 'bob@example.com',
       displayName: 'bob',
       passwordHash: 'hashedpw',
     });
-    charlie = createUser({
+    charlie = aUser({
       email: 'charlie@example.com',
       displayName: 'charlie',
       passwordHash: 'hashedpw',
@@ -39,12 +39,12 @@ describe('RemoveFriendUseCase', () => {
   });
 
   it('supprime une amitié accepted', async () => {
-    const f = pendingRequest(alice.id, bob.id);
-    const accepted = accept(f, bob.id);
+    const f = pendingRequest(alice.id.value, bob.id.value);
+    const accepted = accept(f, bob.id.value);
     await friendshipRepo.save(accepted);
 
     await useCase.execute({
-      userId: alice.id,
+      userId: alice.id.value,
       friendshipId: f.id.value,
     });
 
@@ -55,7 +55,7 @@ describe('RemoveFriendUseCase', () => {
   it('lève FriendshipNotFoundError si id inexistent', async () => {
     await expect(
       useCase.execute({
-        userId: alice.id,
+        userId: alice.id.value,
         friendshipId: randomUUID(),
       }),
     ).rejects.toThrow(FriendshipNotFoundError);
@@ -66,32 +66,32 @@ describe('RemoveFriendUseCase', () => {
   it('lève InvalidFriendshipIdError si id mal formé', async () => {
     await expect(
       useCase.execute({
-        userId: alice.id,
+        userId: alice.id.value,
         friendshipId: 'pas-un-uuid',
       }),
     ).rejects.toThrow(InvalidFriendshipIdError);
   });
 
   it('lève NotFriendshipParticipantError si user not involved', async () => {
-    const f = pendingRequest(alice.id, bob.id);
-    const accepted = accept(f, bob.id);
+    const f = pendingRequest(alice.id.value, bob.id.value);
+    const accepted = accept(f, bob.id.value);
     await friendshipRepo.save(accepted);
 
     await expect(
       useCase.execute({
-        userId: charlie.id,
+        userId: charlie.id.value,
         friendshipId: f.id.value,
       }),
     ).rejects.toThrow(NotFriendshipParticipantError);
   });
 
   it('permet au recipient de supprimer une amitié accepted', async () => {
-    const f = pendingRequest(alice.id, bob.id);
-    const accepted = accept(f, bob.id);
+    const f = pendingRequest(alice.id.value, bob.id.value);
+    const accepted = accept(f, bob.id.value);
     await friendshipRepo.save(accepted);
 
     await useCase.execute({
-      userId: bob.id,
+      userId: bob.id.value,
       friendshipId: f.id.value,
     });
 

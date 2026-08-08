@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser } from '@modules/user/domain/user.entity';
+import { aUser } from '@modules/user/testing/user.fixture';
 import { toPublicUser } from '@modules/user/application/user.mapper';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { SearchUsersUseCase } from './search-users.use-case';
@@ -7,25 +7,25 @@ import { SearchUsersUseCase } from './search-users.use-case';
 describe('SearchUsersUseCase', () => {
   let useCase: SearchUsersUseCase;
   let directory: InMemoryFriendDirectory;
-  let alice: ReturnType<typeof createUser>;
-  let bob: ReturnType<typeof createUser>;
-  let bruno: ReturnType<typeof createUser>;
+  let alice: ReturnType<typeof aUser>;
+  let bob: ReturnType<typeof aUser>;
+  let bruno: ReturnType<typeof aUser>;
 
   beforeEach(async () => {
     directory = new InMemoryFriendDirectory();
     useCase = new SearchUsersUseCase(directory);
 
-    alice = createUser({
+    alice = aUser({
       email: 'alice@example.com',
       displayName: 'alice',
       passwordHash: 'hashedpw',
     });
-    bob = createUser({
+    bob = aUser({
       email: 'bob@example.com',
       displayName: 'bob',
       passwordHash: 'hashedpw',
     });
-    bruno = createUser({
+    bruno = aUser({
       email: 'bruno@example.com',
       displayName: 'bruno',
       passwordHash: 'hashedpw',
@@ -38,7 +38,7 @@ describe('SearchUsersUseCase', () => {
 
   it('recherche des users par displayName', async () => {
     const result = await useCase.execute({
-      userId: alice.id,
+      userId: alice.id.value,
       query: 'b',
     });
 
@@ -49,7 +49,7 @@ describe('SearchUsersUseCase', () => {
 
   it('exclut l utilisateur qui fait la recherche', async () => {
     const result = await useCase.execute({
-      userId: alice.id,
+      userId: alice.id.value,
       query: 'alice',
     });
 
@@ -58,7 +58,7 @@ describe('SearchUsersUseCase', () => {
 
   it('retourne liste vide si aucun match', async () => {
     const result = await useCase.execute({
-      userId: alice.id,
+      userId: alice.id.value,
       query: 'xyz',
     });
 
@@ -67,7 +67,7 @@ describe('SearchUsersUseCase', () => {
 
   it('exclut le password hash', async () => {
     const result = await useCase.execute({
-      userId: alice.id,
+      userId: alice.id.value,
       query: 'bob',
     });
 

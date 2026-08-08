@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser } from '@modules/user/domain/user.entity';
+import { aUser } from '@modules/user/testing/user.fixture';
 import { toPublicUser } from '@modules/user/application/user.mapper';
 import {
   CannotFriendSelfError,
@@ -17,20 +17,20 @@ describe('SendFriendRequestUseCase', () => {
   let useCase: SendFriendRequestUseCase;
   let directory: InMemoryFriendDirectory;
   let friendshipRepo: InMemoryFriendshipRepository;
-  let alice: ReturnType<typeof createUser>;
-  let bob: ReturnType<typeof createUser>;
+  let alice: ReturnType<typeof aUser>;
+  let bob: ReturnType<typeof aUser>;
 
   beforeEach(async () => {
     directory = new InMemoryFriendDirectory();
     friendshipRepo = new InMemoryFriendshipRepository();
     useCase = new SendFriendRequestUseCase(directory, friendshipRepo);
 
-    alice = createUser({
+    alice = aUser({
       email: 'alice@example.com',
       displayName: 'alice',
       passwordHash: 'hashedpw',
     });
-    bob = createUser({
+    bob = aUser({
       email: 'bob@example.com',
       displayName: 'bob',
       passwordHash: 'hashedpw',
@@ -42,19 +42,19 @@ describe('SendFriendRequestUseCase', () => {
 
   it('envoie une demande d amitié vers un utilisateur existant', async () => {
     const result = await useCase.execute({
-      requesterId: alice.id,
+      requesterId: alice.id.value,
       displayName: 'bob',
     });
 
     expect(result.status).toBe('pending');
-    expect(result.requesterId).toBe(alice.id);
-    expect(result.recipientId).toBe(bob.id);
+    expect(result.requesterId).toBe(alice.id.value);
+    expect(result.recipientId).toBe(bob.id.value);
   });
 
   it('lève CannotFriendSelfError si requester == recipient', async () => {
     await expect(
       useCase.execute({
-        requesterId: alice.id,
+        requesterId: alice.id.value,
         displayName: 'alice',
       }),
     ).rejects.toThrow(CannotFriendSelfError);
@@ -63,7 +63,7 @@ describe('SendFriendRequestUseCase', () => {
   it('lève RecipientNotFoundError si displayName n existe pas', async () => {
     await expect(
       useCase.execute({
-        requesterId: alice.id,
+        requesterId: alice.id.value,
         displayName: 'nonexistent',
       }),
     ).rejects.toThrow(RecipientNotFoundError);
@@ -71,13 +71,13 @@ describe('SendFriendRequestUseCase', () => {
 
   it('lève FriendRequestAlreadyExistsError si une demande pending existe déjà', async () => {
     await useCase.execute({
-      requesterId: alice.id,
+      requesterId: alice.id.value,
       displayName: 'bob',
     });
 
     await expect(
       useCase.execute({
-        requesterId: alice.id,
+        requesterId: alice.id.value,
         displayName: 'bob',
       }),
     ).rejects.toThrow(FriendRequestAlreadyExistsError);
@@ -85,17 +85,17 @@ describe('SendFriendRequestUseCase', () => {
 
   it('lève AlreadyFriendsError si déjà amis (status accepted)', async () => {
     const req = await useCase.execute({
-      requesterId: alice.id,
+      requesterId: alice.id.value,
       displayName: 'bob',
     });
 
     // On rejoue la vraie transition plutôt que de forcer un statut : le domaine
     // n'accepte plus qu'on lui impose un état de l'extérieur.
-    await friendshipRepo.save(accept(Friendship.restore(req), bob.id));
+    await friendshipRepo.save(accept(Friendship.restore(req), bob.id.value));
 
     await expect(
       useCase.execute({
-        requesterId: alice.id,
+        requesterId: alice.id.value,
         displayName: 'bob',
       }),
     ).rejects.toThrow(AlreadyFriendsError);
@@ -103,14 +103,14 @@ describe('SendFriendRequestUseCase', () => {
 
   it('permet de renvoyer une demande après refus (overwrite refused)', async () => {
     const req1 = await useCase.execute({
-      requesterId: alice.id,
+      requesterId: alice.id.value,
       displayName: 'bob',
     });
 
-    await friendshipRepo.save(refuse(Friendship.restore(req1), bob.id));
+    await friendshipRepo.save(refuse(Friendship.restore(req1), bob.id.value));
 
     const req2 = await useCase.execute({
-      requesterId: alice.id,
+      requesterId: alice.id.value,
       displayName: 'bob',
     });
 

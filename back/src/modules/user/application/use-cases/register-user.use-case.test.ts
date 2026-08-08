@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { UserId } from '@kernel/domain/user-id';
 
 import { InMemoryUserRepository } from '../../testing/in-memory-user.repository';
-import { createUser } from '../../domain/user.entity';
+import { aUser } from '../../testing/user.fixture';
 import {
   DisplayNameAlreadyTakenError,
   EmailAlreadyInUseError,
@@ -37,18 +38,18 @@ describe('RegisterUserUseCase', () => {
   it('persiste l utilisateur avec son hash', async () => {
     const result = await useCase.execute(command);
 
-    const stored = await userRepo.findById(result.id);
+    const stored = await userRepo.findById(UserId.create(result.id));
     expect(stored?.passwordHash).toBe('hashed_SecurePassword123!');
   });
 
   it('leve EmailAlreadyInUseError si l email est deja pris', async () => {
-    await userRepo.save(createUser({ ...command, displayName: 'quelqu-un-dautre' }));
+    await userRepo.save(aUser({ ...command, displayName: 'quelqu-un-dautre' }));
 
     await expect(useCase.execute(command)).rejects.toThrow(EmailAlreadyInUseError);
   });
 
   it('leve DisplayNameAlreadyTakenError si le pseudo est deja pris', async () => {
-    await userRepo.save(createUser({ ...command, email: 'autre@example.com' }));
+    await userRepo.save(aUser({ ...command, email: 'autre@example.com' }));
 
     await expect(useCase.execute(command)).rejects.toThrow(
       DisplayNameAlreadyTakenError,

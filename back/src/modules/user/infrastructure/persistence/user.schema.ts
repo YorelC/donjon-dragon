@@ -1,9 +1,9 @@
 import { Schema } from 'mongoose';
-import type { User } from '@donjon-dragon/shared/user-schema';
+import type { UserSnapshot } from '../../domain/user';
 
 export const USER_MODEL = 'User';
 
-export const UserSchema = new Schema<User>(
+export const UserSchema = new Schema<UserSnapshot>(
   {
     id: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },

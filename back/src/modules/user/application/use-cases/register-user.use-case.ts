@@ -5,7 +5,9 @@ import {
   USER_REPOSITORY,
   type UserRepositoryPort,
 } from '../ports/user-repository.port';
-import { createUser } from '../../domain/user.entity';
+import { DisplayName } from '../../domain/display-name';
+import { Email } from '../../domain/email';
+import { User } from '../../domain/user';
 import {
   DisplayNameAlreadyTakenError,
   EmailAlreadyInUseError,
@@ -32,19 +34,22 @@ export class RegisterUserUseCase {
   ) {}
 
   async execute(command: RegisterUserCommand): Promise<PublicUser> {
-    await this.assertUnique(command);
+    const email = Email.create(command.email);
+    const displayName = DisplayName.create(command.displayName);
 
-    const user = createUser(command);
+    await this.assertUnique(email, displayName);
+
+    const user = User.register({ email, displayName, passwordHash: command.passwordHash });
     await this.userRepo.save(user);
 
     return toPublicUser(user);
   }
 
-  private async assertUnique(command: RegisterUserCommand): Promise<void> {
-    if (await this.userRepo.findByEmail(command.email)) {
+  private async assertUnique(email: Email, displayName: DisplayName): Promise<void> {
+    if (await this.userRepo.findByEmail(email)) {
       throw new EmailAlreadyInUseError();
     }
-    if (await this.userRepo.findByDisplayName(command.displayName)) {
+    if (await this.userRepo.findByDisplayName(displayName)) {
       throw new DisplayNameAlreadyTakenError();
     }
   }

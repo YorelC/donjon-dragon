@@ -1,11 +1,13 @@
 import 'dotenv/config';
 import { connect } from 'mongoose';
 import type { Model } from 'mongoose';
-import type { User } from '@donjon-dragon/shared/user-schema';
+import type { UserDocument } from '@modules/user/infrastructure/persistence/user.mapper';
 import { UserSchema, USER_MODEL } from '@modules/user/infrastructure/persistence/user.schema';
 import { MongoUserRepository } from '@modules/user/infrastructure/persistence/mongo-user.repository';
 import { BcryptPasswordHasher } from '@modules/auth/infrastructure/crypto/bcrypt-password-hasher';
-import { createUser } from '@modules/user/domain/user.entity';
+import { DisplayName } from '@modules/user/domain/display-name';
+import { Email } from '@modules/user/domain/email';
+import { User } from '@modules/user/domain/user';
 
 interface SeedUser {
   email: string;
@@ -30,7 +32,7 @@ async function seedUsers(): Promise<void> {
   const mongoUri = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/donjon-dragon';
 
   const connection = await connect(mongoUri);
-  const model = connection.model<User>(USER_MODEL, UserSchema);
+  const model = connection.model<UserDocument>(USER_MODEL, UserSchema);
   const repository = new MongoUserRepository(model);
   const passwordHasher = new BcryptPasswordHasher();
 
@@ -38,9 +40,9 @@ async function seedUsers(): Promise<void> {
 
   for (const seedUser of SEED_USERS) {
     const hashedPassword = await passwordHasher.hash(seedUser.password);
-    const user = createUser({
-      email: seedUser.email,
-      displayName: seedUser.displayName,
+    const user = User.register({
+      email: Email.create(seedUser.email),
+      displayName: DisplayName.create(seedUser.displayName),
       passwordHash: hashedPassword,
     });
 

@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser } from '@modules/user/domain/user.entity';
+import { aUser } from '@modules/user/testing/user.fixture';
 import {
   FriendshipNotFoundError,
   FriendRequestNotPendingError,
@@ -14,19 +14,19 @@ import { pendingRequest, refuse } from '../../testing/friendship.fixture';
 describe('RefuseFriendRequestUseCase', () => {
   let useCase: RefuseFriendRequestUseCase;
   let friendshipRepo: InMemoryFriendshipRepository;
-  let alice: ReturnType<typeof createUser>;
-  let bob: ReturnType<typeof createUser>;
+  let alice: ReturnType<typeof aUser>;
+  let bob: ReturnType<typeof aUser>;
 
   beforeEach(async () => {
     friendshipRepo = new InMemoryFriendshipRepository();
     useCase = new RefuseFriendRequestUseCase(friendshipRepo);
 
-    alice = createUser({
+    alice = aUser({
       email: 'alice@example.com',
       displayName: 'alice',
       passwordHash: 'hashedpw',
     });
-    bob = createUser({
+    bob = aUser({
       email: 'bob@example.com',
       displayName: 'bob',
       passwordHash: 'hashedpw',
@@ -34,12 +34,12 @@ describe('RefuseFriendRequestUseCase', () => {
   });
 
   it('refuse une demande pending', async () => {
-    const friendship = pendingRequest(alice.id, bob.id);
+    const friendship = pendingRequest(alice.id.value, bob.id.value);
     await friendshipRepo.save(friendship);
 
     const result = await useCase.execute({
       friendshipId: friendship.id.value,
-      actingUserId: bob.id,
+      actingUserId: bob.id.value,
     });
 
     expect(result.status).toBe('refused');
@@ -49,7 +49,7 @@ describe('RefuseFriendRequestUseCase', () => {
     await expect(
       useCase.execute({
         friendshipId: randomUUID(),
-        actingUserId: bob.id,
+        actingUserId: bob.id.value,
       }),
     ).rejects.toThrow(FriendshipNotFoundError);
   });
@@ -60,31 +60,31 @@ describe('RefuseFriendRequestUseCase', () => {
     await expect(
       useCase.execute({
         friendshipId: 'pas-un-uuid',
-        actingUserId: bob.id,
+        actingUserId: bob.id.value,
       }),
     ).rejects.toThrow(InvalidFriendshipIdError);
   });
 
   it('lève FriendRequestNotPendingError si status != pending', async () => {
-    const friendship = refuse(pendingRequest(alice.id, bob.id), bob.id);
+    const friendship = refuse(pendingRequest(alice.id.value, bob.id.value), bob.id.value);
     await friendshipRepo.save(friendship);
 
     await expect(
       useCase.execute({
         friendshipId: friendship.id.value,
-        actingUserId: bob.id,
+        actingUserId: bob.id.value,
       }),
     ).rejects.toThrow(FriendRequestNotPendingError);
   });
 
   it('lève NotRequestRecipientError si user != recipient', async () => {
-    const friendship = pendingRequest(alice.id, bob.id);
+    const friendship = pendingRequest(alice.id.value, bob.id.value);
     await friendshipRepo.save(friendship);
 
     await expect(
       useCase.execute({
         friendshipId: friendship.id.value,
-        actingUserId: alice.id,
+        actingUserId: alice.id.value,
       }),
     ).rejects.toThrow(NotRequestRecipientError);
   });

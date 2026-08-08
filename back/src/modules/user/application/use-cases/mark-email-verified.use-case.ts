@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   USER_REPOSITORY,
   type UserRepositoryPort,
 } from '../ports/user-repository.port';
-import { markEmailVerified } from '../../domain/user.entity';
 import { UserNotFoundError } from '../../domain/user.errors';
 import { toPublicUser } from '../user.mapper';
 
@@ -17,12 +17,12 @@ export class MarkEmailVerifiedUseCase {
   ) {}
 
   async execute(userId: string): Promise<PublicUser> {
-    const user = await this.userRepo.findById(userId);
+    const user = await this.userRepo.findById(UserId.create(userId));
     if (!user) throw new UserNotFoundError();
 
-    const verified = markEmailVerified(user);
-    await this.userRepo.save(verified);
+    user.markEmailVerified();
+    await this.userRepo.save(user);
 
-    return toPublicUser(verified);
+    return toPublicUser(user);
   }
 }

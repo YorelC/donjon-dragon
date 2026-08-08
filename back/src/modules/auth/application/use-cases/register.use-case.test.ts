@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { UserId } from '@kernel/domain/user-id';
 import type { RegisterDto } from '@donjon-dragon/shared/user-schema';
 
 import { RegisterUserUseCase } from '@modules/user/application/use-cases/register-user.use-case';
@@ -48,7 +49,7 @@ describe('RegisterUseCase', () => {
   it('hashe le mot de passe avant de deleguer la creation', async () => {
     const result = await useCase.execute(dto);
 
-    const stored = await userRepo.findById(result.id);
+    const stored = await userRepo.findById(UserId.create(result.id));
     expect(stored?.passwordHash).toBe('hashed_SecurePassword123!');
     expect(stored?.passwordHash).not.toBe(dto.password);
   });
