@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { createTransport } from 'nodemailer';
 import type { EmailSenderPort } from '../../application/ports/email-sender.port';
 
+@Injectable()
 export class NodemailerEmailSender implements EmailSenderPort {
   private transporter = createTransport({
     service: 'gmail',

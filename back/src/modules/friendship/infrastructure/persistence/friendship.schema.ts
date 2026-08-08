@@ -1,6 +1,8 @@
 import { Schema } from 'mongoose';
 import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
 
+export const FRIENDSHIP_MODEL = 'Friendship';
+
 export const FriendshipSchema = new Schema<Friendship>(
   {
     id: { type: String, required: true, unique: true },

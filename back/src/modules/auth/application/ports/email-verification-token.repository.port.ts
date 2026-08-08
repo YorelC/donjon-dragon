@@ -1,5 +1,9 @@
 import type { EmailVerificationTokenRecord } from '@donjon-dragon/shared/auth-schema';
 
+export const EMAIL_VERIFICATION_TOKEN_REPOSITORY = Symbol(
+  'EMAIL_VERIFICATION_TOKEN_REPOSITORY',
+);
+
 export interface EmailVerificationTokenRepositoryPort {
   save(
     record: EmailVerificationTokenRecord,

@@ -1,4 +1,8 @@
-import type { FriendshipRepositoryPort } from '../ports/friendship.repository.port';
+import { Inject, Injectable } from '@nestjs/common';
+import {
+  FRIENDSHIP_REPOSITORY,
+  type FriendshipRepositoryPort,
+} from '../ports/friendship.repository.port';
 import {
   FriendshipNotFoundError,
   NotFriendshipParticipantError,
@@ -10,8 +14,12 @@ export interface RemoveFriendDto {
   friendshipId: string;
 }
 
+@Injectable()
 export class RemoveFriendUseCase {
-  constructor(private readonly friendshipRepo: FriendshipRepositoryPort) {}
+  constructor(
+    @Inject(FRIENDSHIP_REPOSITORY)
+    private readonly friendshipRepo: FriendshipRepositoryPort,
+  ) {}
 
   async execute(dto: RemoveFriendDto): Promise<void> {
     const friendship = await this.friendshipRepo.findById(dto.friendshipId);

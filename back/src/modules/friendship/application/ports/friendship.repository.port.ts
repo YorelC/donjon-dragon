@@ -1,5 +1,7 @@
 import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
 
+export const FRIENDSHIP_REPOSITORY = Symbol('FRIENDSHIP_REPOSITORY');
+
 export interface FriendshipRepositoryPort {
   save(friendship: Friendship): Promise<Friendship>;
   findById(id: string): Promise<Friendship | null>;

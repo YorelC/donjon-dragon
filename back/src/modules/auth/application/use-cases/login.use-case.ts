@@ -1,20 +1,29 @@
+import { Inject, Injectable } from '@nestjs/common';
 import type { LoginDto, User } from '@donjon-dragon/shared/user-schema';
 import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
-import type { UserRepositoryPort } from '@modules/user/application/ports/user-repository.port';
-import type { RefreshTokenRepositoryPort } from '../ports/refresh-token.repository.port';
-import type { PasswordHasherPort } from '../ports/password-hasher.port';
-import type { TokenServicePort } from '../ports/token-service.port';
+import {
+  USER_REPOSITORY,
+  type UserRepositoryPort,
+} from '@modules/user/application/ports/user-repository.port';
+import {
+  REFRESH_TOKEN_REPOSITORY,
+  type RefreshTokenRepositoryPort,
+} from '../ports/refresh-token.repository.port';
+import { PASSWORD_HASHER, type PasswordHasherPort } from '../ports/password-hasher.port';
+import { TOKEN_SERVICE, type TokenServicePort } from '../ports/token-service.port';
 import { InvalidCredentialsError, EmailNotVerifiedError } from '../../domain/auth.errors';
 import { toPublicUser } from '@modules/user/domain/user.entity';
 import { createRefreshTokenRecord } from '../../domain/token/refresh-token.entity';
 import { createAccessTokenPayload } from '../../domain/token/access-token-payload';
 
+@Injectable()
 export class LoginUseCase {
   constructor(
-    private readonly userRepo: UserRepositoryPort,
+    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
+    @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepo: RefreshTokenRepositoryPort,
-    private readonly passwordHasher: PasswordHasherPort,
-    private readonly tokenService: TokenServicePort,
+    @Inject(PASSWORD_HASHER) private readonly passwordHasher: PasswordHasherPort,
+    @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
   ) {}
 
   async execute(dto: LoginDto): Promise<AuthTokens> {

@@ -1,6 +1,10 @@
+import { Inject, Injectable } from '@nestjs/common';
 import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
 
-import type { FriendshipRepositoryPort } from '../ports/friendship.repository.port';
+import {
+  FRIENDSHIP_REPOSITORY,
+  type FriendshipRepositoryPort,
+} from '../ports/friendship.repository.port';
 import { FriendshipNotFoundError } from '../../domain/friendship.errors';
 import { acceptFriendRequest } from '../../domain/friendship.entity';
 
@@ -9,8 +13,12 @@ export interface AcceptFriendRequestDto {
   actingUserId: string;
 }
 
+@Injectable()
 export class AcceptFriendRequestUseCase {
-  constructor(private readonly friendshipRepo: FriendshipRepositoryPort) {}
+  constructor(
+    @Inject(FRIENDSHIP_REPOSITORY)
+    private readonly friendshipRepo: FriendshipRepositoryPort,
+  ) {}
 
   async execute(dto: AcceptFriendRequestDto): Promise<Friendship> {
     const friendship = await this.friendshipRepo.findById(dto.friendshipId);

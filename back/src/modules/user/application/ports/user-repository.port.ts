@@ -1,5 +1,7 @@
 import type { User } from '@donjon-dragon/shared/user-schema';
 
+export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
+
 export interface UserRepositoryPort {
   save(user: User): Promise<User>;
   findById(id: string): Promise<User | null>;

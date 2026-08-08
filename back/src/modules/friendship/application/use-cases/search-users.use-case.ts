@@ -1,6 +1,10 @@
+import { Inject, Injectable } from '@nestjs/common';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
 
-import type { UserRepositoryPort } from '@modules/user/application/ports/user-repository.port';
+import {
+  USER_REPOSITORY,
+  type UserRepositoryPort,
+} from '@modules/user/application/ports/user-repository.port';
 import { toPublicUser } from '@modules/user/domain/user.entity';
 
 export interface SearchUsersDto {
@@ -8,8 +12,12 @@ export interface SearchUsersDto {
   query: string;
 }
 
+@Injectable()
 export class SearchUsersUseCase {
-  constructor(private readonly userRepo: UserRepositoryPort) {}
+  constructor(
+    @Inject(USER_REPOSITORY)
+    private readonly userRepo: UserRepositoryPort,
+  ) {}
 
   async execute(dto: SearchUsersDto): Promise<PublicUser[]> {
     const results = await this.userRepo.searchByDisplayName(dto.query, 20);

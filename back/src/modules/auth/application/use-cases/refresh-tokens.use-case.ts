@@ -2,9 +2,16 @@ import type {
   AuthTokens,
   RefreshTokenRecord,
 } from '@donjon-dragon/shared/auth-schema';
-import type { UserRepositoryPort } from '@modules/user/application/ports/user-repository.port';
-import type { RefreshTokenRepositoryPort } from '../ports/refresh-token.repository.port';
-import type { TokenServicePort } from '../ports/token-service.port';
+import { Inject, Injectable } from '@nestjs/common';
+import {
+  USER_REPOSITORY,
+  type UserRepositoryPort,
+} from '@modules/user/application/ports/user-repository.port';
+import {
+  REFRESH_TOKEN_REPOSITORY,
+  type RefreshTokenRepositoryPort,
+} from '../ports/refresh-token.repository.port';
+import { TOKEN_SERVICE, type TokenServicePort } from '../ports/token-service.port';
 import {
   InvalidRefreshTokenError,
   TokenReuseDetectedError,
@@ -19,11 +26,13 @@ import {
 } from '../../domain/token/refresh-token.entity';
 import { createAccessTokenPayload } from '../../domain/token/access-token-payload';
 
+@Injectable()
 export class RefreshTokensUseCase {
   constructor(
-    private readonly userRepo: UserRepositoryPort,
+    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
+    @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepo: RefreshTokenRepositoryPort,
-    private readonly tokenService: TokenServicePort,
+    @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
   ) {}
 
   async execute(plainToken: string): Promise<AuthTokens> {

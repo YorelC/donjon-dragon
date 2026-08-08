@@ -1,10 +1,17 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import type { RefreshTokenRecord } from '@donjon-dragon/shared/auth-schema';
 
 import type { RefreshTokenRepositoryPort } from '../../application/ports/refresh-token.repository.port';
+import { REFRESH_TOKEN_MODEL } from './refresh-token.schema';
 
+@Injectable()
 export class MongoRefreshTokenRepository implements RefreshTokenRepositoryPort {
-  constructor(private readonly model: Model<RefreshTokenRecord>) {}
+  constructor(
+    @InjectModel(REFRESH_TOKEN_MODEL)
+    private readonly model: Model<RefreshTokenRecord>,
+  ) {}
 
   async save(record: RefreshTokenRecord): Promise<RefreshTokenRecord> {
     await this.model.findOneAndUpdate({ id: record.id }, record, { upsert: true });

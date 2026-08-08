@@ -1,19 +1,28 @@
+import { Inject, Injectable } from '@nestjs/common';
 import type { RegisterDto, PublicUser } from '@donjon-dragon/shared/user-schema';
-import type { UserRepositoryPort } from '@modules/user/application/ports/user-repository.port';
-import type { EmailVerificationTokenRepositoryPort } from '../ports/email-verification-token.repository.port';
-import type { PasswordHasherPort } from '../ports/password-hasher.port';
-import type { EmailSenderPort } from '../ports/email-sender.port';
+import {
+  USER_REPOSITORY,
+  type UserRepositoryPort,
+} from '@modules/user/application/ports/user-repository.port';
+import {
+  EMAIL_VERIFICATION_TOKEN_REPOSITORY,
+  type EmailVerificationTokenRepositoryPort,
+} from '../ports/email-verification-token.repository.port';
+import { PASSWORD_HASHER, type PasswordHasherPort } from '../ports/password-hasher.port';
+import { EMAIL_SENDER, type EmailSenderPort } from '../ports/email-sender.port';
 import { EmailAlreadyInUseError } from '../../domain/auth.errors';
 import { DisplayNameAlreadyTakenError } from '@modules/user/domain/user.errors';
 import { createEmailVerificationToken } from '../../domain/email/email-verification-token.entity';
 import { createUser, toPublicUser } from '@modules/user/domain/user.entity';
 
+@Injectable()
 export class RegisterUseCase {
   constructor(
-    private readonly userRepo: UserRepositoryPort,
+    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
+    @Inject(EMAIL_VERIFICATION_TOKEN_REPOSITORY)
     private readonly verificationRepo: EmailVerificationTokenRepositoryPort,
-    private readonly passwordHasher: PasswordHasherPort,
-    private readonly emailSender: EmailSenderPort,
+    @Inject(PASSWORD_HASHER) private readonly passwordHasher: PasswordHasherPort,
+    @Inject(EMAIL_SENDER) private readonly emailSender: EmailSenderPort,
   ) {}
 
   async execute(dto: RegisterDto): Promise<PublicUser> {

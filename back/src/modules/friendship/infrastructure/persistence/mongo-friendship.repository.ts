@@ -1,10 +1,16 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
 
 import type { FriendshipRepositoryPort } from '../../application/ports/friendship.repository.port';
+import { FRIENDSHIP_MODEL } from './friendship.schema';
 
+@Injectable()
 export class MongoFriendshipRepository implements FriendshipRepositoryPort {
-  constructor(private readonly model: Model<Friendship>) {}
+  constructor(
+    @InjectModel(FRIENDSHIP_MODEL) private readonly model: Model<Friendship>,
+  ) {}
 
   async save(friendship: Friendship): Promise<Friendship> {
     await this.model.findOneAndUpdate({ id: friendship.id }, friendship, { upsert: true });

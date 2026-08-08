@@ -1,7 +1,14 @@
+import { Inject, Injectable } from '@nestjs/common';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
 
-import type { FriendshipRepositoryPort } from '../ports/friendship.repository.port';
-import type { UserRepositoryPort } from '@modules/user/application/ports/user-repository.port';
+import {
+  FRIENDSHIP_REPOSITORY,
+  type FriendshipRepositoryPort,
+} from '../ports/friendship.repository.port';
+import {
+  USER_REPOSITORY,
+  type UserRepositoryPort,
+} from '@modules/user/application/ports/user-repository.port';
 import { friendIdFor } from '../../domain/friendship.entity';
 import { toPublicUser } from '@modules/user/domain/user.entity';
 
@@ -14,9 +21,12 @@ export interface AcceptedFriend {
   friend: PublicUser;
 }
 
+@Injectable()
 export class ListFriendsUseCase {
   constructor(
+    @Inject(FRIENDSHIP_REPOSITORY)
     private readonly friendshipRepo: FriendshipRepositoryPort,
+    @Inject(USER_REPOSITORY)
     private readonly userRepo: UserRepositoryPort,
   ) {}
 

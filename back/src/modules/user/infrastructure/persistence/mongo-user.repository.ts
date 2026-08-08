@@ -1,10 +1,14 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import type { User } from '@donjon-dragon/shared/user-schema';
 
 import type { UserRepositoryPort } from '../../application/ports/user-repository.port';
+import { USER_MODEL } from './user.schema';
 
+@Injectable()
 export class MongoUserRepository implements UserRepositoryPort {
-  constructor(private readonly model: Model<User>) {}
+  constructor(@InjectModel(USER_MODEL) private readonly model: Model<User>) {}
 
   async save(user: User): Promise<User> {
     await this.model.findOneAndUpdate({ id: user.id }, user, { upsert: true });

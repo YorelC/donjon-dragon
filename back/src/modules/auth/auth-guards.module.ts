@@ -3,7 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtTokenService } from './infrastructure/token/jwt-token.service';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { TierGuard } from '@common/guards/tier.guard';
-import { TOKEN_SERVICE } from './auth.tokens';
+import { TOKEN_SERVICE } from './application/ports/token-service.port';
 
 const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-change-in-production';
 

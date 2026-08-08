@@ -3,10 +3,20 @@ import type {
   EmailVerificationTokenRecord,
 } from '@donjon-dragon/shared/auth-schema';
 import type { User } from '@donjon-dragon/shared/user-schema';
-import type { UserRepositoryPort } from '@modules/user/application/ports/user-repository.port';
-import type { EmailVerificationTokenRepositoryPort } from '../ports/email-verification-token.repository.port';
-import type { RefreshTokenRepositoryPort } from '../ports/refresh-token.repository.port';
-import type { TokenServicePort } from '../ports/token-service.port';
+import { Inject, Injectable } from '@nestjs/common';
+import {
+  USER_REPOSITORY,
+  type UserRepositoryPort,
+} from '@modules/user/application/ports/user-repository.port';
+import {
+  EMAIL_VERIFICATION_TOKEN_REPOSITORY,
+  type EmailVerificationTokenRepositoryPort,
+} from '../ports/email-verification-token.repository.port';
+import {
+  REFRESH_TOKEN_REPOSITORY,
+  type RefreshTokenRepositoryPort,
+} from '../ports/refresh-token.repository.port';
+import { TOKEN_SERVICE, type TokenServicePort } from '../ports/token-service.port';
 import {
   InvalidVerificationTokenError,
   VerificationTokenExpiredError,
@@ -20,12 +30,15 @@ import { toPublicUser } from '@modules/user/domain/user.entity';
 import { createRefreshTokenRecord } from '../../domain/token/refresh-token.entity';
 import { createAccessTokenPayload } from '../../domain/token/access-token-payload';
 
+@Injectable()
 export class VerifyEmailUseCase {
   constructor(
-    private readonly userRepo: UserRepositoryPort,
+    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
+    @Inject(EMAIL_VERIFICATION_TOKEN_REPOSITORY)
     private readonly verificationRepo: EmailVerificationTokenRepositoryPort,
+    @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepo: RefreshTokenRepositoryPort,
-    private readonly tokenService: TokenServicePort,
+    @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
   ) {}
 
   async execute(plainToken: string): Promise<AuthTokens> {
