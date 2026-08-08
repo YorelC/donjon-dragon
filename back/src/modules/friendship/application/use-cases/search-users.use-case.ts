@@ -2,26 +2,27 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
 
 import {
-  USER_REPOSITORY,
-  type UserRepositoryPort,
-} from '@modules/user/application/ports/user-repository.port';
-import { toPublicUser } from '@modules/user/domain/user.entity';
+  FRIEND_DIRECTORY,
+  type FriendDirectoryPort,
+} from '../ports/friend-directory.port';
 
 export interface SearchUsersDto {
   userId: string;
   query: string;
 }
 
+const SEARCH_RESULT_LIMIT = 20;
+
 @Injectable()
 export class SearchUsersUseCase {
   constructor(
-    @Inject(USER_REPOSITORY)
-    private readonly userRepo: UserRepositoryPort,
+    @Inject(FRIEND_DIRECTORY)
+    private readonly directory: FriendDirectoryPort,
   ) {}
 
   async execute(dto: SearchUsersDto): Promise<PublicUser[]> {
-    const results = await this.userRepo.searchByDisplayName(dto.query, 20);
+    const results = await this.directory.search(dto.query, SEARCH_RESULT_LIMIT);
 
-    return results.filter((u) => u.id !== dto.userId).map(toPublicUser);
+    return results.filter((user) => user.id !== dto.userId);
   }
 }

@@ -6,11 +6,10 @@ import {
   type FriendshipRepositoryPort,
 } from '../ports/friendship.repository.port';
 import {
-  USER_REPOSITORY,
-  type UserRepositoryPort,
-} from '@modules/user/application/ports/user-repository.port';
+  FRIEND_DIRECTORY,
+  type FriendDirectoryPort,
+} from '../ports/friend-directory.port';
 import { friendIdFor } from '../../domain/friendship.entity';
-import { toPublicUser } from '@modules/user/domain/user.entity';
 
 export interface ListFriendsDto {
   userId: string;
@@ -26,8 +25,8 @@ export class ListFriendsUseCase {
   constructor(
     @Inject(FRIENDSHIP_REPOSITORY)
     private readonly friendshipRepo: FriendshipRepositoryPort,
-    @Inject(USER_REPOSITORY)
-    private readonly userRepo: UserRepositoryPort,
+    @Inject(FRIEND_DIRECTORY)
+    private readonly directory: FriendDirectoryPort,
   ) {}
 
   async execute(dto: ListFriendsDto): Promise<AcceptedFriend[]> {
@@ -35,13 +34,9 @@ export class ListFriendsUseCase {
 
     const friends: AcceptedFriend[] = [];
     for (const f of friendships) {
-      const friendId = friendIdFor(f, dto.userId);
-      const user = await this.userRepo.findById(friendId);
-      if (user) {
-        friends.push({
-          friendshipId: f.id,
-          friend: toPublicUser(user),
-        });
+      const friend = await this.directory.findById(friendIdFor(f, dto.userId));
+      if (friend) {
+        friends.push({ friendshipId: f.id, friend });
       }
     }
 

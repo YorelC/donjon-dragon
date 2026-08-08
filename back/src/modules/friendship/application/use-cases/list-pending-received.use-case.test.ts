@@ -1,22 +1,22 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser } from '@modules/user/domain/user.entity';
-import { InMemoryUserRepository } from '@modules/user/infrastructure/persistence/in-memory-user.repository';
+import { createUser, toPublicUser } from '@modules/user/domain/user.entity';
+import { InMemoryFriendDirectory } from '../../infrastructure/acl/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../infrastructure/persistence/in-memory-friendship.repository';
 import { ListPendingReceivedUseCase } from './list-pending-received.use-case';
 import { createFriendRequest } from '../../domain/friendship.entity';
 
 describe('ListPendingReceivedUseCase', () => {
   let useCase: ListPendingReceivedUseCase;
-  let userRepo: InMemoryUserRepository;
+  let directory: InMemoryFriendDirectory;
   let friendshipRepo: InMemoryFriendshipRepository;
   let alice: ReturnType<typeof createUser>;
   let bob: ReturnType<typeof createUser>;
   let charlie: ReturnType<typeof createUser>;
 
   beforeEach(async () => {
-    userRepo = new InMemoryUserRepository();
+    directory = new InMemoryFriendDirectory();
     friendshipRepo = new InMemoryFriendshipRepository();
-    useCase = new ListPendingReceivedUseCase(friendshipRepo, userRepo);
+    useCase = new ListPendingReceivedUseCase(friendshipRepo, directory);
 
     alice = createUser({
       email: 'alice@example.com',
@@ -34,9 +34,9 @@ describe('ListPendingReceivedUseCase', () => {
       passwordHash: 'hashedpw',
     });
 
-    await userRepo.save(alice);
-    await userRepo.save(bob);
-    await userRepo.save(charlie);
+    await directory.save(toPublicUser(alice));
+    await directory.save(toPublicUser(bob));
+    await directory.save(toPublicUser(charlie));
   });
 
   it('retourne les demandes pending reçues', async () => {

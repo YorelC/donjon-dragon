@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { UserModule } from '@modules/user/user.module';
 import { AuthGuardsModule } from '@modules/auth/auth-guards.module';
+import { FRIEND_DIRECTORY } from './application/ports/friend-directory.port';
 import { FRIENDSHIP_REPOSITORY } from './application/ports/friendship.repository.port';
 import { SendFriendRequestUseCase } from './application/use-cases/send-friend-request.use-case';
 import { AcceptFriendRequestUseCase } from './application/use-cases/accept-friend-request.use-case';
@@ -17,6 +18,7 @@ import {
   FRIENDSHIP_MODEL,
   FriendshipSchema,
 } from './infrastructure/persistence/friendship.schema';
+import { UserFriendDirectory } from './infrastructure/acl/user-friend-directory';
 import { MongoFriendshipRepository } from './infrastructure/persistence/mongo-friendship.repository';
 import { FriendshipController } from './presentation/friendship.controller';
 
@@ -31,6 +33,8 @@ import { FriendshipController } from './presentation/friendship.controller';
   controllers: [FriendshipController],
   providers: [
     { provide: FRIENDSHIP_REPOSITORY, useClass: MongoFriendshipRepository },
+    // Anti-corruption layer : le seul provider qui traverse vers le module user.
+    { provide: FRIEND_DIRECTORY, useClass: UserFriendDirectory },
     SendFriendRequestUseCase,
     AcceptFriendRequestUseCase,
     RefuseFriendRequestUseCase,

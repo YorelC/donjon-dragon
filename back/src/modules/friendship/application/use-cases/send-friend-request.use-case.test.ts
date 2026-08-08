@@ -1,26 +1,26 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser } from '@modules/user/domain/user.entity';
+import { createUser, toPublicUser } from '@modules/user/domain/user.entity';
 import {
   CannotFriendSelfError,
   RecipientNotFoundError,
   FriendRequestAlreadyExistsError,
   AlreadyFriendsError,
 } from '../../domain/friendship.errors';
-import { InMemoryUserRepository } from '@modules/user/infrastructure/persistence/in-memory-user.repository';
+import { InMemoryFriendDirectory } from '../../infrastructure/acl/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../infrastructure/persistence/in-memory-friendship.repository';
 import { SendFriendRequestUseCase } from './send-friend-request.use-case';
 
 describe('SendFriendRequestUseCase', () => {
   let useCase: SendFriendRequestUseCase;
-  let userRepo: InMemoryUserRepository;
+  let directory: InMemoryFriendDirectory;
   let friendshipRepo: InMemoryFriendshipRepository;
   let alice: ReturnType<typeof createUser>;
   let bob: ReturnType<typeof createUser>;
 
   beforeEach(async () => {
-    userRepo = new InMemoryUserRepository();
+    directory = new InMemoryFriendDirectory();
     friendshipRepo = new InMemoryFriendshipRepository();
-    useCase = new SendFriendRequestUseCase(userRepo, friendshipRepo);
+    useCase = new SendFriendRequestUseCase(directory, friendshipRepo);
 
     alice = createUser({
       email: 'alice@example.com',
@@ -33,8 +33,8 @@ describe('SendFriendRequestUseCase', () => {
       passwordHash: 'hashedpw',
     });
 
-    await userRepo.save(alice);
-    await userRepo.save(bob);
+    await directory.save(toPublicUser(alice));
+    await directory.save(toPublicUser(bob));
   });
 
   it('envoie une demande d amitié vers un utilisateur existant', async () => {

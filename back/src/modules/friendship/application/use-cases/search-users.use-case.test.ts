@@ -1,18 +1,18 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser } from '@modules/user/domain/user.entity';
-import { InMemoryUserRepository } from '@modules/user/infrastructure/persistence/in-memory-user.repository';
+import { createUser, toPublicUser } from '@modules/user/domain/user.entity';
+import { InMemoryFriendDirectory } from '../../infrastructure/acl/in-memory-friend-directory';
 import { SearchUsersUseCase } from './search-users.use-case';
 
 describe('SearchUsersUseCase', () => {
   let useCase: SearchUsersUseCase;
-  let userRepo: InMemoryUserRepository;
+  let directory: InMemoryFriendDirectory;
   let alice: ReturnType<typeof createUser>;
   let bob: ReturnType<typeof createUser>;
   let bruno: ReturnType<typeof createUser>;
 
   beforeEach(async () => {
-    userRepo = new InMemoryUserRepository();
-    useCase = new SearchUsersUseCase(userRepo);
+    directory = new InMemoryFriendDirectory();
+    useCase = new SearchUsersUseCase(directory);
 
     alice = createUser({
       email: 'alice@example.com',
@@ -30,9 +30,9 @@ describe('SearchUsersUseCase', () => {
       passwordHash: 'hashedpw',
     });
 
-    await userRepo.save(alice);
-    await userRepo.save(bob);
-    await userRepo.save(bruno);
+    await directory.save(toPublicUser(alice));
+    await directory.save(toPublicUser(bob));
+    await directory.save(toPublicUser(bruno));
   });
 
   it('recherche des users par displayName', async () => {

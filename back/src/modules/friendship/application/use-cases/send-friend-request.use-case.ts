@@ -6,9 +6,9 @@ import {
   type FriendshipRepositoryPort,
 } from '../ports/friendship.repository.port';
 import {
-  USER_REPOSITORY,
-  type UserRepositoryPort,
-} from '@modules/user/application/ports/user-repository.port';
+  FRIEND_DIRECTORY,
+  type FriendDirectoryPort,
+} from '../ports/friend-directory.port';
 import {
   AlreadyFriendsError,
   RecipientNotFoundError,
@@ -24,14 +24,14 @@ export interface SendFriendRequestDto {
 @Injectable()
 export class SendFriendRequestUseCase {
   constructor(
-    @Inject(USER_REPOSITORY)
-    private readonly userRepo: UserRepositoryPort,
+    @Inject(FRIEND_DIRECTORY)
+    private readonly directory: FriendDirectoryPort,
     @Inject(FRIENDSHIP_REPOSITORY)
     private readonly friendshipRepo: FriendshipRepositoryPort,
   ) {}
 
   async execute(dto: SendFriendRequestDto): Promise<Friendship> {
-    const recipient = await this.userRepo.findByDisplayName(dto.displayName);
+    const recipient = await this.directory.findByDisplayName(dto.displayName);
     if (!recipient) throw new RecipientNotFoundError();
 
     const friendship = createFriendRequest(dto.requesterId, recipient.id);
