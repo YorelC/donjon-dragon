@@ -1,12 +1,11 @@
+import { Inject, Injectable } from '@nestjs/common';
 import type {
   AuthTokens,
   RefreshTokenRecord,
 } from '@donjon-dragon/shared/auth-schema';
-import { Inject, Injectable } from '@nestjs/common';
-import {
-  USER_REPOSITORY,
-  type UserRepositoryPort,
-} from '@modules/user/application/ports/user-repository.port';
+
+import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
+import { UserNotFoundError } from '@modules/user/domain/user.errors';
 import {
   REFRESH_TOKEN_REPOSITORY,
   type RefreshTokenRepositoryPort,
@@ -16,9 +15,7 @@ import {
   InvalidRefreshTokenError,
   TokenReuseDetectedError,
   RefreshTokenExpiredError,
-  UserNotFoundError,
 } from '../../domain/auth.errors';
-import { toPublicUser } from '@modules/user/domain/user.entity';
 import {
   hashRefreshToken,
   createRefreshTokenRecord,
@@ -29,7 +26,7 @@ import { createAccessTokenPayload } from '../../domain/token/access-token-payloa
 @Injectable()
 export class RefreshTokensUseCase {
   constructor(
-    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
+    private readonly getUserProfile: GetUserProfileUseCase,
     @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepo: RefreshTokenRepositoryPort,
     @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
@@ -39,18 +36,14 @@ export class RefreshTokensUseCase {
     const record = await this.consumePresentedToken(plainToken);
     const newPlainToken = await this.rotate(record);
 
-    const user = await this.userRepo.findById(record.userId);
+    const user = await this.getUserProfile.byId(record.userId);
     if (!user) throw new UserNotFoundError();
 
     const accessToken = this.tokenService.signAccessToken(
       createAccessTokenPayload(record.userId),
     );
 
-    return {
-      accessToken,
-      refreshToken: newPlainToken,
-      user: toPublicUser(user),
-    };
+    return { accessToken, refreshToken: newPlainToken, user };
   }
 
   // Valide le token présenté et le révoque : toute réutilisation ultérieure

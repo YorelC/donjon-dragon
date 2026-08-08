@@ -1,6 +1,6 @@
 import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
 
-import type { FriendshipRepositoryPort } from '../../application/ports/friendship.repository.port';
+import type { FriendshipRepositoryPort } from '../application/ports/friendship.repository.port';
 
 export class InMemoryFriendshipRepository implements FriendshipRepositoryPort {
   private readonly friendships = new Map<string, Friendship>();

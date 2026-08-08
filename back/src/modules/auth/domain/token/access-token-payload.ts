@@ -9,3 +9,11 @@ export function createAccessTokenPayload(userId: string): TokenPayload {
     tier: 'full',
   };
 }
+
+// Même identité, mais un tier qui interdit les routes mutantes (cf. TierGuard).
+export function createReadonlyTokenPayload(userId: string): TokenPayload {
+  return {
+    ...createAccessTokenPayload(userId),
+    tier: 'readonly',
+  };
+}

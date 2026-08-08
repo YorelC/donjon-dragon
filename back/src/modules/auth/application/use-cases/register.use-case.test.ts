@@ -1,37 +1,43 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import type { RegisterDto } from '@donjon-dragon/shared/user-schema';
-import { EmailAlreadyInUseError } from '../../domain/auth.errors';
-import { DisplayNameAlreadyTakenError } from '@modules/user/domain/user.errors';
-import { RegisterUseCase } from './register.use-case';
-import { InMemoryUserRepository } from '@modules/user/infrastructure/persistence/in-memory-user.repository';
-import { InMemoryEmailVerificationTokenRepository } from '../../infrastructure/persistence/in-memory-email-verification-token.repository';
-import { InMemoryPasswordHasher } from '../../infrastructure/crypto/in-memory-password-hasher';
-import { InMemoryEmailSender } from '../../infrastructure/mail/in-memory-email-sender';
-import { createUser } from '@modules/user/domain/user.entity';
 
+import { RegisterUserUseCase } from '@modules/user/application/use-cases/register-user.use-case';
+import { InMemoryUserRepository } from '@modules/user/testing/in-memory-user.repository';
+import { InMemoryEmailVerificationTokenRepository } from '../../testing/in-memory-email-verification-token.repository';
+import { InMemoryPasswordHasher } from '../../testing/in-memory-password-hasher';
+import { InMemoryEmailSender } from '../../testing/in-memory-email-sender';
+import { hashVerificationToken } from '../../domain/email/email-verification-token.entity';
+import { RegisterUseCase } from './register.use-case';
+
+// Ce use-case ORCHESTRE : hash, delegation de la creation a user, envoi du lien.
+// Les invariants d'unicite sont testes chez leur proprietaire,
+// user/application/use-cases/register-user.use-case.test.ts.
 describe('RegisterUseCase', () => {
   let useCase: RegisterUseCase;
   let userRepo: InMemoryUserRepository;
   let verificationRepo: InMemoryEmailVerificationTokenRepository;
-  let passwordHasher: InMemoryPasswordHasher;
   let emailSender: InMemoryEmailSender;
+
+  const dto: RegisterDto = {
+    email: 'alice@example.com',
+    displayName: 'alice',
+    password: 'SecurePassword123!',
+    appOrigin: 'http://localhost:5173',
+  };
 
   beforeEach(() => {
     userRepo = new InMemoryUserRepository();
     verificationRepo = new InMemoryEmailVerificationTokenRepository();
-    passwordHasher = new InMemoryPasswordHasher();
     emailSender = new InMemoryEmailSender();
-    useCase = new RegisterUseCase(userRepo, verificationRepo, passwordHasher, emailSender);
+    useCase = new RegisterUseCase(
+      new RegisterUserUseCase(userRepo),
+      verificationRepo,
+      new InMemoryPasswordHasher(),
+      emailSender,
+    );
   });
 
-  it('crée un nouvel utilisateur avec email et displayName uniques', async () => {
-    const dto: RegisterDto = {
-      email: 'alice@example.com',
-      displayName: 'alice',
-      password: 'SecurePassword123!',
-      appOrigin: 'http://localhost:5173',
-    };
-
+  it('renvoie le profil public du compte cree', async () => {
     const result = await useCase.execute(dto);
 
     expect(result.email).toBe('alice@example.com');
@@ -39,39 +45,35 @@ describe('RegisterUseCase', () => {
     expect(result).not.toHaveProperty('passwordHash');
   });
 
-  it('lève EmailAlreadyInUseError si email est déjà utilisé', async () => {
-    const existing = createUser({
-      email: 'alice@example.com',
-      displayName: 'alice',
-      passwordHash: 'hashedpw',
-    });
-    await userRepo.save(existing);
+  it('hashe le mot de passe avant de deleguer la creation', async () => {
+    const result = await useCase.execute(dto);
 
-    const dto: RegisterDto = {
-      email: 'alice@example.com',
-      displayName: 'bob',
-      password: 'SecurePassword123!',
-      appOrigin: 'http://localhost:5173',
-    };
-
-    await expect(useCase.execute(dto)).rejects.toThrow(EmailAlreadyInUseError);
+    const stored = await userRepo.findById(result.id);
+    expect(stored?.passwordHash).toBe('hashed_SecurePassword123!');
+    expect(stored?.passwordHash).not.toBe(dto.password);
   });
 
-  it('lève DisplayNameAlreadyTakenError si displayName est déjà utilisé', async () => {
-    const existing = createUser({
-      email: 'alice@example.com',
-      displayName: 'alice',
-      passwordHash: 'hashedpw',
-    });
-    await userRepo.save(existing);
+  it('envoie un lien de verification construit sur appOrigin', async () => {
+    await useCase.execute(dto);
 
-    const dto: RegisterDto = {
-      email: 'bob@example.com',
-      displayName: 'alice',
-      password: 'SecurePassword123!',
-      appOrigin: 'http://localhost:5173',
-    };
+    expect(emailSender.sent).toHaveLength(1);
+    expect(emailSender.sent[0]!.to).toBe('alice@example.com');
+    expect(emailSender.sent[0]!.verificationUrl).toMatch(
+      /^http:\/\/localhost:5173\/verify-email\?token=.+/,
+    );
+  });
 
-    await expect(useCase.execute(dto)).rejects.toThrow(DisplayNameAlreadyTakenError);
+  it('persiste un token de verification pour le compte cree', async () => {
+    const result = await useCase.execute(dto);
+
+    const plainToken = new URL(
+      emailSender.sent[0]!.verificationUrl,
+    ).searchParams.get('token');
+    expect(plainToken).toBeTruthy();
+
+    const record = await verificationRepo.findByTokenHash(
+      hashVerificationToken(plainToken as string),
+    );
+    expect(record?.userId).toBe(result.id);
   });
 });

@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser, toPublicUser } from '@modules/user/domain/user.entity';
-import { InMemoryFriendDirectory } from '../../infrastructure/acl/in-memory-friend-directory';
-import { InMemoryFriendshipRepository } from '../../infrastructure/persistence/in-memory-friendship.repository';
+import { createUser } from '@modules/user/domain/user.entity';
+import { toPublicUser } from '@modules/user/application/user.mapper';
+import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
+import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { ListPendingReceivedUseCase } from './list-pending-received.use-case';
 import { createFriendRequest } from '../../domain/friendship.entity';
 

@@ -19,7 +19,7 @@ export function createUser(params: CreateUserParams): User {
   };
 }
 
-export function toPublicUser(user: User) {
-  const { passwordHash: _, ...pub } = user;
-  return pub;
+/** Seule transition de l'agrégat : la vérification d'email. */
+export function markEmailVerified(user: User): User {
+  return { ...user, emailVerified: true };
 }

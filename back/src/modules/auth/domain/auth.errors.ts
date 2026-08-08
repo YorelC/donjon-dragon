@@ -2,24 +2,13 @@
 // Chacun déclare sa nature via la classe dont il hérite ; la traduction en
 // statut HTTP est faite une seule fois par common/filters/domain-exception.filter.
 
+// EmailAlreadyInUseError et UserNotFoundError vivent dans user/domain : ce sont
+// des invariants de l'agrégat User, pas des modes d'échec de l'authentification.
+
 import {
-  ConflictDomainError,
-  NotFoundDomainError,
   ForbiddenDomainError,
   UnauthorizedDomainError,
 } from '@kernel/domain/domain.error';
-
-export class EmailAlreadyInUseError extends ConflictDomainError {
-  constructor() {
-    super('Email already in use');
-  }
-}
-
-export class UserNotFoundError extends NotFoundDomainError {
-  constructor() {
-    super('User not found');
-  }
-}
 
 export class EmailNotVerifiedError extends ForbiddenDomainError {
   constructor() {

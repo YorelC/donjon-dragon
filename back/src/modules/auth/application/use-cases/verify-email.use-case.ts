@@ -1,13 +1,11 @@
+import { Inject, Injectable } from '@nestjs/common';
 import type {
   AuthTokens,
   EmailVerificationTokenRecord,
 } from '@donjon-dragon/shared/auth-schema';
-import type { User } from '@donjon-dragon/shared/user-schema';
-import { Inject, Injectable } from '@nestjs/common';
-import {
-  USER_REPOSITORY,
-  type UserRepositoryPort,
-} from '@modules/user/application/ports/user-repository.port';
+import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+
+import { MarkEmailVerifiedUseCase } from '@modules/user/application/use-cases/mark-email-verified.use-case';
 import {
   EMAIL_VERIFICATION_TOKEN_REPOSITORY,
   type EmailVerificationTokenRepositoryPort,
@@ -20,20 +18,18 @@ import { TOKEN_SERVICE, type TokenServicePort } from '../ports/token-service.por
 import {
   InvalidVerificationTokenError,
   VerificationTokenExpiredError,
-  UserNotFoundError,
 } from '../../domain/auth.errors';
 import {
   hashVerificationToken,
   isExpired,
 } from '../../domain/email/email-verification-token.entity';
-import { toPublicUser } from '@modules/user/domain/user.entity';
 import { createRefreshTokenRecord } from '../../domain/token/refresh-token.entity';
 import { createAccessTokenPayload } from '../../domain/token/access-token-payload';
 
 @Injectable()
 export class VerifyEmailUseCase {
   constructor(
-    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
+    private readonly markEmailVerified: MarkEmailVerifiedUseCase,
     @Inject(EMAIL_VERIFICATION_TOKEN_REPOSITORY)
     private readonly verificationRepo: EmailVerificationTokenRepositoryPort,
     @Inject(REFRESH_TOKEN_REPOSITORY)
@@ -43,7 +39,8 @@ export class VerifyEmailUseCase {
 
   async execute(plainToken: string): Promise<AuthTokens> {
     const record = await this.readVerificationToken(plainToken);
-    const verifiedUser = await this.markEmailVerified(record.userId);
+    // La transition appartient à user ; auth ne fait que la déclencher.
+    const verifiedUser = await this.markEmailVerified.execute(record.userId);
     await this.verificationRepo.deleteById(record.id);
 
     return this.issueTokens(verifiedUser);
@@ -63,17 +60,7 @@ export class VerifyEmailUseCase {
     return record;
   }
 
-  private async markEmailVerified(userId: string): Promise<User> {
-    const user = await this.userRepo.findById(userId);
-    if (!user) throw new UserNotFoundError();
-
-    const verified = { ...user, emailVerified: true as const };
-    await this.userRepo.save(verified);
-
-    return verified;
-  }
-
-  private async issueTokens(user: User): Promise<AuthTokens> {
+  private async issueTokens(user: PublicUser): Promise<AuthTokens> {
     const accessToken = this.tokenService.signAccessToken(
       createAccessTokenPayload(user.id),
     );
@@ -81,10 +68,6 @@ export class VerifyEmailUseCase {
     const { record, plainToken } = createRefreshTokenRecord(user.id);
     await this.refreshRepo.save(record);
 
-    return {
-      accessToken,
-      refreshToken: plainToken,
-      user: toPublicUser(user),
-    };
+    return { accessToken, refreshToken: plainToken, user };
   }
 }

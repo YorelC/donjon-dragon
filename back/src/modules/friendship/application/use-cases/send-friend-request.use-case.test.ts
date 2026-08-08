@@ -1,13 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser, toPublicUser } from '@modules/user/domain/user.entity';
+import { createUser } from '@modules/user/domain/user.entity';
+import { toPublicUser } from '@modules/user/application/user.mapper';
 import {
   CannotFriendSelfError,
   RecipientNotFoundError,
   FriendRequestAlreadyExistsError,
   AlreadyFriendsError,
 } from '../../domain/friendship.errors';
-import { InMemoryFriendDirectory } from '../../infrastructure/acl/in-memory-friend-directory';
-import { InMemoryFriendshipRepository } from '../../infrastructure/persistence/in-memory-friendship.repository';
+import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
+import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { SendFriendRequestUseCase } from './send-friend-request.use-case';
 
 describe('SendFriendRequestUseCase', () => {

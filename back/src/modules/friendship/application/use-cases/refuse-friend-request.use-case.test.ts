@@ -5,7 +5,7 @@ import {
   FriendRequestNotPendingError,
   NotRequestRecipientError,
 } from '../../domain/friendship.errors';
-import { InMemoryFriendshipRepository } from '../../infrastructure/persistence/in-memory-friendship.repository';
+import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { RefuseFriendRequestUseCase } from './refuse-friend-request.use-case';
 import { createFriendRequest } from '../../domain/friendship.entity';
 

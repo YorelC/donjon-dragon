@@ -1,6 +1,6 @@
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
 
-import type { FriendDirectoryPort } from '../../application/ports/friend-directory.port';
+import type { FriendDirectoryPort } from '../application/ports/friend-directory.port';
 
 /** Double de test de l'annuaire : aucune dépendance au module user. */
 export class InMemoryFriendDirectory implements FriendDirectoryPort {

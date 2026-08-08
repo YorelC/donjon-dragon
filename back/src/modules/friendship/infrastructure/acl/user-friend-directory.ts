@@ -1,36 +1,28 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
 
-import {
-  USER_REPOSITORY,
-  type UserRepositoryPort,
-} from '@modules/user/application/ports/user-repository.port';
-import { toPublicUser } from '@modules/user/domain/user.entity';
+import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
 import type { FriendDirectoryPort } from '../../application/ports/friend-directory.port';
 
 /**
- * SEUL fichier du module amitié autorisé à connaître le module user.
- * Il absorbe ici la traduction User -> PublicUser pour que rien de `user`
- * ne remonte dans application/ ni domain/.
+ * SEUL fichier du module amitié qui connaît le module user.
+ *
+ * Il délègue aux use-cases de user, jamais à son repository : friendship est en
+ * lecture seule sur cet agrégat, et n'a aucun moyen d'y écrire.
  */
 @Injectable()
 export class UserFriendDirectory implements FriendDirectoryPort {
-  constructor(
-    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
-  ) {}
+  constructor(private readonly getUserProfile: GetUserProfileUseCase) {}
 
   async findById(id: string): Promise<PublicUser | null> {
-    const user = await this.userRepo.findById(id);
-    return user ? toPublicUser(user) : null;
+    return this.getUserProfile.byId(id);
   }
 
   async findByDisplayName(displayName: string): Promise<PublicUser | null> {
-    const user = await this.userRepo.findByDisplayName(displayName);
-    return user ? toPublicUser(user) : null;
+    return this.getUserProfile.byDisplayName(displayName);
   }
 
   async search(query: string, limit: number): Promise<PublicUser[]> {
-    const users = await this.userRepo.searchByDisplayName(query, limit);
-    return users.map(toPublicUser);
+    return this.getUserProfile.searchByDisplayName(query, limit);
   }
 }

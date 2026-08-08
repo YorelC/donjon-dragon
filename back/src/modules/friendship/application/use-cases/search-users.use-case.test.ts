@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createUser, toPublicUser } from '@modules/user/domain/user.entity';
-import { InMemoryFriendDirectory } from '../../infrastructure/acl/in-memory-friend-directory';
+import { createUser } from '@modules/user/domain/user.entity';
+import { toPublicUser } from '@modules/user/application/user.mapper';
+import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { SearchUsersUseCase } from './search-users.use-case';
 
 describe('SearchUsersUseCase', () => {

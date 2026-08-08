@@ -1,6 +1,6 @@
 import type { EmailVerificationTokenRecord } from '@donjon-dragon/shared/auth-schema';
 
-import type { EmailVerificationTokenRepositoryPort } from '../../application/ports/email-verification-token.repository.port';
+import type { EmailVerificationTokenRepositoryPort } from '../application/ports/email-verification-token.repository.port';
 
 export class InMemoryEmailVerificationTokenRepository
   implements EmailVerificationTokenRepositoryPort

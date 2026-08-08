@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CountPendingReceivedUseCase } from './count-pending-received.use-case';
-import { InMemoryFriendshipRepository } from '../../infrastructure/persistence/in-memory-friendship.repository';
+import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { createFriendRequest, acceptFriendRequest } from '../../domain/friendship.entity';
 
 describe('CountPendingReceivedUseCase', () => {

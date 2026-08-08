@@ -1,24 +1,26 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { RegisterDto, PublicUser } from '@donjon-dragon/shared/user-schema';
-import {
-  USER_REPOSITORY,
-  type UserRepositoryPort,
-} from '@modules/user/application/ports/user-repository.port';
+
+import { RegisterUserUseCase } from '@modules/user/application/use-cases/register-user.use-case';
 import {
   EMAIL_VERIFICATION_TOKEN_REPOSITORY,
   type EmailVerificationTokenRepositoryPort,
 } from '../ports/email-verification-token.repository.port';
 import { PASSWORD_HASHER, type PasswordHasherPort } from '../ports/password-hasher.port';
 import { EMAIL_SENDER, type EmailSenderPort } from '../ports/email-sender.port';
-import { EmailAlreadyInUseError } from '../../domain/auth.errors';
-import { DisplayNameAlreadyTakenError } from '@modules/user/domain/user.errors';
 import { createEmailVerificationToken } from '../../domain/email/email-verification-token.entity';
-import { createUser, toPublicUser } from '@modules/user/domain/user.entity';
 
+/**
+ * Orchestre l'inscription : hash du mot de passe (préoccupation d'auth), puis
+ * création du compte par le module user, puis envoi du lien de vérification.
+ *
+ * La création elle-même et ses invariants d'unicité appartiennent à
+ * RegisterUserUseCase : auth n'a pas accès au repository de user.
+ */
 @Injectable()
 export class RegisterUseCase {
   constructor(
-    @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
+    private readonly registerUser: RegisterUserUseCase,
     @Inject(EMAIL_VERIFICATION_TOKEN_REPOSITORY)
     private readonly verificationRepo: EmailVerificationTokenRepositoryPort,
     @Inject(PASSWORD_HASHER) private readonly passwordHasher: PasswordHasherPort,
@@ -26,26 +28,27 @@ export class RegisterUseCase {
   ) {}
 
   async execute(dto: RegisterDto): Promise<PublicUser> {
-    const existingEmail = await this.userRepo.findByEmail(dto.email);
-    if (existingEmail) throw new EmailAlreadyInUseError();
-
-    const existingDisplayName = await this.userRepo.findByDisplayName(dto.displayName);
-    if (existingDisplayName) throw new DisplayNameAlreadyTakenError();
-
-    const passwordHash = await this.passwordHasher.hash(dto.password);
-    const user = createUser({
+    const user = await this.registerUser.execute({
       email: dto.email,
       displayName: dto.displayName,
-      passwordHash,
+      passwordHash: await this.passwordHasher.hash(dto.password),
     });
-    await this.userRepo.save(user);
 
+    await this.sendVerificationLink(user, dto.appOrigin);
+
+    return user;
+  }
+
+  private async sendVerificationLink(
+    user: PublicUser,
+    appOrigin: string,
+  ): Promise<void> {
     const { record, plainToken } = createEmailVerificationToken(user.id);
     await this.verificationRepo.save(record);
 
-    const verificationUrl = `${dto.appOrigin}/verify-email?token=${plainToken}`;
-    await this.emailSender.sendVerificationEmail(user.email, verificationUrl);
-
-    return toPublicUser(user);
+    await this.emailSender.sendVerificationEmail(
+      user.email,
+      `${appOrigin}/verify-email?token=${plainToken}`,
+    );
   }
 }

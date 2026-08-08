@@ -4,7 +4,7 @@ import {
   FriendshipNotFoundError,
   NotFriendshipParticipantError,
 } from '../../domain/friendship.errors';
-import { InMemoryFriendshipRepository } from '../../infrastructure/persistence/in-memory-friendship.repository';
+import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { RemoveFriendUseCase } from './remove-friend.use-case';
 import { createFriendRequest, acceptFriendRequest } from '../../domain/friendship.entity';
 

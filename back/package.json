@@ -7,7 +7,9 @@
     "dev": "nest start --watch",
     "build": "nest build",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
+    "lint": "eslint . && depcruise src",
+    "lint:arch": "depcruise src",
+    "graph:arch": "depcruise src --output-type dot",
     "test": "vitest run",
     "seed": "tsx src/scripts/seed-users.script.ts"
   },
@@ -41,6 +43,7 @@
     "@types/nodemailer": "^6.4.0",
     "@types/passport-jwt": "^4.0.1",
     "@vitest/coverage-v8": "^1.0.0",
+    "dependency-cruiser": "^18.1.1",
     "eslint": "^10.8.0",
     "tsx": "^4.23.1",
     "typescript": "^5.3.0",

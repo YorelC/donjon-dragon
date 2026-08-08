@@ -1,6 +1,6 @@
 import type { User } from '@donjon-dragon/shared/user-schema';
 
-import type { UserRepositoryPort } from '../../application/ports/user-repository.port';
+import type { UserRepositoryPort } from '../application/ports/user-repository.port';
 
 export class InMemoryUserRepository implements UserRepositoryPort {
   private readonly users = new Map<string, User>();
