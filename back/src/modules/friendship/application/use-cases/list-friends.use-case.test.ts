@@ -4,7 +4,7 @@ import { toPublicUser } from '@modules/user/application/user.mapper';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { ListFriendsUseCase } from './list-friends.use-case';
-import { createFriendRequest, acceptFriendRequest } from '../../domain/friendship.entity';
+import { pendingRequest, accept } from '../../testing/friendship.fixture';
 
 describe('ListFriendsUseCase', () => {
   let useCase: ListFriendsUseCase;
@@ -46,12 +46,12 @@ describe('ListFriendsUseCase', () => {
   });
 
   it('retourne la liste des amis accepted', async () => {
-    const f1 = createFriendRequest(alice.id, bob.id);
-    const accepted1 = acceptFriendRequest(f1, bob.id);
+    const f1 = pendingRequest(alice.id, bob.id);
+    const accepted1 = accept(f1, bob.id);
     await friendshipRepo.save(accepted1);
 
-    const f2 = createFriendRequest(alice.id, charlie.id);
-    const accepted2 = acceptFriendRequest(f2, charlie.id);
+    const f2 = pendingRequest(alice.id, charlie.id);
+    const accepted2 = accept(f2, charlie.id);
     await friendshipRepo.save(accepted2);
 
     const result = await useCase.execute({ userId: alice.id });
@@ -63,11 +63,11 @@ describe('ListFriendsUseCase', () => {
   });
 
   it('exclut les amités pending', async () => {
-    const f1 = createFriendRequest(alice.id, bob.id);
+    const f1 = pendingRequest(alice.id, bob.id);
     await friendshipRepo.save(f1);
 
-    const f2 = createFriendRequest(charlie.id, alice.id);
-    const accepted = acceptFriendRequest(f2, alice.id);
+    const f2 = pendingRequest(charlie.id, alice.id);
+    const accepted = accept(f2, alice.id);
     await friendshipRepo.save(accepted);
 
     const result = await useCase.execute({ userId: alice.id });

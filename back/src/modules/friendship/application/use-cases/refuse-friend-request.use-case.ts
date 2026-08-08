@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
+import type { Friendship as FriendshipResponse } from '@donjon-dragon/shared/friendship-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   FRIENDSHIP_REPOSITORY,
   type FriendshipRepositoryPort,
 } from '../ports/friendship.repository.port';
+import { FriendshipId } from '../../domain/friendship-id';
 import { FriendshipNotFoundError } from '../../domain/friendship.errors';
-import { refuseFriendRequest } from '../../domain/friendship.entity';
+import { toFriendshipResponse } from '../friendship.mapper';
 
 export interface RefuseFriendRequestDto {
   friendshipId: string;
@@ -20,11 +22,15 @@ export class RefuseFriendRequestUseCase {
     private readonly friendshipRepo: FriendshipRepositoryPort,
   ) {}
 
-  async execute(dto: RefuseFriendRequestDto): Promise<Friendship> {
-    const friendship = await this.friendshipRepo.findById(dto.friendshipId);
+  async execute(dto: RefuseFriendRequestDto): Promise<FriendshipResponse> {
+    const friendship = await this.friendshipRepo.findById(
+      FriendshipId.create(dto.friendshipId),
+    );
     if (!friendship) throw new FriendshipNotFoundError();
 
-    const updated = refuseFriendRequest(friendship, dto.actingUserId);
-    return this.friendshipRepo.save(updated);
+    friendship.refuse(UserId.create(dto.actingUserId));
+    await this.friendshipRepo.save(friendship);
+
+    return toFriendshipResponse(friendship);
   }
 }

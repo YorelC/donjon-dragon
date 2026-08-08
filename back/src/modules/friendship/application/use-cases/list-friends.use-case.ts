@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   FRIENDSHIP_REPOSITORY,
@@ -9,7 +10,6 @@ import {
   FRIEND_DIRECTORY,
   type FriendDirectoryPort,
 } from '../ports/friend-directory.port';
-import { friendIdFor } from '../../domain/friendship.entity';
 
 export interface ListFriendsDto {
   userId: string;
@@ -30,13 +30,16 @@ export class ListFriendsUseCase {
   ) {}
 
   async execute(dto: ListFriendsDto): Promise<AcceptedFriend[]> {
-    const friendships = await this.friendshipRepo.listAcceptedForUser(dto.userId);
+    const userId = UserId.create(dto.userId);
+    const friendships = await this.friendshipRepo.listAcceptedForUser(userId);
 
     const friends: AcceptedFriend[] = [];
-    for (const f of friendships) {
-      const friend = await this.directory.findById(friendIdFor(f, dto.userId));
+    for (const friendship of friendships) {
+      const friend = await this.directory.findById(
+        friendship.friendIdFor(userId).value,
+      );
       if (friend) {
-        friends.push({ friendshipId: f.id, friend });
+        friends.push({ friendshipId: friendship.id.value, friend });
       }
     }
 

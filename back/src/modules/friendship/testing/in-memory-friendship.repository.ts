@@ -1,55 +1,53 @@
-import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
+import type { UserId } from '@kernel/domain/user-id';
 
 import type { FriendshipRepositoryPort } from '../application/ports/friendship.repository.port';
+import type { Friendship } from '../domain/friendship';
+import type { FriendshipId } from '../domain/friendship-id';
 
 export class InMemoryFriendshipRepository implements FriendshipRepositoryPort {
   private readonly friendships = new Map<string, Friendship>();
 
-  async save(friendship: Friendship): Promise<Friendship> {
-    this.friendships.set(friendship.id, friendship);
-    return friendship;
+  async save(friendship: Friendship): Promise<void> {
+    this.friendships.set(friendship.id.value, friendship);
   }
 
-  async findById(id: string): Promise<Friendship | null> {
-    return this.friendships.get(id) ?? null;
+  async findById(id: FriendshipId): Promise<Friendship | null> {
+    return this.friendships.get(id.value) ?? null;
   }
 
-  async findBetween(userAId: string, userBId: string): Promise<Friendship | null> {
-    const docs = [...this.friendships.values()];
+  async findBetween(userAId: UserId, userBId: UserId): Promise<Friendship | null> {
     return (
-      docs.find(
-        (f) =>
-          (f.requesterId === userAId && f.recipientId === userBId) ||
-          (f.requesterId === userBId && f.recipientId === userAId),
+      this.all().find(
+        (f) => f.involves(userAId) && f.involves(userBId),
       ) ?? null
     );
   }
 
-  async listAcceptedForUser(userId: string): Promise<Friendship[]> {
-    return [...this.friendships.values()].filter(
-      (f) => f.status === 'accepted' && (f.requesterId === userId || f.recipientId === userId),
+  async listAcceptedForUser(userId: UserId): Promise<Friendship[]> {
+    return this.all().filter((f) => f.status === 'accepted' && f.involves(userId));
+  }
+
+  async listPendingReceived(userId: UserId): Promise<Friendship[]> {
+    return this.all().filter(
+      (f) => f.status === 'pending' && f.recipientId.equals(userId),
     );
   }
 
-  async listPendingReceived(userId: string): Promise<Friendship[]> {
-    return [...this.friendships.values()].filter(
-      (f) => f.status === 'pending' && f.recipientId === userId,
+  async listPendingSent(userId: UserId): Promise<Friendship[]> {
+    return this.all().filter(
+      (f) => f.status === 'pending' && f.requesterId.equals(userId),
     );
   }
 
-  async listPendingSent(userId: string): Promise<Friendship[]> {
-    return [...this.friendships.values()].filter(
-      (f) => f.status === 'pending' && f.requesterId === userId,
-    );
+  async countPendingReceived(userId: UserId): Promise<number> {
+    return (await this.listPendingReceived(userId)).length;
   }
 
-  async countPendingReceived(userId: string): Promise<number> {
-    return [...this.friendships.values()].filter(
-      (f) => f.status === 'pending' && f.recipientId === userId,
-    ).length;
+  async deleteById(id: FriendshipId): Promise<void> {
+    this.friendships.delete(id.value);
   }
 
-  async deleteById(id: string): Promise<void> {
-    this.friendships.delete(id);
+  private all(): Friendship[] {
+    return [...this.friendships.values()];
   }
 }

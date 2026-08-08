@@ -7,6 +7,8 @@ import {
   FriendRequestAlreadyExistsError,
   AlreadyFriendsError,
 } from '../../domain/friendship.errors';
+import { Friendship } from '../../domain/friendship';
+import { accept, refuse } from '../../testing/friendship.fixture';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { SendFriendRequestUseCase } from './send-friend-request.use-case';
@@ -87,11 +89,9 @@ describe('SendFriendRequestUseCase', () => {
       displayName: 'bob',
     });
 
-    await friendshipRepo.save({
-      ...req,
-      status: 'accepted',
-      updatedAt: new Date().toISOString(),
-    });
+    // On rejoue la vraie transition plutôt que de forcer un statut : le domaine
+    // n'accepte plus qu'on lui impose un état de l'extérieur.
+    await friendshipRepo.save(accept(Friendship.restore(req), bob.id));
 
     await expect(
       useCase.execute({
@@ -107,11 +107,7 @@ describe('SendFriendRequestUseCase', () => {
       displayName: 'bob',
     });
 
-    await friendshipRepo.save({
-      ...req1,
-      status: 'refused',
-      updatedAt: new Date().toISOString(),
-    });
+    await friendshipRepo.save(refuse(Friendship.restore(req1), bob.id));
 
     const req2 = await useCase.execute({
       requesterId: alice.id,

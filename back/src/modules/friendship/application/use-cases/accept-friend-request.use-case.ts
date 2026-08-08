@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
+import type { Friendship as FriendshipResponse } from '@donjon-dragon/shared/friendship-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   FRIENDSHIP_REPOSITORY,
   type FriendshipRepositoryPort,
 } from '../ports/friendship.repository.port';
+import { FriendshipId } from '../../domain/friendship-id';
 import { FriendshipNotFoundError } from '../../domain/friendship.errors';
-import { acceptFriendRequest } from '../../domain/friendship.entity';
+import { toFriendshipResponse } from '../friendship.mapper';
 
 export interface AcceptFriendRequestDto {
   friendshipId: string;
@@ -20,11 +22,16 @@ export class AcceptFriendRequestUseCase {
     private readonly friendshipRepo: FriendshipRepositoryPort,
   ) {}
 
-  async execute(dto: AcceptFriendRequestDto): Promise<Friendship> {
-    const friendship = await this.friendshipRepo.findById(dto.friendshipId);
+  async execute(dto: AcceptFriendRequestDto): Promise<FriendshipResponse> {
+    const friendship = await this.friendshipRepo.findById(
+      FriendshipId.create(dto.friendshipId),
+    );
     if (!friendship) throw new FriendshipNotFoundError();
 
-    const updated = acceptFriendRequest(friendship, dto.actingUserId);
-    return this.friendshipRepo.save(updated);
+    // L'agrégat porte la règle : seul le destinataire d'une demande 'pending'.
+    friendship.accept(UserId.create(dto.actingUserId));
+    await this.friendshipRepo.save(friendship);
+
+    return toFriendshipResponse(friendship);
   }
 }

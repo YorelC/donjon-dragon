@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CountPendingReceivedUseCase } from './count-pending-received.use-case';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
-import { createFriendRequest, acceptFriendRequest } from '../../domain/friendship.entity';
+import { pendingRequest, accept, refuse } from '../../testing/friendship.fixture';
 
 describe('CountPendingReceivedUseCase', () => {
   let useCase: CountPendingReceivedUseCase;
@@ -23,8 +23,8 @@ describe('CountPendingReceivedUseCase', () => {
 
     it('retourne le nombre exact de demandes pending reçues', async () => {
       // Bob et Charlie envoient une demande à Alice
-      const req1 = createFriendRequest(BOB, ALICE);
-      const req2 = createFriendRequest(CHARLIE, ALICE);
+      const req1 = pendingRequest(BOB, ALICE);
+      const req2 = pendingRequest(CHARLIE, ALICE);
       await friendshipRepo.save(req1);
       await friendshipRepo.save(req2);
 
@@ -34,7 +34,7 @@ describe('CountPendingReceivedUseCase', () => {
 
     it("ne compte pas les demandes envoyées par l'utilisateur", async () => {
       // Alice envoie une demande à Bob
-      const req = createFriendRequest(ALICE, BOB);
+      const req = pendingRequest(ALICE, BOB);
       await friendshipRepo.save(req);
 
       const result = await useCase.execute({ userId: ALICE });
@@ -42,9 +42,9 @@ describe('CountPendingReceivedUseCase', () => {
     });
 
     it('ne compte pas les demandes acceptées', async () => {
-      const req = createFriendRequest(BOB, ALICE);
+      const req = pendingRequest(BOB, ALICE);
       await friendshipRepo.save(req);
-      const accepted = acceptFriendRequest(req, ALICE);
+      const accepted = accept(req, ALICE);
       await friendshipRepo.save(accepted);
 
       const result = await useCase.execute({ userId: ALICE });
@@ -52,23 +52,22 @@ describe('CountPendingReceivedUseCase', () => {
     });
 
     it('ne compte pas les demandes refusées', async () => {
-      const req = createFriendRequest(BOB, ALICE);
+      const req = pendingRequest(BOB, ALICE);
       await friendshipRepo.save(req);
-      const refused = { ...req, status: 'refused' as const, updatedAt: new Date().toISOString() };
-      await friendshipRepo.save(refused);
+      await friendshipRepo.save(refuse(req, ALICE));
 
       const result = await useCase.execute({ userId: ALICE });
       expect(result.count).toBe(0);
     });
 
     it("retourne 0 quand l'utilisateur n'a que des amis accepted (aucune demande pending)", async () => {
-      const req = createFriendRequest(BOB, ALICE);
+      const req = pendingRequest(BOB, ALICE);
       await friendshipRepo.save(req);
-      const accepted = acceptFriendRequest(req, ALICE);
+      const accepted = accept(req, ALICE);
       await friendshipRepo.save(accepted);
 
       // Bob reçoit une demande de Charlie — Alice ne doit pas la voir
-      const req2 = createFriendRequest(CHARLIE, BOB);
+      const req2 = pendingRequest(CHARLIE, BOB);
       await friendshipRepo.save(req2);
 
       const result = await useCase.execute({ userId: ALICE });
@@ -77,13 +76,13 @@ describe('CountPendingReceivedUseCase', () => {
 
     it("compte uniquement les demandes dont Alice est le destinataire (recipientId)", async () => {
       // Bob → Alice (pending)
-      const bobToAlice = createFriendRequest(BOB, ALICE);
+      const bobToAlice = pendingRequest(BOB, ALICE);
       await friendshipRepo.save(bobToAlice);
       // Charlie → Alice (pending)
-      const charlieToAlice = createFriendRequest(CHARLIE, ALICE);
+      const charlieToAlice = pendingRequest(CHARLIE, ALICE);
       await friendshipRepo.save(charlieToAlice);
       // Alice → Bob (pending) — ne doit PAS être comptée
-      const aliceToBob = createFriendRequest(ALICE, BOB);
+      const aliceToBob = pendingRequest(ALICE, BOB);
       await friendshipRepo.save(aliceToBob);
 
       const result = await useCase.execute({ userId: ALICE });
@@ -92,17 +91,17 @@ describe('CountPendingReceivedUseCase', () => {
 
     it('retourne le nombre correct avec un mélange de status variés', async () => {
       // Bob → Alice pending
-      await friendshipRepo.save(createFriendRequest(BOB, ALICE));
+      await friendshipRepo.save(pendingRequest(BOB, ALICE));
       // Charlie → Alice pending
-      await friendshipRepo.save(createFriendRequest(CHARLIE, ALICE));
+      await friendshipRepo.save(pendingRequest(CHARLIE, ALICE));
       // David → Alice → accepted
       const david = 'dddddddd-dddd-4ddd-dddd-dddddddddddd';
-      const davidReq = createFriendRequest(david, ALICE);
+      const davidReq = pendingRequest(david, ALICE);
       await friendshipRepo.save(davidReq);
-      await friendshipRepo.save(acceptFriendRequest(davidReq, ALICE));
+      await friendshipRepo.save(accept(davidReq, ALICE));
       // Alice → Eve pending (envoyée, pas reçue)
       const eve = 'eeeeeeee-eeee-4eee-eeee-eeeeeeeeeeee';
-      await friendshipRepo.save(createFriendRequest(ALICE, eve));
+      await friendshipRepo.save(pendingRequest(ALICE, eve));
 
       const result = await useCase.execute({ userId: ALICE });
       expect(result.count).toBe(2);

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { PendingReceivedCount } from '@donjon-dragon/shared/friendship-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   FRIENDSHIP_REPOSITORY,
@@ -18,7 +19,10 @@ export class CountPendingReceivedUseCase {
   ) {}
 
   async execute(dto: CountPendingReceivedDto): Promise<PendingReceivedCount> {
-    const count = await this.friendshipRepo.countPendingReceived(dto.userId);
+    const count = await this.friendshipRepo.countPendingReceived(
+      UserId.create(dto.userId),
+    );
+
     return { count };
   }
 }

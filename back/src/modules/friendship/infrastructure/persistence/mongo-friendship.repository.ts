@@ -1,78 +1,85 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
-import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
+import type { UserId } from '@kernel/domain/user-id';
 
 import type { FriendshipRepositoryPort } from '../../application/ports/friendship.repository.port';
+import type { Friendship } from '../../domain/friendship';
+import type { FriendshipId } from '../../domain/friendship-id';
+import {
+  toDomain,
+  toPersistence,
+  type FriendshipDocument,
+} from './friendship.mapper';
 import { FRIENDSHIP_MODEL } from './friendship.schema';
 
 @Injectable()
 export class MongoFriendshipRepository implements FriendshipRepositoryPort {
   constructor(
-    @InjectModel(FRIENDSHIP_MODEL) private readonly model: Model<Friendship>,
+    @InjectModel(FRIENDSHIP_MODEL) private readonly model: Model<FriendshipDocument>,
   ) {}
 
-  async save(friendship: Friendship): Promise<Friendship> {
-    await this.model.findOneAndUpdate({ id: friendship.id }, friendship, { upsert: true });
-    return friendship;
+  async save(friendship: Friendship): Promise<void> {
+    const document = toPersistence(friendship);
+    await this.model.findOneAndUpdate({ id: document.id }, document, { upsert: true });
   }
 
-  async findById(id: string): Promise<Friendship | null> {
-    const doc = await this.model.findOne({ id }).select('-_id').lean<Friendship>();
-    return doc ?? null;
+  async findById(id: FriendshipId): Promise<Friendship | null> {
+    return this.findOne({ id: id.value });
   }
 
-  async findBetween(userAId: string, userBId: string): Promise<Friendship | null> {
-    const doc = await this.model
-      .findOne({
-        $or: [
-          { requesterId: userAId, recipientId: userBId },
-          { requesterId: userBId, recipientId: userAId },
-        ],
-      })
-      .select('-_id')
-      .lean<Friendship>();
-    return doc ?? null;
-  }
-
-  async listAcceptedForUser(userId: string): Promise<Friendship[]> {
-    return this.model
-      .find({
-        status: 'accepted',
-        $or: [{ requesterId: userId }, { recipientId: userId }],
-      })
-      .select('-_id')
-      .lean<Friendship[]>();
-  }
-
-  async listPendingReceived(userId: string): Promise<Friendship[]> {
-    return this.model
-      .find({
-        status: 'pending',
-        recipientId: userId,
-      })
-      .select('-_id')
-      .lean<Friendship[]>();
-  }
-
-  async listPendingSent(userId: string): Promise<Friendship[]> {
-    return this.model
-      .find({
-        status: 'pending',
-        requesterId: userId,
-      })
-      .select('-_id')
-      .lean<Friendship[]>();
-  }
-
-  async countPendingReceived(userId: string): Promise<number> {
-    return this.model.countDocuments({
-      status: 'pending',
-      recipientId: userId,
+  async findBetween(userAId: UserId, userBId: UserId): Promise<Friendship | null> {
+    return this.findOne({
+      $or: [
+        { requesterId: userAId.value, recipientId: userBId.value },
+        { requesterId: userBId.value, recipientId: userAId.value },
+      ],
     });
   }
 
-  async deleteById(id: string): Promise<void> {
-    await this.model.deleteOne({ id });
+  async listAcceptedForUser(userId: UserId): Promise<Friendship[]> {
+    return this.findMany({
+      status: 'accepted',
+      $or: [{ requesterId: userId.value }, { recipientId: userId.value }],
+    });
+  }
+
+  async listPendingReceived(userId: UserId): Promise<Friendship[]> {
+    return this.findMany({ status: 'pending', recipientId: userId.value });
+  }
+
+  async listPendingSent(userId: UserId): Promise<Friendship[]> {
+    return this.findMany({ status: 'pending', requesterId: userId.value });
+  }
+
+  async countPendingReceived(userId: UserId): Promise<number> {
+    return this.model.countDocuments({
+      status: 'pending',
+      recipientId: userId.value,
+    });
+  }
+
+  async deleteById(id: FriendshipId): Promise<void> {
+    await this.model.deleteOne({ id: id.value });
+  }
+
+  private async findOne(
+    filter: Record<string, unknown>,
+  ): Promise<Friendship | null> {
+    const doc = await this.model
+      .findOne(filter)
+      .select('-_id')
+      .lean<FriendshipDocument>();
+
+    return doc ? toDomain(doc) : null;
+  }
+
+  private async findMany(filter: Record<string, unknown>): Promise<Friendship[]> {
+    const docs = await this.model
+      .find(filter)
+      .select('-_id')
+      .lean<FriendshipDocument[]>();
+
+    return docs.map(toDomain);
   }
 }

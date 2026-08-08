@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { UserId } from '@kernel/domain/user-id';
+
 import {
   FRIENDSHIP_REPOSITORY,
   type FriendshipRepositoryPort,
 } from '../ports/friendship.repository.port';
-import {
-  FriendshipNotFoundError,
-  NotFriendshipParticipantError,
-} from '../../domain/friendship.errors';
-import { involvesUser } from '../../domain/friendship.entity';
+import { FriendshipId } from '../../domain/friendship-id';
+import { FriendshipNotFoundError } from '../../domain/friendship.errors';
 
 export interface RemoveFriendDto {
   userId: string;
@@ -22,11 +21,13 @@ export class RemoveFriendUseCase {
   ) {}
 
   async execute(dto: RemoveFriendDto): Promise<void> {
-    const friendship = await this.friendshipRepo.findById(dto.friendshipId);
+    const id = FriendshipId.create(dto.friendshipId);
+
+    const friendship = await this.friendshipRepo.findById(id);
     if (!friendship) throw new FriendshipNotFoundError();
 
-    if (!involvesUser(friendship, dto.userId)) throw new NotFriendshipParticipantError();
+    friendship.assertInvolves(UserId.create(dto.userId));
 
-    await this.friendshipRepo.deleteById(dto.friendshipId);
+    await this.friendshipRepo.deleteById(id);
   }
 }

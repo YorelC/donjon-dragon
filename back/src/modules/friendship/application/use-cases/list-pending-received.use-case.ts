@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
+import type { Friendship as FriendshipResponse } from '@donjon-dragon/shared/friendship-schema';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   FRIENDSHIP_REPOSITORY,
@@ -10,12 +11,13 @@ import {
   FRIEND_DIRECTORY,
   type FriendDirectoryPort,
 } from '../ports/friend-directory.port';
+import { toFriendshipResponse } from '../friendship.mapper';
 
 export interface ListPendingReceivedDto {
   userId: string;
 }
 
-export interface PendingReceivedFriendship extends Friendship {
+export interface PendingReceivedFriendship extends FriendshipResponse {
   requester: PublicUser;
 }
 
@@ -29,13 +31,15 @@ export class ListPendingReceivedUseCase {
   ) {}
 
   async execute(dto: ListPendingReceivedDto): Promise<PendingReceivedFriendship[]> {
-    const friendships = await this.friendshipRepo.listPendingReceived(dto.userId);
+    const friendships = await this.friendshipRepo.listPendingReceived(
+      UserId.create(dto.userId),
+    );
 
     const result: PendingReceivedFriendship[] = [];
-    for (const f of friendships) {
-      const requester = await this.directory.findById(f.requesterId);
+    for (const friendship of friendships) {
+      const requester = await this.directory.findById(friendship.requesterId.value);
       if (requester) {
-        result.push({ ...f, requester });
+        result.push({ ...toFriendshipResponse(friendship), requester });
       }
     }
 

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
+import type { Friendship as FriendshipResponse } from '@donjon-dragon/shared/friendship-schema';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   FRIENDSHIP_REPOSITORY,
@@ -14,7 +15,8 @@ import {
   RecipientNotFoundError,
   FriendRequestAlreadyExistsError,
 } from '../../domain/friendship.errors';
-import { createFriendRequest } from '../../domain/friendship.entity';
+import { Friendship } from '../../domain/friendship';
+import { toFriendshipResponse } from '../friendship.mapper';
 
 export interface SendFriendRequestDto {
   requesterId: string;
@@ -30,16 +32,31 @@ export class SendFriendRequestUseCase {
     private readonly friendshipRepo: FriendshipRepositoryPort,
   ) {}
 
-  async execute(dto: SendFriendRequestDto): Promise<Friendship> {
-    const recipient = await this.directory.findByDisplayName(dto.displayName);
+  async execute(dto: SendFriendRequestDto): Promise<FriendshipResponse> {
+    const requesterId = UserId.create(dto.requesterId);
+    const recipientId = await this.resolveRecipient(dto.displayName);
+
+    const friendship = Friendship.request(requesterId, recipientId);
+    await this.assertNoExistingRelation(requesterId, recipientId);
+
+    await this.friendshipRepo.save(friendship);
+
+    return toFriendshipResponse(friendship);
+  }
+
+  private async resolveRecipient(displayName: string): Promise<UserId> {
+    const recipient = await this.directory.findByDisplayName(displayName);
     if (!recipient) throw new RecipientNotFoundError();
 
-    const friendship = createFriendRequest(dto.requesterId, recipient.id);
+    return UserId.create(recipient.id);
+  }
 
-    const existing = await this.friendshipRepo.findBetween(dto.requesterId, recipient.id);
+  private async assertNoExistingRelation(
+    requesterId: UserId,
+    recipientId: UserId,
+  ): Promise<void> {
+    const existing = await this.friendshipRepo.findBetween(requesterId, recipientId);
     if (existing?.status === 'pending') throw new FriendRequestAlreadyExistsError();
     if (existing?.status === 'accepted') throw new AlreadyFriendsError();
-
-    return this.friendshipRepo.save(friendship);
   }
 }
