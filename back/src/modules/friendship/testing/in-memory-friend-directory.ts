@@ -1,27 +1,28 @@
-import type { PublicUser } from '@donjon-dragon/shared/user-schema';
-
-import type { FriendDirectoryPort } from '../application/ports/friend-directory.port';
+import type {
+  DirectoryUser,
+  FriendDirectoryPort,
+} from '../application/ports/friend-directory.port';
 
 /** Double de test de l'annuaire : aucune dépendance au module user. */
 export class InMemoryFriendDirectory implements FriendDirectoryPort {
-  private readonly users = new Map<string, PublicUser>();
+  private readonly users = new Map<string, DirectoryUser>();
 
-  async save(user: PublicUser): Promise<PublicUser> {
+  async save(user: DirectoryUser): Promise<DirectoryUser> {
     this.users.set(user.id, user);
     return user;
   }
 
-  async findById(id: string): Promise<PublicUser | null> {
+  async findById(id: string): Promise<DirectoryUser | null> {
     return this.users.get(id) ?? null;
   }
 
-  async findByDisplayName(displayName: string): Promise<PublicUser | null> {
+  async findByDisplayName(displayName: string): Promise<DirectoryUser | null> {
     return (
       [...this.users.values()].find((user) => user.displayName === displayName) ?? null
     );
   }
 
-  async search(query: string, limit: number): Promise<PublicUser[]> {
+  async search(query: string, limit: number): Promise<DirectoryUser[]> {
     const needle = query.toLowerCase();
     return [...this.users.values()]
       .filter((user) => user.displayName.toLowerCase().includes(needle))

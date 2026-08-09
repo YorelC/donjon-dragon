@@ -31,7 +31,7 @@ export class RefreshTokensUseCase {
     const presented = await this.consumePresentedToken(plainToken);
     const rotated = await this.rotate(presented);
 
-    const user = await this.getUserProfile.byId(presented.userId.value);
+    const user = await this.getUserProfile.ownProfile(presented.userId.value);
     if (!user) throw new UserNotFoundError();
 
     return {

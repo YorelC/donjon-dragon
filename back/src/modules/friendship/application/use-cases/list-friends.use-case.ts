@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+import type { UserSummary } from '@donjon-dragon/shared/user-schema';
 import { UserId } from '@kernel/domain/user-id';
 
 import {
@@ -10,6 +10,7 @@ import {
   FRIEND_DIRECTORY,
   type FriendDirectoryPort,
 } from '../ports/friend-directory.port';
+import { toUserSummary } from '../friendship.mapper';
 
 export interface ListFriendsDto {
   userId: string;
@@ -17,7 +18,7 @@ export interface ListFriendsDto {
 
 export interface AcceptedFriend {
   friendshipId: string;
-  friend: PublicUser;
+  friend: UserSummary;
 }
 
 @Injectable()
@@ -39,7 +40,10 @@ export class ListFriendsUseCase {
         friendship.friendIdFor(userId).value,
       );
       if (friend) {
-        friends.push({ friendshipId: friendship.id.value, friend });
+        friends.push({
+          friendshipId: friendship.id.value,
+          friend: toUserSummary(friend),
+        });
       }
     }
 

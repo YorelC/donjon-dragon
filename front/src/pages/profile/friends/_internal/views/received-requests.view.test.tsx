@@ -6,17 +6,11 @@ import type { ReceivedRequest } from "../types/friends-schema";
 
 const mockRequest: ReceivedRequest = {
   id: "request-uuid",
-  requesterId: "user-1",
-  recipientId: "me",
   status: "pending",
   createdAt: "2025-01-01T00:00:00Z",
   updatedAt: "2025-01-01T00:00:00Z",
   requester: {
-    id: "user-1",
-    email: "gandalf@example.com",
     displayName: "Gandalf",
-    createdAt: "2025-01-01T00:00:00Z",
-    emailVerified: true,
   },
 };
 

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import type { PublicUser } from '@donjon-dragon/shared/user-schema';
 
 import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
-import type { FriendDirectoryPort } from '../../application/ports/friend-directory.port';
+import type {
+  DirectoryUser,
+  FriendDirectoryPort,
+} from '../../application/ports/friend-directory.port';
 
 /**
  * SEUL fichier du module amitié qui connaît le module user.
@@ -14,15 +16,15 @@ import type { FriendDirectoryPort } from '../../application/ports/friend-directo
 export class UserFriendDirectory implements FriendDirectoryPort {
   constructor(private readonly getUserProfile: GetUserProfileUseCase) {}
 
-  async findById(id: string): Promise<PublicUser | null> {
-    return this.getUserProfile.byId(id);
+  async findById(id: string): Promise<DirectoryUser | null> {
+    return this.getUserProfile.identityById(id);
   }
 
-  async findByDisplayName(displayName: string): Promise<PublicUser | null> {
-    return this.getUserProfile.byDisplayName(displayName);
+  async findByDisplayName(displayName: string): Promise<DirectoryUser | null> {
+    return this.getUserProfile.identityByDisplayName(displayName);
   }
 
-  async search(query: string, limit: number): Promise<PublicUser[]> {
-    return this.getUserProfile.searchByDisplayName(query, limit);
+  async search(query: string, limit: number): Promise<DirectoryUser[]> {
+    return this.getUserProfile.searchIdentities(query, limit);
   }
 }

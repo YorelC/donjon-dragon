@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Friendship as FriendshipResponse } from '@donjon-dragon/shared/friendship-schema';
+import type { FriendRequest } from '@donjon-dragon/shared/friendship-schema';
 import { UserId } from '@kernel/domain/user-id';
 
 import {
@@ -16,7 +16,7 @@ import {
   FriendRequestAlreadyExistsError,
 } from '../../domain/friendship.errors';
 import { Friendship } from '../../domain/friendship';
-import { toFriendshipResponse } from '../friendship.mapper';
+import { toFriendRequestResponse } from '../friendship.mapper';
 
 export interface SendFriendRequestDto {
   requesterId: string;
@@ -32,7 +32,7 @@ export class SendFriendRequestUseCase {
     private readonly friendshipRepo: FriendshipRepositoryPort,
   ) {}
 
-  async execute(dto: SendFriendRequestDto): Promise<FriendshipResponse> {
+  async execute(dto: SendFriendRequestDto): Promise<FriendRequest> {
     const requesterId = UserId.create(dto.requesterId);
     const recipientId = await this.resolveRecipient(dto.displayName);
 
@@ -41,9 +41,13 @@ export class SendFriendRequestUseCase {
 
     await this.friendshipRepo.save(friendship);
 
-    return toFriendshipResponse(friendship);
+    return toFriendRequestResponse(friendship);
   }
 
+  /**
+   * Le pseudo est ce que le client envoie ; l'id ne sert qu'ici, pour construire
+   * l'agrégat. Il ne repart pas dans la réponse.
+   */
   private async resolveRecipient(displayName: string): Promise<UserId> {
     const recipient = await this.directory.findByDisplayName(displayName);
     if (!recipient) throw new RecipientNotFoundError();

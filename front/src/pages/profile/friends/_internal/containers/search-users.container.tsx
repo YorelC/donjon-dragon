@@ -21,13 +21,15 @@ export function SearchUsersContainer() {
       onSearchSubmit={onSubmit}
       submittedQuery={submittedQuery}
       onSendRequest={(displayName) => sendMutation.mutate(displayName)}
-      pendingRecipientIds={toPendingRecipientIds(sentQuery.data)}
+      pendingRecipients={toPendingRecipients(sentQuery.data)}
       sendMutationPending={sendMutation.isPending}
     />
   );
 }
 
 // Les demandes déjà envoyées désactivent le bouton « Ajouter » du résultat.
-function toPendingRecipientIds(requests: SentRequest[] | undefined): Set<string> {
-  return new Set((requests ?? []).map((request) => request.recipient.id));
+// Le rapprochement se fait par pseudo, qui porte un index unique en base : le
+// serveur ne divulgue plus l'identifiant des autres joueurs.
+function toPendingRecipients(requests: SentRequest[] | undefined): Set<string> {
+  return new Set((requests ?? []).map((request) => request.recipient.displayName));
 }

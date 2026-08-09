@@ -2,8 +2,9 @@ import { describe, it, expect } from "vitest";
 import {
   FriendshipStatusEnum,
   FriendshipSchema,
+  FriendRequestSchema,
   SendFriendRequestSchema,
-  SearchUsersSchema,
+  UserSearchQuerySchema,
   DeleteFriendParamsSchema,
   PendingReceivedCountSchema,
 } from "./friendship-schema";
@@ -105,20 +106,49 @@ describe("friendship-schema", () => {
     });
   });
 
-  describe("SearchUsersSchema", () => {
-    it("should parse a valid query", () => {
-      expect(SearchUsersSchema.parse({ query: "Gandalf" })).toEqual({
-        query: "Gandalf",
+  // Source unique des bornes de recherche, partagée par la route serveur et le
+  // formulaire front. Le minimum à 3 empêche de balayer l'annuaire lettre par
+  // lettre ; le maximum à 25 borne le coût du $regex.
+  describe("UserSearchQuerySchema", () => {
+    it.each(["Gan", "Gandalf", "A".repeat(25)])("accepte %s", (q) => {
+      expect(UserSearchQuerySchema.parse({ q })).toEqual({ q });
+    });
+
+    it.each(["", "A", "Ga", "A".repeat(26)])("rejette %s", (q) => {
+      expect(() => UserSearchQuerySchema.parse({ q })).toThrow();
+    });
+
+    it("retire les espaces de bord", () => {
+      expect(UserSearchQuerySchema.parse({ q: "  Gan  " })).toEqual({ q: "Gan" });
+    });
+
+    it("rejette une requête qui devient trop courte après trim", () => {
+      expect(() => UserSearchQuerySchema.parse({ q: "  Ga  " })).toThrow();
+    });
+  });
+
+  // Ce que le CLIENT reçoit d'une relation : le handle et le statut, jamais les
+  // identifiants des deux parties.
+  describe("FriendRequestSchema", () => {
+    const valid = {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      status: "pending",
+      createdAt: "2025-01-01T00:00:00Z",
+      updatedAt: "2025-01-01T00:00:00Z",
+    };
+
+    it("parse une demande sans identifiants d'utilisateur", () => {
+      expect(FriendRequestSchema.parse(valid)).toEqual(valid);
+    });
+
+    it("retire requesterId et recipientId s'ils sont présents", () => {
+      const parsed = FriendRequestSchema.parse({
+        ...valid,
+        requesterId: "550e8400-e29b-41d4-a716-446655440001",
+        recipientId: "550e8400-e29b-41d4-a716-446655440002",
       });
-    });
 
-    it("should reject query too short (< 1 char)", () => {
-      expect(() => SearchUsersSchema.parse({ query: "" })).toThrow();
-    });
-
-    it("should reject query too long (> 50 chars)", () => {
-      const longQuery = "A".repeat(51);
-      expect(() => SearchUsersSchema.parse({ query: longQuery })).toThrow();
+      expect(parsed).toEqual(valid);
     });
   });
 

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Friendship as FriendshipResponse } from '@donjon-dragon/shared/friendship-schema';
-import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+import type { FriendRequest } from '@donjon-dragon/shared/friendship-schema';
+import type { UserSummary } from '@donjon-dragon/shared/user-schema';
 import { UserId } from '@kernel/domain/user-id';
 
 import {
@@ -11,14 +11,14 @@ import {
   FRIEND_DIRECTORY,
   type FriendDirectoryPort,
 } from '../ports/friend-directory.port';
-import { toFriendshipResponse } from '../friendship.mapper';
+import { toFriendRequestResponse, toUserSummary } from '../friendship.mapper';
 
 export interface ListPendingReceivedDto {
   userId: string;
 }
 
-export interface PendingReceivedFriendship extends FriendshipResponse {
-  requester: PublicUser;
+export interface PendingReceivedFriendship extends FriendRequest {
+  requester: UserSummary;
 }
 
 @Injectable()
@@ -39,7 +39,10 @@ export class ListPendingReceivedUseCase {
     for (const friendship of friendships) {
       const requester = await this.directory.findById(friendship.requesterId.value);
       if (requester) {
-        result.push({ ...toFriendshipResponse(friendship), requester });
+        result.push({
+          ...toFriendRequestResponse(friendship),
+          requester: toUserSummary(requester),
+        });
       }
     }
 

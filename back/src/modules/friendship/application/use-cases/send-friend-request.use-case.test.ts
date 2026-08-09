@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { aUser } from '@modules/user/testing/user.fixture';
-import { toPublicUser } from '@modules/user/application/user.mapper';
+import { toUserIdentity } from '@modules/user/application/user.mapper';
 import {
   CannotFriendSelfError,
   RecipientNotFoundError,
   FriendRequestAlreadyExistsError,
   AlreadyFriendsError,
 } from '../../domain/friendship.errors';
-import { Friendship } from '../../domain/friendship';
+import { FriendshipId } from '../../domain/friendship-id';
 import { accept, refuse } from '../../testing/friendship.fixture';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
@@ -36,8 +36,8 @@ describe('SendFriendRequestUseCase', () => {
       passwordHash: 'hashedpw',
     });
 
-    await directory.save(toPublicUser(alice));
-    await directory.save(toPublicUser(bob));
+    await directory.save(toUserIdentity(alice));
+    await directory.save(toUserIdentity(bob));
   });
 
   it('envoie une demande d amitié vers un utilisateur existant', async () => {
@@ -47,8 +47,15 @@ describe('SendFriendRequestUseCase', () => {
     });
 
     expect(result.status).toBe('pending');
-    expect(result.requesterId).toBe(alice.id.value);
-    expect(result.recipientId).toBe(bob.id.value);
+    expect(result.id).toBeTruthy();
+    // Les identifiants des deux parties ne partent PAS dans la reponse ; c'est
+    // l'agregat persiste qui les porte.
+    expect(result).not.toHaveProperty('requesterId');
+    expect(result).not.toHaveProperty('recipientId');
+
+    const stored = await friendshipRepo.findById(FriendshipId.create(result.id));
+    expect(stored?.requesterId.value).toBe(alice.id.value);
+    expect(stored?.recipientId.value).toBe(bob.id.value);
   });
 
   it('lève CannotFriendSelfError si requester == recipient', async () => {
@@ -89,9 +96,10 @@ describe('SendFriendRequestUseCase', () => {
       displayName: 'bob',
     });
 
-    // On rejoue la vraie transition plutôt que de forcer un statut : le domaine
-    // n'accepte plus qu'on lui impose un état de l'extérieur.
-    await friendshipRepo.save(accept(Friendship.restore(req), bob.id.value));
+    // On relit l'agrégat par le handle que le client possède, puis on rejoue la
+    // vraie transition : le domaine n'accepte plus qu'on lui impose un état, et la
+    // réponse ne contient plus de quoi le reconstruire.
+    await friendshipRepo.save(accept(await stored(req.id), bob.id.value));
 
     await expect(
       useCase.execute({
@@ -107,7 +115,7 @@ describe('SendFriendRequestUseCase', () => {
       displayName: 'bob',
     });
 
-    await friendshipRepo.save(refuse(Friendship.restore(req1), bob.id.value));
+    await friendshipRepo.save(refuse(await stored(req1.id), bob.id.value));
 
     const req2 = await useCase.execute({
       requesterId: alice.id.value,
@@ -117,4 +125,13 @@ describe('SendFriendRequestUseCase', () => {
     expect(req2.status).toBe('pending');
     expect(req2.id).not.toBe(req1.id);
   });
+
+  async function stored(friendshipId: string) {
+    const friendship = await friendshipRepo.findById(
+      FriendshipId.create(friendshipId),
+    );
+    if (!friendship) throw new Error(`friendship ${friendshipId} absent du repo`);
+
+    return friendship;
+  }
 });

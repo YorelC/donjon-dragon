@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { aUser } from '@modules/user/testing/user.fixture';
-import { toPublicUser } from '@modules/user/application/user.mapper';
+import { toUserIdentity } from '@modules/user/application/user.mapper';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { ListPendingSentUseCase } from './list-pending-sent.use-case';
@@ -35,9 +35,9 @@ describe('ListPendingSentUseCase', () => {
       passwordHash: 'hashedpw',
     });
 
-    await directory.save(toPublicUser(alice));
-    await directory.save(toPublicUser(bob));
-    await directory.save(toPublicUser(charlie));
+    await directory.save(toUserIdentity(alice));
+    await directory.save(toUserIdentity(bob));
+    await directory.save(toUserIdentity(charlie));
   });
 
   it('retourne les demandes pending envoyées', async () => {
@@ -50,8 +50,18 @@ describe('ListPendingSentUseCase', () => {
     const result = await useCase.execute({ userId: alice.id.value });
 
     expect(result).toHaveLength(2);
-    expect(result[0]!.recipient.id).toBe(bob.id.value);
-    expect(result[1]!.recipient.id).toBe(charlie.id.value);
+    expect(result[0]!.recipient.displayName).toBe('bob');
+    expect(result[1]!.recipient.displayName).toBe('charlie');
+  });
+
+  it('ne divulgue ni email ni identifiant d utilisateur', async () => {
+    await friendshipRepo.save(pendingRequest(alice.id.value, bob.id.value));
+
+    const result = await useCase.execute({ userId: alice.id.value });
+
+    expect(Object.keys(result[0]!.recipient)).toEqual(['displayName']);
+    expect(result[0]).not.toHaveProperty('requesterId');
+    expect(result[0]).not.toHaveProperty('recipientId');
   });
 
   it('exclut les demandes received (requesterId != userId)', async () => {
@@ -64,7 +74,7 @@ describe('ListPendingSentUseCase', () => {
     const result = await useCase.execute({ userId: alice.id.value });
 
     expect(result).toHaveLength(1);
-    expect(result[0]?.recipient.id).toBe(bob.id.value);
+    expect(result[0]?.recipient.displayName).toBe('bob');
   });
 
   it('retourne liste vide si pas de demandes envoyées', async () => {

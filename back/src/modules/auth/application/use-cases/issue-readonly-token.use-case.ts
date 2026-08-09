@@ -14,7 +14,7 @@ export class IssueReadonlyTokenUseCase {
   ) {}
 
   async execute(userId: string): Promise<{ accessToken: string }> {
-    const user = await this.getUserProfile.byId(userId);
+    const user = await this.getUserProfile.ownProfile(userId);
     if (!user) throw new UserNotFoundError();
 
     return {

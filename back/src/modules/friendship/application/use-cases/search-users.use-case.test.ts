@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { aUser } from '@modules/user/testing/user.fixture';
-import { toPublicUser } from '@modules/user/application/user.mapper';
+import { toUserIdentity } from '@modules/user/application/user.mapper';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { SearchUsersUseCase } from './search-users.use-case';
 
@@ -31,9 +31,9 @@ describe('SearchUsersUseCase', () => {
       passwordHash: 'hashedpw',
     });
 
-    await directory.save(toPublicUser(alice));
-    await directory.save(toPublicUser(bob));
-    await directory.save(toPublicUser(bruno));
+    await directory.save(toUserIdentity(alice));
+    await directory.save(toUserIdentity(bob));
+    await directory.save(toUserIdentity(bruno));
   });
 
   it('recherche des users par displayName', async () => {
@@ -65,12 +65,14 @@ describe('SearchUsersUseCase', () => {
     expect(result).toEqual([]);
   });
 
-  it('exclut le password hash', async () => {
+  // Le resultat ne doit rien contenir d'autre que le pseudo : ni hash, ni email,
+  // ni identifiant systeme. C'est ce qui part sur le reseau vers un tiers.
+  it('ne divulgue que le pseudo', async () => {
     const result = await useCase.execute({
       userId: alice.id.value,
       query: 'bob',
     });
 
-    expect(result[0]).not.toHaveProperty('passwordHash');
+    expect(Object.keys(result[0]!)).toEqual(['displayName']);
   });
 });

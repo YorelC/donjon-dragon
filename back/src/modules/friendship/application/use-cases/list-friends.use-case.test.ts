@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { aUser } from '@modules/user/testing/user.fixture';
-import { toPublicUser } from '@modules/user/application/user.mapper';
+import { toUserIdentity } from '@modules/user/application/user.mapper';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { ListFriendsUseCase } from './list-friends.use-case';
@@ -35,9 +35,9 @@ describe('ListFriendsUseCase', () => {
       passwordHash: 'hashedpw',
     });
 
-    await directory.save(toPublicUser(alice));
-    await directory.save(toPublicUser(bob));
-    await directory.save(toPublicUser(charlie));
+    await directory.save(toUserIdentity(alice));
+    await directory.save(toUserIdentity(bob));
+    await directory.save(toUserIdentity(charlie));
   });
 
   it('retourne une liste vide si pas d amis', async () => {
@@ -57,9 +57,21 @@ describe('ListFriendsUseCase', () => {
     const result = await useCase.execute({ userId: alice.id.value });
 
     expect(result).toHaveLength(2);
-    expect(result.map((af) => af.friend.id)).toContain(bob.id.value);
-    expect(result.map((af) => af.friend.id)).toContain(charlie.id.value);
+    expect(result.map((af) => af.friend.displayName)).toContain('bob');
+    expect(result.map((af) => af.friend.displayName)).toContain('charlie');
     expect(result.every((af) => af.friendshipId)).toBe(true);
+  });
+
+  // Le friendshipId reste — c'est le handle pour supprimer. L'identite de l'ami,
+  // elle, se limite au pseudo.
+  it('ne divulgue que le pseudo de l ami', async () => {
+    await friendshipRepo.save(
+      accept(pendingRequest(alice.id.value, bob.id.value), bob.id.value),
+    );
+
+    const result = await useCase.execute({ userId: alice.id.value });
+
+    expect(Object.keys(result[0]!.friend)).toEqual(['displayName']);
   });
 
   it('exclut les amités pending', async () => {
@@ -73,6 +85,6 @@ describe('ListFriendsUseCase', () => {
     const result = await useCase.execute({ userId: alice.id.value });
 
     expect(result).toHaveLength(1);
-    expect(result[0]!.friend.id).toBe(charlie.id.value);
+    expect(result[0]!.friend.displayName).toBe('charlie');
   });
 });

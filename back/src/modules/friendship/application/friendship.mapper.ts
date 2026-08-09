@@ -1,13 +1,23 @@
-import type { Friendship as FriendshipResponse } from '@donjon-dragon/shared/friendship-schema';
+import type { FriendRequest } from '@donjon-dragon/shared/friendship-schema';
+import type { UserSummary } from '@donjon-dragon/shared/user-schema';
 
 import type { Friendship } from '../domain/friendship';
+import type { DirectoryUser } from './ports/friend-directory.port';
 
 /**
- * Agrégat → contrat HTTP. Le type de retour vient de shared/, donc toute
- * divergence entre le statut du domaine et FriendshipStatusEnum casse le
- * typecheck : c'est ce qui autorise le domaine à déclarer son propre statut
- * sans dépendre du schéma de transport.
+ * Agrégat → contrat HTTP. `requesterId` et `recipientId` sont volontairement
+ * absents : le client n'a pas à connaître l'identité système des autres joueurs.
+ * Seul `id` reste, parce que c'est le handle de la ressource — celui qu'on
+ * accepte, refuse ou supprime.
  */
-export function toFriendshipResponse(friendship: Friendship): FriendshipResponse {
-  return friendship.snapshot();
+export function toFriendRequestResponse(friendship: Friendship): FriendRequest {
+  const { requesterId: _requesterId, recipientId: _recipientId, ...response } =
+    friendship.snapshot();
+
+  return response;
+}
+
+/** Annuaire → contrat HTTP : c'est ici que l'identifiant s'arrête. */
+export function toUserSummary(user: DirectoryUser): UserSummary {
+  return { displayName: user.displayName };
 }
