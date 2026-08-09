@@ -6,6 +6,9 @@ import { z } from 'zod';
  * retomber silencieusement sur une valeur connue publiquement.
  */
 const EnvSchema = z.object({
+  // Decide du flag `secure` des cookies de session : en production ils ne
+  // doivent voyager que sur HTTPS.
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
 
   MONGODB_URI: z.string().min(1),
@@ -25,7 +28,19 @@ const EnvSchema = z.object({
   EMAIL_USER: z.string().min(1),
   EMAIL_APP_PASSWORD: z.string().min(1),
 
-  CORS_ORIGIN: z.string().min(1).default('http://localhost:5173'),
+  /**
+   * Origines autorisees, separees par des virgules.
+   *
+   * Une LISTE et non un joker : des que `credentials: true` est active, le
+   * navigateur refuse `Access-Control-Allow-Origin: *`. Il faut donc renvoyer
+   * l'origine exacte de l'appelant, ce qui suppose de savoir lesquelles sont
+   * legitimes.
+   */
+  CORS_ORIGINS: z
+    .string()
+    .min(1)
+    .default('http://localhost:5173')
+    .transform((value) => value.split(',').map((origin) => origin.trim())),
 });
 
 type Env = z.infer<typeof EnvSchema>;

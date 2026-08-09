@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  DOMAIN_ERROR_CODE,
+  type DomainErrorCode,
+} from "@donjon-dragon/shared";
 import { ApiError } from "@/shared/api/api";
 import {
   RegisterFormSchema,
@@ -62,9 +66,30 @@ function toRegisterDto(values: RegisterFormValues) {
   };
 }
 
+/**
+ * Un 409 ne dit pas lequel des deux champs uniques est déjà pris. On lit donc le
+ * code métier de l'erreur, et non son message : envoyer l'utilisateur changer son
+ * email alors que c'est son pseudo qui collisionne le laisse tourner en rond.
+ */
+const REGISTER_CONFLICT_MESSAGES: Record<DomainErrorCode, string> = {
+  [DOMAIN_ERROR_CODE["email-already-in-use"]]:
+    "Cette adresse email est déjà utilisée.",
+  [DOMAIN_ERROR_CODE["display-name-already-taken"]]:
+    "Ce pseudo est déjà pris. Choisis-en un autre.",
+};
+
 function toRegisterErrorMessage(err: unknown): string {
-  if (err instanceof ApiError && err.status === 409) {
-    return "Cette adresse email est déjà utilisée.";
+  if (!(err instanceof ApiError)) return GENERIC_REGISTER_ERROR;
+
+  if (err.code) return REGISTER_CONFLICT_MESSAGES[err.code];
+
+  // Filet : un 409 sans code reste un doublon, on ne sait juste pas lequel.
+  if (err.status === HTTP_CONFLICT) {
+    return "Cet email ou ce pseudo est déjà utilisé.";
   }
-  return "Erreur lors de l'inscription. Réessaye.";
+
+  return GENERIC_REGISTER_ERROR;
 }
+
+const HTTP_CONFLICT = 409;
+const GENERIC_REGISTER_ERROR = "Erreur lors de l'inscription. Réessaye.";

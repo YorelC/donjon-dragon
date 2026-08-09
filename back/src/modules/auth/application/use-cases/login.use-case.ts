@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { LoginDto, PublicUser } from '@donjon-dragon/shared/user-schema';
-import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
+import type { IssuedSession } from '../issued-session';
 import { UserId } from '@kernel/domain/user-id';
 
 import { GetUserCredentialsUseCase } from '@modules/user/application/use-cases/get-user-credentials.use-case';
@@ -24,7 +24,7 @@ export class LoginUseCase {
     @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
   ) {}
 
-  async execute(dto: LoginDto): Promise<AuthTokens> {
+  async execute(dto: LoginDto): Promise<IssuedSession> {
     const user = await this.authenticate(dto);
     return this.issueTokens(user);
   }
@@ -45,7 +45,7 @@ export class LoginUseCase {
   }
 
   /** Nouvelle connexion : nouvelle lignée de refresh tokens. */
-  private async issueTokens(user: PublicUser): Promise<AuthTokens> {
+  private async issueTokens(user: PublicUser): Promise<IssuedSession> {
     const userId = UserId.create(user.id);
 
     const { token, plainToken } = RefreshToken.issue(userId);

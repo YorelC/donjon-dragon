@@ -2,7 +2,13 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import type { Request } from 'express';
 import { TokenPayloadSchema, type TokenPayload } from '@donjon-dragon/shared/auth-schema';
+
+import { ACCESS_COOKIE } from '../session-cookies';
+
+const fromSessionCookie = (request: Request): string | null =>
+  request.cookies?.[ACCESS_COOKIE] ?? null;
 
 /**
  * Verification de l'access token. Ce que `validate` retourne devient
@@ -13,7 +19,9 @@ import { TokenPayloadSchema, type TokenPayload } from '@donjon-dragon/shared/aut
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(config: ConfigService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // Le token vit dans un cookie httpOnly, pas dans un en-tête : aucun script
+      // de la page ne peut le lire, donc une faille XSS ne l'exfiltre pas.
+      jwtFromRequest: ExtractJwt.fromExtractors([fromSessionCookie]),
       ignoreExpiration: false,
       secretOrKey: config.getOrThrow<string>('jwt.secret'),
       algorithms: ['HS256'],

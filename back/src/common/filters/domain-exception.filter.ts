@@ -29,8 +29,13 @@ export class DomainExceptionFilter implements ExceptionFilter {
   catch(error: DomainError, host: ArgumentsHost): void {
     const exception = HTTP_EXCEPTION_BY_KIND[error.kind](error.message);
     const response = host.switchToHttp().getResponse<Response>();
+    const body = exception.getResponse();
 
-    response.status(exception.getStatus()).json(exception.getResponse());
+    // `code` n'est ajouté que si l'erreur en déclare un : le corps reste celui de
+    // Nest pour toutes les autres, et le client n'a pas de champ fantôme à tester.
+    response.status(exception.getStatus()).json(
+      error.code === undefined ? body : { ...(body as object), code: error.code },
+    );
   }
 }
 

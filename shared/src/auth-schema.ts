@@ -19,15 +19,21 @@ export const TokenPayloadSchema = z.object({
   userId: z.string().uuid(),
 });
 
-export const AuthTokensSchema = z.object({
-  accessToken: z.string(),
-  refreshToken: z.string(),
+/**
+ * Ce que le client reçoit en ouvrant une session : son profil, et rien d'autre.
+ *
+ * Les tokens ne sont plus des données applicatives mais un détail du transport :
+ * ils voyagent en cookies `httpOnly`, illisibles par le JavaScript de la page. Le
+ * front n'a donc aucun secret à stocker — donc aucun à se faire voler par un
+ * script injecté.
+ */
+export const AuthSessionSchema = z.object({
   user: PublicUserSchema,
 });
 
-export const RefreshSchema = z.object({
-  refreshToken: z.string(),
-});
+// RefreshSchema a disparu : le refresh token n'est plus dans le corps de la
+// requête mais dans un cookie httpOnly. `POST /api/auth/refresh` et
+// `POST /api/auth/logout` n'ont donc plus de corps du tout.
 
 // Requête de vérification d'email : le front POST le token brut reçu par lien.
 export const VerifyEmailSchema = z.object({
@@ -40,6 +46,5 @@ export const VerifyEmailSchema = z.object({
 // agrégats respectifs, dans back/src/modules/auth/domain/.
 
 export type TokenPayload = z.infer<typeof TokenPayloadSchema>;
-export type AuthTokens = z.infer<typeof AuthTokensSchema>;
-export type RefreshDto = z.infer<typeof RefreshSchema>;
+export type AuthSession = z.infer<typeof AuthSessionSchema>;
 export type VerifyEmailDto = z.infer<typeof VerifyEmailSchema>;

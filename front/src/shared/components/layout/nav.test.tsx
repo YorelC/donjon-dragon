@@ -19,7 +19,7 @@ const authenticatedUser = {
 
 describe("Nav", () => {
   beforeEach(() => {
-    useAuthStore.setState({ user: null, refreshToken: null });
+    useAuthStore.setState({ user: null });
   });
 
   it("should render null when not authenticated", () => {

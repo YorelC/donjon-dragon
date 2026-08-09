@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 
+import { CsrfTokenService } from '@common/security/csrf-token.service';
 import { UserModule } from '@modules/user/user.module';
 import { EMAIL_SENDER } from './application/ports/email-sender.port';
 import { EMAIL_VERIFICATION_TOKEN_REPOSITORY } from './application/ports/email-verification-token.repository.port';
@@ -29,6 +30,7 @@ import {
 } from './infrastructure/persistence/refresh-token.schema';
 import { JwtTokenService } from './infrastructure/token/jwt-token.service';
 import { AuthController } from './presentation/auth.controller';
+import { SessionCookies } from './presentation/session-cookies';
 import { JwtStrategy } from './presentation/strategies/jwt.strategy';
 
 @Module({
@@ -56,6 +58,8 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
     // qui permet au JwtAuthGuard global de fonctionner sans que les autres
     // modules aient à importer quoi que ce soit d'auth.
     JwtStrategy,
+    SessionCookies,
+    CsrfTokenService,
     { provide: TOKEN_SERVICE, useClass: JwtTokenService },
     // useFactory assumé : l'adapter reçoit une valeur primitive, pas un service.
     {

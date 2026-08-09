@@ -1,22 +1,16 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
-import type { AuthTokens } from "@donjon-dragon/shared";
-import { useAuthStore } from "@/shared/stores/auth.store";
+import type { AuthSession } from "@donjon-dragon/shared";
+import { SESSION_STATUS, useAuthStore } from "@/shared/stores/auth.store";
 import { ROUTES } from "@/shared/constants/routes";
 import { PrivateRoute } from "./private-route";
 
-// Tests de CARACTERISATION : PrivateRoute decide qui accede aux pages protegees
-// et n'avait aucune couverture. Un bug ici deconnecte tout le monde ou laisse
-// passer des visiteurs — c'est le pire endroit du front pour un angle mort.
-//
-// Le passage aux cookies httpOnly y ajoutera un troisieme etat (chargement,
-// pendant que /me resout). Ces deux tests garantissent que les deux etats
-// existants ne bougent pas.
+// PrivateRoute decide qui accede aux pages protegees : un bug ici deconnecte tout
+// le monde ou laisse passer des visiteurs. Depuis le passage aux cookies httpOnly
+// il arbitre TROIS etats, et le troisieme est le plus fragile.
 
-const session: AuthTokens = {
-  accessToken: "access-abc",
-  refreshToken: "refresh-xyz",
+const session: AuthSession = {
   user: {
     id: "11111111-1111-4111-8111-111111111111",
     email: "gandalf@middleearth.com",
@@ -41,8 +35,7 @@ function renderAt(path: string) {
 
 describe("PrivateRoute", () => {
   beforeEach(() => {
-    useAuthStore.getState().clearAuth();
-    localStorage.clear();
+    useAuthStore.setState({ user: null, status: SESSION_STATUS.anonymous });
   });
 
   it("laisse passer un utilisateur connecté", () => {
@@ -69,5 +62,32 @@ describe("PrivateRoute", () => {
     renderAt("/protegee");
 
     expect(screen.getByText("page de connexion")).toBeInTheDocument();
+  });
+
+  // Le troisieme etat, et la raison d'etre du bootstrap /me : les cookies etant
+  // httpOnly, le front ne peut pas savoir s'il a une session avant d'avoir demande.
+  // Rediriger pendant cette attente deconnecterait a chaque rechargement de page.
+  describe("session encore indéterminée", () => {
+    beforeEach(() => {
+      useAuthStore.setState({ user: null, status: SESSION_STATUS.unknown });
+    });
+
+    it("ne redirige PAS tant que /me n'a pas répondu", () => {
+      renderAt("/protegee");
+
+      expect(screen.queryByText("page de connexion")).not.toBeInTheDocument();
+    });
+
+    it("ne montre pas non plus le contenu protégé", () => {
+      renderAt("/protegee");
+
+      expect(screen.queryByText("contenu protégé")).not.toBeInTheDocument();
+    });
+
+    it("annonce l'attente au lecteur d'écran", () => {
+      renderAt("/protegee");
+
+      expect(screen.getByRole("status")).toBeInTheDocument();
+    });
   });
 });

@@ -5,16 +5,15 @@ import { API_ROUTES } from "@/shared/constants/api-routes";
 import { ROUTES } from "@/shared/constants/routes";
 import { useAuthStore } from "@/shared/stores/auth.store";
 
-// Déconnexion complète : révoque le refresh token côté serveur, vide le store
-// local quoi qu'il arrive, puis ramène à l'accueil.
+// Déconnexion complète : le serveur révoque le refresh token et efface les trois
+// cookies, le store local est vidé quoi qu'il arrive, puis retour à l'accueil.
 export function useLogout() {
   const navigate = useNavigate();
-  const refreshToken = useAuthStore((s) => s.refreshToken);
   const clearAuth = useAuthStore((s) => s.clearAuth);
-  const { mutate } = useRevokeRefreshToken();
+  const { mutate } = useRevokeSession();
 
   return () => {
-    mutate(refreshToken ?? "", {
+    mutate(undefined, {
       onSettled: () => {
         clearAuth();
         navigate(ROUTES.home);
@@ -23,9 +22,10 @@ export function useLogout() {
   };
 }
 
-function useRevokeRefreshToken() {
+// Aucun corps : le refresh token à révoquer est celui du cookie, et l'identité
+// vient de l'access token. Le front n'a plus rien à transmettre.
+function useRevokeSession() {
   return useMutation({
-    mutationFn: (refreshToken: string) =>
-      api.post<void>(API_ROUTES.auth.logout, { refreshToken }),
+    mutationFn: () => api.post<void>(API_ROUTES.auth.logout),
   });
 }

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
+import type { IssuedSession } from '../issued-session';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
 import { UserId } from '@kernel/domain/user-id';
 
@@ -33,7 +33,7 @@ export class VerifyEmailUseCase {
     @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
   ) {}
 
-  async execute(plainToken: string): Promise<AuthTokens> {
+  async execute(plainToken: string): Promise<IssuedSession> {
     const token = await this.readVerificationToken(plainToken);
     // La transition appartient à user ; auth ne fait que la déclencher.
     const verifiedUser = await this.markEmailVerified.execute(token.userId.value);
@@ -56,7 +56,7 @@ export class VerifyEmailUseCase {
     return token;
   }
 
-  private async issueTokens(user: PublicUser): Promise<AuthTokens> {
+  private async issueTokens(user: PublicUser): Promise<IssuedSession> {
     const userId = UserId.create(user.id);
 
     const { token, plainToken } = RefreshToken.issue(userId);

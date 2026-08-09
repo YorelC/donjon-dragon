@@ -12,12 +12,17 @@ import { SettingsPage } from "./pages/profile/parametres/parametres.page";
 import { ROUTES } from "./shared/constants/routes";
 import { Nav } from "./shared/components/layout/nav";
 import { PrivateRoute } from "./shared/components/layout/private-route";
-import { useAuthStore } from "./shared/stores/auth.store";
+import { SESSION_STATUS, useAuthStore } from "./shared/stores/auth.store";
+import { useSessionBootstrap } from "./shared/hooks/use-session-bootstrap";
 import { Toaster } from "./shared/components/atoms/sonner";
 
 const queryClient = new QueryClient();
 
 function App() {
+  // Une seule fois, à la racine : demander à /me si une session existe. Les cookies
+  // étant httpOnly, c'est le seul moyen pour le front de le savoir.
+  useSessionBootstrap();
+
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -50,8 +55,13 @@ function AppRoutes() {
 }
 
 function HomeRoute() {
-  const isAuthenticated = useAuthStore((s) => s.user !== null);
-  return isAuthenticated ? <Home /> : <LandingPage />;
+  const status = useAuthStore((s) => s.status);
+
+  // Tant que /me n'a pas répondu, ne rien trancher : afficher la landing page à un
+  // utilisateur connecté qui recharge l'accueil serait un clignotement gratuit.
+  if (status === SESSION_STATUS.unknown) return null;
+
+  return status === SESSION_STATUS.authenticated ? <Home /> : <LandingPage />;
 }
 
 export default App;

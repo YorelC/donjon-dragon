@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { AuthTokens } from '@donjon-dragon/shared/auth-schema';
+import type { IssuedSession } from '../issued-session';
 import { UserId } from '@kernel/domain/user-id';
 
 import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
@@ -28,7 +28,7 @@ export class RefreshTokensUseCase {
     @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
   ) {}
 
-  async execute(plainToken: string): Promise<AuthTokens> {
+  async execute(plainToken: string): Promise<IssuedSession> {
     const presented = await this.consumePresentedToken(plainToken);
     const rotated = await this.rotate(presented);
 
