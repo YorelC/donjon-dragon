@@ -5,36 +5,9 @@ import { FriendsListView } from "./friends-list.view";
 import type { AcceptedFriend } from "../types/friends-schema";
 
 const mockFriends: AcceptedFriend[] = [
-  {
-    friendshipId: "uuid-1",
-    friend: {
-      id: "user-1",
-      email: "gandalf@example.com",
-      displayName: "Gandalf",
-      createdAt: "2025-01-01T00:00:00Z",
-      emailVerified: true,
-    },
-  },
-  {
-    friendshipId: "uuid-2",
-    friend: {
-      id: "user-2",
-      email: "frodon@example.com",
-      displayName: "Frodon Sacquet",
-      createdAt: "2025-01-02T00:00:00Z",
-      emailVerified: true,
-    },
-  },
-  {
-    friendshipId: "uuid-3",
-    friend: {
-      id: "user-3",
-      email: "aragorn@example.com",
-      displayName: "Aragorn",
-      createdAt: "2025-01-03T00:00:00Z",
-      emailVerified: true,
-    },
-  },
+  { friendshipId: "uuid-1", friend: { displayName: "Gandalf" } },
+  { friendshipId: "uuid-2", friend: { displayName: "Frodon Sacquet" } },
+  { friendshipId: "uuid-3", friend: { displayName: "Aragorn" } },
 ];
 
 /** Helper: returns the friend displayName for a given friendshipId */

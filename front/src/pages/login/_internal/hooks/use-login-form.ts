@@ -33,8 +33,7 @@ function useLoginSubmit() {
   const submit = async (values: LoginDto) => {
     setErrorMessage("");
     try {
-      const tokens = await loginMutation.mutateAsync(values);
-      setAuth(tokens);
+      setAuth(await loginMutation.mutateAsync(values));
       navigate(ROUTES.campaigns);
     } catch (err) {
       setErrorMessage(toLoginErrorMessage(err));

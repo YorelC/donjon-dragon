@@ -9,7 +9,11 @@
     "moduleResolution": "Node",
     "paths": {
       "@donjon-dragon/shared": ["../shared/src"],
-      "@donjon-dragon/shared/*": ["../shared/src/*"]
+      "@donjon-dragon/shared/*": ["../shared/src/*"],
+      "@config/*": ["./src/config/*"],
+      "@common/*": ["./src/common/*"],
+      "@kernel/*": ["./src/kernel/*"],
+      "@modules/*": ["./src/modules/*"]
     }
   },
   "include": ["src"]

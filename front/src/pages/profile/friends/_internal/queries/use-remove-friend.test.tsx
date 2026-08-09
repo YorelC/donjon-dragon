@@ -25,13 +25,7 @@ import { api } from "@/shared/api/api";
 // Helpers
 const mockFriend = (friendshipId: string, displayName: string): AcceptedFriend => ({
   friendshipId,
-  friend: {
-    id: `user-${friendshipId}`,
-    email: `${displayName.toLowerCase()}@example.com`,
-    displayName,
-    createdAt: "2025-01-01T00:00:00Z",
-    emailVerified: true,
-  },
+  friend: { displayName },
 });
 
 // Tests

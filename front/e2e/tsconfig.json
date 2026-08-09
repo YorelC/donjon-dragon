@@ -1,0 +1,20 @@
+{
+  // Les parcours Playwright sont typecheckes SEPAREMENT de l'application.
+  //
+  // Les mettre dans le tsconfig de l'app les ferait compiler par `pnpm build`
+  // (qui lance `tsc` sans --noEmit) : des specs de test finiraient dans le
+  // bundle de production. Et les globales de vitest n'ont rien a faire ici.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "@donjon-dragon/shared": ["../../shared/src"]
+    }
+  },
+  "include": [".", "../playwright.config.ts"]
+}

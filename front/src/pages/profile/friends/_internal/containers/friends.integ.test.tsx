@@ -27,84 +27,38 @@ type FetchHandler = (url: string, method: string, callIndex: number) => FetchRes
 
 // ── Fixtures ───────────────────────────────────────────────────────────────
 
+// Ces fixtures reproduisent EXACTEMENT ce que le serveur renvoie : un handle de
+// relation et le pseudo de l'autre joueur. Ni email, ni identifiant
+// d'utilisateur — sinon ce test d'integration prouverait que l'UI marche avec des
+// donnees qui n'existent plus.
+
 const FRIENDS = [
-  {
-    friendshipId: "uuid-gandalf",
-    friend: {
-      id: "user-gandalf",
-      email: "gandalf@example.com",
-      displayName: "Gandalf",
-      createdAt: "2025-01-01T00:00:00Z",
-      emailVerified: true,
-    },
-  },
-  {
-    friendshipId: "uuid-frodon",
-    friend: {
-      id: "user-frodon",
-      email: "frodon@example.com",
-      displayName: "Frodon Sacquet",
-      createdAt: "2025-01-02T00:00:00Z",
-      emailVerified: true,
-    },
-  },
-  {
-    friendshipId: "uuid-aragorn",
-    friend: {
-      id: "user-aragorn",
-      email: "aragorn@example.com",
-      displayName: "Aragorn",
-      createdAt: "2025-01-03T00:00:00Z",
-      emailVerified: true,
-    },
-  },
+  { friendshipId: "uuid-gandalf", friend: { displayName: "Gandalf" } },
+  { friendshipId: "uuid-frodon", friend: { displayName: "Frodon Sacquet" } },
+  { friendshipId: "uuid-aragorn", friend: { displayName: "Aragorn" } },
 ];
 
 const REQUESTS_3 = [
   {
     id: "req-1",
-    requesterId: "user-requester-1",
-    recipientId: "me",
     status: "pending" as const,
     createdAt: "2025-01-05T00:00:00Z",
     updatedAt: "2025-01-05T00:00:00Z",
-    requester: {
-      id: "user-requester-1",
-      email: "user1@example.com",
-      displayName: "User 1",
-      createdAt: "2025-01-01T00:00:00Z",
-      emailVerified: true,
-    },
+    requester: { displayName: "User 1" },
   },
   {
     id: "req-2",
-    requesterId: "user-requester-2",
-    recipientId: "me",
     status: "pending" as const,
     createdAt: "2025-01-06T00:00:00Z",
     updatedAt: "2025-01-06T00:00:00Z",
-    requester: {
-      id: "user-requester-2",
-      email: "user2@example.com",
-      displayName: "User 2",
-      createdAt: "2025-01-01T00:00:00Z",
-      emailVerified: true,
-    },
+    requester: { displayName: "User 2" },
   },
   {
     id: "req-3",
-    requesterId: "user-requester-3",
-    recipientId: "me",
     status: "pending" as const,
     createdAt: "2025-01-07T00:00:00Z",
     updatedAt: "2025-01-07T00:00:00Z",
-    requester: {
-      id: "user-requester-3",
-      email: "user3@example.com",
-      displayName: "User 3",
-      createdAt: "2025-01-01T00:00:00Z",
-      emailVerified: true,
-    },
+    requester: { displayName: "User 3" },
   },
 ];
 
@@ -651,18 +605,10 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
     it("INTEG-006: badge '9+' affiché pour 15 demandes reçues (truncation)", async () => {
       const fifteenRequests = Array.from({ length: 15 }, (_, i) => ({
         id: `req-${i}`,
-        requesterId: `user-${i}`,
-        recipientId: "me",
         status: "pending" as const,
         createdAt: "2025-01-05T00:00:00Z",
         updatedAt: "2025-01-05T00:00:00Z",
-        requester: {
-          id: `user-${i}`,
-          email: `user${i}@example.com`,
-          displayName: `User ${i}`,
-          createdAt: "2025-01-01T00:00:00Z",
-          emailVerified: true,
-        },
+        requester: { displayName: `User ${i}` },
       }));
 
       setupFetchMock((url, method) => {

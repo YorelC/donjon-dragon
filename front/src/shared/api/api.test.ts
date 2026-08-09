@@ -1,53 +1,37 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { api } from "./api";
-import { refreshAccessToken } from "./refresh";
-
-interface StoreState {
-  accessToken: string | null;
-  refreshToken: string | null;
-  user: null;
-}
-
-let storeState: StoreState = {
-  accessToken: "old-access-token",
-  refreshToken: "old-refresh-token",
-  user: null,
-};
-
-const mockSetAuth = vi.fn();
-const mockClearAuth = vi.fn();
-
-vi.mock("@/shared/stores/auth.store", () => ({
-  useAuthStore: {
-    getState: () => ({
-      ...storeState,
-      setAuth: mockSetAuth,
-      clearAuth: mockClearAuth,
-    }),
-  },
-}));
+import { CSRF_HEADER, DOMAIN_ERROR_CODE } from "@donjon-dragon/shared";
+import { API_ROUTES } from "@/shared/constants/api-routes";
+import { ApiError, api } from "./api";
+import { refreshSession } from "./refresh";
 
 vi.mock("./refresh");
 
+const CSRF_TOKEN = "nonce.signature";
+
+function giveBrowserACsrfCookie(): void {
+  document.cookie = `csrf_token=${CSRF_TOKEN}`;
+}
+
+function clearCookies(): void {
+  document.cookie = "csrf_token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+}
+
 describe("api client", () => {
   beforeEach(() => {
-    vi.mocked(refreshAccessToken).mockClear();
+    vi.mocked(refreshSession).mockClear();
+    vi.mocked(refreshSession).mockResolvedValue(undefined);
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
     vi.clearAllMocks();
-    storeState = {
-      accessToken: "old-access-token",
-      refreshToken: "old-refresh-token",
-      user: null,
-    };
+    clearCookies();
   });
 
-  it("performs a GET request and returns parsed JSON", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ ok: true }), { status: 200 }),
-    );
+  it("fait un GET et rend le JSON parsé", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }));
     vi.stubGlobal("fetch", fetchMock);
 
     const result = await api.get<{ ok: boolean }>("/api/characters");
@@ -55,94 +39,273 @@ describe("api client", () => {
     expect(result).toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/characters",
-      expect.objectContaining({ headers: expect.objectContaining({ "Content-Type": "application/json" }) }),
+      expect.objectContaining({
+        headers: expect.objectContaining({ "Content-Type": "application/json" }),
+      }),
     );
   });
 
-  it("sends a POST request with a JSON body", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response(JSON.stringify({ id: "1" }), { status: 201 }),
-    );
+  it("poste un corps JSON", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify({ id: "1" }), { status: 201 }));
     vi.stubGlobal("fetch", fetchMock);
 
     await api.post("/api/characters", { name: "Aragorn" });
 
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/characters",
-      expect.objectContaining({ method: "POST", body: JSON.stringify({ name: "Aragorn" }) }),
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ name: "Aragorn" }),
+      }),
     );
   });
 
-  it("throws when the response is not ok", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(
-      new Response("not found", { status: 404 }),
-    );
-    vi.stubGlobal("fetch", fetchMock);
-
-    await expect(api.get("/api/characters/missing")).rejects.toThrow("API error 404");
-  });
-
-  it("returns undefined for a 204 response", async () => {
+  it("rend undefined sur un 204", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
     vi.stubGlobal("fetch", fetchMock);
 
-    const result = await api.delete("/api/characters/1");
-
-    expect(result).toBeUndefined();
+    await expect(api.delete("/api/characters/1")).resolves.toBeUndefined();
   });
 
-  describe("401 refresh retry", () => {
-    it("retries with new token after 401 refresh success", async () => {
-      vi.mocked(refreshAccessToken).mockResolvedValue("new-access-token");
-
-      const fetchMock = vi.fn();
-      fetchMock
-        .mockResolvedValueOnce(
-          new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 }),
-        )
-        .mockResolvedValueOnce(new Response(JSON.stringify({ data: "success" }), { status: 200 }));
-
+  describe("cookies de session", () => {
+    // Sans ceci, aucun cookie ne part et TOUTE requete authentifiee echoue : c'est
+    // la ligne dont depend le passage aux tokens httpOnly.
+    it("envoie les cookies sur chaque requête", async () => {
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(new Response(JSON.stringify({}), { status: 200 }));
       vi.stubGlobal("fetch", fetchMock);
 
-      const result = await api.get<{ data: string }>("/api/test");
+      await api.get("/api/friends");
+
+      expect(fetchMock.mock.calls[0][1].credentials).toBe("include");
+    });
+
+    it("n'envoie plus d'en-tête Authorization", async () => {
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(new Response(JSON.stringify({}), { status: 200 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.get("/api/friends");
+
+      expect(fetchMock.mock.calls[0][1].headers).not.toHaveProperty("Authorization");
+    });
+  });
+
+  describe("jeton CSRF", () => {
+    it("recopie le cookie en en-tête sur un POST", async () => {
+      giveBrowserACsrfCookie();
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(new Response(JSON.stringify({}), { status: 200 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.post("/api/friends/request/Gandalf", {});
+
+      expect(fetchMock.mock.calls[0][1].headers[CSRF_HEADER]).toBe(CSRF_TOKEN);
+    });
+
+    it("le recopie aussi sur un DELETE", async () => {
+      giveBrowserACsrfCookie();
+      const fetchMock = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.delete("/api/friends/abc");
+
+      expect(fetchMock.mock.calls[0][1].headers[CSRF_HEADER]).toBe(CSRF_TOKEN);
+    });
+
+    // GET ne change pas d'etat : le serveur n'exige pas de jeton, donc en envoyer un
+    // serait du bruit.
+    it("ne l'envoie pas sur un GET", async () => {
+      giveBrowserACsrfCookie();
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(new Response(JSON.stringify({}), { status: 200 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.get("/api/friends");
+
+      expect(fetchMock.mock.calls[0][1].headers).not.toHaveProperty(CSRF_HEADER);
+    });
+  });
+
+  describe("corps d'erreur", () => {
+    it("remonte le message du back plutôt que le texte brut", async () => {
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ statusCode: 404, message: "User not found" }), {
+          status: 404,
+        }),
+      );
+      vi.stubGlobal("fetch", fetchMock);
+
+      await expect(api.get("/api/friends/missing")).rejects.toThrow("User not found");
+    });
+
+    // Le discriminant metier : c'est lui qui permet au formulaire d'inscription de
+    // pointer le bon champ sur un 409, sans reconnaitre une phrase anglaise.
+    it("expose le code métier quand le back en fournit un", async () => {
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            statusCode: 409,
+            message: "Display name already taken",
+            code: DOMAIN_ERROR_CODE["display-name-already-taken"],
+          }),
+          { status: 409 },
+        ),
+      );
+      vi.stubGlobal("fetch", fetchMock);
+
+      const error: unknown = await api
+        .post("/api/auth/register", {})
+        .catch((e: unknown) => e);
+
+      expect(error).toBeInstanceOf(ApiError);
+      expect((error as ApiError).code).toBe(
+        DOMAIN_ERROR_CODE["display-name-already-taken"],
+      );
+    });
+
+    it("survit à une réponse d'erreur qui n'est pas du JSON", async () => {
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(new Response("<html>502</html>", { status: 502 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      await expect(api.get("/api/friends")).rejects.toThrow("API error 502");
+    });
+  });
+
+  describe("401 : renouvellement puis rejeu", () => {
+    it("renouvelle la session et rejoue une fois", async () => {
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ statusCode: 401, message: "Unauthorized" }), {
+            status: 401,
+          }),
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ data: "success" }), { status: 200 }),
+        );
+      vi.stubGlobal("fetch", fetchMock);
+
+      const result = await api.get<{ data: string }>("/api/friends");
 
       expect(result).toEqual({ data: "success" });
       expect(fetchMock).toHaveBeenCalledTimes(2);
-      expect(vi.mocked(refreshAccessToken)).toHaveBeenCalled();
-      expect(fetchMock).toHaveBeenNthCalledWith(
-        2,
-        "/api/test",
-        expect.objectContaining({
-          headers: expect.objectContaining({
-            Authorization: "Bearer new-access-token",
+      expect(vi.mocked(refreshSession)).toHaveBeenCalledOnce();
+    });
+
+    // Le rejeu doit RELIRE le cookie CSRF : le renouvellement vient de le faire
+    // tourner, donc reutiliser les en-tetes du premier essai partirait en 403.
+    it("relit le jeton CSRF pour le rejeu", async () => {
+      giveBrowserACsrfCookie();
+      vi.mocked(refreshSession).mockImplementation(async () => {
+        document.cookie = "csrf_token=rotated.signature";
+      });
+
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ statusCode: 401, message: "Unauthorized" }), {
+            status: 401,
           }),
+        )
+        .mockResolvedValueOnce(new Response(null, { status: 204 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.delete("/api/friends/abc");
+
+      expect(fetchMock.mock.calls[0][1].headers[CSRF_HEADER]).toBe(CSRF_TOKEN);
+      expect(fetchMock.mock.calls[1][1].headers[CSRF_HEADER]).toBe("rotated.signature");
+    });
+
+    it("ne rejoue pas deux fois", async () => {
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ statusCode: 401, message: "Unauthorized" }), {
+          status: 401,
         }),
       );
+      vi.stubGlobal("fetch", fetchMock);
+
+      await expect(api.get("/api/friends")).rejects.toThrow("Unauthorized");
+      expect(fetchMock).toHaveBeenCalledTimes(2);
     });
 
-    it("throws ApiError 401 if refresh fails", async () => {
-      vi.mocked(refreshAccessToken).mockRejectedValue(new Error("Refresh failed"));
+    it("propage l'échec du renouvellement en 401", async () => {
+      vi.mocked(refreshSession).mockRejectedValue(new Error("boom"));
 
       const fetchMock = vi.fn().mockResolvedValue(
-        new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 }),
+        new Response(JSON.stringify({ statusCode: 401, message: "Unauthorized" }), {
+          status: 401,
+        }),
       );
       vi.stubGlobal("fetch", fetchMock);
 
-      await expect(api.get("/api/test")).rejects.toThrow("Token refresh failed");
+      await expect(api.get("/api/friends")).rejects.toThrow("Session expirée");
       expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
-    it("makes single request for successful 200 response", async () => {
+    it("ne renouvelle rien sur un 200", async () => {
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValue(new Response(JSON.stringify({ data: "ok" }), { status: 200 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.get("/api/friends");
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(refreshSession)).not.toHaveBeenCalled();
+    });
+  });
+
+  // Le bug corrige : l'intercepteur ne distinguait pas les chemins. Un mot de passe
+  // errone declenchait un renouvellement, ce qui CONSOMMAIT et faisait tourner le
+  // refresh token de la session precedente, puis rejouait le login. Et le token de
+  // verification d'email, a usage unique, etait brule par le rejeu.
+  describe("routes d'authentification : un 401 est une réponse, pas un accident", () => {
+    it.each([
+      ["login", API_ROUTES.auth.login],
+      ["verify-email", API_ROUTES.auth.verifyEmail],
+      ["register", API_ROUTES.auth.register],
+      ["refresh", API_ROUTES.auth.refresh],
+    ])("ne renouvelle rien sur un 401 de %s", async (_name, route) => {
       const fetchMock = vi.fn().mockResolvedValue(
-        new Response(JSON.stringify({ data: "success" }), { status: 200 }),
+        new Response(
+          JSON.stringify({ statusCode: 401, message: "Invalid credentials" }),
+          { status: 401 },
+        ),
       );
       vi.stubGlobal("fetch", fetchMock);
 
-      const result = await api.get<{ data: string }>("/api/test");
-
-      expect(result).toEqual({ data: "success" });
+      await expect(api.post(route, {})).rejects.toThrow("Invalid credentials");
+      expect(vi.mocked(refreshSession)).not.toHaveBeenCalled();
       expect(fetchMock).toHaveBeenCalledTimes(1);
-      expect(vi.mocked(refreshAccessToken)).not.toHaveBeenCalled();
+    });
+
+    // /me n'est PAS exclue, volontairement : c'est la route ou un 401 doit declencher
+    // un renouvellement, puisque c'est ainsi qu'une session est reprise au chargement.
+    it("renouvelle en revanche sur un 401 de /me", async () => {
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ statusCode: 401, message: "Unauthorized" }), {
+            status: 401,
+          }),
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ displayName: "Gandalf" }), { status: 200 }),
+        );
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.get(API_ROUTES.auth.me);
+
+      expect(vi.mocked(refreshSession)).toHaveBeenCalledOnce();
     });
   });
 });

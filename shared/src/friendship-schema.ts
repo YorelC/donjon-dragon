@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { displayNameField } from './user-schema.js';
+
 // Statut d'une relation d'amitié. Un seul document par paire d'users
 // (symétrique une fois 'accepted') — jamais dupliqué A→B / B→A.
 export const FriendshipStatusEnum = z.enum(['pending', 'accepted', 'refused']);
@@ -16,14 +18,51 @@ export const FriendshipSchema = z.object({
   updatedAt: z.string().datetime(),
 });
 
-// Le front envoie le displayName du destinataire, pas son id (qu'il ne connaît pas).
-export const SendFriendRequestSchema = z.object({
-  displayName: z.string().min(2).max(50),
+/**
+ * Ce que le CLIENT reçoit d'une relation d'amitié.
+ *
+ * `requesterId` et `recipientId` n'en font PAS partie : ce sont des identifiants
+ * d'utilisateurs, et le client n'a pas à connaître l'identité système des autres
+ * joueurs. `id` reste, c'est le handle de la ressource — celui qu'on accepte,
+ * refuse ou supprime.
+ *
+ * FriendshipSchema reste la forme complète, côté serveur uniquement.
+ */
+export const FriendRequestSchema = FriendshipSchema.omit({
+  requesterId: true,
+  recipientId: true,
 });
 
-// Recherche d'users par displayName (préfixe/substring, insensible à la casse).
-export const SearchUsersSchema = z.object({
-  query: z.string().min(1).max(50),
+// Le front envoie le displayName du destinataire, pas son id (qu'il ne connaît pas).
+export const SendFriendRequestSchema = z.object({
+  displayName: displayNameField(),
+});
+
+/**
+ * Recherche d'utilisateurs par pseudo (sous-chaîne, insensible à la casse).
+ *
+ * Minimum 3 caractères : en dessous, la route devient une énumération de
+ * l'annuaire, qu'on peut balayer lettre par lettre. Maximum 25 : borne le coût du
+ * `$regex` côté Mongo.
+ *
+ * Source unique de ces bornes — le back la passe à @ZodQuery, le formulaire front
+ * réutilise `UserSearchQuerySchema.shape.q`.
+ */
+export const SEARCH_QUERY_RULES = {
+  min: 3,
+  max: 25,
+} as const;
+
+export const UserSearchQuerySchema = z.object({
+  q: z
+    .string()
+    .trim()
+    .min(SEARCH_QUERY_RULES.min, {
+      message: `Entre au moins ${SEARCH_QUERY_RULES.min} caractères pour chercher.`,
+    })
+    .max(SEARCH_QUERY_RULES.max, {
+      message: `La recherche ne peut pas dépasser ${SEARCH_QUERY_RULES.max} caractères.`,
+    }),
 });
 
 // ── Suppression d'ami (UA-003) ──────────────────────────────────────────────
@@ -40,8 +79,9 @@ export const PendingReceivedCountSchema = z.object({
 
 export type FriendshipStatus = z.infer<typeof FriendshipStatusEnum>;
 export type Friendship = z.infer<typeof FriendshipSchema>;
+export type FriendRequest = z.infer<typeof FriendRequestSchema>;
 export type SendFriendRequestDto = z.infer<typeof SendFriendRequestSchema>;
-export type SearchUsersDto = z.infer<typeof SearchUsersSchema>;
+export type UserSearchQuery = z.infer<typeof UserSearchQuerySchema>;
 export type DeleteFriendParams = z.infer<typeof DeleteFriendParamsSchema>;
 export type PendingReceivedCount = z.infer<typeof PendingReceivedCountSchema>;
 

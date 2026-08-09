@@ -1,13 +1,13 @@
 import type { Control, FieldErrors } from "react-hook-form";
 import { Controller } from "react-hook-form";
-import type { PublicUser } from "@donjon-dragon/shared";
+import type { UserSummary } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Card, CardContent } from "@/shared/components/atoms/card";
 import type { SearchFormValues } from "../types/friends-schema";
 import { FormTextInput } from "@/shared/components/molecules/form-text-input";
 
 interface SearchUsersViewProps {
-  data: PublicUser[];
+  data: UserSummary[];
   loading: boolean;
   error: boolean;
   searchControl: Control<SearchFormValues>;
@@ -15,7 +15,7 @@ interface SearchUsersViewProps {
   onSearchSubmit: (e: React.FormEvent) => void;
   submittedQuery: string;
   onSendRequest: (displayName: string) => void;
-  pendingRecipientIds: Set<string>;
+  pendingRecipients: Set<string>;
   sendMutationPending: boolean;
 }
 
@@ -28,7 +28,7 @@ export function SearchUsersView({
   onSearchSubmit,
   submittedQuery,
   onSendRequest,
-  pendingRecipientIds,
+  pendingRecipients,
   sendMutationPending,
 }: SearchUsersViewProps) {
   return (
@@ -44,7 +44,7 @@ export function SearchUsersView({
           loading={loading}
           error={error}
           onSendRequest={onSendRequest}
-          pendingRecipientIds={pendingRecipientIds}
+          pendingRecipients={pendingRecipients}
           sendMutationPending={sendMutationPending}
         />
       )}
@@ -82,11 +82,11 @@ function SearchForm({ control, errors, onSubmit }: SearchFormProps) {
 }
 
 interface SearchResultsProps {
-  data: PublicUser[];
+  data: UserSummary[];
   loading: boolean;
   error: boolean;
   onSendRequest: (displayName: string) => void;
-  pendingRecipientIds: Set<string>;
+  pendingRecipients: Set<string>;
   sendMutationPending: boolean;
 }
 
@@ -95,7 +95,7 @@ function SearchResults({
   loading,
   error,
   onSendRequest,
-  pendingRecipientIds,
+  pendingRecipients,
   sendMutationPending,
 }: SearchResultsProps) {
   if (loading) return <div className="empty-state-text">Chargement...</div>;
@@ -107,9 +107,9 @@ function SearchResults({
   return (
     <div className="space-y-2">
       {data.map((user) => {
-        const alreadyInvited = pendingRecipientIds.has(user.id);
+        const alreadyInvited = pendingRecipients.has(user.displayName);
         return (
-          <Card key={user.id}>
+          <Card key={user.displayName}>
             <CardContent className="flex items-center justify-between p-4">
               <span className="font-medium">{user.displayName}</span>
               <Button

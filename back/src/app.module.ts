@@ -1,17 +1,51 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './user/01-interface/user.module';
-import { AuthModule } from './auth/01-interface/auth.module';
-import { FriendshipModule } from './friendship/01-interface/friendship.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
-const MONGODB_URI = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/donjon-dragon';
+import { DomainExceptionFilter } from '@common/filters/domain-exception.filter';
+import { CsrfGuard } from '@common/guards/csrf.guard';
+import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
+import { CsrfTokenService } from '@common/security/csrf-token.service';
+import { configNamespaces } from '@config/configuration';
+import { validateEnv } from '@config/env.validation';
+import { DatabaseModule } from '@kernel/infrastructure/database.module';
+import { UserModule } from '@modules/user/user.module';
+import { AuthModule } from '@modules/auth/auth.module';
+import { FriendshipModule } from '@modules/friendship/friendship.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(MONGODB_URI),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      load: configNamespaces,
+      validate: validateEnv,
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        config.getOrThrow<{ ttl: number; limit: number }>('security.throttle'),
+      ],
+    }),
+    DatabaseModule,
     UserModule,
     AuthModule,
     FriendshipModule,
+  ],
+  providers: [
+    // Tout est protégé par défaut. Une route publique doit le déclarer avec
+    // @Public() — l'oubli ferme la route, il ne l'ouvre pas.
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    // Après le JwtAuthGuard : la vérification du jeton CSRF a besoin de
+    // request.user pour confirmer qu'il appartient bien à cette session.
+    { provide: APP_GUARD, useClass: CsrfGuard },
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    CsrfTokenService,
+    // Traduit les erreurs de domaine en statuts HTTP : les controllers n'ont
+    // plus un seul try/catch de mapping.
+    { provide: APP_FILTER, useClass: DomainExceptionFilter },
   ],
 })
 export class AppModule {}

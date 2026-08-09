@@ -105,7 +105,9 @@ export const baseConfig = tseslint.config(
   },
   {
     // Un describe() ou un it() est un conteneur, pas une unité de logique.
-    files: ["**/*.test.ts", "**/*.test.tsx"],
+    // `.spec.ts` couvre les parcours Playwright (front/e2e), qui sont des tests au
+    // même titre même s'ils ne passent pas par vitest.
+    files: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
     rules: { "max-lines-per-function": "off" },
   },
 );

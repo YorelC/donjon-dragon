@@ -14,6 +14,13 @@ dist-ssr
 *.local
 .env
 
+# Playwright : sessions enregistrees (elles contiennent de vrais cookies de
+# session) et sorties de run.
+e2e/.auth/
+test-results/
+playwright-report/
+blob-report/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
