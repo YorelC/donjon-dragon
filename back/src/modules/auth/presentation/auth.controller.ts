@@ -22,7 +22,6 @@ import { LoginUseCase } from '../application/use-cases/login.use-case';
 import { VerifyEmailUseCase } from '../application/use-cases/verify-email.use-case';
 import { RefreshTokensUseCase } from '../application/use-cases/refresh-tokens.use-case';
 import { LogoutUseCase } from '../application/use-cases/logout.use-case';
-import { IssueReadonlyTokenUseCase } from '../application/use-cases/issue-readonly-token.use-case';
 
 /**
  * Traduction HTTP seule. Les erreurs métier remontent telles quelles : le
@@ -42,8 +41,6 @@ export class AuthController {
     @Inject(VerifyEmailUseCase) private verifyEmailUseCase: VerifyEmailUseCase,
     @Inject(RefreshTokensUseCase) private refreshTokensUseCase: RefreshTokensUseCase,
     @Inject(LogoutUseCase) private logoutUseCase: LogoutUseCase,
-    @Inject(IssueReadonlyTokenUseCase)
-    private issueReadonlyTokenUseCase: IssueReadonlyTokenUseCase,
   ) {}
 
   @Public()
@@ -81,10 +78,5 @@ export class AuthController {
     @ZodBody(RefreshSchema) dto: RefreshDto,
   ) {
     await this.logoutUseCase.execute(user.userId, dto.refreshToken);
-  }
-
-  @Post('readonly-token')
-  async readonlyToken(@CurrentUser() user: TokenPayload) {
-    return this.issueReadonlyTokenUseCase.execute(user.userId);
   }
 }

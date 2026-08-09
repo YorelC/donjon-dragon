@@ -15,7 +15,6 @@ import { LoginUseCase } from './application/use-cases/login.use-case';
 import { VerifyEmailUseCase } from './application/use-cases/verify-email.use-case';
 import { RefreshTokensUseCase } from './application/use-cases/refresh-tokens.use-case';
 import { LogoutUseCase } from './application/use-cases/logout.use-case';
-import { IssueReadonlyTokenUseCase } from './application/use-cases/issue-readonly-token.use-case';
 import { BcryptPasswordHasher } from './infrastructure/crypto/bcrypt-password-hasher';
 import { NodemailerEmailSender } from './infrastructure/mail/nodemailer-email-sender';
 import {
@@ -76,7 +75,6 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
     VerifyEmailUseCase,
     RefreshTokensUseCase,
     LogoutUseCase,
-    IssueReadonlyTokenUseCase,
   ],
 })
 export class AuthModule {}

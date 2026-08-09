@@ -15,7 +15,6 @@ import {
 
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { ZodQuery } from '@common/decorators/zod-validated.decorator';
-import { RequireTier } from '@common/guards/tier.guard';
 import { SendFriendRequestUseCase } from '../application/use-cases/send-friend-request.use-case';
 import { AcceptFriendRequestUseCase } from '../application/use-cases/accept-friend-request.use-case';
 import { RefuseFriendRequestUseCase } from '../application/use-cases/refuse-friend-request.use-case';
@@ -58,7 +57,6 @@ export class FriendshipController {
     private countPendingReceivedUseCase: CountPendingReceivedUseCase,
   ) {}
 
-  @RequireTier('full')
   @Post('request/:displayName')
   async sendFriendRequest(
     @CurrentUser() user: TokenPayload,
@@ -70,7 +68,6 @@ export class FriendshipController {
     });
   }
 
-  @RequireTier('full')
   @Post('accept/:friendshipId')
   async acceptFriendRequest(
     @CurrentUser() user: TokenPayload,
@@ -82,7 +79,6 @@ export class FriendshipController {
     });
   }
 
-  @RequireTier('full')
   @Post('refuse/:friendshipId')
   async refuseFriendRequest(
     @CurrentUser() user: TokenPayload,
@@ -122,7 +118,6 @@ export class FriendshipController {
     return this.listPendingSentUseCase.execute({ userId: user.userId });
   }
 
-  @RequireTier('full')
   @HttpCode(204)
   @Delete(':friendshipId')
   async removeFriend(

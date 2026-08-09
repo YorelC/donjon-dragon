@@ -10,14 +10,5 @@ export function createAccessTokenPayload(userId: UserId): TokenPayload {
   return {
     userId: userId.value,
     role: 'player',
-    tier: 'full',
-  };
-}
-
-// Même identité, mais un tier qui interdit les routes mutantes (cf. TierGuard).
-export function createReadonlyTokenPayload(userId: UserId): TokenPayload {
-  return {
-    ...createAccessTokenPayload(userId),
-    tier: 'readonly',
   };
 }

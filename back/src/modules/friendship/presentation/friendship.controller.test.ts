@@ -20,7 +20,6 @@ const mockUseCase = (): { execute: ReturnType<typeof vi.fn> } => ({
 const user = (userId: string): TokenPayload => ({
   userId,
   role: 'player',
-  tier: 'full',
 });
 
 describe('FriendshipController — countPendingReceived', () => {
