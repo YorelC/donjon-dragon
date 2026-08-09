@@ -78,7 +78,8 @@ const REGISTER_CONFLICT_MESSAGES: Record<DomainErrorCode, string> = {
     "Ce pseudo est déjà pris. Choisis-en un autre.",
 };
 
-function toRegisterErrorMessage(err: unknown): string {
+/** Exportee pour etre testee directement : c'est une fonction pure. */
+export function toRegisterErrorMessage(err: unknown): string {
   if (!(err instanceof ApiError)) return GENERIC_REGISTER_ERROR;
 
   if (err.code) return REGISTER_CONFLICT_MESSAGES[err.code];
