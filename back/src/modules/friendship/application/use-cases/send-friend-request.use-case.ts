@@ -16,6 +16,7 @@ import {
   FriendRequestAlreadyExistsError,
 } from '../../domain/friendship.errors';
 import { Friendship } from '../../domain/friendship';
+import { FRIENDSHIP_STATUS } from '../../domain/friendship-status';
 import { toFriendRequestResponse } from '../friendship.mapper';
 
 export interface SendFriendRequestDto {
@@ -60,7 +61,11 @@ export class SendFriendRequestUseCase {
     recipientId: UserId,
   ): Promise<void> {
     const existing = await this.friendshipRepo.findBetween(requesterId, recipientId);
-    if (existing?.status === 'pending') throw new FriendRequestAlreadyExistsError();
-    if (existing?.status === 'accepted') throw new AlreadyFriendsError();
+    if (existing?.status === FRIENDSHIP_STATUS.pending) {
+      throw new FriendRequestAlreadyExistsError();
+    }
+    if (existing?.status === FRIENDSHIP_STATUS.accepted) {
+      throw new AlreadyFriendsError();
+    }
   }
 }

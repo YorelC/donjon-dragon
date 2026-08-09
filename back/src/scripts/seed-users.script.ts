@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import { connect } from 'mongoose';
-import type { Model } from 'mongoose';
 import type { UserDocument } from '@modules/user/infrastructure/persistence/user.mapper';
 import { UserSchema, USER_MODEL } from '@modules/user/infrastructure/persistence/user.schema';
 import { MongoUserRepository } from '@modules/user/infrastructure/persistence/mongo-user.repository';

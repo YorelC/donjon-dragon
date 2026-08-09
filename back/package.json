@@ -11,6 +11,7 @@
     "lint:arch": "depcruise src",
     "graph:arch": "depcruise src --output-type dot",
     "test": "vitest run",
+    "test:cov": "vitest run --coverage",
     "seed": "tsx src/scripts/seed-users.script.ts"
   },
   "dependencies": {

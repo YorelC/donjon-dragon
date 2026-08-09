@@ -6,6 +6,7 @@ import type { UserId } from '@kernel/domain/user-id';
 import type { FriendshipRepositoryPort } from '../../application/ports/friendship.repository.port';
 import type { Friendship } from '../../domain/friendship';
 import type { FriendshipId } from '../../domain/friendship-id';
+import { FRIENDSHIP_STATUS } from '../../domain/friendship-status';
 import {
   toDomain,
   toPersistence,
@@ -39,22 +40,28 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
 
   async listAcceptedForUser(userId: UserId): Promise<Friendship[]> {
     return this.findMany({
-      status: 'accepted',
+      status: FRIENDSHIP_STATUS.accepted,
       $or: [{ requesterId: userId.value }, { recipientId: userId.value }],
     });
   }
 
   async listPendingReceived(userId: UserId): Promise<Friendship[]> {
-    return this.findMany({ status: 'pending', recipientId: userId.value });
+    return this.findMany({
+      status: FRIENDSHIP_STATUS.pending,
+      recipientId: userId.value,
+    });
   }
 
   async listPendingSent(userId: UserId): Promise<Friendship[]> {
-    return this.findMany({ status: 'pending', requesterId: userId.value });
+    return this.findMany({
+      status: FRIENDSHIP_STATUS.pending,
+      requesterId: userId.value,
+    });
   }
 
   async countPendingReceived(userId: UserId): Promise<number> {
     return this.model.countDocuments({
-      status: 'pending',
+      status: FRIENDSHIP_STATUS.pending,
       recipientId: userId.value,
     });
   }

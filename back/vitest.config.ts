@@ -3,8 +3,7 @@ import path from 'path';
 
 export default defineConfig({
   test: {
-    include: ['src/**/*.test.ts', 'test/**/*.test.ts'],
-    globals: true,
+    include: ['src/**/*.test.ts'],
   },
   resolve: {
     // Doit rester aligne sur les "paths" de tsconfig.json.

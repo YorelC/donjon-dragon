@@ -3,6 +3,7 @@ import type { UserId } from '@kernel/domain/user-id';
 import type { FriendshipRepositoryPort } from '../application/ports/friendship.repository.port';
 import type { Friendship } from '../domain/friendship';
 import type { FriendshipId } from '../domain/friendship-id';
+import { FRIENDSHIP_STATUS } from '../domain/friendship-status';
 
 export class InMemoryFriendshipRepository implements FriendshipRepositoryPort {
   private readonly friendships = new Map<string, Friendship>();
@@ -24,18 +25,20 @@ export class InMemoryFriendshipRepository implements FriendshipRepositoryPort {
   }
 
   async listAcceptedForUser(userId: UserId): Promise<Friendship[]> {
-    return this.all().filter((f) => f.status === 'accepted' && f.involves(userId));
+    return this.all().filter(
+      (f) => f.status === FRIENDSHIP_STATUS.accepted && f.involves(userId),
+    );
   }
 
   async listPendingReceived(userId: UserId): Promise<Friendship[]> {
     return this.all().filter(
-      (f) => f.status === 'pending' && f.recipientId.equals(userId),
+      (f) => f.status === FRIENDSHIP_STATUS.pending && f.recipientId.equals(userId),
     );
   }
 
   async listPendingSent(userId: UserId): Promise<Friendship[]> {
     return this.all().filter(
-      (f) => f.status === 'pending' && f.requesterId.equals(userId),
+      (f) => f.status === FRIENDSHIP_STATUS.pending && f.requesterId.equals(userId),
     );
   }
 

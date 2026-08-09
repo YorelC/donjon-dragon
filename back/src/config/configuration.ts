@@ -6,10 +6,9 @@ import { validateEnv } from './env.validation';
  * Regroupe l'environnement valide en namespaces. Le reste du code lit
  * `config.getOrThrow('jwt.secret')` et ne touche jamais process.env.
  */
-export const appConfig = registerAs('app', () => {
-  const env = validateEnv(process.env);
-  return { nodeEnv: env.NODE_ENV, port: env.PORT };
-});
+export const appConfig = registerAs('app', () => ({
+  port: validateEnv(process.env).PORT,
+}));
 
 export const databaseConfig = registerAs('database', () => ({
   uri: validateEnv(process.env).MONGODB_URI,

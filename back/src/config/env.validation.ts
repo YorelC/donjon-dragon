@@ -6,7 +6,6 @@ import { z } from 'zod';
  * retomber silencieusement sur une valeur connue publiquement.
  */
 const EnvSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(3000),
 
   MONGODB_URI: z.string().min(1),
@@ -29,11 +28,23 @@ const EnvSchema = z.object({
   CORS_ORIGIN: z.string().min(1).default('http://localhost:5173'),
 });
 
-export type Env = z.infer<typeof EnvSchema>;
+type Env = z.infer<typeof EnvSchema>;
+
+/**
+ * Mémoïsé sur l'objet d'environnement reçu : ConfigModule appelle `validate`, et
+ * chaque namespace de configuration.ts revalide ensuite. Sans ce cache,
+ * l'environnement était parsé six fois au démarrage pour un résultat identique.
+ */
+const cache = new WeakMap<object, Env>();
 
 export function validateEnv(raw: Record<string, unknown>): Env {
+  const cached = cache.get(raw);
+  if (cached) return cached;
+
   const result = EnvSchema.safeParse(raw);
   if (!result.success) throw new Error(formatIssues(result.error));
+
+  cache.set(raw, result.data);
   return result.data;
 }
 

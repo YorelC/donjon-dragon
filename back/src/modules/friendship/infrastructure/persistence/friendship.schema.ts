@@ -1,14 +1,19 @@
 import { Schema } from 'mongoose';
-import type { Friendship } from '@donjon-dragon/shared/friendship-schema';
+
+import { FRIENDSHIP_STATUSES } from '../../domain/friendship-status';
+import type { FriendshipSnapshot } from '../../domain/friendship';
 
 export const FRIENDSHIP_MODEL = 'Friendship';
 
-export const FriendshipSchema = new Schema<Friendship>(
+// Typé sur le snapshot du domaine, comme user.schema.ts : la forme stockée est
+// celle que le mapper produit, pas le contrat de transport.
+export const FriendshipSchema = new Schema<FriendshipSnapshot>(
   {
     id: { type: String, required: true, unique: true },
     requesterId: { type: String, required: true },
     recipientId: { type: String, required: true },
-    status: { type: String, enum: ['pending', 'accepted', 'refused'], required: true },
+    // Liste dérivée du domaine : plus de littéraux dupliqués ici.
+    status: { type: String, enum: [...FRIENDSHIP_STATUSES], required: true },
     createdAt: { type: String, required: true },
     updatedAt: { type: String, required: true },
   },

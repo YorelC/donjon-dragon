@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { UserId } from '@kernel/domain/user-id';
 
 import { FriendshipId } from './friendship-id';
-import type { FriendshipStatus } from './friendship-status';
+import { FRIENDSHIP_STATUS, type FriendshipStatus } from './friendship-status';
 import {
   CannotFriendSelfError,
   FriendRequestNotPendingError,
@@ -54,7 +54,7 @@ export class Friendship {
       FriendshipId.create(randomUUID()),
       requesterId,
       recipientId,
-      'pending',
+      FRIENDSHIP_STATUS.pending,
       now,
       now,
     );
@@ -82,12 +82,12 @@ export class Friendship {
 
   accept(by: UserId): void {
     this.assertPendingRecipientAction(by);
-    this.transitionTo('accepted');
+    this.transitionTo(FRIENDSHIP_STATUS.accepted);
   }
 
   refuse(by: UserId): void {
     this.assertPendingRecipientAction(by);
-    this.transitionTo('refused');
+    this.transitionTo(FRIENDSHIP_STATUS.refused);
   }
 
   involves(userId: UserId): boolean {
@@ -118,7 +118,9 @@ export class Friendship {
 
   /** Seul le destinataire d'une demande encore 'pending' peut y répondre. */
   private assertPendingRecipientAction(by: UserId): void {
-    if (this.currentStatus !== 'pending') throw new FriendRequestNotPendingError();
+    if (this.currentStatus !== FRIENDSHIP_STATUS.pending) {
+      throw new FriendRequestNotPendingError();
+    }
     if (!this.recipientId.equals(by)) throw new NotRequestRecipientError();
   }
 
