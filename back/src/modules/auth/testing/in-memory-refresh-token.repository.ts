@@ -1,5 +1,5 @@
 import type { RefreshTokenRepositoryPort } from '../application/ports/refresh-token.repository.port';
-import type { RefreshToken } from '../domain/token/refresh-token';
+import { REVOKED_BY, type RefreshToken } from '../domain/token/refresh-token';
 import type { TokenFamilyId } from '../domain/token/token-family-id';
 import type { TokenSecret } from '../domain/token-secret';
 
@@ -16,7 +16,7 @@ export class InMemoryRefreshTokenRepository implements RefreshTokenRepositoryPor
 
   async revokeFamily(familyId: TokenFamilyId): Promise<void> {
     for (const token of this.all()) {
-      if (token.familyId.equals(familyId)) token.revoke();
+      if (token.familyId.equals(familyId)) token.revoke(REVOKED_BY.compromised);
     }
   }
 

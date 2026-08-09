@@ -6,10 +6,12 @@ import { InMemoryUserRepository } from '@modules/user/testing/in-memory-user.rep
 import { aUser } from '@modules/user/testing/user.fixture';
 import {
   InvalidRefreshTokenError,
+  RefreshRaceError,
   RefreshTokenExpiredError,
   TokenReuseDetectedError,
 } from '../../domain/auth.errors';
-import { RefreshToken } from '../../domain/token/refresh-token';
+import { REFRESH_GRACE_MS, RefreshToken } from '../../domain/token/refresh-token';
+import { TokenSecret } from '../../domain/token-secret';
 import { InMemoryRefreshTokenRepository } from '../../testing/in-memory-refresh-token.repository';
 import { StubTokenService } from '../../testing/stub-token.service';
 import { RefreshTokensUseCase } from './refresh-tokens.use-case';
@@ -42,6 +44,21 @@ describe('RefreshTokensUseCase', () => {
     return plainToken;
   }
 
+  /** Recule la date de révocation, pour sortir de la fenêtre de grâce. */
+  async function ageRotation(plainToken: string, byMs: number): Promise<void> {
+    const secret = TokenSecret.fromPlain(plainToken);
+    const token = await refreshRepo.findBySecret(secret);
+    const snapshot = token?.snapshot();
+    if (!snapshot?.revokedAt) throw new Error('token non revoque, rien a vieillir');
+
+    await refreshRepo.save(
+      RefreshToken.restore({
+        ...snapshot,
+        revokedAt: new Date(new Date(snapshot.revokedAt).getTime() - byMs).toISOString(),
+      }),
+    );
+  }
+
   it('échange un token valide contre une paire neuve', async () => {
     const plainToken = await issueTokenForAlice();
 
@@ -72,11 +89,28 @@ describe('RefreshTokensUseCase', () => {
     expect(active[0]!.familyId.equals(familyBefore)).toBe(true);
   });
 
+  // Deux onglets presentent le meme token : le second arrive juste apres la
+  // rotation. Sans fenetre de grace, la detection de fuite deconnectait les deux.
+  it('traite un rejeu immédiat comme une course, sans toucher à la lignée', async () => {
+    const plainToken = await issueTokenForAlice();
+    const rotated = await useCase.execute(plainToken);
+
+    await expect(useCase.execute(plainToken)).rejects.toThrow(RefreshRaceError);
+
+    // Le token issu de la rotation reste utilisable : l'appelant réessaie et passe.
+    const retried = await useCase.execute(rotated.refreshToken);
+    expect(retried.refreshToken).toBeTruthy();
+    expect(refreshRepo.all().some((t) => !t.isRevoked)).toBe(true);
+  });
+
   it('détecte la réutilisation et fait tomber TOUTE la lignée', async () => {
     const plainToken = await issueTokenForAlice();
     const rotated = await useCase.execute(plainToken);
 
-    // Rejouer le premier token : c'est le signe d'une fuite.
+    // On vieillit la rotation au-dela de la fenetre de grace : ce n'est plus une
+    // concurrence plausible, c'est un secret qui a fuite.
+    await ageRotation(plainToken, REFRESH_GRACE_MS + 1_000);
+
     await expect(useCase.execute(plainToken)).rejects.toThrow(TokenReuseDetectedError);
 
     // Le token legitime issu de la rotation doit tomber aussi — l'attaquant ET

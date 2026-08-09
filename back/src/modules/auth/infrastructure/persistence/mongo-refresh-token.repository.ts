@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 
 import type { RefreshTokenRepositoryPort } from '../../application/ports/refresh-token.repository.port';
-import type { RefreshToken } from '../../domain/token/refresh-token';
+import { REVOKED_BY, type RefreshToken } from '../../domain/token/refresh-token';
 import type { TokenFamilyId } from '../../domain/token/token-family-id';
 import type { TokenSecret } from '../../domain/token-secret';
 import {
@@ -34,10 +34,19 @@ export class MongoRefreshTokenRepository implements RefreshTokenRepositoryPort {
     return doc ? toDomain(doc) : null;
   }
 
+  /**
+   * Révocation de sécurité : elle écrase les rotations de routine, sinon un
+   * token compromis conserverait sa fenêtre de tolérance.
+   */
   async revokeFamily(familyId: TokenFamilyId): Promise<void> {
     await this.model.updateMany(
-      { familyId: familyId.value, revokedAt: { $exists: false } },
-      { $set: { revokedAt: new Date().toISOString() } },
+      { familyId: familyId.value },
+      {
+        $set: {
+          revokedAt: new Date().toISOString(),
+          revokedReason: REVOKED_BY.compromised,
+        },
+      },
     );
   }
 }

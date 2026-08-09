@@ -11,10 +11,11 @@ import {
 import { TOKEN_SERVICE, type TokenServicePort } from '../ports/token-service.port';
 import {
   InvalidRefreshTokenError,
+  RefreshRaceError,
   TokenReuseDetectedError,
   RefreshTokenExpiredError,
 } from '../../domain/auth.errors';
-import { RefreshToken } from '../../domain/token/refresh-token';
+import { REFRESH_GRACE_MS, RefreshToken } from '../../domain/token/refresh-token';
 import { TokenSecret } from '../../domain/token-secret';
 import { createAccessTokenPayload } from '../../domain/token/access-token-payload';
 
@@ -44,22 +45,31 @@ export class RefreshTokensUseCase {
   }
 
   /**
-   * Valide le token présenté et le consomme. Un token déjà révoqué signifie
-   * qu'il a fuité ou qu'il est rejoué : on fait alors tomber la lignée entière,
-   * ce qui déconnecte l'attaquant ET la victime.
+   * Valide le token présenté et le consomme.
+   *
+   * Un token déjà révoqué a deux causes possibles, et les confondre est coûteux
+   * dans les deux sens : traiter une course comme une fuite déconnecte un
+   * utilisateur légitime, traiter une fuite comme une course laisse un attaquant
+   * en place. La fenêtre de grâce les sépare — juste après la rotation, c'est une
+   * concurrence entre onglets ; plus tard, c'est un secret qui a circulé.
    */
   private async consumePresentedToken(plainToken: string): Promise<RefreshToken> {
+    const now = new Date();
     const token = await this.refreshRepo.findBySecret(
       TokenSecret.fromPlain(plainToken),
     );
     if (!token) throw new InvalidRefreshTokenError();
 
     if (token.isRevoked) {
+      // La lignée reste vivante : l'appelant réessaie et obtient le token issu
+      // de la rotation qui a gagné la course.
+      if (token.isRecentRotation(REFRESH_GRACE_MS, now)) throw new RefreshRaceError();
+
       await this.refreshRepo.revokeFamily(token.familyId);
       throw new TokenReuseDetectedError();
     }
 
-    if (token.isExpired(new Date())) throw new RefreshTokenExpiredError();
+    if (token.isExpired(now)) throw new RefreshTokenExpiredError();
 
     token.revoke();
     await this.refreshRepo.save(token);

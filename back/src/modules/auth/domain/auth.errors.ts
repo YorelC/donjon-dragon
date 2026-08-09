@@ -6,9 +6,21 @@
 // des invariants de l'agrégat User, pas des modes d'échec de l'authentification.
 
 import {
+  ConflictDomainError,
   ForbiddenDomainError,
   UnauthorizedDomainError,
 } from '@kernel/domain/domain.error';
+
+/**
+ * Deux rafraîchissements concurrents ont présenté le même token. Ce n'est pas une
+ * fuite : la lignée reste vivante et l'appelant n'a qu'à réessayer — il obtiendra
+ * le token issu de la rotation qui a gagné la course.
+ */
+export class RefreshRaceError extends ConflictDomainError {
+  constructor() {
+    super('Concurrent refresh, retry');
+  }
+}
 
 export class EmailNotVerifiedError extends ForbiddenDomainError {
   constructor() {
