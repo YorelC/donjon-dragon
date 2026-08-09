@@ -2,15 +2,21 @@ import { z } from 'zod';
 
 import { PublicUserSchema } from './user-schema.js';
 
-// Contenu métier de l'access token (exp/iat ajoutés par la lib JWT).
-//
-// `tier` et `roomId` ont été retirés : plus rien n'émettait de jeton en lecture
-// seule, donc le garde qui contrôlait le tier ne pouvait jamais se déclencher, et
-// `roomId` n'était lu par personne. Réintroduire un mode spectateur se fera avec
-// son garde et ses tests, pas avant.
+/**
+ * Contenu métier de l'access token (exp/iat ajoutés par la lib JWT).
+ *
+ * L'identité, et rien d'autre. `tier`, `roomId` et `role` ont été retirés : ils
+ * étaient écrits en dur à l'émission et lus par personne.
+ *
+ * Une autorisation ne passera pas par ce jeton. Être maître du jeu est une
+ * propriété d'une CAMPAGNE, pas d'un compte : le même joueur est MJ d'une table
+ * et joueur d'une autre, et une adhésion retirée doit prendre effet
+ * immédiatement — pas à l'expiration d'un token vieux de quinze minutes. Ce
+ * contrôle vivra donc sur l'agrégat d'adhésion, comme
+ * `friendship.assertInvolves` le fait déjà.
+ */
 export const TokenPayloadSchema = z.object({
   userId: z.string().uuid(),
-  role: z.string(),
 });
 
 export const AuthTokensSchema = z.object({
