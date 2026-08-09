@@ -8,6 +8,13 @@
  *
  * Le sens des fleches est sacre, les cloisons entre dossiers ne le sont pas :
  * un application/ peut dependre de n'importe quel domain/ du meme contexte.
+ *
+ * Deux pieges de resolution, verifies sur le graphe reel (`depcruise src
+ * --output-type json`) et non supposes :
+ *   - un builtin Node sort en dependencyTypes ['core'], JAMAIS 'npm' : une regle
+ *     qui filtre sur 'npm' ne le voit pas (voir no-node-builtins-in-domain) ;
+ *   - @donjon-dragon/shared n'est pas un paquet installe mais un alias tsconfig,
+ *     il resout en '../shared/src/*.ts' et n'est donc jamais 'npm' non plus.
  */
 module.exports = {
   forbidden: [
@@ -30,10 +37,12 @@ module.exports = {
         'Le domaine doit rester vrai si on jette NestJS, Mongoose et HTTP. ' +
         "L'exemption porte sur le chemin RESOLU (node_modules/zod/...), pas sur le " +
         "nom du module : ecrite '^zod' elle ne matchait jamais, et le garde-fou " +
-        'ne tenait que par accident de resolution.',
+        'ne tenait que par accident de resolution. Elle est ANTICIPEE : aucun ' +
+        'fichier domain/ n importe zod aujourd hui, on autorise le parsing de ' +
+        'value object le jour ou il arrivera.',
       severity: 'error',
       from: { path: '^src/modules/[^/]+/domain' },
-      to: { dependencyTypes: ['npm'], pathNot: 'node_modules/(zod|@donjon-dragon)/' },
+      to: { dependencyTypes: ['npm'], pathNot: 'node_modules/zod/' },
     },
     {
       name: 'no-framework-in-kernel-domain',
@@ -42,7 +51,35 @@ module.exports = {
         'applique. La regle precedente ne visait que src/modules/*/domain.',
       severity: 'error',
       from: { path: '^src/kernel/domain' },
-      to: { dependencyTypes: ['npm'], pathNot: 'node_modules/(zod|@donjon-dragon)/' },
+      to: { dependencyTypes: ['npm'], pathNot: 'node_modules/zod/' },
+    },
+    {
+      name: 'no-node-builtins-in-domain',
+      comment:
+        "Un builtin Node sort en dependencyTypes ['core'], pas ['npm'] : les deux " +
+        'regles ci-dessus filtrent sur npm et ne le voyaient donc PAS. Neuf ' +
+        'fichiers domain/ importaient crypto sans qu aucune regle ne bronche, ' +
+        'alors que randomUUID est une source non deterministe exactement comme ' +
+        "Date.now() — deja sorti derriere le port CLOCK. L'exemption crypto est " +
+        "un choix assume (l'id d'un agregat est genere par l'agregat), elle est " +
+        'ecrite ici pour rester une decision et non un angle mort du filtre.',
+      severity: 'error',
+      from: { path: '^src/(modules/[^/]+|kernel)/domain' },
+      to: { dependencyTypes: ['core'], pathNot: '^(node:)?crypto$' },
+    },
+    {
+      name: 'domain-knows-only-neutral-shared',
+      comment:
+        'shared/ porte le contrat HTTP partage avec le front. Le domaine ne peut ' +
+        'en dependre que pour du vocabulaire neutre (les codes d erreur), le reste ' +
+        'est du transport. Ce chemin echappait aux regles npm ci-dessus : ' +
+        "@donjon-dragon/shared est un alias tsconfig vers ../shared/src, pas un " +
+        'paquet de node_modules. En warn : la seule violation connue ' +
+        '(auth/domain/token/access-token-payload.ts) est assumee et commentee sur ' +
+        'place, on la rend visible sans casser le build.',
+      severity: 'warn',
+      from: { path: '^src/(modules/[^/]+|kernel)/domain' },
+      to: { path: '^\\.\\./shared/src/', pathNot: '^\\.\\./shared/src/error-schema' },
     },
     {
       name: 'no-infra-from-presentation',
@@ -57,10 +94,22 @@ module.exports = {
       name: 'no-application-from-domain',
       comment:
         "Le sens des fleches vaut AUSSI a l'interieur d'un module : le domaine ne " +
-        'connait pas les ports ni les use-cases qui l orchestrent.',
+        'connait ni les ports, ni les use-cases, ni les controllers. Sans ' +
+        'backreference $1 : elle vaut aussi entre modules, sinon user/domain ' +
+        'pouvait importer auth/application.',
       severity: 'error',
-      from: { path: '^src/modules/([^/]+)/domain' },
-      to: { path: '^src/modules/$1/(application|presentation)' },
+      from: { path: '^src/(modules/[^/]+|kernel)/domain' },
+      to: { path: '^src/(modules/[^/]+|kernel)/(application|presentation)' },
+    },
+    {
+      name: 'no-presentation-from-application',
+      comment:
+        'Un use-case ignore par quel transport on l appelle. S il importe un DTO ' +
+        'de controller, le HTTP remonte dans la couche metier et le use-case ' +
+        'devient inappelable depuis un script ou un consumer.',
+      severity: 'error',
+      from: { path: '^src/(modules/[^/]+|kernel)/application' },
+      to: { path: '^src/modules/[^/]+/presentation' },
     },
     {
       name: 'no-infra-from-testing',
@@ -76,8 +125,11 @@ module.exports = {
       comment:
         "src/scripts/ n'etait regi par AUCUNE regle : c'est le seul endroit qui " +
         'traversait librement toutes les couches et tous les modules. Un script ' +
-        "d'outillage passe par les use-cases et le domaine, pas par les adapters " +
-        "des autres modules — sauf sa propre connexion Mongo, qu'il assemble.",
+        "est un composition root assume : comme app.module.ts il a le droit " +
+        "d'assembler des adapters et de posseder son horloge reelle — le seed en " +
+        'a besoin, il reutilise l id existant pour rester rejouable. Ce qui lui ' +
+        "reste interdit, c'est l'entree HTTP d'un module : un script qui appelle " +
+        'un controller reimplemente le transport au lieu du metier.',
       severity: 'error',
       from: { path: '^src/scripts/' },
       to: { path: '^src/modules/[^/]+/presentation' },
@@ -86,21 +138,49 @@ module.exports = {
       name: 'no-cross-module-presentation',
       comment:
         "La presentation d'un module est son entree HTTP, pas une API interne : " +
-        'un autre module ne la traverse jamais.',
+        'un autre module ne la traverse jamais. Ecrite path + pathNot plutot ' +
+        "qu'avec une lookahead (?!$1) : c'est l'idiome documente, et il se relit " +
+        'sans se demander si la substitution de $1 precede la compilation de la regex.',
       severity: 'error',
       from: { path: '^src/modules/([^/]+)/' },
-      to: { path: '^src/modules/(?!$1)[^/]+/presentation' },
+      to: { path: '^src/modules/[^/]+/presentation', pathNot: '^src/modules/$1/' },
     },
     {
-      name: 'user-repository-is-private',
+      name: 'no-cross-module-infrastructure',
       comment:
-        "Toute ecriture dans l'agregat User passe par user/application/. Avec le " +
-        'repository en main, un autre module contournerait les invariants ' +
-        "(unicite email/pseudo) : il y aurait alors deux endroits a corriger le " +
-        "jour ou une contrainte change, et on en oublierait un.",
+        "L'infrastructure d'un module est privee, y compris pour le cablage DI " +
+        "d'un autre module. C'etait le dernier chemin non garde : no-infra-from-core, " +
+        '-presentation et -testing couvrent les couches, personne ne couvrait le ' +
+        "x.module.ts — or c'est precisement la qu'on ecrit un useClass. Sans cette " +
+        'regle, auth.module.ts pouvait enregistrer MongoUserRepository comme ' +
+        'provider et injecter le contournement partout dans auth.',
       severity: 'error',
-      from: { pathNot: '^src/modules/user/' },
-      to: { path: '^src/modules/user/application/ports/user-repository\\.port' },
+      from: { path: '^src/modules/([^/]+)/' },
+      to: { path: '^src/modules/[^/]+/infrastructure', pathNot: '^src/modules/$1/' },
+    },
+    {
+      name: 'ports-are-module-private',
+      comment:
+        "Un port exprime le besoin INTERNE d'un module : un autre module appelle " +
+        'son use-case, pas son port. Avec le repository en main il contournerait ' +
+        'les invariants (unicite email/pseudo) : il y aurait alors deux endroits ' +
+        'a corriger le jour ou une contrainte change, et on en oublierait un. ' +
+        "Generalise l'ancienne regle qui ne citait que user-repository.port : le " +
+        'module suivant recreait le probleme sans etre couvert.',
+      severity: 'error',
+      from: { path: '^src/modules/([^/]+)/' },
+      to: { path: '^src/modules/[^/]+/application/ports', pathNot: '^src/modules/$1/' },
+    },
+    {
+      name: 'ports-are-not-reachable-from-outside',
+      comment:
+        "Meme cloison depuis ce qui n'est pas un module. La regle precedente " +
+        'capture le module d origine dans son `from`, donc elle ne peut viser que ' +
+        'des fichiers de modules : sans ce complement, un script, common/ ou ' +
+        'kernel/ piochaient librement dans les ports.',
+      severity: 'error',
+      from: { path: '^src/', pathNot: '^src/modules/' },
+      to: { path: '^src/modules/[^/]+/application/ports' },
     },
     {
       name: 'friendship-is-downstream',
