@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { displayNameField } from './user-schema.js';
+
 // Statut d'une relation d'amitié. Un seul document par paire d'users
 // (symétrique une fois 'accepted') — jamais dupliqué A→B / B→A.
 export const FriendshipStatusEnum = z.enum(['pending', 'accepted', 'refused']);
@@ -33,7 +35,7 @@ export const FriendRequestSchema = FriendshipSchema.omit({
 
 // Le front envoie le displayName du destinataire, pas son id (qu'il ne connaît pas).
 export const SendFriendRequestSchema = z.object({
-  displayName: z.string().min(2).max(50),
+  displayName: displayNameField(),
 });
 
 /**
@@ -46,8 +48,21 @@ export const SendFriendRequestSchema = z.object({
  * Source unique de ces bornes — le back la passe à @ZodQuery, le formulaire front
  * réutilise `UserSearchQuerySchema.shape.q`.
  */
+export const SEARCH_QUERY_RULES = {
+  min: 3,
+  max: 25,
+} as const;
+
 export const UserSearchQuerySchema = z.object({
-  q: z.string().trim().min(3).max(25),
+  q: z
+    .string()
+    .trim()
+    .min(SEARCH_QUERY_RULES.min, {
+      message: `Entre au moins ${SEARCH_QUERY_RULES.min} caractères pour chercher.`,
+    })
+    .max(SEARCH_QUERY_RULES.max, {
+      message: `La recherche ne peut pas dépasser ${SEARCH_QUERY_RULES.max} caractères.`,
+    }),
 });
 
 // ── Suppression d'ami (UA-003) ──────────────────────────────────────────────

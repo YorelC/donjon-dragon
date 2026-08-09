@@ -48,9 +48,7 @@ test.describe('Recherche de joueurs', () => {
 
     // Le minimum à 3 caractères est ce qui empêche de balayer l'annuaire lettre par
     // lettre : il doit mordre AVANT le réseau.
-    // NB : le message affiché est celui de Zod par défaut, donc en anglais — c'est un
-    // défaut d'interface réel, signalé et non corrigé ici.
-    await expect(page.getByText(/at least 3 character/i)).toBeVisible();
+    await expect(page.getByText(/au moins 3 caractères/i)).toBeVisible();
     expect(searchCalls).toEqual([]);
   });
 

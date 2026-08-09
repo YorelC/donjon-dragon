@@ -1,9 +1,11 @@
-import { z } from "zod";
-import { RegisterSchema } from "@donjon-dragon/shared";
+import type { z } from "zod";
+import { RegisterSchema, passwordField } from "@donjon-dragon/shared";
 
 export const RegisterFormSchema = RegisterSchema.omit({ appOrigin: true })
   .extend({
-    confirmPassword: z.string().min(8).max(128),
+    // Mêmes contraintes et mêmes messages que le champ mot de passe : c'est le
+    // même mot de passe, saisi deux fois.
+    confirmPassword: passwordField(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Les mots de passe ne correspondent pas.",
