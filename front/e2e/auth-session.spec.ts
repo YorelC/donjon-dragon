@@ -20,27 +20,20 @@ import {
  * cookies — « aucun script de la page ne peut lire les tokens » — y est donc
  * intestable, et n'était jusqu'ici vérifiée que par lecture de code.
  *
- * Ici elle est vérifiée en exécutant du JavaScript DANS la page, c'est-à-dire avec
- * exactement les moyens qu'aurait une faille XSS.
+ * Ces tests-ci font une VRAIE connexion : ils portent sur ce que `POST /login` pose,
+ * et l'état partagé de la suite ne contient volontairement pas le cookie de
+ * renouvellement (cf. fixtures/storage-state.ts).
  */
-test.describe("Session : ce qu'un script de la page peut voir", () => {
-  test.use({ storageState: STORAGE_STATE.gandalf });
+test.describe('Ce que la connexion établit', () => {
+  test.use({ storageState: NO_SESSION });
 
-  test('les deux secrets sont invisibles au JavaScript de la page', async ({ page }) => {
-    await page.goto('/campaigns');
+  test('les trois cookies, et les deux secrets illisibles par la page', async ({
+    page,
+    loginAs,
+  }) => {
+    await loginAs(ACCOUNTS.gandalf);
 
-    const visible = await cookiesVisibleToPageScripts(page);
-
-    expect(visible).not.toContain('access_token');
-    expect(visible).not.toContain('refresh_token');
-    // Le jeton CSRF, lui, DOIT être lisible : c'est le mécanisme même du
-    // double-submit. Sa signature le protège, pas son secret.
-    expect(visible).toContain('csrf_token');
-  });
-
-  test('le navigateur détient les cookies, avec les bons drapeaux', async ({ page }) => {
-    await page.goto('/campaigns');
-
+    // Vu du navigateur : les drapeaux réellement posés.
     const cookies = await page.context().cookies();
     const byName = (name: string) => cookies.find((cookie) => cookie.name === name);
 
@@ -52,93 +45,16 @@ test.describe("Session : ce qu'un script de la page peut voir", () => {
     for (const name of ['access_token', 'refresh_token', 'csrf_token']) {
       expect(byName(name)?.sameSite).toBe('Lax');
     }
+
+    // Vu de la page : ce qu'aurait une faille XSS. C'est la même session observée
+    // depuis les deux côtés de la barrière, et c'est l'écart qui fait la preuve.
+    const visible = await cookiesVisibleToPageScripts(page);
+    expect(visible).not.toContain('access_token');
+    expect(visible).not.toContain('refresh_token');
+    // Le jeton CSRF, lui, DOIT être lisible : c'est le mécanisme même du
+    // double-submit. Sa signature le protège, pas son secret.
+    expect(visible).toContain('csrf_token');
   });
-
-  test("aucun stockage local n'est écrit, après un parcours complet", async ({
-    page,
-    friendsPage,
-  }) => {
-    // Le critère mesuré APRÈS navigation, et pas seulement à l'ouverture.
-    await friendsPage.goto();
-    await friendsPage.openTab('Chercher');
-    await page.goto('/');
-
-    expect(await localStorageEntries(page)).toEqual({});
-    expect(await page.evaluate(() => ({ ...sessionStorage }))).toEqual({});
-  });
-});
-
-test.describe('Reprise de session', () => {
-  test.use({ storageState: STORAGE_STATE.gandalf });
-
-  test('un rechargement de page ne déconnecte pas', async ({ page }) => {
-    await page.goto('/profile/friends');
-    await page.reload();
-
-    // Le front ne peut plus lire ses cookies : c'est /me qui lui rend sa session.
-    // Sans l'état « indéterminé » du store, ce rechargement partait vers /login.
-    await expect(page.getByRole('heading', { name: 'Amis' })).toBeVisible();
-    expect(page.url()).toContain('/profile/friends');
-  });
-
-  test('une navigation directe vers une page protégée aboutit', async ({ page }) => {
-    // Aucune transition React ici : le store part vide, tout repose sur /me.
-    await page.goto('/profile/friends');
-
-    await expect(page.getByRole('heading', { name: 'Amis' })).toBeVisible();
-  });
-
-  test("l'attente de /me est annoncée, pas silencieuse", async ({ page }) => {
-    // On retient la réponse de /me pour observer l'état transitoire — celui que
-    // PrivateRoute doit afficher au lieu de rediriger.
-    await page.route('**/api/auth/me', async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      await route.continue();
-    });
-
-    await page.goto('/profile/friends');
-
-    await expect(page.getByRole('status')).toBeVisible();
-    await expect(page).not.toHaveURL(/\/login/);
-    await expect(page.getByRole('heading', { name: 'Amis' })).toBeVisible();
-  });
-});
-
-test.describe('Visiteur sans session', () => {
-  test.use({ storageState: NO_SESSION });
-
-  test('est renvoyé vers la connexion', async ({ page }) => {
-    await page.goto('/profile/friends');
-
-    await expect(page).toHaveURL(/\/login/);
-  });
-
-  /**
-   * Comportement DÉLIBÉRÉ, découvert en écrivant ces tests et documenté ici plutôt
-   * que contourné : un visiteur sans cookie coûte deux requêtes au démarrage.
-   *
-   * `/me` répond 401, ce qui déclenche une tentative de renouvellement — parce que le
-   * front est structurellement incapable de distinguer « pas de session » de « access
-   * token expiré, refresh encore valide ». C'est ce second cas qui rend le
-   * renouvellement indispensable ; le premier en paie le prix.
-   */
-  test('le démarrage tente un renouvellement, une seule fois', async ({ page }) => {
-    const calls: string[] = [];
-    page.on('request', (request) => {
-      if (request.url().includes('/api/auth/')) {
-        calls.push(`${request.method()} ${new URL(request.url()).pathname}`);
-      }
-    });
-
-    await page.goto('/login');
-    await page.waitForLoadState('networkidle');
-
-    expect(calls).toEqual(['GET /api/auth/me', 'POST /api/auth/refresh']);
-  });
-});
-
-test.describe('Connexion', () => {
-  test.use({ storageState: NO_SESSION });
 
   test('une connexion valide mène aux campagnes', async ({ loginAs, page }) => {
     await loginAs(ACCOUNTS.gandalf);
@@ -183,17 +99,11 @@ test.describe('Connexion', () => {
     // Exactement un appel : le login. Ni renouvellement, ni second essai.
     expect(calls).toEqual(['POST /api/auth/login']);
   });
-});
 
-test.describe('Déconnexion', () => {
-  test.use({ storageState: NO_SESSION });
-
-  test('efface les trois cookies et referme les pages protégées', async ({
+  test('la déconnexion efface les trois cookies et referme les pages protégées', async ({
     page,
     loginAs,
   }) => {
-    // Connexion réelle ici, et pas une session empruntée : on va la détruire, et un
-    // storageState partagé emporterait les autres tests avec lui.
     await loginAs(ACCOUNTS.gandalf);
 
     await page.getByRole('button', { name: 'Déconnexion' }).click();
@@ -206,6 +116,88 @@ test.describe('Déconnexion', () => {
 
     await page.goto('/profile/friends');
     await expect(page).toHaveURL(/\/login/);
+  });
+});
+
+test.describe('Visiteur sans session', () => {
+  test.use({ storageState: NO_SESSION });
+
+  test('est renvoyé vers la connexion', async ({ page }) => {
+    await page.goto('/profile/friends');
+
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  /**
+   * Comportement DÉLIBÉRÉ, découvert en écrivant ces tests et documenté ici plutôt
+   * que contourné : un visiteur sans cookie coûte deux requêtes au démarrage.
+   *
+   * `/me` répond 401, ce qui déclenche une tentative de renouvellement — parce que le
+   * front est structurellement incapable de distinguer « pas de session » de « access
+   * token expiré, refresh encore valide ». C'est ce second cas qui rend le
+   * renouvellement indispensable ; le premier en paie le prix.
+   */
+  test('le démarrage tente un renouvellement, une seule fois', async ({ page }) => {
+    const calls: string[] = [];
+    page.on('request', (request) => {
+      if (request.url().includes('/api/auth/')) {
+        calls.push(`${request.method()} ${new URL(request.url()).pathname}`);
+      }
+    });
+
+    await page.goto('/login');
+    await page.waitForLoadState('networkidle');
+
+    expect(calls).toEqual(['GET /api/auth/me', 'POST /api/auth/refresh']);
+  });
+});
+
+test.describe('Reprise de session', () => {
+  test.use({ storageState: STORAGE_STATE.gandalf });
+
+  test('un rechargement de page ne déconnecte pas', async ({ page }) => {
+    await page.goto('/profile/friends');
+    await page.reload();
+
+    // Le front ne peut plus lire ses cookies : c'est /me qui lui rend sa session.
+    // Sans l'état « indéterminé » du store, ce rechargement partait vers /login.
+    await expect(page.getByRole('heading', { name: 'Amis' })).toBeVisible();
+    expect(page.url()).toContain('/profile/friends');
+  });
+
+  test('une navigation directe vers une page protégée aboutit', async ({ page }) => {
+    // Aucune transition React ici : le store part vide, tout repose sur /me.
+    await page.goto('/profile/friends');
+
+    await expect(page.getByRole('heading', { name: 'Amis' })).toBeVisible();
+  });
+
+  test("l'attente de /me est annoncée, pas silencieuse", async ({ page }) => {
+    // On retient la réponse de /me pour observer l'état transitoire — celui que
+    // PrivateRoute doit afficher au lieu de rediriger.
+    await page.route('**/api/auth/me', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await route.continue();
+    });
+
+    await page.goto('/profile/friends');
+
+    await expect(page.getByRole('status')).toBeVisible();
+    await expect(page).not.toHaveURL(/\/login/);
+    await expect(page.getByRole('heading', { name: 'Amis' })).toBeVisible();
+  });
+
+  test("aucun stockage local n'est écrit, après un parcours complet", async ({
+    page,
+    friendsPage,
+  }) => {
+    // Le critère mesuré APRÈS navigation, et pas seulement à l'ouverture.
+    await friendsPage.goto();
+    await friendsPage.openTab('Chercher');
+    await page.goto('/');
+
+    expect(await localStorageEntries(page)).toEqual({});
+    expect(await page.evaluate(() => ({ ...sessionStorage }))).toEqual({});
   });
 });
 

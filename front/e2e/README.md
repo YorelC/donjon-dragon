@@ -68,6 +68,21 @@ Conséquence directe : `workers: 1` et `fullyParallel: false`. Deux tests concur
 sur le même compte se détruiraient mutuellement. C'est le prix d'une vraie base, et
 il est assumé.
 
+## Le budget de connexions
+
+`login` est plafonné à **10 requêtes par minute** côté back, et c'est une limite qu'on
+veut garder serrée. La première version de cette suite se connectait par l'interface
+dans chaque test : elle épuisait son propre throttle, et quatre tests tombaient en 429
+déguisés en timeouts.
+
+D'où l'état partagé (`auth.setup.ts` + `storageState`). Les seules connexions réelles
+restantes sont celles du describe « Ce que la connexion établit », qui teste
+précisément ce que `POST /login` pose. **Avant d'ajouter un test qui se connecte,
+compte** : setup (2) + ce describe (5) laisse peu de marge.
+
+Un test qui a seulement besoin d'être connecté prend `storageState`. Un test qui a
+besoin d'observer la connexion fait une vraie connexion.
+
 ## Ajouter un use case
 
 1. Les sélecteurs vont dans un page object sous `pages/` — **jamais en dur dans un

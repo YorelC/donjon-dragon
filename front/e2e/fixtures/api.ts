@@ -79,7 +79,17 @@ export async function sendFriendRequest(
 
 async function getJson<T>(api: APIRequestContext, path: string): Promise<T> {
   const response = await api.get(path);
-  if (!response.ok()) throw new Error(`GET ${path} -> ${response.status()}`);
+  if (!response.ok()) {
+    // Un 401 ici a une cause probable et une seule : l'access token de la session
+    // partagée a expiré parce que la suite a dépassé sa durée de vie. Le dire, plutôt
+    // que de laisser chercher dans un « expected heading to be visible ».
+    const hint =
+      response.status() === 401
+        ? " — la session partagee a expire (access token > 15 min). Relance la suite : auth.setup.ts en ouvrira une neuve."
+        : '';
+
+    throw new Error(`GET ${path} -> ${response.status()}${hint}`);
+  }
 
   return response.json() as Promise<T>;
 }
