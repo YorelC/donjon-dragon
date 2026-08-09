@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 
 import { CsrfTokenService } from '@common/security/csrf-token.service';
+import { ClockModule } from '@kernel/infrastructure/clock.module';
 import { UserModule } from '@modules/user/user.module';
 import { EMAIL_SENDER } from './application/ports/email-sender.port';
 import { EMAIL_VERIFICATION_TOKEN_REPOSITORY } from './application/ports/email-verification-token.repository.port';
@@ -36,6 +37,7 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
 @Module({
   imports: [
     UserModule,
+    ClockModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { UserId } from '@kernel/domain/user-id';
+import { FixedClock } from '@kernel/testing/fixed-clock';
 import type { RegisterDto } from '@donjon-dragon/shared/user-schema';
 
 import { RegisterUserUseCase } from '@modules/user/application/use-cases/register-user.use-case';
@@ -30,11 +31,13 @@ describe('RegisterUseCase', () => {
     userRepo = new InMemoryUserRepository();
     verificationRepo = new InMemoryEmailVerificationTokenRepository();
     emailSender = new InMemoryEmailSender();
+    const clock = new FixedClock();
     useCase = new RegisterUseCase(
-      new RegisterUserUseCase(userRepo),
+      new RegisterUserUseCase(userRepo, clock),
       verificationRepo,
       new InMemoryPasswordHasher(),
       emailSender,
+      clock,
     );
   });
 

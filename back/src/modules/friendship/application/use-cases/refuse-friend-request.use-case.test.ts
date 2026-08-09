@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { FixedClock } from '@kernel/testing/fixed-clock';
 import { aUser } from '@modules/user/testing/user.fixture';
 import {
   FriendshipNotFoundError,
@@ -19,7 +20,7 @@ describe('RefuseFriendRequestUseCase', () => {
 
   beforeEach(async () => {
     friendshipRepo = new InMemoryFriendshipRepository();
-    useCase = new RefuseFriendRequestUseCase(friendshipRepo);
+    useCase = new RefuseFriendRequestUseCase(friendshipRepo, new FixedClock());
 
     alice = aUser({
       email: 'alice@example.com',

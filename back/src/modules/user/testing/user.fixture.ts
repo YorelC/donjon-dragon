@@ -1,3 +1,5 @@
+import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
+
 import { DisplayName } from '../domain/display-name';
 import { Email } from '../domain/email';
 import { User } from '../domain/user';
@@ -10,10 +12,12 @@ export function aUser(params: {
   email: string;
   displayName: string;
   passwordHash?: string;
+  now?: Date;
 }): User {
   return User.register({
     email: Email.create(params.email),
     displayName: DisplayName.create(params.displayName),
     passwordHash: params.passwordHash ?? 'hashedpw',
+    now: params.now ?? TEST_INSTANT,
   });
 }

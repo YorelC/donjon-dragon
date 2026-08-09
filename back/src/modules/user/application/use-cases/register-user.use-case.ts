@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
+import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import {
   USER_REPOSITORY,
@@ -31,6 +32,7 @@ export interface RegisterUserCommand {
 export class RegisterUserUseCase {
   constructor(
     @Inject(USER_REPOSITORY) private readonly userRepo: UserRepositoryPort,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(command: RegisterUserCommand): Promise<PublicUser> {
@@ -39,7 +41,12 @@ export class RegisterUserUseCase {
 
     await this.assertUnique(email, displayName);
 
-    const user = User.register({ email, displayName, passwordHash: command.passwordHash });
+    const user = User.register({
+      email,
+      displayName,
+      passwordHash: command.passwordHash,
+      now: this.clock.now(),
+    });
     await this.userRepo.save(user);
 
     return toPublicUser(user);

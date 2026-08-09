@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { ClockModule } from '@kernel/infrastructure/clock.module';
 import { UserModule } from '@modules/user/user.module';
 import { FRIEND_DIRECTORY } from './application/ports/friend-directory.port';
 import { FRIENDSHIP_REPOSITORY } from './application/ports/friendship.repository.port';
@@ -27,6 +28,7 @@ import { FriendshipController } from './presentation/friendship.controller';
       { name: FRIENDSHIP_MODEL, schema: FriendshipSchema },
     ]),
     UserModule,
+    ClockModule,
   ],
   controllers: [FriendshipController],
   providers: [

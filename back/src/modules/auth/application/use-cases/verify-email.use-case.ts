@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { IssuedSession } from '../issued-session';
 import type { PublicUser } from '@donjon-dragon/shared/user-schema';
 import { UserId } from '@kernel/domain/user-id';
+import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import { MarkEmailVerifiedUseCase } from '@modules/user/application/use-cases/mark-email-verified.use-case';
 import {
@@ -31,6 +32,7 @@ export class VerifyEmailUseCase {
     @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepo: RefreshTokenRepositoryPort,
     @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(plainToken: string): Promise<IssuedSession> {
@@ -51,7 +53,7 @@ export class VerifyEmailUseCase {
     );
     if (!token) throw new InvalidVerificationTokenError();
 
-    if (token.isExpired(new Date())) throw new VerificationTokenExpiredError();
+    if (token.isExpired(this.clock.now())) throw new VerificationTokenExpiredError();
 
     return token;
   }
@@ -59,7 +61,7 @@ export class VerifyEmailUseCase {
   private async issueTokens(user: PublicUser): Promise<IssuedSession> {
     const userId = UserId.create(user.id);
 
-    const { token, plainToken } = RefreshToken.issue(userId);
+    const { token, plainToken } = RefreshToken.issue(userId, this.clock.now());
     await this.refreshRepo.save(token);
 
     return {

@@ -17,10 +17,12 @@ module.exports = {
         "LA regle qui compte : le coeur (domain, application) ne connait jamais " +
         "un detail technique. Elle vaut a l'interieur d'un module comme entre modules. " +
         "Les doubles de test vivent dans <module>/testing/, donc aucune exemption " +
-        'pour les fichiers de test.',
+        "pour les fichiers de test. kernel/infrastructure est dans la cible : sans " +
+        "ca, un use-case pourrait injecter SystemClock au lieu du port CLOCK, ce qui " +
+        'redonnerait au coeur un acces direct au temps reel.',
       severity: 'error',
-      from: { path: '^src/modules/[^/]+/(application|domain)' },
-      to: { path: '^src/modules/[^/]+/infrastructure' },
+      from: { path: '^src/(modules/[^/]+|kernel)/(application|domain)' },
+      to: { path: '^src/(modules/[^/]+|kernel)/infrastructure' },
     },
     {
       name: 'no-framework-in-domain',
@@ -112,10 +114,17 @@ module.exports = {
     {
       name: 'no-testing-doubles-in-production-code',
       comment:
-        'Les doubles de <module>/testing/ ne sont importables que par des tests.',
+        'Les doubles de <module>/testing/ et de kernel/testing/ ne sont importables ' +
+        'que par des tests. Une FixedClock qui fuirait en production gelerait le temps.',
       severity: 'error',
-      from: { path: '^src/', pathNot: '\\.test\\.ts$' },
-      to: { path: '^src/modules/[^/]+/testing/' },
+      from: {
+        path: '^src/',
+        // Un double a le droit de s'appuyer sur un autre double — une fixture qui
+        // utilise l'horloge de test, par exemple. Ce qu'on interdit, c'est la fuite
+        // vers du code de PRODUCTION.
+        pathNot: ['\\.test\\.ts$', '^src/(modules/[^/]+|kernel)/testing/'],
+      },
+      to: { path: '^src/(modules/[^/]+|kernel)/testing/' },
     },
     {
       name: 'common-and-kernel-know-no-business',

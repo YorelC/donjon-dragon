@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { FriendRequest } from '@donjon-dragon/shared/friendship-schema';
 import { UserId } from '@kernel/domain/user-id';
+import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import {
   FRIENDSHIP_REPOSITORY,
@@ -31,13 +32,14 @@ export class SendFriendRequestUseCase {
     private readonly directory: FriendDirectoryPort,
     @Inject(FRIENDSHIP_REPOSITORY)
     private readonly friendshipRepo: FriendshipRepositoryPort,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(dto: SendFriendRequestDto): Promise<FriendRequest> {
     const requesterId = UserId.create(dto.requesterId);
     const recipientId = await this.resolveRecipient(dto.displayName);
 
-    const friendship = Friendship.request(requesterId, recipientId);
+    const friendship = Friendship.request(requesterId, recipientId, this.clock.now());
     await this.assertNoExistingRelation(requesterId, recipientId);
 
     await this.friendshipRepo.save(friendship);

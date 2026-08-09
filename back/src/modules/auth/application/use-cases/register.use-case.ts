@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { RegisterDto, PublicUser } from '@donjon-dragon/shared/user-schema';
 import { UserId } from '@kernel/domain/user-id';
+import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import { RegisterUserUseCase } from '@modules/user/application/use-cases/register-user.use-case';
 import {
@@ -26,6 +27,7 @@ export class RegisterUseCase {
     private readonly verificationRepo: EmailVerificationTokenRepositoryPort,
     @Inject(PASSWORD_HASHER) private readonly passwordHasher: PasswordHasherPort,
     @Inject(EMAIL_SENDER) private readonly emailSender: EmailSenderPort,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(dto: RegisterDto): Promise<PublicUser> {
@@ -46,6 +48,7 @@ export class RegisterUseCase {
   ): Promise<void> {
     const { token, plainToken } = EmailVerificationToken.issue(
       UserId.create(user.id),
+      this.clock.now(),
     );
     await this.verificationRepo.save(token);
 

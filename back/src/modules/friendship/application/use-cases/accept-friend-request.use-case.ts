@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { FriendRequest } from '@donjon-dragon/shared/friendship-schema';
 import { UserId } from '@kernel/domain/user-id';
+import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import {
   FRIENDSHIP_REPOSITORY,
@@ -20,6 +21,7 @@ export class AcceptFriendRequestUseCase {
   constructor(
     @Inject(FRIENDSHIP_REPOSITORY)
     private readonly friendshipRepo: FriendshipRepositoryPort,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(dto: AcceptFriendRequestDto): Promise<FriendRequest> {
@@ -29,7 +31,7 @@ export class AcceptFriendRequestUseCase {
     if (!friendship) throw new FriendshipNotFoundError();
 
     // L'agrégat porte la règle : seul le destinataire d'une demande 'pending'.
-    friendship.accept(UserId.create(dto.actingUserId));
+    friendship.accept(UserId.create(dto.actingUserId), this.clock.now());
     await this.friendshipRepo.save(friendship);
 
     return toFriendRequestResponse(friendship);

@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { IssuedSession } from '../issued-session';
 import { UserId } from '@kernel/domain/user-id';
+import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
 import { UserNotFoundError } from '@modules/user/domain/user.errors';
@@ -26,11 +27,16 @@ export class RefreshTokensUseCase {
     @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepo: RefreshTokenRepositoryPort,
     @Inject(TOKEN_SERVICE) private readonly tokenService: TokenServicePort,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(plainToken: string): Promise<IssuedSession> {
-    const presented = await this.consumePresentedToken(plainToken);
-    const rotated = await this.rotate(presented);
+    // Un seul instant pour toute l'opération : la révocation du token consommé et
+    // l'émission de son remplaçant doivent être datées du même moment, sinon la
+    // fenêtre de grâce se mesure contre une horloge qui a bougé entre-temps.
+    const now = this.clock.now();
+    const presented = await this.consumePresentedToken(plainToken, now);
+    const rotated = await this.rotate(presented, now);
 
     const user = await this.getUserProfile.ownProfile(presented.userId.value);
     if (!user) throw new UserNotFoundError();
@@ -53,8 +59,10 @@ export class RefreshTokensUseCase {
    * en place. La fenêtre de grâce les sépare — juste après la rotation, c'est une
    * concurrence entre onglets ; plus tard, c'est un secret qui a circulé.
    */
-  private async consumePresentedToken(plainToken: string): Promise<RefreshToken> {
-    const now = new Date();
+  private async consumePresentedToken(
+    plainToken: string,
+    now: Date,
+  ): Promise<RefreshToken> {
     const token = await this.refreshRepo.findBySecret(
       TokenSecret.fromPlain(plainToken),
     );
@@ -65,22 +73,23 @@ export class RefreshTokensUseCase {
       // de la rotation qui a gagné la course.
       if (token.isRecentRotation(REFRESH_GRACE_MS, now)) throw new RefreshRaceError();
 
-      await this.refreshRepo.revokeFamily(token.familyId);
+      await this.refreshRepo.revokeFamily(token.familyId, now);
       throw new TokenReuseDetectedError();
     }
 
     if (token.isExpired(now)) throw new RefreshTokenExpiredError();
 
-    token.revoke();
+    token.revoke(now);
     await this.refreshRepo.save(token);
 
     return token;
   }
 
   /** Nouveau token dans la MÊME lignée : c'est ce qui rend la fuite détectable. */
-  private async rotate(consumed: RefreshToken): Promise<string> {
+  private async rotate(consumed: RefreshToken, now: Date): Promise<string> {
     const { token, plainToken } = RefreshToken.issue(
       UserId.create(consumed.userId.value),
+      now,
       consumed.familyId,
     );
     await this.refreshRepo.save(token);

@@ -74,10 +74,10 @@ export class RefreshToken {
    */
   static issue(
     userId: UserId,
+    now: Date,
     familyId?: TokenFamilyId,
   ): { token: RefreshToken; plainToken: string } {
     const { secret, plainToken } = TokenSecret.issue();
-    const now = new Date();
 
     const token = new RefreshToken(
       randomUUID(),
@@ -134,10 +134,13 @@ export class RefreshToken {
    * compromission écrase une simple rotation — on ne redescend jamais d'une
    * révocation de sécurité vers une révocation de routine.
    */
-  revoke(reason: RevocationReason = REVOKED_BY.rotated): void {
+  revoke(now: Date, reason: RevocationReason = REVOKED_BY.rotated): void {
     if (this.revokedAtIso && this.revokedReason === REVOKED_BY.compromised) return;
 
-    this.revokedAtIso ??= new Date().toISOString();
+    // `now` explicite, et pas seulement par principe : c'est cette date que
+    // `isRecentRotation` compare à la fenêtre de grâce. Les deux doivent venir de la
+    // même horloge, sinon la fenêtre se mesure entre deux référentiels différents.
+    this.revokedAtIso ??= now.toISOString();
     this.revokedReason = reason;
   }
 

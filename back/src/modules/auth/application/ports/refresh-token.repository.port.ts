@@ -13,6 +13,9 @@ export interface RefreshTokenRepositoryPort {
   /**
    * Révoque la lignée entière. Seule opération qui reste au repository plutôt
    * qu'à l'agrégat : elle porte sur plusieurs agrégats à la fois.
+   *
+   * `now` est passé par l'appelant, comme partout ailleurs : c'est le MÊME instant
+   * qui sert à décider de la révocation et à la dater.
    */
-  revokeFamily(familyId: TokenFamilyId): Promise<void>;
+  revokeFamily(familyId: TokenFamilyId, now: Date): Promise<void>;
 }

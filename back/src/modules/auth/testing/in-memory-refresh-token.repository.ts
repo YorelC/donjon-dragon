@@ -14,9 +14,9 @@ export class InMemoryRefreshTokenRepository implements RefreshTokenRepositoryPor
     return this.all().find((token) => token.secret.equals(secret)) ?? null;
   }
 
-  async revokeFamily(familyId: TokenFamilyId): Promise<void> {
+  async revokeFamily(familyId: TokenFamilyId, now: Date): Promise<void> {
     for (const token of this.all()) {
-      if (token.familyId.equals(familyId)) token.revoke(REVOKED_BY.compromised);
+      if (token.familyId.equals(familyId)) token.revoke(now, REVOKED_BY.compromised);
     }
   }
 

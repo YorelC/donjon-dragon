@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
 
 import { DisplayName, InvalidDisplayNameError } from './display-name';
 import { Email, InvalidEmailError } from './email';
@@ -6,6 +7,7 @@ import { User } from './user';
 
 const anEmail = Email.create('alice@example.com');
 const aDisplayName = DisplayName.create('alice');
+const NOW = TEST_INSTANT;
 
 describe('User.register', () => {
   it('naît non vérifié', () => {
@@ -13,6 +15,7 @@ describe('User.register', () => {
       email: anEmail,
       displayName: aDisplayName,
       passwordHash: 'hashedpw',
+      now: NOW,
     });
 
     expect(user.emailVerified).toBe(false);
@@ -23,9 +26,21 @@ describe('User.register', () => {
       email: anEmail,
       displayName: aDisplayName,
       passwordHash: 'hashedpw',
+      now: NOW,
     });
 
     expect(user.passwordHash).toBe('hashedpw');
+  });
+
+  it('date la création à l instant fourni, pas à celui de l exécution', () => {
+    const user = User.register({
+      email: anEmail,
+      displayName: aDisplayName,
+      passwordHash: 'hashedpw',
+      now: NOW,
+    });
+
+    expect(user.snapshot().createdAt).toBe(NOW.toISOString());
   });
 });
 
@@ -35,6 +50,7 @@ describe('User.markEmailVerified', () => {
       email: anEmail,
       displayName: aDisplayName,
       passwordHash: 'hashedpw',
+      now: NOW,
     });
 
     user.markEmailVerified();
@@ -47,6 +63,7 @@ describe('User.markEmailVerified', () => {
       email: anEmail,
       displayName: aDisplayName,
       passwordHash: 'hashedpw',
+      now: NOW,
     });
 
     user.markEmailVerified();
@@ -62,6 +79,7 @@ describe('User — snapshot et réhydratation', () => {
       email: anEmail,
       displayName: aDisplayName,
       passwordHash: 'hashedpw',
+      now: NOW,
     });
     original.markEmailVerified();
 

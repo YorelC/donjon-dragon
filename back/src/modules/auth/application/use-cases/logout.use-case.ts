@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserId } from '@kernel/domain/user-id';
+import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import {
   REFRESH_TOKEN_REPOSITORY,
@@ -12,6 +13,7 @@ export class LogoutUseCase {
   constructor(
     @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepo: RefreshTokenRepositoryPort,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   /**
@@ -29,6 +31,6 @@ export class LogoutUseCase {
     );
     if (!token?.belongsTo(UserId.create(userId))) return;
 
-    await this.refreshRepo.revokeFamily(token.familyId);
+    await this.refreshRepo.revokeFamily(token.familyId, this.clock.now());
   }
 }

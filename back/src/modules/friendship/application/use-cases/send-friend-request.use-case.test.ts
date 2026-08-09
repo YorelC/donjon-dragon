@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { FixedClock } from '@kernel/testing/fixed-clock';
 import { aUser } from '@modules/user/testing/user.fixture';
 import { toUserIdentity } from '@modules/user/application/user.mapper';
 import {
@@ -23,7 +24,11 @@ describe('SendFriendRequestUseCase', () => {
   beforeEach(async () => {
     directory = new InMemoryFriendDirectory();
     friendshipRepo = new InMemoryFriendshipRepository();
-    useCase = new SendFriendRequestUseCase(directory, friendshipRepo);
+    useCase = new SendFriendRequestUseCase(
+      directory,
+      friendshipRepo,
+      new FixedClock(),
+    );
 
     alice = aUser({
       email: 'alice@example.com',

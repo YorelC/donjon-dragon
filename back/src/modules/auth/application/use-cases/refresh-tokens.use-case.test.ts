@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { UserId } from '@kernel/domain/user-id';
+import { FixedClock } from '@kernel/testing/fixed-clock';
 
 import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
 import { InMemoryUserRepository } from '@modules/user/testing/in-memory-user.repository';
@@ -10,17 +11,27 @@ import {
   RefreshTokenExpiredError,
   TokenReuseDetectedError,
 } from '../../domain/auth.errors';
-import { REFRESH_GRACE_MS, RefreshToken } from '../../domain/token/refresh-token';
-import { TokenSecret } from '../../domain/token-secret';
+import {
+  REFRESH_GRACE_MS,
+  REFRESH_TTL_MS,
+  RefreshToken,
+} from '../../domain/token/refresh-token';
 import { InMemoryRefreshTokenRepository } from '../../testing/in-memory-refresh-token.repository';
 import { StubTokenService } from '../../testing/stub-token.service';
 import { RefreshTokensUseCase } from './refresh-tokens.use-case';
 
-// La rotation et la detection de reutilisation n'etaient couvertes par aucun
-// test : c'est le mecanisme le plus delicat de l'authentification.
+/**
+ * La rotation et la detection de reutilisation : le mecanisme le plus delicat de
+ * l'authentification.
+ *
+ * Avant l'injection d'horloge, deux de ces tests devaient rehydrater un token avec
+ * une date reculee a la main pour franchir une limite temporelle. Ils avancent
+ * maintenant l'horloge, ce qui est ce que fait le temps.
+ */
 describe('RefreshTokensUseCase', () => {
   let useCase: RefreshTokensUseCase;
   let refreshRepo: InMemoryRefreshTokenRepository;
+  let clock: FixedClock;
   let alice: ReturnType<typeof aUser>;
 
   beforeEach(async () => {
@@ -28,35 +39,23 @@ describe('RefreshTokensUseCase', () => {
     alice = aUser({ email: 'alice@example.com', displayName: 'alice' });
     await userRepo.save(alice);
 
+    clock = new FixedClock();
     refreshRepo = new InMemoryRefreshTokenRepository();
     useCase = new RefreshTokensUseCase(
       new GetUserProfileUseCase(userRepo),
       refreshRepo,
       new StubTokenService(),
+      clock,
     );
   });
 
   async function issueTokenForAlice(): Promise<string> {
     const { token, plainToken } = RefreshToken.issue(
       UserId.create(alice.id.value),
+      clock.now(),
     );
     await refreshRepo.save(token);
     return plainToken;
-  }
-
-  /** Recule la date de révocation, pour sortir de la fenêtre de grâce. */
-  async function ageRotation(plainToken: string, byMs: number): Promise<void> {
-    const secret = TokenSecret.fromPlain(plainToken);
-    const token = await refreshRepo.findBySecret(secret);
-    const snapshot = token?.snapshot();
-    if (!snapshot?.revokedAt) throw new Error('token non revoque, rien a vieillir');
-
-    await refreshRepo.save(
-      RefreshToken.restore({
-        ...snapshot,
-        revokedAt: new Date(new Date(snapshot.revokedAt).getTime() - byMs).toISOString(),
-      }),
-    );
   }
 
   it('échange un token valide contre une paire neuve', async () => {
@@ -103,13 +102,24 @@ describe('RefreshTokensUseCase', () => {
     expect(refreshRepo.all().some((t) => !t.isRevoked)).toBe(true);
   });
 
+  it('tolère un rejeu jusqu au dernier instant de la fenêtre', async () => {
+    const plainToken = await issueTokenForAlice();
+    await useCase.execute(plainToken);
+
+    clock.advanceBy(REFRESH_GRACE_MS);
+
+    // La limite elle-meme est INCLUSE. Un test qui ne peut pas choisir l'instant ne
+    // peut pas verifier ce bord.
+    await expect(useCase.execute(plainToken)).rejects.toThrow(RefreshRaceError);
+  });
+
   it('détecte la réutilisation et fait tomber TOUTE la lignée', async () => {
     const plainToken = await issueTokenForAlice();
     const rotated = await useCase.execute(plainToken);
 
-    // On vieillit la rotation au-dela de la fenetre de grace : ce n'est plus une
-    // concurrence plausible, c'est un secret qui a fuite.
-    await ageRotation(plainToken, REFRESH_GRACE_MS + 1_000);
+    // Un cran au-dela de la fenetre : ce n'est plus une concurrence plausible, c'est
+    // un secret qui a fuite.
+    clock.advanceBy(REFRESH_GRACE_MS + 1);
 
     await expect(useCase.execute(plainToken)).rejects.toThrow(TokenReuseDetectedError);
 
@@ -128,18 +138,22 @@ describe('RefreshTokensUseCase', () => {
   });
 
   it('refuse un token expiré', async () => {
-    // On emet un token, puis on le rehydrate avec une date d'expiration passee :
-    // c'est la seule facon de connaitre le secret en clair d'un token perime.
-    const { token, plainToken } = RefreshToken.issue(UserId.create(alice.id.value));
-    await refreshRepo.save(
-      RefreshToken.restore({
-        ...token.snapshot(),
-        expiresAt: new Date(Date.now() - 1000).toISOString(),
-      }),
-    );
+    const plainToken = await issueTokenForAlice();
+
+    // Plus besoin de rehydrater un token avec une expiration passee pour connaitre
+    // son secret en clair : on avance simplement d'une semaine et une milliseconde.
+    clock.advanceBy(REFRESH_TTL_MS + 1);
 
     await expect(useCase.execute(plainToken)).rejects.toThrow(
       RefreshTokenExpiredError,
     );
+  });
+
+  it('accepte encore un token à l instant exact de son expiration', async () => {
+    const plainToken = await issueTokenForAlice();
+
+    clock.advanceBy(REFRESH_TTL_MS);
+
+    await expect(useCase.execute(plainToken)).resolves.toBeTruthy();
   });
 });

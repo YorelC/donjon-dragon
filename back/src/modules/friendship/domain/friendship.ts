@@ -46,17 +46,17 @@ export class Friendship {
   ) {}
 
   /** Nouvelle demande. On ne peut pas se demander soi-même en ami. */
-  static request(requesterId: UserId, recipientId: UserId): Friendship {
+  static request(requesterId: UserId, recipientId: UserId, now: Date): Friendship {
     if (requesterId.equals(recipientId)) throw new CannotFriendSelfError();
 
-    const now = new Date().toISOString();
+    const createdAt = now.toISOString();
     return new Friendship(
       FriendshipId.create(randomUUID()),
       requesterId,
       recipientId,
       FRIENDSHIP_STATUS.pending,
-      now,
-      now,
+      createdAt,
+      createdAt,
     );
   }
 
@@ -80,14 +80,14 @@ export class Friendship {
     return this.currentUpdatedAt;
   }
 
-  accept(by: UserId): void {
+  accept(by: UserId, now: Date): void {
     this.assertPendingRecipientAction(by);
-    this.transitionTo(FRIENDSHIP_STATUS.accepted);
+    this.transitionTo(FRIENDSHIP_STATUS.accepted, now);
   }
 
-  refuse(by: UserId): void {
+  refuse(by: UserId, now: Date): void {
     this.assertPendingRecipientAction(by);
-    this.transitionTo(FRIENDSHIP_STATUS.refused);
+    this.transitionTo(FRIENDSHIP_STATUS.refused, now);
   }
 
   involves(userId: UserId): boolean {
@@ -124,8 +124,8 @@ export class Friendship {
     if (!this.recipientId.equals(by)) throw new NotRequestRecipientError();
   }
 
-  private transitionTo(status: FriendshipStatus): void {
+  private transitionTo(status: FriendshipStatus, now: Date): void {
     this.currentStatus = status;
-    this.currentUpdatedAt = new Date().toISOString();
+    this.currentUpdatedAt = now.toISOString();
   }
 }

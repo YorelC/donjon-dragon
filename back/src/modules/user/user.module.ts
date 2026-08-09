@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { ClockModule } from '@kernel/infrastructure/clock.module';
 import { USER_REPOSITORY } from './application/ports/user-repository.port';
 import { GetUserCredentialsUseCase } from './application/use-cases/get-user-credentials.use-case';
 import { GetUserProfileUseCase } from './application/use-cases/get-user-profile.use-case';
@@ -17,6 +18,7 @@ import { USER_MODEL, UserSchema } from './infrastructure/persistence/user.schema
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: USER_MODEL, schema: UserSchema }]),
+    ClockModule,
   ],
   providers: [
     { provide: USER_REPOSITORY, useClass: MongoUserRepository },

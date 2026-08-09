@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { connect } from 'mongoose';
+import { SystemClock } from '@kernel/infrastructure/system-clock';
 import type { UserDocument } from '@modules/user/infrastructure/persistence/user.mapper';
 import { UserSchema, USER_MODEL } from '@modules/user/infrastructure/persistence/user.schema';
 import { MongoUserRepository } from '@modules/user/infrastructure/persistence/mongo-user.repository';
@@ -71,6 +72,9 @@ async function buildVerifiedUser(
     email,
     displayName: DisplayName.create(seedUser.displayName),
     passwordHash,
+    // Un script est un point d'entrée : c'est à lui de posséder une horloge réelle,
+    // comme il possède sa connexion Mongo.
+    now: new SystemClock().now(),
   });
 
   // Sans ça, aucun compte seedé ne peut se connecter : le login exige un email

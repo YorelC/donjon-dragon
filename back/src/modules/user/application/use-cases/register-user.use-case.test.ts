@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { UserId } from '@kernel/domain/user-id';
+import { FixedClock } from '@kernel/testing/fixed-clock';
 
 import { InMemoryUserRepository } from '../../testing/in-memory-user.repository';
 import { aUser } from '../../testing/user.fixture';
@@ -23,7 +24,7 @@ describe('RegisterUserUseCase', () => {
 
   beforeEach(() => {
     userRepo = new InMemoryUserRepository();
-    useCase = new RegisterUserUseCase(userRepo);
+    useCase = new RegisterUserUseCase(userRepo, new FixedClock());
   });
 
   it('cree un utilisateur et ne renvoie jamais le hash', async () => {

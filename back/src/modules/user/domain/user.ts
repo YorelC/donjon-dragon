@@ -35,11 +35,17 @@ export class User {
     readonly createdAt: string,
   ) {}
 
-  /** Nouveau compte : jamais vérifié à la création. */
+  /**
+   * Nouveau compte : jamais vérifié à la création.
+   *
+   * `now` est fourni par l'appelant et non lu ici : c'est ce qui rend la fabrique
+   * déterministe, donc l'agrégat testable sans marge de tolérance.
+   */
   static register(params: {
     email: Email;
     displayName: DisplayName;
     passwordHash: string;
+    now: Date;
   }): User {
     return new User(
       UserId.create(randomUUID()),
@@ -47,7 +53,7 @@ export class User {
       params.displayName,
       params.passwordHash,
       false,
-      new Date().toISOString(),
+      params.now.toISOString(),
     );
   }
 

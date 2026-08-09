@@ -38,12 +38,12 @@ export class MongoRefreshTokenRepository implements RefreshTokenRepositoryPort {
    * Révocation de sécurité : elle écrase les rotations de routine, sinon un
    * token compromis conserverait sa fenêtre de tolérance.
    */
-  async revokeFamily(familyId: TokenFamilyId): Promise<void> {
+  async revokeFamily(familyId: TokenFamilyId, now: Date): Promise<void> {
     await this.model.updateMany(
       { familyId: familyId.value },
       {
         $set: {
-          revokedAt: new Date().toISOString(),
+          revokedAt: now.toISOString(),
           revokedReason: REVOKED_BY.compromised,
         },
       },

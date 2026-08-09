@@ -29,12 +29,14 @@ export class EmailVerificationToken {
     readonly createdAt: string,
   ) {}
 
-  static issue(userId: UserId): {
+  static issue(
+    userId: UserId,
+    now: Date,
+  ): {
     token: EmailVerificationToken;
     plainToken: string;
   } {
     const { secret, plainToken } = TokenSecret.issue();
-    const now = new Date();
 
     const token = new EmailVerificationToken(
       randomUUID(),
