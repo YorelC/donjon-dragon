@@ -26,10 +26,59 @@ module.exports = {
       name: 'no-framework-in-domain',
       comment:
         'Le domaine doit rester vrai si on jette NestJS, Mongoose et HTTP. ' +
-        'Seuls les schemas Zod partages et le kernel y sont autorises.',
+        "L'exemption porte sur le chemin RESOLU (node_modules/zod/...), pas sur le " +
+        "nom du module : ecrite '^zod' elle ne matchait jamais, et le garde-fou " +
+        'ne tenait que par accident de resolution.',
       severity: 'error',
       from: { path: '^src/modules/[^/]+/domain' },
-      to: { dependencyTypes: ['npm'], pathNot: '^(zod|@donjon-dragon)' },
+      to: { dependencyTypes: ['npm'], pathNot: 'node_modules/(zod|@donjon-dragon)/' },
+    },
+    {
+      name: 'no-framework-in-kernel-domain',
+      comment:
+        "kernel/domain est le socle de domaine partage : la meme purete s'y " +
+        'applique. La regle precedente ne visait que src/modules/*/domain.',
+      severity: 'error',
+      from: { path: '^src/kernel/domain' },
+      to: { dependencyTypes: ['npm'], pathNot: 'node_modules/(zod|@donjon-dragon)/' },
+    },
+    {
+      name: 'no-infra-from-presentation',
+      comment:
+        "Un controller traduit du HTTP en appel de use-case. S'il touche un " +
+        'adapter Mongo, la couche application devient contournable.',
+      severity: 'error',
+      from: { path: '^src/modules/[^/]+/presentation' },
+      to: { path: '^src/modules/[^/]+/infrastructure' },
+    },
+    {
+      name: 'no-application-from-domain',
+      comment:
+        "Le sens des fleches vaut AUSSI a l'interieur d'un module : le domaine ne " +
+        'connait pas les ports ni les use-cases qui l orchestrent.',
+      severity: 'error',
+      from: { path: '^src/modules/([^/]+)/domain' },
+      to: { path: '^src/modules/$1/(application|presentation)' },
+    },
+    {
+      name: 'no-infra-from-testing',
+      comment:
+        'Un double de test remplace un adapter, il ne s appuie pas dessus. ' +
+        "Sinon le test valide l'infrastructure qu'il pretend remplacer.",
+      severity: 'error',
+      from: { path: '^src/modules/[^/]+/testing' },
+      to: { path: '^src/modules/[^/]+/infrastructure' },
+    },
+    {
+      name: 'scripts-are-not-a-backdoor',
+      comment:
+        "src/scripts/ n'etait regi par AUCUNE regle : c'est le seul endroit qui " +
+        'traversait librement toutes les couches et tous les modules. Un script ' +
+        "d'outillage passe par les use-cases et le domaine, pas par les adapters " +
+        "des autres modules — sauf sa propre connexion Mongo, qu'il assemble.",
+      severity: 'error',
+      from: { path: '^src/scripts/' },
+      to: { path: '^src/modules/[^/]+/presentation' },
     },
     {
       name: 'no-cross-module-presentation',
@@ -86,6 +135,24 @@ module.exports = {
       severity: 'error',
       from: {},
       to: { circular: true },
+    },
+    {
+      name: 'no-orphans',
+      comment:
+        "Un fichier que personne n'importe est du code mort. Exemptions : les " +
+        "points d'entree (main, script de seed), les declarations ambiantes, les " +
+        'fichiers de test et les schemas Mongoose (consommes par forFeature).',
+      severity: 'error',
+      from: {
+        orphan: true,
+        pathNot: [
+          '^src/main\\.ts$',
+          '^src/scripts/',
+          '\\.d\\.ts$',
+          '\\.test\\.ts$',
+        ],
+      },
+      to: {},
     },
   ],
 
