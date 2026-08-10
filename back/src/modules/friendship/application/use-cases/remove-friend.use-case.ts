@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserId } from '@kernel/domain/user-id';
+import type { ActorId } from '@kernel/domain/actor-id';
 
 import {
   FRIENDSHIP_REPOSITORY,
@@ -9,7 +10,7 @@ import { FriendshipId } from '../../domain/friendship-id';
 import { FriendshipNotFoundError } from '../../domain/friendship.errors';
 
 export interface RemoveFriendDto {
-  userId: string;
+  userId: ActorId;
   friendshipId: string;
 }
 

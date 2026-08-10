@@ -7,7 +7,7 @@ import {
   Inject,
   HttpCode,
 } from '@nestjs/common';
-import type { TokenPayload } from '@donjon-dragon/shared/auth-schema';
+import type { AuthenticatedActor } from '@kernel/domain/actor-id';
 import {
   UserSearchQuerySchema,
   type UserSearchQuery,
@@ -59,7 +59,7 @@ export class FriendshipController {
 
   @Post('request/:displayName')
   async sendFriendRequest(
-    @CurrentUser() user: TokenPayload,
+    @CurrentUser() user: AuthenticatedActor,
     @Param('displayName') displayName: string,
   ) {
     return this.sendFriendRequestUseCase.execute({
@@ -70,7 +70,7 @@ export class FriendshipController {
 
   @Post('accept/:friendshipId')
   async acceptFriendRequest(
-    @CurrentUser() user: TokenPayload,
+    @CurrentUser() user: AuthenticatedActor,
     @Param('friendshipId') friendshipId: string,
   ) {
     return this.acceptFriendRequestUseCase.execute({
@@ -81,7 +81,7 @@ export class FriendshipController {
 
   @Post('refuse/:friendshipId')
   async refuseFriendRequest(
-    @CurrentUser() user: TokenPayload,
+    @CurrentUser() user: AuthenticatedActor,
     @Param('friendshipId') friendshipId: string,
   ) {
     return this.refuseFriendRequestUseCase.execute({
@@ -92,36 +92,36 @@ export class FriendshipController {
 
   @Get('search')
   async searchUsers(
-    @CurrentUser() user: TokenPayload,
+    @CurrentUser() user: AuthenticatedActor,
     @ZodQuery(UserSearchQuerySchema) query: UserSearchQuery,
   ) {
     return this.searchUsersUseCase.execute({ userId: user.userId, query: query.q });
   }
 
   @Get()
-  async listFriends(@CurrentUser() user: TokenPayload) {
+  async listFriends(@CurrentUser() user: AuthenticatedActor) {
     return this.listFriendsUseCase.execute({ userId: user.userId });
   }
 
   @Get('requests/incoming/count')
-  async countPendingReceived(@CurrentUser() user: TokenPayload) {
+  async countPendingReceived(@CurrentUser() user: AuthenticatedActor) {
     return this.countPendingReceivedUseCase.execute({ userId: user.userId });
   }
 
   @Get('requests/incoming')
-  async listPendingReceived(@CurrentUser() user: TokenPayload) {
+  async listPendingReceived(@CurrentUser() user: AuthenticatedActor) {
     return this.listPendingReceivedUseCase.execute({ userId: user.userId });
   }
 
   @Get('requests/outgoing')
-  async listPendingSent(@CurrentUser() user: TokenPayload) {
+  async listPendingSent(@CurrentUser() user: AuthenticatedActor) {
     return this.listPendingSentUseCase.execute({ userId: user.userId });
   }
 
   @HttpCode(204)
   @Delete(':friendshipId')
   async removeFriend(
-    @CurrentUser() user: TokenPayload,
+    @CurrentUser() user: AuthenticatedActor,
     @Param('friendshipId') friendshipId: string,
   ) {
     await this.removeFriendUseCase.execute({ userId: user.userId, friendshipId });

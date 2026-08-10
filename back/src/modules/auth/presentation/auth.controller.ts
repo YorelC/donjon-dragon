@@ -19,9 +19,9 @@ import {
 import {
   VerifyEmailSchema,
   type AuthSession,
-  type TokenPayload,
   type VerifyEmailDto,
 } from '@donjon-dragon/shared/auth-schema';
+import type { AuthenticatedActor } from '@kernel/domain/actor-id';
 
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { Public } from '@common/decorators/public.decorator';
@@ -106,7 +106,7 @@ export class AuthController {
   @Post('logout')
   @HttpCode(204)
   async logout(
-    @CurrentUser() user: TokenPayload,
+    @CurrentUser() user: AuthenticatedActor,
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<void> {
@@ -122,7 +122,7 @@ export class AuthController {
    * une session, et qui lui rend un profil à jour à chaque chargement de page.
    */
   @Get('me')
-  async me(@CurrentUser() user: TokenPayload): Promise<PublicUser> {
+  async me(@CurrentUser() user: AuthenticatedActor): Promise<PublicUser> {
     const profile = await this.getUserProfile.ownProfile(user.userId);
     if (!profile) throw new UserNotFoundError();
 

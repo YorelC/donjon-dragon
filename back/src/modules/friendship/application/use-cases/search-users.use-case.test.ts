@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { aUser } from '@modules/user/testing/user.fixture';
+import { anActor } from '@kernel/testing/actor.fixture';
 import { toUserIdentity } from '@modules/user/application/user.mapper';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { SearchUsersUseCase } from './search-users.use-case';
@@ -38,7 +39,7 @@ describe('SearchUsersUseCase', () => {
 
   it('recherche des users par displayName', async () => {
     const result = await useCase.execute({
-      userId: alice.id.value,
+      userId: anActor(alice.id.value),
       query: 'b',
     });
 
@@ -49,7 +50,7 @@ describe('SearchUsersUseCase', () => {
 
   it('exclut l utilisateur qui fait la recherche', async () => {
     const result = await useCase.execute({
-      userId: alice.id.value,
+      userId: anActor(alice.id.value),
       query: 'alice',
     });
 
@@ -58,7 +59,7 @@ describe('SearchUsersUseCase', () => {
 
   it('retourne liste vide si aucun match', async () => {
     const result = await useCase.execute({
-      userId: alice.id.value,
+      userId: anActor(alice.id.value),
       query: 'xyz',
     });
 
@@ -69,7 +70,7 @@ describe('SearchUsersUseCase', () => {
   // ni identifiant systeme. C'est ce qui part sur le reseau vers un tiers.
   it('ne divulgue que le pseudo', async () => {
     const result = await useCase.execute({
-      userId: alice.id.value,
+      userId: anActor(alice.id.value),
       query: 'bob',
     });
 

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CountPendingReceivedUseCase } from './count-pending-received.use-case';
+import { anActor } from '@kernel/testing/actor.fixture';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
 import { pendingRequest, accept, refuse } from '../../testing/friendship.fixture';
 
@@ -17,7 +18,7 @@ describe('CountPendingReceivedUseCase', () => {
 
   describe('INV-001 — countPendingReceived: countDocuments sur { recipientId, status: "pending" }', () => {
     it("retourne 0 quand aucun utilisateur n'a envoyé de demande", async () => {
-      const result = await useCase.execute({ userId: ALICE });
+      const result = await useCase.execute({ userId: anActor(ALICE) });
       expect(result.count).toBe(0);
     });
 
@@ -28,7 +29,7 @@ describe('CountPendingReceivedUseCase', () => {
       await friendshipRepo.save(req1);
       await friendshipRepo.save(req2);
 
-      const result = await useCase.execute({ userId: ALICE });
+      const result = await useCase.execute({ userId: anActor(ALICE) });
       expect(result.count).toBe(2);
     });
 
@@ -37,7 +38,7 @@ describe('CountPendingReceivedUseCase', () => {
       const req = pendingRequest(ALICE, BOB);
       await friendshipRepo.save(req);
 
-      const result = await useCase.execute({ userId: ALICE });
+      const result = await useCase.execute({ userId: anActor(ALICE) });
       expect(result.count).toBe(0);
     });
 
@@ -47,7 +48,7 @@ describe('CountPendingReceivedUseCase', () => {
       const accepted = accept(req, ALICE);
       await friendshipRepo.save(accepted);
 
-      const result = await useCase.execute({ userId: ALICE });
+      const result = await useCase.execute({ userId: anActor(ALICE) });
       expect(result.count).toBe(0);
     });
 
@@ -56,7 +57,7 @@ describe('CountPendingReceivedUseCase', () => {
       await friendshipRepo.save(req);
       await friendshipRepo.save(refuse(req, ALICE));
 
-      const result = await useCase.execute({ userId: ALICE });
+      const result = await useCase.execute({ userId: anActor(ALICE) });
       expect(result.count).toBe(0);
     });
 
@@ -70,7 +71,7 @@ describe('CountPendingReceivedUseCase', () => {
       const req2 = pendingRequest(CHARLIE, BOB);
       await friendshipRepo.save(req2);
 
-      const result = await useCase.execute({ userId: ALICE });
+      const result = await useCase.execute({ userId: anActor(ALICE) });
       expect(result.count).toBe(0);
     });
 
@@ -85,7 +86,7 @@ describe('CountPendingReceivedUseCase', () => {
       const aliceToBob = pendingRequest(ALICE, BOB);
       await friendshipRepo.save(aliceToBob);
 
-      const result = await useCase.execute({ userId: ALICE });
+      const result = await useCase.execute({ userId: anActor(ALICE) });
       expect(result.count).toBe(2);
     });
 
@@ -103,7 +104,7 @@ describe('CountPendingReceivedUseCase', () => {
       const eve = 'eeeeeeee-eeee-4eee-eeee-eeeeeeeeeeee';
       await friendshipRepo.save(pendingRequest(ALICE, eve));
 
-      const result = await useCase.execute({ userId: ALICE });
+      const result = await useCase.execute({ userId: anActor(ALICE) });
       expect(result.count).toBe(2);
     });
   });

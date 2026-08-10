@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserSummary } from '@donjon-dragon/shared/user-schema';
+import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
 import {
@@ -13,7 +14,7 @@ import {
 import { toUserSummary } from '../friendship.mapper';
 
 export interface ListFriendsDto {
-  userId: string;
+  userId: ActorId;
 }
 
 export interface AcceptedFriend {

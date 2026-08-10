@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { FriendRequest } from '@donjon-dragon/shared/friendship-schema';
+import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
@@ -21,7 +22,7 @@ import { FRIENDSHIP_STATUS } from '../../domain/friendship-status';
 import { toFriendRequestResponse } from '../friendship.mapper';
 
 export interface SendFriendRequestDto {
-  requesterId: string;
+  requesterId: ActorId;
   displayName: string;
 }
 

@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { anActor } from '@kernel/testing/actor.fixture';
 import { FixedClock } from '@kernel/testing/fixed-clock';
 import { aUser } from '@modules/user/testing/user.fixture';
 import {
@@ -40,7 +41,7 @@ describe('AcceptFriendRequestUseCase', () => {
 
     const result = await useCase.execute({
       friendshipId: friendship.id.value,
-      actingUserId: bob.id.value,
+      actingUserId: anActor(bob.id.value),
     });
 
     expect(result.status).toBe('accepted');
@@ -50,7 +51,7 @@ describe('AcceptFriendRequestUseCase', () => {
     await expect(
       useCase.execute({
         friendshipId: randomUUID(),
-        actingUserId: bob.id.value,
+        actingUserId: anActor(bob.id.value),
       }),
     ).rejects.toThrow(FriendshipNotFoundError);
   });
@@ -61,7 +62,7 @@ describe('AcceptFriendRequestUseCase', () => {
     await expect(
       useCase.execute({
         friendshipId: 'pas-un-uuid',
-        actingUserId: bob.id.value,
+        actingUserId: anActor(bob.id.value),
       }),
     ).rejects.toThrow(InvalidFriendshipIdError);
   });
@@ -73,7 +74,7 @@ describe('AcceptFriendRequestUseCase', () => {
     await expect(
       useCase.execute({
         friendshipId: friendship.id.value,
-        actingUserId: bob.id.value,
+        actingUserId: anActor(bob.id.value),
       }),
     ).rejects.toThrow(FriendRequestNotPendingError);
   });
@@ -85,7 +86,7 @@ describe('AcceptFriendRequestUseCase', () => {
     await expect(
       useCase.execute({
         friendshipId: friendship.id.value,
-        actingUserId: alice.id.value,
+        actingUserId: anActor(alice.id.value),
       }),
     ).rejects.toThrow(NotRequestRecipientError);
   });

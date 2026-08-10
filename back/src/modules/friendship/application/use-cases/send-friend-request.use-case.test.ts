@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { FixedClock } from '@kernel/testing/fixed-clock';
+import { anActor } from '@kernel/testing/actor.fixture';
 import { aUser } from '@modules/user/testing/user.fixture';
 import { toUserIdentity } from '@modules/user/application/user.mapper';
 import {
@@ -47,7 +48,7 @@ describe('SendFriendRequestUseCase', () => {
 
   it('envoie une demande d amitié vers un utilisateur existant', async () => {
     const result = await useCase.execute({
-      requesterId: alice.id.value,
+      requesterId: anActor(alice.id.value),
       displayName: 'bob',
     });
 
@@ -66,7 +67,7 @@ describe('SendFriendRequestUseCase', () => {
   it('lève CannotFriendSelfError si requester == recipient', async () => {
     await expect(
       useCase.execute({
-        requesterId: alice.id.value,
+        requesterId: anActor(alice.id.value),
         displayName: 'alice',
       }),
     ).rejects.toThrow(CannotFriendSelfError);
@@ -75,7 +76,7 @@ describe('SendFriendRequestUseCase', () => {
   it('lève RecipientNotFoundError si displayName n existe pas', async () => {
     await expect(
       useCase.execute({
-        requesterId: alice.id.value,
+        requesterId: anActor(alice.id.value),
         displayName: 'nonexistent',
       }),
     ).rejects.toThrow(RecipientNotFoundError);
@@ -83,13 +84,13 @@ describe('SendFriendRequestUseCase', () => {
 
   it('lève FriendRequestAlreadyExistsError si une demande pending existe déjà', async () => {
     await useCase.execute({
-      requesterId: alice.id.value,
+      requesterId: anActor(alice.id.value),
       displayName: 'bob',
     });
 
     await expect(
       useCase.execute({
-        requesterId: alice.id.value,
+        requesterId: anActor(alice.id.value),
         displayName: 'bob',
       }),
     ).rejects.toThrow(FriendRequestAlreadyExistsError);
@@ -97,7 +98,7 @@ describe('SendFriendRequestUseCase', () => {
 
   it('lève AlreadyFriendsError si déjà amis (status accepted)', async () => {
     const req = await useCase.execute({
-      requesterId: alice.id.value,
+      requesterId: anActor(alice.id.value),
       displayName: 'bob',
     });
 
@@ -108,7 +109,7 @@ describe('SendFriendRequestUseCase', () => {
 
     await expect(
       useCase.execute({
-        requesterId: alice.id.value,
+        requesterId: anActor(alice.id.value),
         displayName: 'bob',
       }),
     ).rejects.toThrow(AlreadyFriendsError);
@@ -116,14 +117,14 @@ describe('SendFriendRequestUseCase', () => {
 
   it('permet de renvoyer une demande après refus (overwrite refused)', async () => {
     const req1 = await useCase.execute({
-      requesterId: alice.id.value,
+      requesterId: anActor(alice.id.value),
       displayName: 'bob',
     });
 
     await friendshipRepo.save(refuse(await stored(req1.id), bob.id.value));
 
     const req2 = await useCase.execute({
-      requesterId: alice.id.value,
+      requesterId: anActor(alice.id.value),
       displayName: 'bob',
     });
 

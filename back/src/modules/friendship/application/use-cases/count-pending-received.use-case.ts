@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { PendingReceivedCount } from '@donjon-dragon/shared/friendship-schema';
+import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
 import {
@@ -8,7 +9,7 @@ import {
 } from '../ports/friendship.repository.port';
 
 export interface CountPendingReceivedDto {
-  userId: string;
+  userId: ActorId;
 }
 
 @Injectable()

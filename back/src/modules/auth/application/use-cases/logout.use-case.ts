@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserId } from '@kernel/domain/user-id';
+import type { ActorId } from '@kernel/domain/actor-id';
 import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import {
@@ -25,7 +26,7 @@ export class LogoutUseCase {
    * quelqu'un d'autre ne produit pas d'erreur — se déconnecter réussit toujours,
    * et la réponse ne révèle pas si un token existe.
    */
-  async execute(userId: string, plainToken: string): Promise<void> {
+  async execute(userId: ActorId, plainToken: string): Promise<void> {
     const token = await this.refreshRepo.findBySecret(
       TokenSecret.fromPlain(plainToken),
     );

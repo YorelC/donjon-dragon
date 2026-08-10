@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Test, type TestingModule } from '@nestjs/testing';
-import type { TokenPayload } from '@donjon-dragon/shared/auth-schema';
+import type { AuthenticatedActor } from '@kernel/domain/actor-id';
+import { anActor } from '@kernel/testing/actor.fixture';
 import { FriendshipController } from './friendship.controller';
 import { SendFriendRequestUseCase } from '../application/use-cases/send-friend-request.use-case';
 import { AcceptFriendRequestUseCase } from '../application/use-cases/accept-friend-request.use-case';
@@ -17,7 +18,7 @@ const mockUseCase = (): { execute: ReturnType<typeof vi.fn> } => ({
   execute: vi.fn(),
 });
 
-const user = (userId: string): TokenPayload => ({ userId });
+const user = (userId: string): AuthenticatedActor => ({ userId: anActor(userId) });
 
 describe('FriendshipController — countPendingReceived', () => {
   let controller: FriendshipController;

@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { describe, it, expect, beforeEach } from 'vitest';
+import { anActor } from '@kernel/testing/actor.fixture';
 import { aUser } from '@modules/user/testing/user.fixture';
 import {
   FriendshipNotFoundError,
@@ -44,7 +45,7 @@ describe('RemoveFriendUseCase', () => {
     await friendshipRepo.save(accepted);
 
     await useCase.execute({
-      userId: alice.id.value,
+      userId: anActor(alice.id.value),
       friendshipId: f.id.value,
     });
 
@@ -55,7 +56,7 @@ describe('RemoveFriendUseCase', () => {
   it('lève FriendshipNotFoundError si id inexistent', async () => {
     await expect(
       useCase.execute({
-        userId: alice.id.value,
+        userId: anActor(alice.id.value),
         friendshipId: randomUUID(),
       }),
     ).rejects.toThrow(FriendshipNotFoundError);
@@ -66,7 +67,7 @@ describe('RemoveFriendUseCase', () => {
   it('lève InvalidFriendshipIdError si id mal formé', async () => {
     await expect(
       useCase.execute({
-        userId: alice.id.value,
+        userId: anActor(alice.id.value),
         friendshipId: 'pas-un-uuid',
       }),
     ).rejects.toThrow(InvalidFriendshipIdError);
@@ -79,7 +80,7 @@ describe('RemoveFriendUseCase', () => {
 
     await expect(
       useCase.execute({
-        userId: charlie.id.value,
+        userId: anActor(charlie.id.value),
         friendshipId: f.id.value,
       }),
     ).rejects.toThrow(NotFriendshipParticipantError);
@@ -91,7 +92,7 @@ describe('RemoveFriendUseCase', () => {
     await friendshipRepo.save(accepted);
 
     await useCase.execute({
-      userId: bob.id.value,
+      userId: anActor(bob.id.value),
       friendshipId: f.id.value,
     });
 

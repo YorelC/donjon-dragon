@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { UserSummary } from '@donjon-dragon/shared/user-schema';
+import type { ActorId } from '@kernel/domain/actor-id';
 
 import {
   FRIEND_DIRECTORY,
@@ -8,7 +9,7 @@ import {
 import { toUserSummary } from '../friendship.mapper';
 
 export interface SearchUsersDto {
-  userId: string;
+  userId: ActorId;
   query: string;
 }
 

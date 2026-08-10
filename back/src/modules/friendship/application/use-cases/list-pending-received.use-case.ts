@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { FriendRequest } from '@donjon-dragon/shared/friendship-schema';
+import type { ActorId } from '@kernel/domain/actor-id';
 import type { UserSummary } from '@donjon-dragon/shared/user-schema';
 import { UserId } from '@kernel/domain/user-id';
 
@@ -14,7 +15,7 @@ import {
 import { toFriendRequestResponse, toUserSummary } from '../friendship.mapper';
 
 export interface ListPendingReceivedDto {
-  userId: string;
+  userId: ActorId;
 }
 
 export interface PendingReceivedFriendship extends FriendRequest {

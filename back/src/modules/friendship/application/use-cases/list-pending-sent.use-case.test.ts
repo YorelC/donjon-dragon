@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { aUser } from '@modules/user/testing/user.fixture';
+import { anActor } from '@kernel/testing/actor.fixture';
 import { toUserIdentity } from '@modules/user/application/user.mapper';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
@@ -47,7 +48,7 @@ describe('ListPendingSentUseCase', () => {
     const f2 = pendingRequest(alice.id.value, charlie.id.value);
     await friendshipRepo.save(f2);
 
-    const result = await useCase.execute({ userId: alice.id.value });
+    const result = await useCase.execute({ userId: anActor(alice.id.value) });
 
     expect(result).toHaveLength(2);
     expect(result[0]!.recipient.displayName).toBe('bob');
@@ -57,7 +58,7 @@ describe('ListPendingSentUseCase', () => {
   it('ne divulgue ni email ni identifiant d utilisateur', async () => {
     await friendshipRepo.save(pendingRequest(alice.id.value, bob.id.value));
 
-    const result = await useCase.execute({ userId: alice.id.value });
+    const result = await useCase.execute({ userId: anActor(alice.id.value) });
 
     expect(Object.keys(result[0]!.recipient)).toEqual(['displayName']);
     expect(result[0]).not.toHaveProperty('requesterId');
@@ -71,14 +72,14 @@ describe('ListPendingSentUseCase', () => {
     const f2 = pendingRequest(charlie.id.value, alice.id.value);
     await friendshipRepo.save(f2);
 
-    const result = await useCase.execute({ userId: alice.id.value });
+    const result = await useCase.execute({ userId: anActor(alice.id.value) });
 
     expect(result).toHaveLength(1);
     expect(result[0]?.recipient.displayName).toBe('bob');
   });
 
   it('retourne liste vide si pas de demandes envoyées', async () => {
-    const result = await useCase.execute({ userId: alice.id.value });
+    const result = await useCase.execute({ userId: anActor(alice.id.value) });
     expect(result).toEqual([]);
   });
 });

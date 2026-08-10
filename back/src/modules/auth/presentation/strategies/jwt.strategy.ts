@@ -3,8 +3,12 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import type { Request } from 'express';
-import { TokenPayloadSchema, type TokenPayload } from '@donjon-dragon/shared/auth-schema';
+import { TokenPayloadSchema } from '@donjon-dragon/shared/auth-schema';
 
+import {
+  actorFromVerifiedToken,
+  type AuthenticatedActor,
+} from '@kernel/domain/actor-id';
 import { ACCESS_COOKIE } from '../session-cookies';
 
 const fromSessionCookie = (request: Request): string | null =>
@@ -14,6 +18,9 @@ const fromSessionCookie = (request: Request): string | null =>
  * Verification de l'access token. Ce que `validate` retourne devient
  * `request.user` : on le fait passer par le schema Zod plutot que de caster,
  * pour qu'un token signe mais malforme soit refuse et non propage.
+ *
+ * C'est le SEUL endroit du back qui a le droit de forger un `ActorId` : ici, et
+ * seulement ici, l'identite vient d'une signature verifiee et non du client.
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -28,9 +35,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: unknown): TokenPayload {
+  validate(payload: unknown): AuthenticatedActor {
     const result = TokenPayloadSchema.safeParse(payload);
     if (!result.success) throw new UnauthorizedException('Malformed token payload');
-    return result.data;
+    return { userId: actorFromVerifiedToken(result.data.userId) };
   }
 }

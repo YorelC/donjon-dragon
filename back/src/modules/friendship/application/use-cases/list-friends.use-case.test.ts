@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { aUser } from '@modules/user/testing/user.fixture';
+import { anActor } from '@kernel/testing/actor.fixture';
 import { toUserIdentity } from '@modules/user/application/user.mapper';
 import { InMemoryFriendDirectory } from '../../testing/in-memory-friend-directory';
 import { InMemoryFriendshipRepository } from '../../testing/in-memory-friendship.repository';
@@ -41,7 +42,7 @@ describe('ListFriendsUseCase', () => {
   });
 
   it('retourne une liste vide si pas d amis', async () => {
-    const result = await useCase.execute({ userId: alice.id.value });
+    const result = await useCase.execute({ userId: anActor(alice.id.value) });
     expect(result).toEqual([]);
   });
 
@@ -54,7 +55,7 @@ describe('ListFriendsUseCase', () => {
     const accepted2 = accept(f2, charlie.id.value);
     await friendshipRepo.save(accepted2);
 
-    const result = await useCase.execute({ userId: alice.id.value });
+    const result = await useCase.execute({ userId: anActor(alice.id.value) });
 
     expect(result).toHaveLength(2);
     expect(result.map((af) => af.friend.displayName)).toContain('bob');
@@ -69,7 +70,7 @@ describe('ListFriendsUseCase', () => {
       accept(pendingRequest(alice.id.value, bob.id.value), bob.id.value),
     );
 
-    const result = await useCase.execute({ userId: alice.id.value });
+    const result = await useCase.execute({ userId: anActor(alice.id.value) });
 
     expect(Object.keys(result[0]!.friend)).toEqual(['displayName']);
   });
@@ -82,7 +83,7 @@ describe('ListFriendsUseCase', () => {
     const accepted = accept(f2, alice.id.value);
     await friendshipRepo.save(accepted);
 
-    const result = await useCase.execute({ userId: alice.id.value });
+    const result = await useCase.execute({ userId: anActor(alice.id.value) });
 
     expect(result).toHaveLength(1);
     expect(result[0]!.friend.displayName).toBe('charlie');

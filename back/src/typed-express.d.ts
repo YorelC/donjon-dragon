@@ -1,4 +1,4 @@
-import type { TokenPayload } from '@donjon-dragon/shared/auth-schema';
+import type { AuthenticatedActor } from '@kernel/domain/actor-id';
 
 declare global {
   namespace Express {
@@ -6,7 +6,7 @@ declare global {
     // On augmente Express.User (le point d'extension de @types/passport) plutôt
     // que Request.user directement : sinon la déclaration de passport écrase
     // la nôtre et request.user retombe sur une interface vide.
-    interface User extends TokenPayload {}
+    interface User extends AuthenticatedActor {}
   }
 }
 
