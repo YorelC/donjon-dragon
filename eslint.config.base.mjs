@@ -2,7 +2,7 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import globals from "globals";
 
-// Limite de corps de fonction (AGENTS.md § Architecture stricte).
+// Limite de corps de fonction (CLAUDE.md § Clean Code).
 // Les views et les pages ont droit à plus : leur corps est du JSX, pas de la logique.
 const MAX_FUNCTION_LINES = 20;
 const MAX_VIEW_LINES = 60;

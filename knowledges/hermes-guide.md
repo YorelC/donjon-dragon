@@ -29,12 +29,12 @@ Hermès n'est pas une boîte noire. C'est un dossier de configuration et un exé
 | Couche | Où | Portée | Qui écrit |
 |---|---|---|---|
 | Identité | `profiles/<nom>/SOUL.md` | le profil | toi (via `deploy.ps1`) |
-| Instructions projet | `AGENTS.md` à la racine du repo | ce projet | toi |
+| Instructions projet | `CLAUDE.md` à la racine du repo | ce projet | toi |
 | Mémoire | `memories/*.md` | globale, persistante | l'agent |
 | Skills | `skills/<nom>/SKILL.md` | chargées à la demande | toi et l'agent |
 | Session | `sessions/` | la conversation en cours | automatique |
 
-Un seul fichier de contexte projet est chargé par session, selon cet ordre de priorité : `.hermes.md` ou `HERMES.md`, puis `AGENTS.md`, puis `CLAUDE.md`, puis `.cursorrules`. **Le premier trouvé gagne** : ne crée jamais de `HERMES.md` dans ce repo, il masquerait `AGENTS.md` que lisent aussi les agents Claude.
+Un seul fichier de contexte projet est chargé par session, selon cet ordre de priorité : `.hermes.md` ou `HERMES.md`, puis `AGENTS.md`, puis `CLAUDE.md`, puis `.cursorrules`. **Le premier trouvé gagne.** Ce repo n'a ni `HERMES.md` ni `AGENTS.md` : Hermès tombe donc sur `CLAUDE.md`, c'est-à-dire exactement le fichier que lisent les agents Claude. Ne crée aucun des deux premiers, tu masquerais la source unique et les deux publics divergeraient.
 
 ---
 
@@ -106,7 +106,7 @@ hermes cron run <job-id>      # déclencher immédiatement
 hermes cron pause | resume | remove <job-id>
 ```
 
-Chaque job peut surcharger le modèle et le répertoire de travail. Le `workdir` détermine quel `AGENTS.md` est chargé.
+Chaque job peut surcharger le modèle et le répertoire de travail. Le `workdir` détermine quel `CLAUDE.md` est chargé.
 
 ### Skills
 
@@ -229,7 +229,7 @@ Séquence de diagnostic générale : `hermes doctor`, puis `hermes doctor --fix`
 
 ## 7. Économiser les tokens, par ordre d'impact
 
-Réduire les toolsets actifs vient largement en tête : chaque outil coûte son schéma à chaque tour, et passer de 24 à 9 outils a fait tomber le prompt de 68 à 47 Ko sur ce poste. Vient ensuite le filtrage des outils MCP, qu'il faut toujours restreindre par liste blanche. Puis le choix d'un modèle bon marché pour les tâches auxiliaires (compression, titres, évaluation de risque). Puis la consolidation des skills, pour réduire l'index permanent. Puis la préservation du cache de préfixe : modifier `SOUL.md`, la mémoire ou `AGENTS.md` en cours de session invalide le cache et fait grimper le coût, d'où l'intérêt de déployer les changements puis de redémarrer. Enfin, plafonner `agent.max_turns` évite qu'un ticket mal découpé ne brûle un budget entier avant d'échouer.
+Réduire les toolsets actifs vient largement en tête : chaque outil coûte son schéma à chaque tour, et passer de 24 à 9 outils a fait tomber le prompt de 68 à 47 Ko sur ce poste. Vient ensuite le filtrage des outils MCP, qu'il faut toujours restreindre par liste blanche. Puis le choix d'un modèle bon marché pour les tâches auxiliaires (compression, titres, évaluation de risque). Puis la consolidation des skills, pour réduire l'index permanent. Puis la préservation du cache de préfixe : modifier `SOUL.md`, la mémoire ou `CLAUDE.md` en cours de session invalide le cache et fait grimper le coût, d'où l'intérêt de déployer les changements puis de redémarrer. Enfin, plafonner `agent.max_turns` évite qu'un ticket mal découpé ne brûle un budget entier avant d'échouer.
 
 ---
 

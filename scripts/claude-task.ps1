@@ -34,7 +34,7 @@ VERDICT: APPROUVE | CHANGEMENTS_DEMANDES, puis les constats classes bloquant/maj
   $allowed = "Read Glob Grep Bash(git diff:*) Bash(git log:*) Bash(pnpm typecheck:*) Bash(pnpm test:*)"
 } else {
   $preambule = @"
-Tu es developpeur senior sur ce repo (regles dans AGENTS.md, que tu respectes a la lettre : hexagonale, Zod, pas de any, repository pattern).
+Tu es developpeur senior sur ce repo (regles dans CLAUDE.md, que tu respectes a la lettre : hexagonale, Zod, pas de any, repository pattern).
 Realise la mission ci-dessous de bout en bout : code + verifications dans cet ordre (pnpm typecheck, pnpm lint, pnpm test), controle par git diff.
 INTERDIT : modifier les fichiers de test du testeur, les schemas de shared/, .env, les scripts de seed/migration, le CI. Pas de script build a la racine.
 Termine par un resume : fichiers modifies, commandes executees, points de vigilance.

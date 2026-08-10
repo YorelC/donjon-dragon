@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.nestjs.com)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm test)",
+      "Bash(pnpm --filter back lint)",
+      "Bash(pnpm --filter back lint:arch)",
+      "Bash(pnpm --filter back test)",
+      "Bash(pnpm --filter back typecheck)",
+      "Bash(pnpm --filter front test)",
+      "Bash(pnpm --filter front typecheck)"
+    ]
+  }
+}

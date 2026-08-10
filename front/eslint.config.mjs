@@ -15,8 +15,8 @@ const vendoredShadcn = [
   },
 ];
 
-// Plus aucun override de dette : les lots du dégraissage sont tous passés
-// (docs/refactor/audit-degraissage.md). On n'en réintroduit pas.
+// Plus aucun override de dette : les lots du dégraissage sont tous passés.
+// On n'en réintroduit pas.
 export default [
   ignores,
   ...baseConfig,

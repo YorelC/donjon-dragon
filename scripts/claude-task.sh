@@ -20,7 +20,7 @@ if [[ "$MODE_RUN" == "review" ]]; then
   PRE="Tu es relecteur de code senior. Ne modifie AUCUN fichier. Analyse le diff et les contrats fournis, applique la checklist incluse, et rends un verdict structuré : VERDICT: APPROUVE | CHANGEMENTS_DEMANDES, puis constats bloquant/majeur/mineur avec fichier:ligne."
   ALLOWED="Read Glob Grep Bash(git diff:*) Bash(git log:*) Bash(pnpm typecheck:*) Bash(pnpm test:*)"
 else
-  PRE="Tu es développeur senior sur ce repo (règles dans AGENTS.md, à respecter à la lettre : hexagonale, Zod, pas de any, repository pattern). Réalise la mission ci-dessous de bout en bout : code + vérifications dans cet ordre (pnpm typecheck, pnpm lint, pnpm test), contrôle par git diff. INTERDIT : modifier les fichiers de test du testeur, les schémas de shared/, .env, les scripts de seed/migration, le CI. Pas de script build à la racine. Termine par un résumé : fichiers modifiés, commandes exécutées, points de vigilance."
+  PRE="Tu es développeur senior sur ce repo (règles dans CLAUDE.md, à respecter à la lettre : hexagonale, Zod, pas de any, repository pattern). Réalise la mission ci-dessous de bout en bout : code + vérifications dans cet ordre (pnpm typecheck, pnpm lint, pnpm test), contrôle par git diff. INTERDIT : modifier les fichiers de test du testeur, les schémas de shared/, .env, les scripts de seed/migration, le CI. Pas de script build à la racine. Termine par un résumé : fichiers modifiés, commandes exécutées, points de vigilance."
   ALLOWED="Read Edit Write Glob Grep Bash(pnpm:*) Bash(node:*) Bash(git add:*) Bash(git commit:*) Bash(git diff:*) Bash(git status:*)"
 fi
 

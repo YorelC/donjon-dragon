@@ -1,67 +1,47 @@
 # Variables d'environnement — donjon-dragon
 
-Ce document liste les noms et rôles des variables d'environnement utilisées par le projet.  
-**Ne JAMAIS y inscrire les valeurs.** Les valeurs réelles sont gérées par Charly dans les secrets GitHub / Railway / Cloudflare Pages.
+**Ne JAMAIS inscrire de valeur dans ce fichier ni dans `.env.example`.** Les valeurs
+réelles vivent dans `back/.env`, en local, non versionné.
 
----
+## La source de vérité est le code
 
-## Backend (NestJS)
+Le contrat d'environnement est déclaré en Zod dans
+[`back/src/config/env.validation.ts`](../../back/src/config/env.validation.ts) et
+validé au démarrage : une variable manquante ou invalide fait échouer le boot
+immédiatement, avec le détail des champs en cause. `back/.env.example` en est la
+copie commentée, à jour, prête à être renommée en `.env`.
 
-| Variable | Rôle | Obligatoire | Défaut |
-|----------|------|-------------|--------|
-| `MONGODB_URI` | URI de connexion MongoDB (Atlas ou local) | Oui | `mongodb://localhost:27017/donjon-dragon` |
-| `JWT_SECRET` | Clé de signature des tokens JWT | Oui | — |
-| `JWT_EXPIRES_IN` | Durée de validité des tokens (format `vercel/ms`) | Non | `7d` |
-| `PORT` | Port HTTP du serveur NestJS | Non | `3000` |
-| `NODE_ENV` | Environnement (`development`, `staging`, `production`) | Non | `development` |
-| `REDIS_URL` | URL de connexion Redis (optionnel au démarrage) | Non | — |
-| `CORS_ORIGIN` | Origine CORS autorisée pour le front (URL complète) | Oui (prod) | — |
+Ce document ne recopie donc pas la liste des variables : une seconde liste
+divergerait, et c'est exactement ce qui s'est produit avec sa version précédente.
+Pour connaître les variables, leur rôle et leur défaut, lire `back/.env.example`.
 
-### Futures variables (non implémentées)
+## Les trois règles qui ne se lisent pas dans la liste
 
-| Variable | Rôle |
-|----------|------|
-| `SENTRY_DSN` | DSN Sentry pour le back (observabilité) |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | Envoi d'emails (invitations, notifications) |
+**Aucun défaut pour un secret.** `JWT_SECRET` et les identifiants d'envoi d'email
+n'ont pas de valeur par défaut, volontairement : un secret qui retombe sur une valeur
+connue publiquement est pire qu'un boot qui échoue. `JWT_SECRET` fait 32 caractères
+minimum et sert aussi, par séparation de domaine, à dériver la clé des jetons CSRF.
 
----
+**`NODE_ENV=production` n'est pas cosmétique.** C'est lui qui passe les cookies de
+session en `secure` : hors production, ils voyagent en clair. Un déploiement qui
+oublie cette variable expose les jetons de session.
 
-## Frontend (React Vite SPA)
+**`CORS_ORIGINS` est une liste, jamais un joker.** Dès que `credentials: true` est
+actif — et il l'est, la session est en cookies — le navigateur refuse
+`Access-Control-Allow-Origin: *`. Il faut renvoyer l'origine exacte de l'appelant,
+donc savoir lesquelles sont légitimes.
 
-> Les variables VITE_ sont compilées dans le bundle à la construction — un build différent par environnement.
+## Front et CI
 
-| Variable | Rôle | Obligatoire | Défaut |
-|----------|------|-------------|--------|
-| `VITE_API_URL` | URL de base de l'API back (ex: `https://api.donjon-dragon.app`) | Oui | `http://localhost:3000` |
-| `VITE_WS_URL` | URL du WebSocket (ex: `wss://api.donjon-dragon.app`) | Oui (Socket.IO) | `ws://localhost:3000` |
-| `VITE_SENTRY_DSN` | DSN Sentry pour le front (future) | Non | — |
+Le front **n'utilise aucune variable d'environnement** : aucun `import.meta.env`,
+aucun `VITE_*` dans `front/src`. L'API est appelée en chemin relatif. Rien à
+configurer côté build.
 
----
+La CI (`.github/workflows/ci.yml`) ne requiert aucun secret : elle lance
+typecheck, lint, test et un build de smoke, sans déploiement.
 
-## CI (GitHub Actions)
+## Déploiement
 
-| Secret | Rôle |
-|--------|------|
-| Aucun secret requis pour la CI (tests uniquement, pas de déploiement depuis la CI) | — |
-
----
-
-## Déploiement (Railway + Cloudflare Pages)
-
-### Railway (backend)
-
-| Variable | Source |
-|----------|--------|
-| `MONGODB_URI` | Chaîne de connexion MongoDB Atlas (secret Railway) |
-| `JWT_SECRET` | Chaîne aléatoire générée par Charly (secret Railway) |
-| `NODE_ENV` | `staging` ou `production` |
-| `CORS_ORIGIN` | URL du front Cloudflare Pages (ex: `https://donjon-dragon.app`) |
-
-### Cloudflare Pages (frontend)
-
-| Variable | Source |
-|----------|--------|
-| `VITE_API_URL` | URL du déploiement Railway (ex: `https://donjon-dragon.up.railway.app`) |
-| `VITE_WS_URL` | Même URL avec protocole `wss://` |
-| Build command | `pnpm install && pnpm --filter front build` |
-| Build output | `front/dist` |
+Rien n'est déployé à ce jour. Le projet tourne en local via `scripts/start-local.sh`.
+Quand un hébergeur sera choisi, c'est ici que se documentera l'endroit où ses secrets
+sont stockés — pas leurs valeurs.
