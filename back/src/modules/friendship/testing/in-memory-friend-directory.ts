@@ -1,4 +1,5 @@
 import type {
+  DirectoryPage,
   DirectoryUser,
   FriendDirectoryPort,
 } from '../application/ports/friend-directory.port';
@@ -22,10 +23,14 @@ export class InMemoryFriendDirectory implements FriendDirectoryPort {
     );
   }
 
-  async search(query: string, limit: number): Promise<DirectoryUser[]> {
+  async search(query: string, page: number, limit: number): Promise<DirectoryPage> {
     const needle = query.toLowerCase();
-    return [...this.users.values()]
+    const matches = [...this.users.values()]
       .filter((user) => user.displayName.toLowerCase().includes(needle))
-      .slice(0, limit);
+      .sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+    const skip = (page - 1) * limit;
+    const items = matches.slice(skip, skip + limit);
+    return { items, hasMore: matches.length > skip + limit };
   }
 }

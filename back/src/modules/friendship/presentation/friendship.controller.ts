@@ -95,7 +95,11 @@ export class FriendshipController {
     @CurrentUser() user: AuthenticatedActor,
     @ZodQuery(UserSearchQuerySchema) query: UserSearchQuery,
   ) {
-    return this.searchUsersUseCase.execute({ userId: user.userId, query: query.q });
+    return this.searchUsersUseCase.execute({
+      userId: user.userId,
+      query: query.q,
+      page: query.page,
+    });
   }
 
   @Get()

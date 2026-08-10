@@ -1,4 +1,4 @@
-import { ACCOUNTS, STORAGE_STATE, expect, test } from './fixtures/test';
+import { ACCOUNTS, SEARCH_SEED_PREFIX, STORAGE_STATE, expect, test } from './fixtures/test';
 import { clearAllRelations, sendFriendRequest } from './fixtures/api';
 
 /**
@@ -59,6 +59,24 @@ test.describe('Recherche de joueurs', () => {
     await friendsPage.search('zzzqqq');
 
     await expect(page.getByText('Aucun résultat trouvé')).toBeVisible();
+  });
+
+  // 50 comptes seedés sous ce préfixe (back/src/scripts/seed-users.script.ts) : de
+  // quoi couvrir une page pleine (20) puis une seconde, chargée au scroll.
+  test('le scroll charge une page supplémentaire de résultats', async ({
+    friendsPage,
+  }) => {
+    await friendsPage.search(SEARCH_SEED_PREFIX);
+
+    const lastOfFirstPage = friendsPage.row(`${SEARCH_SEED_PREFIX}20`);
+    const firstOfSecondPage = friendsPage.row(`${SEARCH_SEED_PREFIX}21`);
+
+    await expect(lastOfFirstPage).toBeVisible();
+    await expect(firstOfSecondPage).not.toBeAttached();
+
+    await lastOfFirstPage.scrollIntoViewIfNeeded();
+
+    await expect(firstOfSecondPage).toBeVisible();
   });
 });
 

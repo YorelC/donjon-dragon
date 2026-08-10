@@ -13,6 +13,11 @@ export interface DirectoryUser {
   displayName: string;
 }
 
+export interface DirectoryPage {
+  items: DirectoryUser[];
+  hasMore: boolean;
+}
+
 /**
  * Anti-corruption layer : la vue du contexte amitié sur les utilisateurs.
  *
@@ -25,5 +30,5 @@ export interface DirectoryUser {
 export interface FriendDirectoryPort {
   findById(id: string): Promise<DirectoryUser | null>;
   findByDisplayName(displayName: string): Promise<DirectoryUser | null>;
-  search(query: string, limit: number): Promise<DirectoryUser[]>;
+  search(query: string, page: number, limit: number): Promise<DirectoryPage>;
 }

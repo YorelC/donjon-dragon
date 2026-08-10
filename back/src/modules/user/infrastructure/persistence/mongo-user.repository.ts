@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import type { UserId } from '@kernel/domain/user-id';
 
-import type { UserRepositoryPort } from '../../application/ports/user-repository.port';
+import type { UserRepositoryPort, UserSearchPage } from '../../application/ports/user-repository.port';
 import type { DisplayName } from '../../domain/display-name';
 import type { Email } from '../../domain/email';
 import type { User } from '../../domain/user';
@@ -33,14 +33,20 @@ export class MongoUserRepository implements UserRepositoryPort {
     return this.findOne({ displayName: displayName.value });
   }
 
-  async searchByDisplayName(query: string, limit: number): Promise<User[]> {
+  async searchByDisplayName(query: string, page: number, limit: number): Promise<UserSearchPage> {
+    const skip = (page - 1) * limit;
     const docs = await this.model
       .find({ displayName: { $regex: escapeRegex(query), $options: 'i' } })
-      .limit(limit)
+      // displayName est unique : trier dessus garantit un ordre total, condition
+      // nécessaire pour que skip/limit ne se chevauchent ni ne trouent entre deux pages.
+      .sort({ displayName: 1 })
+      .skip(skip)
+      .limit(limit + 1) // +1 pour détecter hasMore sans requête count() séparée
       .select('-_id')
       .lean<UserDocument[]>();
 
-    return docs.map(toDomain);
+    const hasMore = docs.length > limit;
+    return { items: docs.slice(0, limit).map(toDomain), hasMore };
   }
 
   private async findOne(filter: Record<string, unknown>): Promise<User | null> {

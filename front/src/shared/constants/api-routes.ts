@@ -12,7 +12,8 @@ export const API_ROUTES = {
       incoming: "/api/friends/requests/incoming",
       incomingCount: "/api/friends/requests/incoming/count",
       outgoing: "/api/friends/requests/outgoing",
-      search: (q: string) => `/api/friends/search?q=${encodeURIComponent(q)}`,
+      search: (q: string, page: number) =>
+        `/api/friends/search?q=${encodeURIComponent(q)}&page=${page}`,
       sendRequest: (displayName: string) => `/api/friends/request/${encodeURIComponent(displayName)}`,
       accept: (friendshipId: string) => `/api/friends/accept/${friendshipId}`,
       refuse: (friendshipId: string) => `/api/friends/refuse/${friendshipId}`,

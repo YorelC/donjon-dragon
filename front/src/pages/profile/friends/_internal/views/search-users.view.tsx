@@ -2,42 +2,33 @@ import { Controller } from "react-hook-form";
 import type { UserSummary } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Card, CardContent } from "@/shared/components/atoms/card";
+import { ScrollArea } from "@/shared/components/atoms/scroll-area";
 import { FormTextInput } from "@/shared/components/molecules/form-text-input";
 import type { QueryState } from "@/shared/types/ui-state";
 import type { UserSearch } from "../hooks/use-search-form";
+import type { SearchPagination } from "../hooks/use-infinite-scroll-trigger";
 import type { UserInvitation } from "../hooks/use-user-invitation";
 
 interface SearchUsersViewProps {
   results: QueryState<UserSummary[]>;
+  pagination: SearchPagination;
   search: UserSearch;
   invitation: UserInvitation;
 }
 
 export function SearchUsersView({
   results,
+  pagination,
   search,
   invitation,
 }: SearchUsersViewProps) {
   return (
     <div className="space-y-6">
-      <SearchForm search={search} />
+      <SearchQueryField search={search} />
       {search.submittedQuery && (
-        <SearchResults results={results} invitation={invitation} />
+        <SearchResults results={results} pagination={pagination} invitation={invitation} />
       )}
     </div>
-  );
-}
-
-function SearchForm({ search }: { search: UserSearch }) {
-  return (
-    <form onSubmit={search.onSubmit} className="flex gap-2">
-      <div className="flex-1">
-        <SearchQueryField search={search} />
-      </div>
-      <Button type="submit" className="self-end">
-        Chercher
-      </Button>
-    </form>
   );
 }
 
@@ -59,10 +50,11 @@ function SearchQueryField({ search }: { search: UserSearch }) {
 
 interface SearchResultsProps {
   results: QueryState<UserSummary[]>;
+  pagination: SearchPagination;
   invitation: UserInvitation;
 }
 
-function SearchResults({ results, invitation }: SearchResultsProps) {
+function SearchResults({ results, pagination, invitation }: SearchResultsProps) {
   if (results.loading)
     return <div className="empty-state-text">Chargement...</div>;
   if (results.error)
@@ -72,14 +64,27 @@ function SearchResults({ results, invitation }: SearchResultsProps) {
   }
 
   return (
-    <div className="space-y-2">
-      {results.data.map((user) => (
-        <UserSearchResultRow
-          key={user.displayName}
-          user={user}
-          invitation={invitation}
-        />
-      ))}
+    <ScrollArea className="h-96">
+      <div className="space-y-2">
+        {results.data.map((user) => (
+          <UserSearchResultRow
+            key={user.displayName}
+            user={user}
+            invitation={invitation}
+          />
+        ))}
+        <InfiniteScrollSentinel pagination={pagination} />
+      </div>
+    </ScrollArea>
+  );
+}
+
+function InfiniteScrollSentinel({ pagination }: { pagination: SearchPagination }) {
+  if (!pagination.hasNextPage) return null;
+
+  return (
+    <div ref={pagination.sentinelRef} className="py-2 text-center empty-state-text">
+      {pagination.isFetchingNextPage ? "Chargement..." : ""}
     </div>
   );
 }

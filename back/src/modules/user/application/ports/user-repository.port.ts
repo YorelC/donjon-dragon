@@ -6,6 +6,11 @@ import type { User } from '../../domain/user';
 
 export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
 
+export interface UserSearchPage {
+  items: User[];
+  hasMore: boolean;
+}
+
 /**
  * Le port parle l'agrégat, pas le document. Il n'est fourni qu'à l'intérieur du
  * module user (règle `user-repository-is-private` de dependency-cruiser) :
@@ -20,6 +25,7 @@ export interface UserRepositoryPort {
   // envoyée par displayName).
   findByDisplayName(displayName: DisplayName): Promise<User | null>;
 
-  // Recherche floue insensible à la casse (fonction "rechercher des users").
-  searchByDisplayName(query: string, limit: number): Promise<User[]>;
+  // Recherche floue insensible à la casse (fonction "rechercher des users"),
+  // paginée : page 1-indexée, hasMore indique s'il reste une page suivante.
+  searchByDisplayName(query: string, page: number, limit: number): Promise<UserSearchPage>;
 }

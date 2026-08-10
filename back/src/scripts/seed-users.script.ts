@@ -15,7 +15,7 @@ interface SeedUser {
   password: string;
 }
 
-const SEED_USERS: SeedUser[] = [
+const NAMED_SEED_USERS: SeedUser[] = [
   { email: 'gandalf@middleearth.com', displayName: 'Gandalf', password: 'WizardOfMithrandir42' },
   { email: 'legolas@mirkwood.com', displayName: 'Legolas', password: 'BowmasterElf99' },
   { email: 'gimli@ironforge.com', displayName: 'Gimli', password: 'DwarfAxeMaster77' },
@@ -27,6 +27,25 @@ const SEED_USERS: SeedUser[] = [
   { email: 'boromir@gondor.com', displayName: 'Boromir', password: 'GondorWarrior654' },
   { email: 'denethor@gondor.com', displayName: 'Denethor', password: 'StewardTomb987' },
 ];
+
+/**
+ * Comptes dédiés au test e2e du scroll infini de la recherche (voir
+ * front/e2e/fixtures/accounts.ts). Préfixe distinctif pour ne jamais matcher les
+ * personnages nommés ci-dessus.
+ */
+export const SEARCH_SEED_PREFIX = 'ArgonautTester';
+const SEARCH_SEED_COUNT = 50;
+
+const SEARCH_SEED_USERS: SeedUser[] = Array.from({ length: SEARCH_SEED_COUNT }, (_, i) => {
+  const index = String(i + 1).padStart(2, '0');
+  return {
+    email: `argonaut-tester-${index}@donjon-dragon.test`,
+    displayName: `${SEARCH_SEED_PREFIX}${index}`,
+    password: `ArgonautPass${index}!`,
+  };
+});
+
+const SEED_USERS: SeedUser[] = [...NAMED_SEED_USERS, ...SEARCH_SEED_USERS];
 
 async function seedUsers(): Promise<void> {
   const mongoUri = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/donjon-dragon';

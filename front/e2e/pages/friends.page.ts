@@ -10,12 +10,10 @@ import type { Locator, Page } from '@playwright/test';
  */
 export class FriendsPage {
   readonly searchInput: Locator;
-  readonly searchSubmit: Locator;
   readonly receivedBadge: Locator;
 
   constructor(private readonly page: Page) {
     this.searchInput = page.getByLabel('Rechercher un joueur');
-    this.searchSubmit = page.getByRole('button', { name: 'Chercher' });
     // Le badge porte un aria-label qui enonce le compte : on le cible par ce
     // libelle plutot que par son texte tronque ("9+").
     this.receivedBadge = page.getByLabel(/demandes? en attente|Plus de 9 demandes/);
@@ -29,10 +27,10 @@ export class FriendsPage {
     await this.page.getByRole('tab', { name: new RegExp(`^${name}`) }).click();
   }
 
+  /** Recherche live : pas de bouton, la saisie déclenche la requête après debounce. */
   async search(query: string): Promise<void> {
     await this.openTab('Chercher');
     await this.searchInput.fill(query);
-    await this.searchSubmit.click();
   }
 
   /** La carte d'un joueur, dans l'onglet actif. */

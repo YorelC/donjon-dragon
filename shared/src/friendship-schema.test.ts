@@ -5,6 +5,7 @@ import {
   FriendRequestSchema,
   SendFriendRequestSchema,
   UserSearchQuerySchema,
+  UserSearchResultSchema,
   DeleteFriendParamsSchema,
   PendingReceivedCountSchema,
 } from "./friendship-schema";
@@ -111,7 +112,7 @@ describe("friendship-schema", () => {
   // lettre ; le maximum à 25 borne le coût du $regex.
   describe("UserSearchQuerySchema", () => {
     it.each(["Gan", "Gandalf", "A".repeat(25)])("accepte %s", (q) => {
-      expect(UserSearchQuerySchema.parse({ q })).toEqual({ q });
+      expect(UserSearchQuerySchema.parse({ q })).toEqual({ q, page: 1 });
     });
 
     it.each(["", "A", "Ga", "A".repeat(26)])("rejette %s", (q) => {
@@ -119,11 +120,41 @@ describe("friendship-schema", () => {
     });
 
     it("retire les espaces de bord", () => {
-      expect(UserSearchQuerySchema.parse({ q: "  Gan  " })).toEqual({ q: "Gan" });
+      expect(UserSearchQuerySchema.parse({ q: "  Gan  " })).toEqual({ q: "Gan", page: 1 });
     });
 
     it("rejette une requête qui devient trop courte après trim", () => {
       expect(() => UserSearchQuerySchema.parse({ q: "  Ga  " })).toThrow();
+    });
+
+    it("prend page=1 par défaut si absent", () => {
+      expect(UserSearchQuerySchema.parse({ q: "Gan" }).page).toBe(1);
+    });
+
+    it("coerce page depuis une string de query HTTP", () => {
+      expect(UserSearchQuerySchema.parse({ q: "Gan", page: "2" }).page).toBe(2);
+    });
+
+    it.each([0, -1, 1.5])("rejette page invalide : %s", (page) => {
+      expect(() => UserSearchQuerySchema.parse({ q: "Gan", page })).toThrow();
+    });
+  });
+
+  describe("UserSearchResultSchema", () => {
+    it("parse une page de résultats", () => {
+      const valid = { items: [{ displayName: "Gandalf" }], hasMore: true };
+      expect(UserSearchResultSchema.parse(valid)).toEqual(valid);
+    });
+
+    it("parse une page vide sans page suivante", () => {
+      const valid = { items: [], hasMore: false };
+      expect(UserSearchResultSchema.parse(valid)).toEqual(valid);
+    });
+
+    it("rejette un item sans displayName", () => {
+      expect(() =>
+        UserSearchResultSchema.parse({ items: [{}], hasMore: false }),
+      ).toThrow();
     });
   });
 

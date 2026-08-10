@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { displayNameField } from './user-schema.js';
+import { displayNameField, UserSummarySchema } from './user-schema.js';
 
 // Statut d'une relation d'amitié. Un seul document par paire d'users
 // (symétrique une fois 'accepted') — jamais dupliqué A→B / B→A.
@@ -53,6 +53,11 @@ export const SEARCH_QUERY_RULES = {
   max: 25,
 } as const;
 
+/** Taille de page de la recherche d'utilisateurs — back et front la partagent. */
+export const SEARCH_PAGE_SIZE = 20;
+
+const FIRST_PAGE = 1;
+
 export const UserSearchQuerySchema = z.object({
   q: z
     .string()
@@ -63,6 +68,19 @@ export const UserSearchQuerySchema = z.object({
     .max(SEARCH_QUERY_RULES.max, {
       message: `La recherche ne peut pas dépasser ${SEARCH_QUERY_RULES.max} caractères.`,
     }),
+  // Query param HTTP = toujours une string : coercition + défaut pour que le
+  // premier appel (sans ?page) reste valide.
+  page: z.coerce.number().int().min(FIRST_PAGE).default(FIRST_PAGE),
+});
+
+/**
+ * Ce que le client reçoit d'une page de résultats de recherche. `hasMore` porte
+ * toute l'information de pagination : pas de `total`, pas de `page` en retour, le
+ * front n'en a pas l'usage — il incrémente son propre compteur de page.
+ */
+export const UserSearchResultSchema = z.object({
+  items: z.array(UserSummarySchema),
+  hasMore: z.boolean(),
 });
 
 // ── Suppression d'ami (UA-003) ──────────────────────────────────────────────
@@ -82,6 +100,7 @@ export type Friendship = z.infer<typeof FriendshipSchema>;
 export type FriendRequest = z.infer<typeof FriendRequestSchema>;
 export type SendFriendRequestDto = z.infer<typeof SendFriendRequestSchema>;
 export type UserSearchQuery = z.infer<typeof UserSearchQuerySchema>;
+export type UserSearchResult = z.infer<typeof UserSearchResultSchema>;
 export type DeleteFriendParams = z.infer<typeof DeleteFriendParamsSchema>;
 export type PendingReceivedCount = z.infer<typeof PendingReceivedCountSchema>;
 

@@ -9,6 +9,11 @@ import {
 import { DisplayName } from '../../domain/display-name';
 import { toPublicUser, toUserIdentity, type UserIdentity } from '../user.mapper';
 
+export interface IdentityPage {
+  items: UserIdentity[];
+  hasMore: boolean;
+}
+
 /**
  * Lectures de l'agrégat User.
  *
@@ -39,9 +44,9 @@ export class GetUserProfileUseCase {
     return user ? toUserIdentity(user) : null;
   }
 
-  /** Recherche floue : la requête est un fragment libre, pas un pseudo valide. */
-  async searchIdentities(query: string, limit: number): Promise<UserIdentity[]> {
-    const users = await this.userRepo.searchByDisplayName(query, limit);
-    return users.map(toUserIdentity);
+  /** Recherche floue paginée : la requête est un fragment libre, pas un pseudo valide. */
+  async searchIdentities(query: string, page: number, limit: number): Promise<IdentityPage> {
+    const result = await this.userRepo.searchByDisplayName(query, page, limit);
+    return { items: result.items.map(toUserIdentity), hasMore: result.hasMore };
   }
 }

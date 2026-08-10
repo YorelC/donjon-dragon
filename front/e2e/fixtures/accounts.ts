@@ -43,3 +43,11 @@ export const ACCOUNTS = {
 
 /** Un mot de passe valide au regard du schéma, mais qui n'est celui de personne. */
 export const WRONG_PASSWORD = 'CeMotDePasseEstFaux99';
+
+/**
+ * Comptes de recherche seedés (`pnpm seed`, `back/src/scripts/seed-users.script.ts`)
+ * pour le test e2e du scroll infini : 50 comptes `ArgonautTester01`..`ArgonautTester50`,
+ * distincts des comptes nommés ci-dessus pour ne jamais se chevaucher dans une recherche.
+ */
+export const SEARCH_SEED_PREFIX = 'ArgonautTester';
+export const SEARCH_SEED_COUNT = 50;

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { GetUserProfileUseCase } from '@modules/user/application/use-cases/get-user-profile.use-case';
 import type {
+  DirectoryPage,
   DirectoryUser,
   FriendDirectoryPort,
 } from '../../application/ports/friend-directory.port';
@@ -24,7 +25,7 @@ export class UserFriendDirectory implements FriendDirectoryPort {
     return this.getUserProfile.identityByDisplayName(displayName);
   }
 
-  async search(query: string, limit: number): Promise<DirectoryUser[]> {
-    return this.getUserProfile.searchIdentities(query, limit);
+  async search(query: string, page: number, limit: number): Promise<DirectoryPage> {
+    return this.getUserProfile.searchIdentities(query, page, limit);
   }
 }

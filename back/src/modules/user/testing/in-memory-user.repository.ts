@@ -1,6 +1,6 @@
 import type { UserId } from '@kernel/domain/user-id';
 
-import type { UserRepositoryPort } from '../application/ports/user-repository.port';
+import type { UserRepositoryPort, UserSearchPage } from '../application/ports/user-repository.port';
 import type { DisplayName } from '../domain/display-name';
 import type { Email } from '../domain/email';
 import type { User } from '../domain/user';
@@ -24,11 +24,17 @@ export class InMemoryUserRepository implements UserRepositoryPort {
     return this.all().find((user) => user.displayName.equals(displayName)) ?? null;
   }
 
-  async searchByDisplayName(query: string, limit: number): Promise<User[]> {
+  async searchByDisplayName(query: string, page: number, limit: number): Promise<UserSearchPage> {
     const needle = query.toLowerCase();
-    return this.all()
+    // Même tri que l'implémentation Mongo (displayName asc) : le double doit
+    // refléter l'ordre garanti par le port, pas seulement ses données.
+    const matches = this.all()
       .filter((user) => user.displayName.value.toLowerCase().includes(needle))
-      .slice(0, limit);
+      .sort((a, b) => a.displayName.value.localeCompare(b.displayName.value));
+
+    const skip = (page - 1) * limit;
+    const items = matches.slice(skip, skip + limit);
+    return { items, hasMore: matches.length > skip + limit };
   }
 
   private all(): User[] {

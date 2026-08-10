@@ -58,5 +58,5 @@ export const test = base.extend<Fixtures>({
 });
 
 export { expect } from '@playwright/test';
-export { ACCOUNTS, WRONG_PASSWORD } from './accounts';
+export { ACCOUNTS, SEARCH_SEED_PREFIX, WRONG_PASSWORD } from './accounts';
 export { NO_SESSION, STORAGE_STATE } from './storage-state';
