@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "pnpm --parallel -r dev",
     "typecheck": "pnpm -r typecheck",
-    "lint": "pnpm -r lint",
+    "lint": "pnpm -r lint && pnpm lint:rules",
+    "lint:rules": "node scripts/check-rules-coverage.mjs",
     "test": "pnpm -r test",
     "seed": "pnpm --filter back seed"
   },

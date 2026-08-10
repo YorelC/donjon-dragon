@@ -6,4 +6,7 @@ front/dist/
 .env
 .env.local
 
-._claude/
+# Reglages Claude Code personnels : la liste de permissions et les hooks locaux
+# n'ont pas a etre partages. `.claude/settings.json` et `.claude/rules/`, eux,
+# sont versionnes a dessein.
+.claude/settings.local.json
