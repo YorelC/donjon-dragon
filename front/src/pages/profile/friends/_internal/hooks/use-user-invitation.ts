@@ -2,11 +2,18 @@ import { useSentRequests } from "../queries/use-sent-requests";
 import { useSendFriendRequest } from "../queries/use-send-friend-request";
 import type { SentRequest } from "../types/friends-schema";
 
-/** Envoyer une invitation, et savoir à qui on en a déjà envoyé une. */
+/**
+ * Envoyer une invitation, et savoir à qui on en a déjà envoyé une.
+ *
+ * `sendingTo` porte le pseudo en cours d'envoi, pas un booléen global : la
+ * mutation est partagée par toute la liste de résultats, donc un `isPending`
+ * global désactivait et relabellisait TOUS les boutons "Envoyer" à chaque clic,
+ * pas seulement celui cliqué.
+ */
 export interface UserInvitation {
   onSend: (displayName: string) => void;
   pendingRecipients: Set<string>;
-  isPending: boolean;
+  sendingTo: string | null;
 }
 
 export function useUserInvitation(): UserInvitation {
@@ -16,7 +23,7 @@ export function useUserInvitation(): UserInvitation {
   return {
     onSend: sendMutation.mutate,
     pendingRecipients: toPendingRecipients(sentQuery.data),
-    isPending: sendMutation.isPending,
+    sendingTo: sendMutation.isPending ? (sendMutation.variables ?? null) : null,
   };
 }
 

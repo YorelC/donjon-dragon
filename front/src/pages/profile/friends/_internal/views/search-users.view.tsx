@@ -107,20 +107,21 @@ function UserSearchResultRow({ user, invitation }: UserSearchResultRowProps) {
 
 function SendInvitationButton({ user, invitation }: UserSearchResultRowProps) {
   const alreadyInvited = invitation.pendingRecipients.has(user.displayName);
+  const isSending = invitation.sendingTo === user.displayName;
 
   return (
     <Button
       onClick={() => invitation.onSend(user.displayName)}
-      disabled={invitation.isPending || alreadyInvited}
+      disabled={isSending || alreadyInvited}
       size="sm"
     >
-      {toInvitationLabel(alreadyInvited, invitation.isPending)}
+      {toInvitationLabel(alreadyInvited, isSending)}
     </Button>
   );
 }
 
-function toInvitationLabel(alreadyInvited: boolean, isPending: boolean): string {
+function toInvitationLabel(alreadyInvited: boolean, isSending: boolean): string {
   if (alreadyInvited) return "Invitation envoyée";
-  if (isPending) return "Envoi...";
+  if (isSending) return "Envoi...";
   return "Envoyer";
 }

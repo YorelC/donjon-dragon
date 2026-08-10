@@ -11,8 +11,10 @@ export function useSendFriendRequest() {
     mutationFn: (displayName: string) =>
       api.post<FriendRequest>(API_ROUTES.friends.sendRequest(displayName), {}),
     onSuccess: (_data, displayName) => {
+      // "sent" porte l'état "déjà invité" (pendingRecipients) — "search" ne
+      // contient que des pseudos et ne dépend jamais d'une invitation : l'invalider
+      // ne faisait que refetch toute la liste de résultats à chaque envoi.
       queryClient.invalidateQueries({ queryKey: ["friends", "sent"] });
-      queryClient.invalidateQueries({ queryKey: ["friends", "search"] });
       toast.success(`Invitation envoyée à ${displayName}`);
     },
     onError: (err) => {
