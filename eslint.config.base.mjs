@@ -7,8 +7,18 @@ import globals from "globals";
 const MAX_FUNCTION_LINES = 20;
 const MAX_VIEW_LINES = 60;
 
+// Au-delà, un fichier de composants porte plus d'une intention : on en sort un
+// sous-composant dans son propre fichier (.claude/rules/front-view-purity.md).
+const MAX_FILE_LINES = 150;
+
 const FUNCTION_SIZE_OPTIONS = {
   max: MAX_FUNCTION_LINES,
+  skipBlankLines: true,
+  skipComments: true,
+};
+
+const FILE_SIZE_OPTIONS = {
+  max: MAX_FILE_LINES,
   skipBlankLines: true,
   skipComments: true,
 };
@@ -96,7 +106,7 @@ export const baseConfig = tseslint.config(
     // `.spec.ts` couvre les parcours Playwright (front/e2e), qui sont des tests au
     // même titre même s'ils ne passent pas par vitest.
     files: ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
-    rules: { "max-lines-per-function": "off" },
+    rules: { "max-lines-per-function": "off", "max-lines": "off" },
   },
 );
 
@@ -109,6 +119,7 @@ export const frontConfig = tseslint.config({
   },
   rules: {
     "no-restricted-imports": mergeRestrictedImports(CROSS_PAGE_INTERNAL_IMPORTS),
+    "max-lines": ["error", FILE_SIZE_OPTIONS],
   },
 });
 

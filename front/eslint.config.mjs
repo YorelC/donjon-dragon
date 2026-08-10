@@ -11,7 +11,17 @@ import {
 const vendoredShadcn = [
   {
     files: ["src/shared/components/atoms/**"],
-    rules: { "max-lines-per-function": "off" },
+    rules: { "max-lines-per-function": "off", "max-lines": "off" },
+  },
+];
+
+// frontConfig réarme max-lines sur tout src/**, y compris les tests : il faut
+// donc redire ici ce que baseConfig avait déjà desserré pour eux. Un fichier de
+// test est une liste de cas, pas une unité de logique — il n'a pas de taille cible.
+const testFiles = [
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx"],
+    rules: { "max-lines": "off" },
   },
 ];
 
@@ -25,4 +35,5 @@ export default [
   ...frontViewConfig,
   ...frontViewPurityConfig,
   ...vendoredShadcn,
+  ...testFiles,
 ];
