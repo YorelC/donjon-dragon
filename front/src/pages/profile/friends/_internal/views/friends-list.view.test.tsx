@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FriendsListView } from "./friends-list.view";
+import type { FriendRemoval } from "../hooks/use-friend-removal";
 import type { AcceptedFriend } from "../types/friends-schema";
 
 const mockFriends: AcceptedFriend[] = [
@@ -10,36 +11,57 @@ const mockFriends: AcceptedFriend[] = [
   { friendshipId: "uuid-3", friend: { displayName: "Aragorn" } },
 ];
 
-/** Helper: returns the friend displayName for a given friendshipId */
-function displayName(friendshipId: string) {
-  return (
-    mockFriends.find((f) => f.friendshipId === friendshipId)?.friend.displayName
-    ?? "cet ami"
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function removalState(overrides: Partial<FriendRemoval> = {}): FriendRemoval {
+  return {
+    selectedFriendId: null,
+    isPending: false,
+    onClick: vi.fn(),
+    onConfirm: vi.fn(),
+    onCancel: vi.fn(),
+    ...overrides,
+  };
+}
+
+function renderList(
+  removal: FriendRemoval = removalState(),
+  friends: AcceptedFriend[] = mockFriends,
+) {
+  return render(
+    <FriendsListView
+      friends={friends}
+      loading={false}
+      error={false}
+      removal={removal}
+    />,
   );
 }
 
-const defaultProps = {
-  friends: mockFriends,
-  loading: false,
-  error: false,
-  selectedFriendId: null as string | null,
-  friendDisplayName: displayName,
-  isDeletePending: false,
-  onDeleteClick: vi.fn(),
-  onDeleteConfirm: vi.fn(),
-  onDeleteCancel: vi.fn(),
-};
+// ── Tests ────────────────────────────────────────────────────────────────────
 
 describe("FriendsListView (pure view)", () => {
   describe("affichage normal", () => {
     it("should display loading state when loading is true", () => {
-      render(<FriendsListView {...defaultProps} friends={[]} loading={true} />);
+      render(
+        <FriendsListView
+          friends={[]}
+          loading={true}
+          error={false}
+          removal={removalState()}
+        />,
+      );
       expect(screen.getByText(/Chargement\.\.\./i)).toBeInTheDocument();
     });
 
     it("should display error state when error is true", () => {
       render(
-        <FriendsListView {...defaultProps} friends={[]} loading={false} error={true} />,
+        <FriendsListView
+          friends={[]}
+          loading={false}
+          error={true}
+          removal={removalState()}
+        />,
       );
       expect(
         screen.getByText(/Erreur lors du chargement des amis\./i),
@@ -47,14 +69,12 @@ describe("FriendsListView (pure view)", () => {
     });
 
     it("should display empty state when no friends and not loading/error", () => {
-      render(
-        <FriendsListView {...defaultProps} friends={[]} loading={false} error={false} />,
-      );
+      renderList(removalState(), []);
       expect(screen.getByText(/Tu n'as pas encore d'amis\./i)).toBeInTheDocument();
     });
 
     it("should display all friends with their display names", () => {
-      render(<FriendsListView {...defaultProps} />);
+      renderList();
       expect(screen.getByText("Gandalf")).toBeInTheDocument();
       expect(screen.getByText("Frodon Sacquet")).toBeInTheDocument();
       expect(screen.getByText("Aragorn")).toBeInTheDocument();
@@ -69,13 +89,7 @@ describe("FriendsListView (pure view)", () => {
     ])(
       "affiche le message 'Voulez-vous vraiment supprimer $name ?' quand selectedFriendId=$id",
       ({ id, name }) => {
-        render(
-          <FriendsListView
-            {...defaultProps}
-            selectedFriendId={id}
-            friendDisplayName={displayName}
-          />,
-        );
+        renderList(removalState({ selectedFriendId: id }));
 
         expect(
           screen.getByText(`Voulez-vous vraiment supprimer ${name} ?`),
@@ -86,24 +100,24 @@ describe("FriendsListView (pure view)", () => {
     );
 
     it("n'affiche pas la modale quand selectedFriendId est null", () => {
-      render(<FriendsListView {...defaultProps} selectedFriendId={null} />);
+      renderList();
       expect(
         screen.queryByText(/Voulez-vous vraiment supprimer/i),
       ).not.toBeInTheDocument();
     });
 
-    it("appelle onDeleteClick(friendshipId) quand le bouton Supprimer de la carte est cliqué", async () => {
-      const onDeleteClick = vi.fn();
-      render(<FriendsListView {...defaultProps} onDeleteClick={onDeleteClick} />);
+    it("appelle onClick(friendshipId) quand le bouton Supprimer de la carte est cliqué", async () => {
+      const onClick = vi.fn();
+      renderList(removalState({ onClick }));
 
       const buttons = screen.getAllByRole("button", { name: /Supprimer/i });
       await userEvent.click(buttons[2]!); // Aragorn
 
-      expect(onDeleteClick).toHaveBeenCalledWith("uuid-3");
+      expect(onClick).toHaveBeenCalledWith("uuid-3");
     });
 
     it("affiche un bouton Supprimer par ami", () => {
-      render(<FriendsListView {...defaultProps} />);
+      renderList();
       // Note: when selectedFriendId is null, only card buttons are visible
       const buttons = screen.getAllByRole("button", { name: /Supprimer/i });
       expect(buttons).toHaveLength(3);
@@ -111,34 +125,21 @@ describe("FriendsListView (pure view)", () => {
   });
 
   describe("UA-002 — Fermeture par 'Annuler'", () => {
-    it("appelle onDeleteCancel quand on clique Annuler dans la modale", async () => {
-      const onDeleteCancel = vi.fn();
-      render(
-        <FriendsListView
-          {...defaultProps}
-          selectedFriendId="uuid-1"
-          friendDisplayName={() => "Gandalf"}
-          onDeleteCancel={onDeleteCancel}
-        />,
-      );
+    it("appelle onCancel quand on clique Annuler dans la modale", async () => {
+      const onCancel = vi.fn();
+      renderList(removalState({ selectedFriendId: "uuid-1", onCancel }));
 
       await userEvent.click(screen.getByRole("button", { name: /Annuler/i }));
-      // Note: onDeleteCancel is called from BOTH the button click AND
+      // Note: onCancel is called from BOTH the button click AND
       // AlertDialog's onOpenChange(false) handler when the modal closes
-      expect(onDeleteCancel).toHaveBeenCalled();
+      expect(onCancel).toHaveBeenCalled();
     });
 
-    it("INV-005: la touche Escape appelle onDeleteCancel sans appeler onDeleteConfirm", async () => {
-      const onDeleteConfirm = vi.fn();
-      const onDeleteCancel = vi.fn();
-      render(
-        <FriendsListView
-          {...defaultProps}
-          selectedFriendId="uuid-1"
-          friendDisplayName={() => "Gandalf"}
-          onDeleteConfirm={onDeleteConfirm}
-          onDeleteCancel={onDeleteCancel}
-        />,
+    it("INV-005: la touche Escape appelle onCancel sans appeler onConfirm", async () => {
+      const onConfirm = vi.fn();
+      const onCancel = vi.fn();
+      renderList(
+        removalState({ selectedFriendId: "uuid-1", onConfirm, onCancel }),
       );
 
       // Vérifier que la modale est ouverte
@@ -146,41 +147,29 @@ describe("FriendsListView (pure view)", () => {
         screen.getByText("Voulez-vous vraiment supprimer Gandalf ?"),
       ).toBeInTheDocument();
 
-      // Escape ferme la modale via onOpenChange(false) → onDeleteCancel
+      // Escape ferme la modale via onOpenChange(false) → onCancel
       await userEvent.keyboard("{Escape}");
 
-      // Aucun appel API (onDeleteConfirm n'est pas appelé)
-      expect(onDeleteConfirm).not.toHaveBeenCalled();
-      // onDeleteCancel est appelé par onOpenChange(false) de AlertDialog
-      expect(onDeleteCancel).toHaveBeenCalled();
+      // Aucun appel API (onConfirm n'est pas appelé)
+      expect(onConfirm).not.toHaveBeenCalled();
+      // onCancel est appelé par onOpenChange(false) de AlertDialog
+      expect(onCancel).toHaveBeenCalled();
       // Note: la modale reste ouverte dans le rendu car selectedFriendId
       // est contrôlé par le parent (le view est pure — pas d'état local)
     });
   });
 
   describe("UA-003 — Confirmation de suppression", () => {
-    it("appelle onDeleteConfirm quand on clique Supprimer dans la modale", async () => {
-      const onDeleteConfirm = vi.fn();
-      render(
-        <FriendsListView
-          {...defaultProps}
-          selectedFriendId="uuid-1"
-          friendDisplayName={() => "Gandalf"}
-          onDeleteConfirm={onDeleteConfirm}
-        />,
-      );
+    it("appelle onConfirm quand on clique Supprimer dans la modale", async () => {
+      const onConfirm = vi.fn();
+      renderList(removalState({ selectedFriendId: "uuid-1", onConfirm }));
 
       await userEvent.click(screen.getByRole("button", { name: /^Supprimer$/i }));
-      expect(onDeleteConfirm).toHaveBeenCalledOnce();
+      expect(onConfirm).toHaveBeenCalledOnce();
     });
 
-    it("INV-003: désactive les boutons et affiche 'Suppression...' quand isDeletePending est true", () => {
-      render(
-        <FriendsListView
-          {...defaultProps}
-          isDeletePending={true}
-        />,
-      );
+    it("INV-003: désactive les boutons et affiche 'Suppression...' quand isPending est true", () => {
+      renderList(removalState({ isPending: true }));
 
       // Card buttons show "Suppression..." when pending
       const buttons = screen.getAllByRole("button", { name: /Suppression\.\.\./i });
@@ -190,15 +179,8 @@ describe("FriendsListView (pure view)", () => {
       });
     });
 
-    it("INV-003: désactive Supprimer dans la modale quand isDeletePending est true", () => {
-      render(
-        <FriendsListView
-          {...defaultProps}
-          selectedFriendId="uuid-1"
-          friendDisplayName={() => "Gandalf"}
-          isDeletePending={true}
-        />,
-      );
+    it("INV-003: désactive Supprimer dans la modale quand isPending est true", () => {
+      renderList(removalState({ selectedFriendId: "uuid-1", isPending: true }));
 
       // Modal Annuler is NOT disabled per spec (UA-003 only disables Supprimer)
       const cancelButton = screen.getByRole("button", { name: /Annuler/i });
@@ -206,6 +188,19 @@ describe("FriendsListView (pure view)", () => {
       // Modal Supprimer button is disabled during pending
       const confirmButton = screen.getByRole("button", { name: /^Supprimer$/i });
       expect(confirmButton).toBeDisabled();
+    });
+  });
+
+  describe("Nommage de l'ami dans la modale", () => {
+    it("titre et description portent le nom de la ligne cliquée, sans lookup externe", () => {
+      renderList(removalState({ selectedFriendId: "uuid-2" }));
+
+      expect(
+        screen.getByText("Supprimer Frodon Sacquet ?"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("Voulez-vous vraiment supprimer Frodon Sacquet ?"),
+      ).toBeInTheDocument();
     });
   });
 });

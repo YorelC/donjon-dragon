@@ -12,77 +12,104 @@ import {
   AlertDialogTrigger,
 } from "@/shared/components/atoms/alert-dialog";
 import type { AcceptedFriend } from "../types/friends-schema";
+import type { FriendRemoval } from "../hooks/use-friend-removal";
 
 interface FriendsListViewProps {
   friends: AcceptedFriend[];
   loading: boolean;
   error: boolean;
-  selectedFriendId: string | null;
-  friendDisplayName: (id: string) => string;
-  isDeletePending: boolean;
-  onDeleteClick: (id: string) => void;
-  onDeleteConfirm: () => void;
-  onDeleteCancel: () => void;
+  removal: FriendRemoval;
 }
 
 export function FriendsListView({
   friends,
   loading,
   error,
-  selectedFriendId,
-  friendDisplayName,
-  isDeletePending,
-  onDeleteClick,
-  onDeleteConfirm,
-  onDeleteCancel,
+  removal,
 }: FriendsListViewProps) {
   if (loading) return <div className="empty-state-text">Chargement...</div>;
-  if (error) return <div className="empty-state-text">Erreur lors du chargement des amis.</div>;
-  if (friends.length === 0) return <div className="empty-state-text">Tu n'as pas encore d'amis.</div>;
+  if (error)
+    return (
+      <div className="empty-state-text">Erreur lors du chargement des amis.</div>
+    );
+  if (friends.length === 0)
+    return <div className="empty-state-text">Tu n'as pas encore d'amis.</div>;
 
   return (
     <div className="space-y-2">
-      {friends.map(({ friendshipId, friend }) => (
-        <Card key={friendshipId}>
-          <CardContent className="flex items-center justify-between p-4">
-            <span className="font-medium">{friend.displayName}</span>
-            <AlertDialog
-              open={selectedFriendId === friendshipId}
-              onOpenChange={(open) =>
-                open ? onDeleteClick(friendshipId) : onDeleteCancel()
-              }
-            >
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm" disabled={isDeletePending}>
-                  {isDeletePending ? "Suppression..." : "Supprimer"}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent size="sm">
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Supprimer {friendDisplayName(friendshipId)} ?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Voulez-vous vraiment supprimer {friendDisplayName(friendshipId)} ?
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel onClick={onDeleteCancel}>
-                    Annuler
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    variant="destructive"
-                    onClick={onDeleteConfirm}
-                    disabled={isDeletePending}
-                  >
-                    Supprimer
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </CardContent>
-        </Card>
+      {friends.map((friend) => (
+        <FriendRow key={friend.friendshipId} friend={friend} removal={removal} />
       ))}
     </div>
+  );
+}
+
+interface FriendRowProps {
+  friend: AcceptedFriend;
+  removal: FriendRemoval;
+}
+
+function FriendRow({ friend, removal }: FriendRowProps) {
+  return (
+    <Card>
+      <CardContent className="flex items-center justify-between p-4">
+        <span className="font-medium">{friend.friend.displayName}</span>
+        <RemoveFriendDialog friend={friend} removal={removal} />
+      </CardContent>
+    </Card>
+  );
+}
+
+function RemoveFriendDialog({ friend, removal }: FriendRowProps) {
+  const { friendshipId } = friend;
+
+  return (
+    <AlertDialog
+      open={removal.selectedFriendId === friendshipId}
+      onOpenChange={(open) =>
+        open ? removal.onClick(friendshipId) : removal.onCancel()
+      }
+    >
+      <AlertDialogTrigger asChild>
+        <Button variant="destructive" size="sm" disabled={removal.isPending}>
+          {removal.isPending ? "Suppression..." : "Supprimer"}
+        </Button>
+      </AlertDialogTrigger>
+      <RemoveFriendConfirmation
+        displayName={friend.friend.displayName}
+        removal={removal}
+      />
+    </AlertDialog>
+  );
+}
+
+interface RemoveFriendConfirmationProps {
+  displayName: string;
+  removal: FriendRemoval;
+}
+
+function RemoveFriendConfirmation({
+  displayName,
+  removal,
+}: RemoveFriendConfirmationProps) {
+  return (
+    <AlertDialogContent size="sm">
+      <AlertDialogHeader>
+        <AlertDialogTitle>Supprimer {displayName} ?</AlertDialogTitle>
+        <AlertDialogDescription>
+          Voulez-vous vraiment supprimer {displayName} ?
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel onClick={removal.onCancel}>Annuler</AlertDialogCancel>
+        <AlertDialogAction
+          variant="destructive"
+          onClick={removal.onConfirm}
+          disabled={removal.isPending}
+        >
+          Supprimer
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
   );
 }

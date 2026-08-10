@@ -7,13 +7,11 @@ import { FriendsContainer } from "./friends.container";
 
 // Mock modules
 import * as useFriendsTabsModule from "../hooks/use-friends-tabs";
-import * as useReceivedRequestsModule from "../queries/use-received-requests";
 import * as useFriendsModule from "../queries/use-friends";
 import * as useRemoveFriendModule from "../queries/use-remove-friend";
 import * as useReceivedCountModule from "../queries/use-received-count";
 
 vi.mock("../hooks/use-friends-tabs");
-vi.mock("../queries/use-received-requests");
 vi.mock("../queries/use-friends");
 vi.mock("../queries/use-remove-friend");
 vi.mock("../queries/use-received-count");
@@ -24,7 +22,6 @@ const mockFriend = (friendshipId: string, displayName: string) => ({
   friendshipId,
   friend: { displayName },
 });
-
 
 const mockFriends = [
   mockFriend("uuid-1", "Gandalf"),
@@ -73,13 +70,6 @@ describe("FriendsContainer", () => {
       isPending: false,
     } as unknown as ReturnType<typeof useRemoveFriendModule.useRemoveFriend>);
 
-    vi.mocked(useReceivedRequestsModule.useReceivedRequests).mockReturnValue({
-      data: [],
-      isLoading: false,
-      isError: false,
-      refetch: vi.fn(),
-    } as unknown as ReturnType<typeof useReceivedRequestsModule.useReceivedRequests>);
-
     vi.mocked(useFriendsTabsModule.useFriendsTabs).mockReturnValue({
       activeTab: "friends",
       setActiveTab: vi.fn(),
@@ -87,7 +77,6 @@ describe("FriendsContainer", () => {
 
     vi.mocked(useReceivedCountModule.useReceivedCount).mockReturnValue({
       data: undefined,
-      refetch: vi.fn(),
     } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
   });
 
@@ -186,142 +175,13 @@ describe("FriendsContainer", () => {
     });
   });
 
-  // ── UA-006 à UA-010 : Badge compteur de demandes reçues ────────────────────
+  // ── UA-008 : le compteur est demandé quel que soit l'onglet actif ───────────
 
-  describe("UA-006 à UA-010 : Badge compteur de demandes reçues", () => {
-    beforeEach(() => {
-      vi.mocked(useFriendsModule.useFriends).mockReturnValue({
-        data: [],
-        isLoading: false,
-        isError: false,
-      } as unknown as ReturnType<typeof useFriendsModule.useFriends>);
-    });
+  describe("UA-008 — Rechargement du count au chargement de la page", () => {
+    it("interroge le compteur au montage même si l'onglet actif n'est pas 'Reçues'", () => {
+      renderWithProviders();
 
-    describe("UA-006 — Affichage du badge pour count > 0", () => {
-      it.each([
-        { count: 1, label: "1" },
-        { count: 3, label: "3" },
-        { count: 9, label: "9" },
-      ])(
-        "UA-006: affiche le badge '$label' pour $count demande(s) reçue(s)",
-        ({ count, label }) => {
-          vi.mocked(
-            useReceivedCountModule.useReceivedCount,
-          ).mockReturnValue({
-            data: { count },
-            refetch: vi.fn(),
-          } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
-
-          renderWithProviders();
-
-          expect(screen.getByText(label)).toBeInTheDocument();
-        },
-      );
-    });
-
-    describe("UA-007 — Truncation du badge à '9+'", () => {
-      it.each([
-        { count: 10, label: "9+" },
-        { count: 15, label: "9+" },
-        { count: 99, label: "9+" },
-      ])(
-        "UA-007: affiche '$label' pour $count demandes reçues",
-        ({ count, label }) => {
-          vi.mocked(
-            useReceivedCountModule.useReceivedCount,
-          ).mockReturnValue({
-            data: { count },
-            refetch: vi.fn(),
-          } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
-
-          renderWithProviders();
-
-          expect(screen.getByText(label)).toBeInTheDocument();
-        },
-      );
-    });
-
-    describe("UA-008 — Rechargement du count au chargement de la page", () => {
-      it("UA-008: appelle useReceivedCount lors du montage quel que soit l'onglet actif", () => {
-        vi.mocked(useFriendsTabsModule.useFriendsTabs).mockReturnValue({
-          activeTab: "friends",
-          setActiveTab: vi.fn(),
-        });
-
-        const useReceivedCountSpy = vi.fn();
-        vi.mocked(
-          useReceivedCountModule.useReceivedCount,
-        ).mockImplementation(() => {
-          useReceivedCountSpy();
-          return {
-            data: undefined,
-            refetch: vi.fn(),
-          } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>;
-        });
-
-        renderWithProviders();
-
-        // La query doit avoir été appelée pendant le rendu
-        expect(useReceivedCountSpy).toHaveBeenCalled();
-      });
-    });
-
-    describe("UA-009 — Rafraîchissement du count au clic sur l'onglet 'Reçues'", () => {
-      it("UA-009: appelle refetch quand on clique sur l'onglet 'Reçues'", async () => {
-        const mockRefetch = vi.fn();
-        vi.mocked(
-          useReceivedCountModule.useReceivedCount,
-        ).mockReturnValue({
-          data: { count: 5 },
-          refetch: mockRefetch,
-        } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
-
-        const mockSetActiveTab = vi.fn();
-        vi.mocked(useFriendsTabsModule.useFriendsTabs).mockReturnValue({
-          activeTab: "friends",
-          setActiveTab: mockSetActiveTab,
-        });
-
-        const user = userEvent.setup();
-        renderWithProviders();
-
-        // Clic sur l'onglet "Reçues"
-        const receivedTab = screen.getByText("Reçues");
-        await user.click(receivedTab);
-
-        // Le refetch doit être appelé (dans onTabChange)
-        expect(mockRefetch).toHaveBeenCalled();
-      });
-    });
-
-    describe("UA-010 — Masquage du badge à zéro demande", () => {
-      it("UA-010: n'affiche aucun badge quand count est 0", () => {
-        vi.mocked(
-          useReceivedCountModule.useReceivedCount,
-        ).mockReturnValue({
-          data: { count: 0 },
-          refetch: vi.fn(),
-        } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
-
-        renderWithProviders();
-
-        expect(screen.queryByText(/^[0-9]+$/)).not.toBeInTheDocument();
-        expect(screen.queryByText("9+")).not.toBeInTheDocument();
-      });
-
-      it("UA-010: n'affiche aucun badge quand le count n'est pas encore chargé (data undefined)", () => {
-        vi.mocked(
-          useReceivedCountModule.useReceivedCount,
-        ).mockReturnValue({
-          data: undefined,
-          refetch: vi.fn(),
-        } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
-
-        renderWithProviders();
-
-        expect(screen.queryByText(/^[0-9]+$/)).not.toBeInTheDocument();
-        expect(screen.queryByText("9+")).not.toBeInTheDocument();
-      });
+      expect(useReceivedCountModule.useReceivedCount).toHaveBeenCalled();
     });
   });
 });
@@ -334,21 +194,13 @@ describe("FriendsContainer", () => {
 // UA-003 — Confirmation de suppression avec comportement optimiste : COUVERT
 //   → clic "Supprimer" → modale fermée, mutate(friendshipId) appelé
 //   → isPending=true → boutons désactivés + texte "Suppression..."
-// UA-004 — Toast de succès après suppression : NON COUVERT (logique dans useRemoveFriend, pas dans FriendsContainer)
-//   → testé dans use-remove-friend.test.ts
-// UA-005 — Toast d'échec et rollback : NON COUVERT (logique dans useRemoveFriend, pas dans FriendsContainer)
-//   → testé dans use-remove-friend.test.ts
-// UA-006 — Affichage du badge de demandes sur l'onglet "Reçues" : COUVERT
-//   → table-driven via useReceivedCount mock : 1, 3, 9
-// UA-007 — Truncation du badge à "9+" : COUVERT
-//   → table-driven via useReceivedCount mock : 10, 15, 99
+// UA-004 — Toast de succès après suppression : NON COUVERT (logique dans useRemoveFriend)
+//   → testé dans use-remove-friend.test.tsx
+// UA-005 — Toast d'échec et rollback : NON COUVERT (logique dans useRemoveFriend)
+//   → testé dans use-remove-friend.test.tsx
 // UA-008 — Rechargement du count au chargement de la page : COUVERT
-//   → useReceivedCount appelée au montage, même avec onglet "friends" actif
-// UA-009 — Rafraîchissement du count au clic sur l'onglet "Reçues" : COUVERT
-//   → refetch appelé lors du clic sur l'onglet "Reçues"
-// UA-010 — Masquage du badge à zéro demande : COUVERT
-//   → aucun badge affiché quand count === 0
-//   → aucun badge affiché quand data === undefined (pas encore chargé)
-//
-// UA-004 et UA-005 nécessitent un test de la mutation useRemoveFriend
-// (comportement onSuccess/onError avec toast et rollback) — voir use-remove-friend.test.tsx
+//   → le badge est monté dans la liste d'onglets, donc interrogé quel que soit
+//     l'onglet actif
+// UA-006 / UA-007 / INV-008 — badge : received-count-badge.view.test.tsx
+// UA-010 / INV-007 — masquage à zéro : received-count-badge.container.test.tsx
+// UA-009 — rafraîchissement au clic sur "Reçues" : use-friends-tabs.test.ts

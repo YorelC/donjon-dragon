@@ -1,70 +1,87 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { createElement, type ReactNode } from "react";
 import { useFriendsTabs } from "./use-friends-tabs";
+import { RECEIVED_COUNT_KEY } from "../queries/use-received-count";
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function renderFriendsTabs() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  const invalidateQueries = vi.spyOn(queryClient, "invalidateQueries");
+
+  const wrapper = ({ children }: { children: ReactNode }) =>
+    createElement(QueryClientProvider, { client: queryClient }, children);
+
+  return { ...renderHook(() => useFriendsTabs(), { wrapper }), invalidateQueries };
+}
+
+// ── Tests ────────────────────────────────────────────────────────────────────
 
 describe("useFriendsTabs", () => {
   it("should initialize with 'friends' as activeTab", () => {
-    const { result } = renderHook(() => useFriendsTabs());
+    const { result } = renderFriendsTabs();
 
     expect(result.current.activeTab).toBe("friends");
   });
 
-  it("should allow changing activeTab to 'received'", () => {
-    const { result } = renderHook(() => useFriendsTabs());
+  it.each(["received", "sent", "search", "friends"] as const)(
+    "should allow changing activeTab to '%s'",
+    (tab) => {
+      const { result } = renderFriendsTabs();
 
-    act(() => {
-      result.current.setActiveTab("received");
-    });
+      act(() => {
+        result.current.setActiveTab(tab);
+      });
 
-    expect(result.current.activeTab).toBe("received");
-  });
-
-  it("should allow changing activeTab to 'sent'", () => {
-    const { result } = renderHook(() => useFriendsTabs());
-
-    act(() => {
-      result.current.setActiveTab("sent");
-    });
-
-    expect(result.current.activeTab).toBe("sent");
-  });
-
-  it("should allow changing activeTab to 'search'", () => {
-    const { result } = renderHook(() => useFriendsTabs());
-
-    act(() => {
-      result.current.setActiveTab("search");
-    });
-
-    expect(result.current.activeTab).toBe("search");
-  });
+      expect(result.current.activeTab).toBe(tab);
+    },
+  );
 
   it("should allow cycling through all tabs", () => {
-    const { result } = renderHook(() => useFriendsTabs());
+    const { result } = renderFriendsTabs();
 
-    act(() => {
-      result.current.setActiveTab("received");
+    (["received", "sent", "search", "friends"] as const).forEach((tab) => {
+      act(() => {
+        result.current.setActiveTab(tab);
+      });
+      expect(result.current.activeTab).toBe(tab);
     });
-    expect(result.current.activeTab).toBe("received");
+  });
 
-    act(() => {
-      result.current.setActiveTab("sent");
-    });
-    expect(result.current.activeTab).toBe("sent");
+  describe("UA-009 — Rafraîchissement du compteur au passage sur 'Reçues'", () => {
+    it("invalide la clé du compteur quand l'onglet 'received' devient actif", () => {
+      const { result, invalidateQueries } = renderFriendsTabs();
 
-    act(() => {
-      result.current.setActiveTab("search");
-    });
-    expect(result.current.activeTab).toBe("search");
+      act(() => {
+        result.current.setActiveTab("received");
+      });
 
-    act(() => {
-      result.current.setActiveTab("friends");
+      expect(invalidateQueries).toHaveBeenCalledWith({
+        queryKey: RECEIVED_COUNT_KEY,
+      });
     });
-    expect(result.current.activeTab).toBe("friends");
+
+    it.each(["sent", "search", "friends"] as const)(
+      "n'invalide rien quand l'onglet '%s' devient actif",
+      (tab) => {
+        const { result, invalidateQueries } = renderFriendsTabs();
+
+        act(() => {
+          result.current.setActiveTab(tab);
+        });
+
+        expect(invalidateQueries).not.toHaveBeenCalled();
+      },
+    );
   });
 });
 
 // ── Matrice de couverture UA ─────────────────────────────────────────────────
-// Aucune UA couverte ici : useFriendsTabs gère simplement l'état de l'onglet actif.
-// Les UA qui concernent la navigation entre onglets (ex: UA-009 refetch au clic)
-// sont des tests d'intégration ou e2e, pas de ce hook unitaire.
+// UA-009 — Rafraîchissement du count au clic sur l'onglet "Reçues" : COUVERT
+//   → le hook invalide RECEIVED_COUNT_KEY, ce qui déclenche le refetch de la
+//     query active. Remplace l'ancien refetch() manuel câblé dans la vue.
+// Le reste du hook n'est que l'état de l'onglet actif : aucune UA.

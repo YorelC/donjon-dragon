@@ -53,18 +53,6 @@ const CROSS_PAGE_INTERNAL_IMPORTS = {
   ],
 };
 
-// Pureté des views : une view ne compose jamais de container. Une zone à
-// logique arrive en prop ReactNode, injectée par le container parent ou la page.
-const CONTAINER_IMPORTS = {
-  patterns: [
-    {
-      group: ["**/*.container", "**/containers/*", "./*.container", "*.container"],
-      message:
-        "Une view ne compose pas de container : reçois la zone à logique en prop ReactNode (slot ou children), injectée par le container parent ou la page.",
-    },
-  ],
-};
-
 function mergeRestrictedImports(...configs) {
   return [
     "error",
@@ -146,12 +134,13 @@ export const frontViewConfig = tseslint.config({
 });
 
 // Doit rester après frontPagesConfig : no-restricted-imports n'est pas cumulatif,
-// la dernière déclaration gagne — d'où le rappel des 3 groupes de restrictions.
+// la dernière déclaration gagne — d'où le rappel des groupes de restrictions.
+// Une view compose les containers de sa page : seule la frontière entre pages
+// est gardée ici, l'import d'un container local est voulu.
 export const frontViewPurityConfig = tseslint.config({
   files: ["src/**/*.view.tsx"],
   rules: {
     "no-restricted-imports": mergeRestrictedImports(
-      CONTAINER_IMPORTS,
       UI_PRIMITIVE_IMPORTS,
       CROSS_PAGE_INTERNAL_IMPORTS,
     ),

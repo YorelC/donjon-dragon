@@ -8,8 +8,10 @@ paths:
 - Le container est le **seul** endroit où l'on appelle des hooks : queries TanStack,
   stores Zustand, hooks maison. Il prépare les props et rend sa view.
 - Il ne contient pas de JSX de présentation : il assemble. Le rendu appartient à la view.
-- Une zone à logique se passe à une view en prop `ReactNode`, jamais en important la
-  view d'une autre page.
+- Un container rend **une seule** view, et lui passe des données et des callbacks. Il
+  n'injecte pas de zone en prop `ReactNode` : c'est la view qui importe les containers
+  qu'elle pose. Un container qui prépare du JSX pour sa view a pris le travail de la view.
+- Jamais la view d'une autre page : ce qui doit servir ailleurs remonte dans `@/shared`.
 - 20 lignes de corps maximum. Un container qui grossit signale une view à découper en
   sous-views, ou une logique à extraire dans un hook de `_internal/hooks/`.
 - Jamais d'import direct de primitives radix ou shadcn : tout passe par

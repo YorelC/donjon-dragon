@@ -1,166 +1,140 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FriendsView } from "./friends.view";
+import * as useReceivedCountModule from "../queries/use-received-count";
+import * as useFriendsModule from "../queries/use-friends";
+import * as useReceivedRequestsModule from "../queries/use-received-requests";
+import * as useSentRequestsModule from "../queries/use-sent-requests";
+import * as useSearchUsersModule from "../queries/use-search-users";
+import * as useRemoveFriendModule from "../queries/use-remove-friend";
+import * as useAcceptModule from "../queries/use-accept-friend-request";
+import * as useRefuseModule from "../queries/use-refuse-friend-request";
+import * as useSendModule from "../queries/use-send-friend-request";
+
+// La view compose ses containers : on neutralise la couche query pour ne tester
+// que ce qui appartient à la view — la structure des onglets et le placement du
+// badge. Le comportement de chaque panneau a ses propres tests.
+vi.mock("../queries/use-received-count");
+vi.mock("../queries/use-friends");
+vi.mock("../queries/use-received-requests");
+vi.mock("../queries/use-sent-requests");
+vi.mock("../queries/use-search-users");
+vi.mock("../queries/use-remove-friend");
+vi.mock("../queries/use-accept-friend-request");
+vi.mock("../queries/use-refuse-friend-request");
+vi.mock("../queries/use-send-friend-request");
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-function renderView(receivedCount?: number) {
-  return render(
-    <FriendsView
-      activeTab="friends"
-      onTabChange={vi.fn()}
-      receivedCount={receivedCount}
-      friendsPanel={<div>Friends List</div>}
-      receivedPanel={<div>Received Requests</div>}
-      sentPanel={<div>Sent Requests</div>}
-      searchPanel={<div>Search</div>}
-    />,
+const EMPTY_QUERY = { data: [], isLoading: false, isError: false };
+const IDLE_MUTATION = { mutate: vi.fn(), isPending: false };
+
+// Les hooks TanStack ont chacun leur type de retour : un mock générique unique
+// ne peut pas les satisfaire tous, d'où le cast au point d'affectation.
+function mockEmptyQueries() {
+  vi.mocked(useFriendsModule.useFriends).mockReturnValue(EMPTY_QUERY as never);
+  vi.mocked(useReceivedRequestsModule.useReceivedRequests).mockReturnValue(
+    EMPTY_QUERY as never,
   );
+  vi.mocked(useSentRequestsModule.useSentRequests).mockReturnValue(EMPTY_QUERY as never);
+  vi.mocked(useSearchUsersModule.useSearchUsers).mockReturnValue(EMPTY_QUERY as never);
+}
+
+function mockIdleMutations() {
+  vi.mocked(useRemoveFriendModule.useRemoveFriend).mockReturnValue(
+    IDLE_MUTATION as never,
+  );
+  vi.mocked(useAcceptModule.useAcceptFriendRequest).mockReturnValue(
+    IDLE_MUTATION as never,
+  );
+  vi.mocked(useRefuseModule.useRefuseFriendRequest).mockReturnValue(
+    IDLE_MUTATION as never,
+  );
+  vi.mocked(useSendModule.useSendFriendRequest).mockReturnValue(IDLE_MUTATION as never);
+}
+
+function mockReceivedCount(count?: number) {
+  vi.mocked(useReceivedCountModule.useReceivedCount).mockReturnValue({
+    data: count === undefined ? undefined : { count },
+  } as unknown as ReturnType<typeof useReceivedCountModule.useReceivedCount>);
+}
+
+function renderView(onTabChange = vi.fn()) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+
+  return {
+    onTabChange,
+    ...render(
+      <QueryClientProvider client={queryClient}>
+        <FriendsView activeTab="friends" onTabChange={onTabChange} />
+      </QueryClientProvider>,
+    ),
+  };
 }
 
 function getReceivedTrigger() {
-  return screen.getByText("Reçues").closest("button");
+  return screen.getByRole("tab", { name: /Reçues/ });
 }
 
 // ── Tests ────────────────────────────────────────────────────────────────────
 
-describe("FriendsView — Badge de demandes en attente", () => {
-  describe("UA-006 — Affichage du badge de demandes sur l'onglet 'Reçues'", () => {
-    it.each([
-      { count: 1, expected: "1" },
-      { count: 3, expected: "3" },
-      { count: 9, expected: "9" },
-    ])("affiche le badge '$expected' pour $count demande(s) reçue(s)", ({ count, expected }) => {
-      renderView(count);
+describe("FriendsView", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
 
-      const badge = screen.getByText(expected);
-      expect(badge).toBeInTheDocument();
+    mockEmptyQueries();
+    mockIdleMutations();
+    mockReceivedCount(undefined);
+  });
 
-      // Le badge se trouve dans le TabsTrigger "Reçues"
-      const trigger = getReceivedTrigger();
-      expect(trigger).toBeInTheDocument();
-      expect(within(trigger!).getByText(expected)).toBeInTheDocument();
+  it("expose les quatre onglets de la page", () => {
+    renderView();
+
+    ["Amis", "Reçues", "Envoyées", "Chercher"].forEach((label) => {
+      expect(screen.getByRole("tab", { name: new RegExp(label) })).toBeInTheDocument();
     });
   });
 
-  describe("UA-007 — Truncation du badge à '9+'", () => {
-    it.each([
-      { count: 10, expected: "9+" },
-      { count: 15, expected: "9+" },
-      { count: 99, expected: "9+" },
-    ])("affiche '$expected' pour $count demandes reçues", ({ count, expected }) => {
-      renderView(count);
+  it("rend le panneau de l'onglet actif", () => {
+    renderView();
 
-      const badge = screen.getByText(expected);
-      expect(badge).toBeInTheDocument();
-
-      const trigger = getReceivedTrigger();
-      expect(within(trigger!).getByText(expected)).toBeInTheDocument();
-    });
+    expect(screen.getByText("Tu n'as pas encore d'amis.")).toBeInTheDocument();
   });
 
-  describe("UA-010 — Masquage du badge à zéro demande", () => {
-    it("n'affiche aucun badge quand count === 0", () => {
-      renderView(0);
+  it("remonte le changement d'onglet à son container", async () => {
+    const user = userEvent.setup();
+    const { onTabChange } = renderView();
 
-      expect(screen.queryByText(/^[0-9]+$/)).not.toBeInTheDocument();
-      expect(screen.queryByText("9+")).not.toBeInTheDocument();
-    });
+    await user.click(getReceivedTrigger());
 
-    it("n'affiche aucun badge quand receivedCount est undefined", () => {
-      renderView(undefined);
-
-      expect(screen.queryByText(/^[0-9]+$/)).not.toBeInTheDocument();
-      expect(screen.queryByText("9+")).not.toBeInTheDocument();
-    });
+    expect(onTabChange).toHaveBeenCalledWith("received");
   });
 
-  describe("INV-007 — Badge conditionnel", () => {
-    it("affiche le badge quand count > 0", () => {
-      renderView(5);
-      expect(screen.getByText("5")).toBeInTheDocument();
+  describe("UA-006 — Le badge se place dans l'onglet 'Reçues'", () => {
+    it("affiche le compteur à l'intérieur du déclencheur 'Reçues'", () => {
+      mockReceivedCount(3);
+
+      renderView();
+
+      expect(within(getReceivedTrigger()).getByText("3")).toBeInTheDocument();
     });
 
-    it("cache le badge quand count === 0", () => {
-      renderView(0);
-      expect(screen.queryByText("0")).not.toBeInTheDocument();
+    it("laisse le déclencheur sans chiffre quand il n'y a rien en attente", () => {
+      mockReceivedCount(0);
+
+      renderView();
+
+      expect(getReceivedTrigger().textContent).not.toMatch(/[0-9]/);
     });
-  });
-
-  describe("INV-008 — Truncation badge '9+' et aria-label", () => {
-    it("affiche le badge avec aria-label correct pour count <= 9", () => {
-      renderView(5);
-
-      const badge = screen.getByText("5");
-      expect(badge).toHaveAttribute("aria-label", "5 demandes en attente");
-    });
-
-    it("affiche le badge '9+' avec aria-label correct pour count > 9", () => {
-      renderView(42);
-
-      const badge = screen.getByText("9+");
-      expect(badge).toHaveAttribute("aria-label", "Plus de 9 demandes en attente");
-    });
-
-    it("affiche le badge '9+' avec aria-label correct pour count = 10 (cas limite)", () => {
-      renderView(10);
-
-      const badge = screen.getByText("9+");
-      expect(badge).toHaveAttribute("aria-label", "Plus de 9 demandes en attente");
-    });
-  });
-
-  describe("Property-based : règle d'affichage pour count ∈ [0..100]", () => {
-    // fast-check non disponible dans le projet ; on génère la matrice
-    // manuellement pour couvrir l'espace [0..100].
-    const testCases = Array.from({ length: 101 }, (_, i) => {
-      const count = i;
-      let expectedText: string | null;
-      let expectedVisible: boolean;
-
-      if (count === 0) {
-        expectedText = null;    // badge caché
-        expectedVisible = false;
-      } else if (count <= 9) {
-        expectedText = String(count);
-        expectedVisible = true;
-      } else {
-        expectedText = "9+";
-        expectedVisible = true;
-      }
-
-      return { count, expectedText, expectedVisible };
-    });
-
-    it.each(testCases)(
-      "∀ count=$count : badge $expectedVisible ? '$expectedText' : caché",
-      ({ count, expectedText, expectedVisible }) => {
-        renderView(count);
-
-        if (expectedVisible) {
-          expect(screen.getByText(expectedText!)).toBeInTheDocument();
-        } else {
-          expect(screen.queryByTestId("badge-recues")).toBeNull();
-
-          // Vérifier qu'aucun nombre ni 9+ n'apparaît dans la zone de l'onglet "Reçues"
-          const trigger = screen.getByText("Reçues").closest("button");
-          const triggerText = trigger?.textContent ?? "";
-          expect(triggerText).not.toMatch(/[0-9]/);
-          expect(triggerText).not.toContain("9+");
-        }
-      },
-    );
   });
 });
 
 // ── Matrice de couverture UA ─────────────────────────────────────────────────
-// UA-006 — Affichage du badge de demandes sur l'onglet "Reçues" : COUVERT (table-driven : 1, 3, 9)
-// UA-007 — Truncation du badge à "9+" : COUVERT (table-driven : 10, 15, 99)
-// UA-010 — Masquage du badge à zéro demande : COUVERT (count=0, undefined)
-// INV-007 — Badge conditionnel (visible si count>0, caché si count=0) : COUVERT
-// INV-008 — Truncation "9+" + aria-label : COUVERT
-// Property-based (∀ count ∈ [0..100]) : COUVERT (101 cas générés par Array.from)
-//   → règle validée : caché si 0, count si 1-9, 9+ si ≥10
-//
-// Note: ces tests décrivent le contrat de la spec. Si le badge n'est pas encore
-// rendu par FriendsView, les tests échoueront — c'est attendu en dual-sandbox.
+// UA-006 — Placement du badge dans l'onglet "Reçues" : COUVERT
+// UA-007 / INV-008 — mise en forme du nombre : received-count-badge.view.test.tsx
+// UA-010 / INV-007 — masquage à zéro : received-count-badge.container.test.tsx
+// UA-009 — rafraîchissement au clic sur "Reçues" : use-friends-tabs.test.ts
