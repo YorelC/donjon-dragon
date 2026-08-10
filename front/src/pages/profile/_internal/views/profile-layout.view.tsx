@@ -19,14 +19,7 @@ export function ProfileLayoutView({
 }: ProfileLayoutViewProps) {
   return (
     <div className="flex">
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={onToggleMenu}
-        className="md:hidden absolute top-20 left-4 z-50"
-      >
-        <Menu className="size-5" />
-      </Button>
+      <ProfileMenuButton onToggleMenu={onToggleMenu} />
 
       <ProfileSidebar
         items={items}
@@ -41,40 +34,61 @@ export function ProfileLayoutView({
   );
 }
 
-function ProfileSidebar({
-  items,
-  isMenuOpen,
-  onNavigate,
-}: {
+function ProfileMenuButton({ onToggleMenu }: { onToggleMenu: () => void }) {
+  return (
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={onToggleMenu}
+      className="md:hidden absolute top-20 left-4 z-50"
+    >
+      <Menu className="size-5" />
+    </Button>
+  );
+}
+
+interface ProfileSidebarProps {
   items: ProfileNavItem[];
   isMenuOpen: boolean;
   onNavigate: () => void;
-}) {
+}
+
+function ProfileSidebar({ items, isMenuOpen, onNavigate }: ProfileSidebarProps) {
   return (
-    <aside
-      className={cn(
-        "fixed md:relative md:block w-48 border-r border-sidebar-border bg-sidebar p-4",
-        isMenuOpen ? "block" : "hidden",
-        "md:block"
-      )}
-    >
+    <aside className={toSidebarClassName(isMenuOpen)}>
       <nav role="navigation" className="flex flex-col gap-1">
         {items.map((item) => (
-          <NavLink
-            key={item.route}
-            to={item.route}
-            onClick={onNavigate}
-            className={({ isActive }) =>
-              cn(
-                buttonVariants({ variant: isActive ? "secondary" : "ghost" }),
-                "w-full justify-start"
-              )
-            }
-          >
-            {item.label}
-          </NavLink>
+          <ProfileNavLink key={item.route} item={item} onNavigate={onNavigate} />
         ))}
       </nav>
     </aside>
+  );
+}
+
+interface ProfileNavLinkProps {
+  item: ProfileNavItem;
+  onNavigate: () => void;
+}
+
+function ProfileNavLink({ item, onNavigate }: ProfileNavLinkProps) {
+  return (
+    <NavLink to={item.route} onClick={onNavigate} className={toNavLinkClassName}>
+      {item.label}
+    </NavLink>
+  );
+}
+
+function toSidebarClassName(isMenuOpen: boolean): string {
+  return cn(
+    "fixed md:relative md:block w-48 border-r border-sidebar-border bg-sidebar p-4",
+    isMenuOpen ? "block" : "hidden",
+    "md:block",
+  );
+}
+
+function toNavLinkClassName({ isActive }: { isActive: boolean }): string {
+  return cn(
+    buttonVariants({ variant: isActive ? "secondary" : "ghost" }),
+    "w-full justify-start",
   );
 }

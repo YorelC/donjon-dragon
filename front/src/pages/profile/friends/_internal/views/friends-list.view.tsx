@@ -11,33 +11,28 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/shared/components/atoms/alert-dialog";
+import type { QueryState } from "@/shared/types/ui-state";
 import type { AcceptedFriend } from "../types/friends-schema";
 import type { FriendRemoval } from "../hooks/use-friend-removal";
 
 interface FriendsListViewProps {
-  friends: AcceptedFriend[];
-  loading: boolean;
-  error: boolean;
+  friends: QueryState<AcceptedFriend[]>;
   removal: FriendRemoval;
 }
 
-export function FriendsListView({
-  friends,
-  loading,
-  error,
-  removal,
-}: FriendsListViewProps) {
-  if (loading) return <div className="empty-state-text">Chargement...</div>;
-  if (error)
+export function FriendsListView({ friends, removal }: FriendsListViewProps) {
+  if (friends.loading)
+    return <div className="empty-state-text">Chargement...</div>;
+  if (friends.error)
     return (
       <div className="empty-state-text">Erreur lors du chargement des amis.</div>
     );
-  if (friends.length === 0)
+  if (friends.data.length === 0)
     return <div className="empty-state-text">Tu n'as pas encore d'amis.</div>;
 
   return (
     <div className="space-y-2">
-      {friends.map((friend) => (
+      {friends.data.map((friend) => (
         <FriendRow key={friend.friendshipId} friend={friend} removal={removal} />
       ))}
     </div>
@@ -100,16 +95,22 @@ function RemoveFriendConfirmation({
           Voulez-vous vraiment supprimer {displayName} ?
         </AlertDialogDescription>
       </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel onClick={removal.onCancel}>Annuler</AlertDialogCancel>
-        <AlertDialogAction
-          variant="destructive"
-          onClick={removal.onConfirm}
-          disabled={removal.isPending}
-        >
-          Supprimer
-        </AlertDialogAction>
-      </AlertDialogFooter>
+      <RemoveFriendActions removal={removal} />
     </AlertDialogContent>
+  );
+}
+
+function RemoveFriendActions({ removal }: { removal: FriendRemoval }) {
+  return (
+    <AlertDialogFooter>
+      <AlertDialogCancel onClick={removal.onCancel}>Annuler</AlertDialogCancel>
+      <AlertDialogAction
+        variant="destructive"
+        onClick={removal.onConfirm}
+        disabled={removal.isPending}
+      >
+        Supprimer
+      </AlertDialogAction>
+    </AlertDialogFooter>
   );
 }

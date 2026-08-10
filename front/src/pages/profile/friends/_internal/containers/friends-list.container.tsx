@@ -8,9 +8,11 @@ export function FriendsListContainer() {
 
   return (
     <FriendsListView
-      friends={friendsQuery.data ?? []}
-      loading={friendsQuery.isLoading}
-      error={friendsQuery.isError}
+      friends={{
+        data: friendsQuery.data ?? [],
+        loading: friendsQuery.isLoading,
+        error: friendsQuery.isError,
+      }}
       removal={removal}
     />
   );

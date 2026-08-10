@@ -6,9 +6,11 @@ export function SentRequestsContainer() {
 
   return (
     <SentRequestsView
-      requests={sentQuery.data ?? []}
-      loading={sentQuery.isLoading}
-      error={sentQuery.isError}
+      requests={{
+        data: sentQuery.data ?? [],
+        loading: sentQuery.isLoading,
+        error: sentQuery.isError,
+      }}
     />
   );
 }

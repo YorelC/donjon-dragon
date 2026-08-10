@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FriendsListView } from "./friends-list.view";
 import type { FriendRemoval } from "../hooks/use-friend-removal";
+import type { QueryState } from "@/shared/types/ui-state";
 import type { AcceptedFriend } from "../types/friends-schema";
 
 const mockFriends: AcceptedFriend[] = [
@@ -24,18 +25,17 @@ function removalState(overrides: Partial<FriendRemoval> = {}): FriendRemoval {
   };
 }
 
+function queryState(
+  overrides: Partial<QueryState<AcceptedFriend[]>> = {},
+): QueryState<AcceptedFriend[]> {
+  return { data: mockFriends, loading: false, error: false, ...overrides };
+}
+
 function renderList(
   removal: FriendRemoval = removalState(),
-  friends: AcceptedFriend[] = mockFriends,
+  friends: QueryState<AcceptedFriend[]> = queryState(),
 ) {
-  return render(
-    <FriendsListView
-      friends={friends}
-      loading={false}
-      error={false}
-      removal={removal}
-    />,
-  );
+  return render(<FriendsListView friends={friends} removal={removal} />);
 }
 
 // ── Tests ────────────────────────────────────────────────────────────────────
@@ -43,33 +43,21 @@ function renderList(
 describe("FriendsListView (pure view)", () => {
   describe("affichage normal", () => {
     it("should display loading state when loading is true", () => {
-      render(
-        <FriendsListView
-          friends={[]}
-          loading={true}
-          error={false}
-          removal={removalState()}
-        />,
-      );
+      renderList(removalState(), queryState({ data: [], loading: true }));
+
       expect(screen.getByText(/Chargement\.\.\./i)).toBeInTheDocument();
     });
 
     it("should display error state when error is true", () => {
-      render(
-        <FriendsListView
-          friends={[]}
-          loading={false}
-          error={true}
-          removal={removalState()}
-        />,
-      );
+      renderList(removalState(), queryState({ data: [], error: true }));
+
       expect(
         screen.getByText(/Erreur lors du chargement des amis\./i),
       ).toBeInTheDocument();
     });
 
     it("should display empty state when no friends and not loading/error", () => {
-      renderList(removalState(), []);
+      renderList(removalState(), queryState({ data: [] }));
       expect(screen.getByText(/Tu n'as pas encore d'amis\./i)).toBeInTheDocument();
     });
 
