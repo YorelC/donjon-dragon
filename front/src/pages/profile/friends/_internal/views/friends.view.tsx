@@ -25,20 +25,28 @@ export function FriendsView({ activeTab, onTabChange }: FriendsViewProps) {
         onValueChange={(tab) => onTabChange(tab as FriendsTab)}
       >
         <FriendsTabsList />
-        <TabsContent value="friends" className="mt-6">
-          <FriendsListContainer />
-        </TabsContent>
-        <TabsContent value="received" className="mt-6">
-          <ReceivedRequestsContainer />
-        </TabsContent>
-        <TabsContent value="sent" className="mt-6">
-          <SentRequestsContainer />
-        </TabsContent>
-        <TabsContent value="search" className="mt-6">
-          <SearchUsersContainer />
-        </TabsContent>
+        <FriendsTabsPanels />
       </Tabs>
     </div>
+  );
+}
+
+function FriendsTabsPanels() {
+  return (
+    <>
+      <TabsContent value="friends" className="mt-6">
+        <FriendsListContainer />
+      </TabsContent>
+      <TabsContent value="received" className="mt-6">
+        <ReceivedRequestsContainer />
+      </TabsContent>
+      <TabsContent value="sent" className="mt-6">
+        <SentRequestsContainer />
+      </TabsContent>
+      <TabsContent value="search" className="mt-6">
+        <SearchUsersContainer />
+      </TabsContent>
+    </>
   );
 }
 

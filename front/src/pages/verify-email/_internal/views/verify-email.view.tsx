@@ -42,15 +42,21 @@ function VerifyEmailError({ message }: VerifyEmailErrorProps) {
       <Alert className="alert-error">
         <AlertDescription>{message}</AlertDescription>
       </Alert>
-      <div className="auth-links">
-        <Link to={ROUTES.login} className="text-primary underline">
-          Connexion
-        </Link>
-        <span className="text-muted-foreground">/</span>
-        <Link to={ROUTES.register} className="text-primary underline">
-          Inscription
-        </Link>
-      </div>
+      <AuthLinks />
+    </div>
+  );
+}
+
+function AuthLinks() {
+  return (
+    <div className="auth-links">
+      <Link to={ROUTES.login} className="text-primary underline">
+        Connexion
+      </Link>
+      <span className="text-muted-foreground">/</span>
+      <Link to={ROUTES.register} className="text-primary underline">
+        Inscription
+      </Link>
     </div>
   );
 }

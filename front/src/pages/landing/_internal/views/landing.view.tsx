@@ -5,6 +5,15 @@ import { ROUTES } from "@/shared/constants/routes";
 export function LandingView() {
   return (
     <section className="flex flex-col items-center gap-6 py-16 text-center">
+      <LandingHero />
+      <LandingActions />
+    </section>
+  );
+}
+
+function LandingHero() {
+  return (
+    <>
       <h2 className="hero-title">
         Créez vos personnages, lancez-vous en combat.
       </h2>
@@ -12,14 +21,19 @@ export function LandingView() {
         Gérez vos fiches de personnage Donjons & Dragons et affrontez vos
         ennemis en temps réel.
       </p>
-      <div className="flex gap-4">
-        <Button asChild size="lg">
-          <Link to={ROUTES.register}>S'inscrire</Link>
-        </Button>
-        <Button asChild size="lg" variant="outline">
-          <Link to={ROUTES.login}>Se connecter</Link>
-        </Button>
-      </div>
-    </section>
+    </>
+  );
+}
+
+function LandingActions() {
+  return (
+    <div className="flex gap-4">
+      <Button asChild size="lg">
+        <Link to={ROUTES.register}>S'inscrire</Link>
+      </Button>
+      <Button asChild size="lg" variant="outline">
+        <Link to={ROUTES.login}>Se connecter</Link>
+      </Button>
+    </div>
   );
 }
