@@ -6,9 +6,10 @@ import { LoginSchema, type LoginDto } from "@donjon-dragon/shared";
 import { ApiError } from "@/shared/api/api";
 import { useAuthStore } from "@/shared/stores/auth.store";
 import { ROUTES } from "@/shared/constants/routes";
+import type { FormState } from "@/shared/types/ui-state";
 import { useLogin } from "../queries/use-login";
 
-export function useLoginForm() {
+export function useLoginForm(): FormState<LoginDto> {
   const form = useForm<LoginDto>({
     resolver: zodResolver(LoginSchema),
     defaultValues: { email: "", password: "" },

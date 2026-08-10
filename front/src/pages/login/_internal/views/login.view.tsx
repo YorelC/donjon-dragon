@@ -1,94 +1,93 @@
 import { Link } from "react-router-dom";
-import type { Control, FieldErrors } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import { Button } from "@/shared/components/atoms/button";
 import { FormTextInput } from "@/shared/components/molecules/form-text-input";
 import { Alert, AlertDescription } from "@/shared/components/atoms/alert";
 import { ROUTES } from "@/shared/constants/routes";
+import type { FormState } from "@/shared/types/ui-state";
 import type { LoginDto } from "@donjon-dragon/shared";
 
 interface LoginViewProps {
-  control: Control<LoginDto>;
-  errors: FieldErrors<LoginDto>;
-  onFormSubmit: (event: React.FormEvent) => void;
-  isSubmitting: boolean;
-  errorMessage?: string;
+  form: FormState<LoginDto>;
 }
 
-export function LoginView({
-  control,
-  errors,
-  onFormSubmit,
-  isSubmitting,
-  errorMessage,
-}: LoginViewProps) {
+export function LoginView({ form }: LoginViewProps) {
   return (
     <div className="auth-container">
-      <LoginForm
-        control={control}
-        errors={errors}
-        onFormSubmit={onFormSubmit}
-        isSubmitting={isSubmitting}
-        errorMessage={errorMessage}
-      />
+      <LoginForm form={form} />
       <LoginFooter />
     </div>
   );
 }
 
-interface LoginFormProps {
-  control: Control<LoginDto>;
-  errors: FieldErrors<LoginDto>;
-  onFormSubmit: (event: React.FormEvent) => void;
-  isSubmitting: boolean;
-  errorMessage?: string;
+function LoginForm({ form }: LoginViewProps) {
+  return (
+    <form onSubmit={form.onSubmit} className="flex flex-col gap-4">
+      <LoginFields form={form} />
+      <LoginErrorAlert message={form.errorMessage} />
+      <LoginSubmitButton isSubmitting={form.isSubmitting} />
+    </form>
+  );
 }
 
-function LoginForm({
-  control,
-  errors,
-  onFormSubmit,
-  isSubmitting,
-  errorMessage,
-}: LoginFormProps) {
+interface LoginFieldDescriptor {
+  name: keyof LoginDto;
+  label: string;
+  type: string;
+}
+
+const LOGIN_FIELDS: LoginFieldDescriptor[] = [
+  { name: "email", label: "Adresse email", type: "email" },
+  { name: "password", label: "Mot de passe", type: "password" },
+];
+
+function LoginFields({ form }: LoginViewProps) {
   return (
-    <form onSubmit={onFormSubmit} className="flex flex-col gap-4">
-      <Controller
-        name="email"
-        control={control}
-        render={({ field }) => (
-          <FormTextInput
-            label="Adresse email"
-            field={field}
-            type="email"
-            error={errors.email?.message}
-          />
-        )}
-      />
+    <>
+      {LOGIN_FIELDS.map((field) => (
+        <LoginField key={field.name} field={field} form={form} />
+      ))}
+    </>
+  );
+}
 
-      <Controller
-        name="password"
-        control={control}
-        render={({ field }) => (
-          <FormTextInput
-            label="Mot de passe"
-            field={field}
-            type="password"
-            error={errors.password?.message}
-          />
-        )}
-      />
+interface LoginFieldProps {
+  field: LoginFieldDescriptor;
+  form: FormState<LoginDto>;
+}
 
-      {errorMessage && (
-        <Alert className="alert-error">
-          <AlertDescription>{errorMessage}</AlertDescription>
-        </Alert>
+function LoginField({ field, form }: LoginFieldProps) {
+  return (
+    <Controller
+      name={field.name}
+      control={form.control}
+      render={({ field: controlled }) => (
+        <FormTextInput
+          label={field.label}
+          field={controlled}
+          type={field.type}
+          error={form.errors[field.name]?.message}
+        />
       )}
+    />
+  );
+}
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Connexion..." : "Se connecter"}
-      </Button>
-    </form>
+function LoginErrorAlert({ message }: { message?: string }) {
+  if (!message) return null;
+
+  return (
+    <Alert className="alert-error">
+      <AlertDescription>{message}</AlertDescription>
+    </Alert>
+  );
+}
+
+function LoginSubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
+  return (
+    <Button type="submit" disabled={isSubmitting}>
+      {isSubmitting ? "Connexion..." : "Se connecter"}
+    </Button>
   );
 }
 

@@ -1,78 +1,38 @@
-import type { Control, FieldErrors } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import type { UserSummary } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Card, CardContent } from "@/shared/components/atoms/card";
-import type { SearchFormValues } from "../types/friends-schema";
 import { FormTextInput } from "@/shared/components/molecules/form-text-input";
+import type { QueryState } from "@/shared/types/ui-state";
+import type { UserSearch } from "../hooks/use-search-form";
+import type { UserInvitation } from "../hooks/use-user-invitation";
 
 interface SearchUsersViewProps {
-  data: UserSummary[];
-  loading: boolean;
-  error: boolean;
-  searchControl: Control<SearchFormValues>;
-  searchErrors: FieldErrors<SearchFormValues>;
-  onSearchSubmit: (e: React.FormEvent) => void;
-  submittedQuery: string;
-  onSendRequest: (displayName: string) => void;
-  pendingRecipients: Set<string>;
-  sendMutationPending: boolean;
+  results: QueryState<UserSummary[]>;
+  search: UserSearch;
+  invitation: UserInvitation;
 }
 
 export function SearchUsersView({
-  data,
-  loading,
-  error,
-  searchControl,
-  searchErrors,
-  onSearchSubmit,
-  submittedQuery,
-  onSendRequest,
-  pendingRecipients,
-  sendMutationPending,
+  results,
+  search,
+  invitation,
 }: SearchUsersViewProps) {
   return (
     <div className="space-y-6">
-      <SearchForm
-        control={searchControl}
-        errors={searchErrors}
-        onSubmit={onSearchSubmit}
-      />
-      {submittedQuery && (
-        <SearchResults
-          data={data}
-          loading={loading}
-          error={error}
-          onSendRequest={onSendRequest}
-          pendingRecipients={pendingRecipients}
-          sendMutationPending={sendMutationPending}
-        />
+      <SearchForm search={search} />
+      {search.submittedQuery && (
+        <SearchResults results={results} invitation={invitation} />
       )}
     </div>
   );
 }
 
-interface SearchFormProps {
-  control: Control<SearchFormValues>;
-  errors: FieldErrors<SearchFormValues>;
-  onSubmit: (e: React.FormEvent) => void;
-}
-
-function SearchForm({ control, errors, onSubmit }: SearchFormProps) {
+function SearchForm({ search }: { search: UserSearch }) {
   return (
-    <form onSubmit={onSubmit} className="flex gap-2">
+    <form onSubmit={search.onSubmit} className="flex gap-2">
       <div className="flex-1">
-        <Controller
-          name="query"
-          control={control}
-          render={({ field }) => (
-            <FormTextInput
-              label="Rechercher un joueur"
-              field={field}
-              error={errors.query?.message}
-            />
-          )}
-        />
+        <SearchQueryField search={search} />
       </div>
       <Button type="submit" className="self-end">
         Chercher
@@ -81,52 +41,81 @@ function SearchForm({ control, errors, onSubmit }: SearchFormProps) {
   );
 }
 
-interface SearchResultsProps {
-  data: UserSummary[];
-  loading: boolean;
-  error: boolean;
-  onSendRequest: (displayName: string) => void;
-  pendingRecipients: Set<string>;
-  sendMutationPending: boolean;
+function SearchQueryField({ search }: { search: UserSearch }) {
+  return (
+    <Controller
+      name="query"
+      control={search.control}
+      render={({ field }) => (
+        <FormTextInput
+          label="Rechercher un joueur"
+          field={field}
+          error={search.errors.query?.message}
+        />
+      )}
+    />
+  );
 }
 
-function SearchResults({
-  data,
-  loading,
-  error,
-  onSendRequest,
-  pendingRecipients,
-  sendMutationPending,
-}: SearchResultsProps) {
-  if (loading) return <div className="empty-state-text">Chargement...</div>;
-  if (error) return <div className="empty-state-text">Erreur lors de la recherche.</div>;
-  if (data.length === 0) {
+interface SearchResultsProps {
+  results: QueryState<UserSummary[]>;
+  invitation: UserInvitation;
+}
+
+function SearchResults({ results, invitation }: SearchResultsProps) {
+  if (results.loading)
+    return <div className="empty-state-text">Chargement...</div>;
+  if (results.error)
+    return <div className="empty-state-text">Erreur lors de la recherche.</div>;
+  if (results.data.length === 0) {
     return <div className="empty-state-text">Aucun résultat trouvé.</div>;
   }
 
   return (
     <div className="space-y-2">
-      {data.map((user) => {
-        const alreadyInvited = pendingRecipients.has(user.displayName);
-        return (
-          <Card key={user.displayName}>
-            <CardContent className="flex items-center justify-between p-4">
-              <span className="font-medium">{user.displayName}</span>
-              <Button
-                onClick={() => onSendRequest(user.displayName)}
-                disabled={sendMutationPending || alreadyInvited}
-                size="sm"
-              >
-                {alreadyInvited
-                  ? "Invitation envoyée"
-                  : sendMutationPending
-                    ? "Envoi..."
-                    : "Envoyer"}
-              </Button>
-            </CardContent>
-          </Card>
-        );
-      })}
+      {results.data.map((user) => (
+        <UserSearchResultRow
+          key={user.displayName}
+          user={user}
+          invitation={invitation}
+        />
+      ))}
     </div>
   );
+}
+
+interface UserSearchResultRowProps {
+  user: UserSummary;
+  invitation: UserInvitation;
+}
+
+function UserSearchResultRow({ user, invitation }: UserSearchResultRowProps) {
+  return (
+    <Card>
+      <CardContent className="flex items-center justify-between p-4">
+        <span className="font-medium">{user.displayName}</span>
+        <SendInvitationButton user={user} invitation={invitation} />
+      </CardContent>
+    </Card>
+  );
+}
+
+function SendInvitationButton({ user, invitation }: UserSearchResultRowProps) {
+  const alreadyInvited = invitation.pendingRecipients.has(user.displayName);
+
+  return (
+    <Button
+      onClick={() => invitation.onSend(user.displayName)}
+      disabled={invitation.isPending || alreadyInvited}
+      size="sm"
+    >
+      {toInvitationLabel(alreadyInvited, invitation.isPending)}
+    </Button>
+  );
+}
+
+function toInvitationLabel(alreadyInvited: boolean, isPending: boolean): string {
+  if (alreadyInvited) return "Invitation envoyée";
+  if (isPending) return "Envoi...";
+  return "Envoyer";
 }

@@ -6,13 +6,19 @@ import {
   type DomainErrorCode,
 } from "@donjon-dragon/shared";
 import { ApiError } from "@/shared/api/api";
+import type { FormState } from "@/shared/types/ui-state";
 import {
   RegisterFormSchema,
   type RegisterFormValues,
 } from "../types/register-form-schema";
 import { useRegister } from "../queries/use-register";
 
-export function useRegisterForm() {
+export interface RegisterFormState {
+  form: FormState<RegisterFormValues>;
+  success: boolean;
+}
+
+export function useRegisterForm(): RegisterFormState {
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: EMPTY_REGISTER_FORM,
@@ -22,12 +28,16 @@ export function useRegisterForm() {
   );
 
   return {
-    control: form.control,
-    errors: form.formState.errors,
-    onSubmit: form.handleSubmit(submit),
-    isSubmitting: form.formState.isSubmitting || isPending,
-    errorMessage,
     success,
+    form: {
+      control: form.control,
+      errors: form.formState.errors,
+      onSubmit: form.handleSubmit(submit),
+      isSubmitting: form.formState.isSubmitting || isPending,
+      // Le succes remplace le formulaire : garder l'erreur precedente
+      // afficherait un message mort sous l'ecran de confirmation.
+      errorMessage: success ? undefined : errorMessage,
+    },
   };
 }
 
