@@ -5,6 +5,7 @@ import { ClockModule } from '@kernel/infrastructure/clock.module';
 import { UserModule } from '@modules/user/user.module';
 import { FRIEND_DIRECTORY } from './application/ports/friend-directory.port';
 import { FRIENDSHIP_REPOSITORY } from './application/ports/friendship.repository.port';
+import { AreFriendsUseCase } from './application/use-cases/are-friends.use-case';
 import { SendFriendRequestUseCase } from './application/use-cases/send-friend-request.use-case';
 import { AcceptFriendRequestUseCase } from './application/use-cases/accept-friend-request.use-case';
 import { RefuseFriendRequestUseCase } from './application/use-cases/refuse-friend-request.use-case';
@@ -35,6 +36,7 @@ import { FriendshipController } from './presentation/friendship.controller';
     { provide: FRIENDSHIP_REPOSITORY, useClass: MongoFriendshipRepository },
     // Anti-corruption layer : le seul provider qui traverse vers le module user.
     { provide: FRIEND_DIRECTORY, useClass: UserFriendDirectory },
+    AreFriendsUseCase,
     SendFriendRequestUseCase,
     AcceptFriendRequestUseCase,
     RefuseFriendRequestUseCase,
@@ -45,5 +47,9 @@ import { FriendshipController } from './presentation/friendship.controller';
     SearchUsersUseCase,
     CountPendingReceivedUseCase,
   ],
+  // Seul `AreFriendsUseCase` sort : c'est ce dont `campaigns` a besoin pour
+  // n'autoriser l'invitation qu'entre amis. FRIENDSHIP_REPOSITORY reste privé —
+  // avec lui en main, un voisin écrirait dans l'agrégat sans ses invariants.
+  exports: [AreFriendsUseCase],
 })
 export class FriendshipModule {}

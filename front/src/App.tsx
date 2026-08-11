@@ -3,6 +3,9 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Home from "./pages/home/home.page";
 import { LandingPage } from "./pages/landing/landing.page";
 import { CampaignsPage } from "./pages/campaigns/campaigns.page";
+import { CampaignDetailPage } from "./pages/campaigns/detail/detail.page";
+import { CampaignUsersPage } from "./pages/campaigns/detail/users/users.page";
+import { CampaignCharactersPage } from "./pages/campaigns/detail/characters/characters.page";
 import { FriendsPage } from "./pages/profile/friends/friends.page";
 import { RegisterPage } from "./pages/register/register.page";
 import { LoginPage } from "./pages/login/login.page";
@@ -41,6 +44,7 @@ function AppRoutes() {
       <Route path={ROUTES.home} element={<HomeRoute />} />
       <Route element={<PrivateRoute />}>
         <Route path={ROUTES.campaigns} element={<CampaignsPage />} />
+        {CampaignDetailRoutes()}
         <Route path={ROUTES.profile} element={<ProfilePage />}>
           <Route index element={<Navigate to={ROUTES.profileFriends} />} />
           <Route path={ROUTES.profileFriends} element={<FriendsPage />} />
@@ -51,6 +55,19 @@ function AppRoutes() {
       <Route path={ROUTES.login} element={<LoginPage />} />
       <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
     </Routes>
+  );
+}
+
+function CampaignDetailRoutes() {
+  return (
+    <Route path={ROUTES.campaignDetail} element={<CampaignDetailPage />}>
+      <Route index element={<Navigate to="users" replace />} />
+      <Route path={ROUTES.campaignDetailUsers} element={<CampaignUsersPage />} />
+      <Route
+        path={ROUTES.campaignDetailCharacters}
+        element={<CampaignCharactersPage />}
+      />
+    </Route>
   );
 }
 

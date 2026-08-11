@@ -19,6 +19,12 @@ export interface UserSearchPage {
 export interface UserRepositoryPort {
   save(user: User): Promise<void>;
   findById(id: UserId): Promise<User | null>;
+
+  // Lecture groupée : afficher les membres d'une campagne demande N pseudos, et
+  // une requête par membre serait un N+1. L'ordre du retour n'est pas garanti, et
+  // un identifiant inconnu est simplement absent — l'appelant décide quoi en faire.
+  findManyByIds(ids: UserId[]): Promise<User[]>;
+
   findByEmail(email: Email): Promise<User | null>;
 
   // Lookup exact (unicité à l'inscription, résolution d'une demande d'ami

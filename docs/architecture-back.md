@@ -162,7 +162,7 @@ presentation ──appelle──▶ application ──dépend du TYPE──▶ d
 Le sens des flèches est sacré ; les cloisons entre dossiers ne le sont pas : un
 `application/` peut dépendre de n'importe quel `domain/` du même contexte.
 
-### Les 19 fitness functions
+### Les 20 fitness functions
 
 `back/.dependency-cruiser.cjs`, exécuté par `pnpm --filter back lint`. Chacune répond
 à une question précise.
@@ -184,6 +184,7 @@ Le sens des flèches est sacré ; les cloisons entre dossiers ne le sont pas : u
 | `ports-are-module-private` | Un module voisin peut-il prendre un port plutôt qu'un use-case ? Non : il contournerait les invariants. |
 | `ports-are-not-reachable-from-outside` | Même cloison depuis `common/`, `kernel/` et `scripts/`, que la règle précédente ne pouvait pas viser. |
 | `friendship-is-downstream` | `user` ou `auth` peuvent-ils dépendre de `friendship` ? Non : réaction inverse = event. |
+| `campaigns-is-downstream` | Même question un cran plus bas : `campaigns` connaît `user` et `friendship`, jamais l'inverse. |
 | `no-testing-doubles-in-production-code` | Une `FixedClock` peut-elle fuir en production et geler le temps ? |
 | `common-and-kernel-know-no-business` | Le filtre d'exception peut-il mapper par classe métier ? Non, d'où le mapping par nature. |
 | `no-circular` | Un cycle se contourne-t-il avec `forwardRef()` ? Non, il se corrige. |

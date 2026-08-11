@@ -25,6 +25,15 @@ export class MongoUserRepository implements UserRepositoryPort {
     return this.findOne({ id: id.value });
   }
 
+  async findManyByIds(ids: UserId[]): Promise<User[]> {
+    const docs = await this.model
+      .find({ id: { $in: ids.map((id) => id.value) } })
+      .select('-_id')
+      .lean<UserDocument[]>();
+
+    return docs.map(toDomain);
+  }
+
   async findByEmail(email: Email): Promise<User | null> {
     return this.findOne({ email: email.value });
   }

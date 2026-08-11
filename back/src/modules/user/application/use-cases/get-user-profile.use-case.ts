@@ -37,6 +37,12 @@ export class GetUserProfileUseCase {
     return user ? toUserIdentity(user) : null;
   }
 
+  /** Une seule lecture pour N identifiants : voir `findManyByIds` sur le port. */
+  async identitiesByIds(ids: string[]): Promise<UserIdentity[]> {
+    const users = await this.userRepo.findManyByIds(ids.map(UserId.create));
+    return users.map(toUserIdentity);
+  }
+
   async identityByDisplayName(displayName: string): Promise<UserIdentity | null> {
     const user = await this.userRepo.findByDisplayName(
       DisplayName.create(displayName),

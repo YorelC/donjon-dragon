@@ -19,6 +19,52 @@ export const API_ROUTES = {
       refuse: (friendshipId: string) => `/api/friends/refuse/${friendshipId}`,
       remove: (friendshipId: string) => `/api/friends/${friendshipId}`,
     },
+  campaigns: {
+    list: "/api/campaigns",
+    create: "/api/campaigns",
+    invitations: "/api/campaigns/invitations",
+    invitationsCount: "/api/campaigns/invitations/count",
+    invite: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/invitations`,
+    acceptInvitation: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/invitations/accept`,
+    refuseInvitation: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/invitations/refuse`,
+    detail: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}`,
+    remove: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}`,
+    // Quitter est un POST et non un DELETE .../members/me : « me » est un pseudo
+    // valide, la route paramétrée des membres l'avalerait.
+    leave: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/leave`,
+    owner: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/owner`,
+    removeMember: (campaignId: string, displayName: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/members/${encodeURIComponent(displayName)}`,
+    promoteMember: (campaignId: string, displayName: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/members/${encodeURIComponent(displayName)}/promote`,
+    demoteMember: (campaignId: string, displayName: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/members/${encodeURIComponent(displayName)}/demote`,
+    selfPromote: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/owner/promote`,
+    selfDemote: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/owner/demote`,
+  },
+  characters: {
+    list: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,
+    create: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,
+    update: (campaignId: string, characterId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}`,
+    remove: (campaignId: string, characterId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}`,
+    assign: (campaignId: string, characterId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/assign`,
+    unassign: (campaignId: string, characterId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/unassign`,
+  },
 } as const;
 
 /**

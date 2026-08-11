@@ -1,8 +1,8 @@
-import { useAuthStore } from "@/shared/stores/auth.store";
+import { useCampaignsTabs } from "../hooks/use-campaigns-tabs";
 import { CampaignsView } from "../views/campaigns.view";
 
 export function CampaignsContainer() {
-  const displayName = useAuthStore((s) => s.user?.displayName ?? "");
+  const { activeTab, setActiveTab } = useCampaignsTabs();
 
-  return <CampaignsView displayName={displayName} />;
+  return <CampaignsView activeTab={activeTab} onTabChange={setActiveTab} />;
 }

@@ -16,6 +16,12 @@ export class InMemoryUserRepository implements UserRepositoryPort {
     return this.users.get(id.value) ?? null;
   }
 
+  async findManyByIds(ids: UserId[]): Promise<User[]> {
+    return ids
+      .map((id) => this.users.get(id.value))
+      .filter((user): user is User => user !== undefined);
+  }
+
   async findByEmail(email: Email): Promise<User | null> {
     return this.all().find((user) => user.email.equals(email)) ?? null;
   }

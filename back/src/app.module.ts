@@ -13,6 +13,8 @@ import { DatabaseModule } from '@kernel/infrastructure/database.module';
 import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { FriendshipModule } from '@modules/friendship/friendship.module';
+import { CampaignsModule } from '@modules/campaigns/campaigns.module';
+import { CharactersModule } from '@modules/characters/characters.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { FriendshipModule } from '@modules/friendship/friendship.module';
     UserModule,
     AuthModule,
     FriendshipModule,
+    CampaignsModule,
+    CharactersModule,
   ],
   providers: [
     // Tout est protégé par défaut. Une route publique doit le déclarer avec
