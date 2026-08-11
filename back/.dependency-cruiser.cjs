@@ -192,6 +192,18 @@ module.exports = {
       to: { path: '^src/modules/friendship/' },
     },
     {
+      name: 'campaigns-is-downstream',
+      comment:
+        'Jumelle de la precedente, un cran plus bas : campaigns connait user et ' +
+        'friendship (il resout un pseudo, il verifie une amitie avant une ' +
+        "invitation), aucun des deux ne connait campaigns. Sans cette regle, la " +
+        "dependance pourrait s'inverser le jour ou user voudra afficher les " +
+        "campagnes d'un profil — et le cycle ne se verrait qu'au forwardRef.",
+      severity: 'error',
+      from: { path: '^src/modules/(user|auth|friendship)/' },
+      to: { path: '^src/modules/campaigns/' },
+    },
+    {
       name: 'no-testing-doubles-in-production-code',
       comment:
         'Les doubles de <module>/testing/ et de kernel/testing/ ne sont importables ' +
