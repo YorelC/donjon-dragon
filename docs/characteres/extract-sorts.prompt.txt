@@ -1,0 +1,60 @@
+Tu vas extraire la liste complète des sorts de D&D 2024 depuis le site AideDD et produire un fichier JSON de seed.
+
+SOURCE
+- Liste des sorts : https://www.aidedd.org/spell/fr/ (page dynamique, utilise le navigateur)
+- Pour chaque sort, ouvre sa page de détail pour récupérer la description complète et l'effet aux niveaux supérieurs.
+
+SCHÉMA CIBLE
+Un fichier JSON contenant un tableau. Un objet par sort, avec exactement ces champs :
+{
+  "key": string,            // identifiant stable, kebab-case anglais, ex "fireball"
+  "name": string,           // nom français affiché
+  "level": number,          // 0 à 9, 0 = sort mineur (cantrip)
+  "school": string,         // voir mapping ci-dessous
+  "castingTime": string,
+  "range": string,
+  "components": { "verbal": boolean, "somatic": boolean, "material": string | null },
+  "duration": string,
+  "description": string,
+  "higherLevel": string | null,
+  "classLists": string[],   // clés anglaises, voir mapping
+  "ritual": boolean,
+  "concentration": boolean
+}
+
+MAPPINGS FRANÇAIS -> ANGLAIS
+Écoles :
+Abjuration -> abjuration
+Invocation -> conjuration
+Divination -> divination
+Enchantement -> enchantment
+Évocation -> evocation
+Illusion -> illusion
+Nécromancie -> necromancy
+Transmutation -> transmutation
+
+Classes :
+Barbare -> barbarian
+Barde -> bard
+Clerc -> cleric
+Druide -> druid
+Ensorceleur -> sorcerer
+Guerrier -> fighter
+Magicien -> wizard
+Moine -> monk
+Occultiste -> warlock
+Paladin -> paladin
+Rôdeur -> ranger
+Roublard -> rogue
+
+RÈGLES
+- Un seul fichier JSON valide, un tableau, pas de texte autour.
+- Champ absent de la source : null (ou false pour un booléen).
+- "ritual" : true si le sort a la mention rituel, sinon false.
+- "concentration" : true si la durée mentionne Concentration, sinon false.
+- Si un sort a plusieurs écoles, prends la première.
+- Classe dont tu n'es pas certain : omets-la de classLists plutôt que d'inventer.
+
+SORTIE
+Écris le fichier JSON dans : C:\_work\my_projects\donjon-dragon\docs\characteres\spells.seed.json
+Puis réponds en une seule ligne : le nombre de sorts extraits et le chemin du fichier.
