@@ -37,19 +37,15 @@ export function useCharacterForm(campaignId: string): CharacterFormState {
   const create = useCreateCharacter(campaignId);
   const update = useUpdateCharacter(campaignId);
 
-  const onOpen = (character: Character | null) =>
-    openWith({ character, setEditing, setSheet, setOpen });
-  const onSubmit = () =>
-    submitSheet({ editing, sheet, create, update, onDone: () => setOpen(false) });
-
   return {
     open,
     editing,
     sheet,
-    onOpen,
+    onOpen: (character) => openWith({ character, setEditing, setSheet, setOpen }),
     onOpenChange: setOpen,
     onChange: setSheet,
-    onSubmit,
+    onSubmit: () =>
+      submitSheet({ editing, sheet, create, update, onDone: () => setOpen(false) }),
     isSubmitting: create.isPending || update.isPending,
   };
 }

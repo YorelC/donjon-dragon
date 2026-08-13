@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import { useAuthStore } from "@/shared/stores/auth.store";
 import { useCampaignDetail } from "@/shared/queries/use-campaign-detail";
 import { useCampaignCharacters } from "../queries/use-campaign-characters";
 import { useCharacterActions } from "../hooks/use-character-actions";
 import { useCharacterForm } from "../hooks/use-character-form";
+import { useCharacterViewer } from "../hooks/use-character-viewer";
 import { useOwnerToggle } from "../hooks/use-owner-toggle";
 import { CampaignCharactersView } from "../views/campaign-characters.view";
 
@@ -11,7 +11,7 @@ export function CampaignCharactersContainer() {
   const { campaignId = "" } = useParams();
   const { data: campaign } = useCampaignDetail(campaignId);
   const { data: characters } = useCampaignCharacters(campaignId);
-  const displayName = useAuthStore((s) => s.user?.displayName ?? "");
+  const viewer = useCharacterViewer(campaign);
   const form = useCharacterForm(campaignId);
   const actions = useCharacterActions(campaignId);
   const ownerToggle = useOwnerToggle(campaignId, campaign?.isOwner ?? false);
@@ -20,12 +20,11 @@ export function CampaignCharactersContainer() {
   return (
     <CampaignCharactersView
       characters={characters}
-      viewer={{ isGameMaster: campaign.myRole === "gameMaster", displayName }}
+      viewer={viewer}
       campaignId={campaignId}
       form={form}
       ownerToggle={ownerToggle}
-      onDelete={actions.onDelete}
-      onUnassign={actions.onUnassign}
+      {...actions}
     />
   );
 }
