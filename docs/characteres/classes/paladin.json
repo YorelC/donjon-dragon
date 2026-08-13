@@ -1,0 +1,469 @@
+{
+  "key": "paladin",
+  "name": "Paladin",
+  "source": {
+    "book": "Manuel des Joueurs (2024)",
+    "url": "https://www.aidedd.org/regles-24/classes/paladin/"
+  },
+  "primaryAbility": ["strength", "charisma"],
+  "hitDie": 10,
+  "hpAtLevel1": 10,
+  "hpAtHigherLevels": "1d10 (ou 6) + modificateur de Constitution",
+  "savingThrows": ["wisdom", "charisma"],
+  "skillChoices": {
+    "count": 2,
+    "from": ["athletics", "insight", "intimidation", "medicine", "persuasion", "religion"]
+  },
+  "weaponProficiencies": ["simple", "martial"],
+  "armorTraining": ["light", "medium", "heavy", "shields"],
+  "startingEquipment": {
+    "optionA": ["cotte de mailles", "bouclier", "épée longue", "6 javelines", "symbole sacré", "sac d'ecclésiastique", "9 po"],
+    "optionB": ["150 po"]
+  },
+  "multiclassPrerequisites": {
+    "strength": 13,
+    "charisma": 13
+  },
+  "multiclassProficiencies": {
+    "weaponProficiencies": ["martial"],
+    "armorTraining": ["light", "medium", "shields"]
+  },
+  "spellcasting": {
+    "type": "half",
+    "ability": "charisma",
+    "focus": "holySymbol",
+    "preparation": "prepared",
+    "multiclassSlotContribution": 0.5
+  },
+  "progression": [
+    {
+      "level": 1,
+      "proficiencyBonus": 2,
+      "features": ["layOnHands", "spellcasting", "weaponMastery"],
+      "cantripsKnown": 0,
+      "spellSlots": [2, 0, 0, 0, 0],
+      "spellsPrepared": 2,
+      "channelDivinity": 0
+    },
+    {
+      "level": 2,
+      "proficiencyBonus": 2,
+      "features": ["fightingStyle", "paladinsSmite"],
+      "cantripsKnown": 0,
+      "spellSlots": [2, 0, 0, 0, 0],
+      "spellsPrepared": 3,
+      "channelDivinity": 0
+    },
+    {
+      "level": 3,
+      "proficiencyBonus": 2,
+      "features": ["channelDivinity", "paladinSubclass"],
+      "cantripsKnown": 0,
+      "spellSlots": [3, 0, 0, 0, 0],
+      "spellsPrepared": 4,
+      "channelDivinity": 2
+    },
+    {
+      "level": 4,
+      "proficiencyBonus": 2,
+      "features": ["abilityScoreImprovement"],
+      "cantripsKnown": 0,
+      "spellSlots": [3, 0, 0, 0, 0],
+      "spellsPrepared": 5,
+      "channelDivinity": 2
+    },
+    {
+      "level": 5,
+      "proficiencyBonus": 3,
+      "features": ["extraAttack", "faithfulSteed"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 2, 0, 0, 0],
+      "spellsPrepared": 6,
+      "channelDivinity": 2
+    },
+    {
+      "level": 6,
+      "proficiencyBonus": 3,
+      "features": ["auraOfProtection"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 2, 0, 0, 0],
+      "spellsPrepared": 6,
+      "channelDivinity": 2
+    },
+    {
+      "level": 7,
+      "proficiencyBonus": 3,
+      "features": ["subclassFeature"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 0, 0, 0],
+      "spellsPrepared": 7,
+      "channelDivinity": 2
+    },
+    {
+      "level": 8,
+      "proficiencyBonus": 3,
+      "features": ["abilityScoreImprovement"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 0, 0, 0],
+      "spellsPrepared": 7,
+      "channelDivinity": 2
+    },
+    {
+      "level": 9,
+      "proficiencyBonus": 4,
+      "features": ["abjureFoes"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 2, 0, 0],
+      "spellsPrepared": 9,
+      "channelDivinity": 2
+    },
+    {
+      "level": 10,
+      "proficiencyBonus": 4,
+      "features": ["auraOfCourage"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 2, 0, 0],
+      "spellsPrepared": 9,
+      "channelDivinity": 2
+    },
+    {
+      "level": 11,
+      "proficiencyBonus": 4,
+      "features": ["radiantStrikes"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 0, 0],
+      "spellsPrepared": 10,
+      "channelDivinity": 3
+    },
+    {
+      "level": 12,
+      "proficiencyBonus": 4,
+      "features": ["abilityScoreImprovement"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 0, 0],
+      "spellsPrepared": 10,
+      "channelDivinity": 3
+    },
+    {
+      "level": 13,
+      "proficiencyBonus": 5,
+      "features": [],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 1, 0],
+      "spellsPrepared": 11,
+      "channelDivinity": 3
+    },
+    {
+      "level": 14,
+      "proficiencyBonus": 5,
+      "features": ["restoringTouch"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 1, 0],
+      "spellsPrepared": 11,
+      "channelDivinity": 3
+    },
+    {
+      "level": 15,
+      "proficiencyBonus": 5,
+      "features": ["subclassFeature"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 2, 0],
+      "spellsPrepared": 12,
+      "channelDivinity": 3
+    },
+    {
+      "level": 16,
+      "proficiencyBonus": 5,
+      "features": ["abilityScoreImprovement"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 2, 0],
+      "spellsPrepared": 12,
+      "channelDivinity": 3
+    },
+    {
+      "level": 17,
+      "proficiencyBonus": 6,
+      "features": [],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 3, 1],
+      "spellsPrepared": 14,
+      "channelDivinity": 3
+    },
+    {
+      "level": 18,
+      "proficiencyBonus": 6,
+      "features": ["auraExpansion"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 3, 1],
+      "spellsPrepared": 14,
+      "channelDivinity": 3
+    },
+    {
+      "level": 19,
+      "proficiencyBonus": 6,
+      "features": ["epicBoon"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 3, 2],
+      "spellsPrepared": 15,
+      "channelDivinity": 3
+    },
+    {
+      "level": 20,
+      "proficiencyBonus": 6,
+      "features": ["subclassFeature"],
+      "cantripsKnown": 0,
+      "spellSlots": [4, 3, 3, 3, 2],
+      "spellsPrepared": 15,
+      "channelDivinity": 3
+    }
+  ],
+  "features": {
+    "layOnHands": {
+      "name": "Imposition des mains",
+      "level": 1,
+      "description": "Réserve de guérison égale à 5 × niveau de paladin. Action Bonus : toucher pour restaurer des PV. 5 PV de la réserve suppriment l'état Empoisonné. Recharge au repos long."
+    },
+    "spellcasting": {
+      "name": "Sorts",
+      "level": 1,
+      "description": "Lanceur de sorts préparés basé sur le Charisme. Focaliseur : symbole sacré. Prépare des sorts de paladin après chaque repos long."
+    },
+    "weaponMastery": {
+      "name": "Bottes d'arme",
+      "level": 1,
+      "description": "Maîtrise de la propriété Botte pour 2 types d'armes maîtrisées. Changeable au repos long."
+    },
+    "fightingStyle": {
+      "name": "Style de combat",
+      "level": 2,
+      "description": "Don de Style de Combat au choix, ou Combattant béni (2 sorts mineurs de clerc)."
+    },
+    "paladinsSmite": {
+      "name": "Châtiment de paladin",
+      "level": 2,
+      "description": "Châtiment divin toujours préparé. Un lancer gratuit par repos long."
+    },
+    "channelDivinity": {
+      "name": "Conduit divin",
+      "level": 3,
+      "description": "2 utilisations, récupère 1 au repos court, tout au repos long. 3e utilisation au niveau 11. Option de base : Perception divine."
+    },
+    "paladinSubclass": {
+      "name": "Sous-classe de paladin",
+      "level": 3,
+      "description": "Choix parmi : Serment des Anciens, Serment de Dévotion, Serment de Gloire, Serment de Vengeance."
+    },
+    "abilityScoreImprovement": {
+      "name": "Amélioration de caractéristique",
+      "level": 4,
+      "description": "Don Amélioration de caractéristiques ou autre don qualifié. Également aux niveaux 8, 12 et 16."
+    },
+    "extraAttack": {
+      "name": "Attaque supplémentaire",
+      "level": 5,
+      "description": "2 attaques par action Attaque."
+    },
+    "faithfulSteed": {
+      "name": "Fidèle destrier",
+      "level": 5,
+      "description": "Appel de destrier toujours préparé. Un lancer gratuit par repos long."
+    },
+    "auraOfProtection": {
+      "name": "Aura de protection",
+      "level": 6,
+      "description": "Émanation 3 m. Bonus aux jets de sauvegarde = modificateur de Charisme (min +1) pour le paladin et ses alliés."
+    },
+    "abjureFoes": {
+      "name": "Abjuration d'ennemis",
+      "level": 9,
+      "description": "Action Magie, dépense Conduit divin. Jusqu'à CHA créatures dans 18 m, JS Sagesse ou Effrayé 1 min."
+    },
+    "auraOfCourage": {
+      "name": "Aura de courage",
+      "level": 10,
+      "description": "Immunité à l'état Effrayé pour le paladin et ses alliés dans l'Aura de protection."
+    },
+    "radiantStrikes": {
+      "name": "Frappes radiantes",
+      "level": 11,
+      "description": "+1d8 dégâts radiants par attaque de corps à corps ou à mains nues."
+    },
+    "restoringTouch": {
+      "name": "Toucher réparateur",
+      "level": 14,
+      "description": "Imposition des mains peut retirer Assourdi, Aveuglé, Charmé, Effrayé, Étourdi ou Paralysé (5 PV/état)."
+    },
+    "auraExpansion": {
+      "name": "Aura étendue",
+      "level": 18,
+      "description": "Aura de protection passe à 9 m d'Émanation."
+    },
+    "epicBoon": {
+      "name": "Faveur épique",
+      "level": 19,
+      "description": "Don de Faveur épique ou autre don qualifié. Faveur de Vision lucide recommandé."
+    }
+  },
+  "subclasses": [
+    {
+      "key": "oath-of-the-ancients",
+      "name": "Serment des Anciens",
+      "description": "Préserve la vie, la lumière et la beauté du monde. Préceptes : Raviver l'espoir, Protéger la vie, Apprécier l'art et le rire.",
+      "features": {
+        "3": [
+          {
+            "key": "naturesWrath",
+            "name": "Courroux de la nature",
+            "description": "Action Magie + Conduit divin. Créatures au choix dans 4,50 m, JS Force ou Entravé 1 min (re-sauvegarde à chaque tour)."
+          },
+          {
+            "key": "oathSpells",
+            "name": "Sorts du Serment des Anciens",
+            "description": "Sorts toujours préparés selon le niveau de paladin.",
+            "spells": {
+              "3": ["ensnaringStrike", "speakWithAnimals"],
+              "5": ["mistyStep", "moonbeam"],
+              "9": ["plantGrowth", "protectionFromEnergy"],
+              "13": ["iceStorm", "stoneskin"],
+              "17": ["communeWithNature", "treeStride"]
+            }
+          }
+        ],
+        "7": [
+          {
+            "key": "auraOfWarding",
+            "name": "Aura de garde",
+            "description": "Résistance aux dégâts nécrotiques, psychiques et radiants pour le paladin et ses alliés dans l'Aura de protection."
+          }
+        ],
+        "15": [],
+        "20": []
+      },
+      "_note": "Les capacités de niveau 15 (Undying Sentinel) et 20 (Elder Champion) ne sont pas détaillées sur AideDD."
+    },
+    {
+      "key": "oath-of-devotion",
+      "name": "Serment de Dévotion",
+      "description": "Incarne la justice, l'ordre et l'honneur. Préceptes : Faire de sa parole une promesse, Protéger les faibles, Faire de ses actes des exemples.",
+      "features": {
+        "3": [
+          {
+            "key": "sacredWeapon",
+            "name": "Arme sacrée",
+            "description": "Action Attaque + Conduit divin. Ajoute modificateur de Charisme aux jets d'attaque, dégâts au choix (normaux ou radiants). Lumière vive 6 m + lumière faible 6 m supplémentaires. 10 minutes."
+          },
+          {
+            "key": "oathSpells",
+            "name": "Sorts du Serment de Dévotion",
+            "description": "Sorts toujours préparés selon le niveau de paladin.",
+            "spells": {
+              "3": ["protectionFromEvilAndGood", "shieldOfFaith"],
+              "5": ["aid", "zoneOfTruth"],
+              "9": ["beaconOfHope", "dispelMagic"],
+              "13": ["freedomOfMovement", "guardianOfFaith"],
+              "17": ["commune", "flameStrike"]
+            }
+          }
+        ],
+        "7": [
+          {
+            "key": "auraOfDevotion",
+            "name": "Aura de dévotion",
+            "description": "Immunité à l'état Charmé pour le paladin et ses alliés dans l'Aura de protection."
+          }
+        ],
+        "15": [
+          {
+            "key": "smiteOfProtection",
+            "name": "Châtiment de protection",
+            "description": "Après un Châtiment divin, le paladin et ses alliés bénéficient d'un Abri partiel dans l'Aura de protection jusqu'au début de son prochain tour."
+          }
+        ],
+        "20": [
+          {
+            "key": "holyNimbus",
+            "name": "Nimbe sacré",
+            "description": "Action Bonus, 10 min ou révocable. 1/repos long ou dépense emplacement niv 5. Effets : dégâts radiants (CHA + BM) aux ennemis débutant leur tour dans l'aura, lumière du soleil dans l'aura, Avantage JS contre Fiélons et Morts-vivants."
+          }
+        ]
+      }
+    },
+    {
+      "key": "oath-of-glory",
+      "name": "Serment de Gloire",
+      "description": "Destiné à la gloire par l'héroïsme. Préceptes : Être reconnu pour ses actes, Affronter les difficultés avec courage, Inspirer les autres.",
+      "features": {
+        "3": [
+          {
+            "key": "inspiringSmite",
+            "name": "Châtiment d'exaltation",
+            "description": "Après un Châtiment divin + Conduit divin, distribue 2d8 + niveau de paladin en PV temporaires aux créatures au choix dans 9 m."
+          },
+          {
+            "key": "peerlessAthlete",
+            "name": "Athlète d'exception",
+            "description": "Action Bonus + Conduit divin. 1 heure : Avantage Force (Athlétisme) et Dextérité (Acrobaties), +3 m aux sauts en longueur et hauteur."
+          },
+          {
+            "key": "oathSpells",
+            "name": "Sorts du Serment de Gloire",
+            "description": "Sorts toujours préparés selon le niveau de paladin.",
+            "spells": {
+              "3": ["guidingBolt", "heroism"],
+              "5": ["enhanceAbility", "magicWeapon"],
+              "9": ["haste", "protectionFromEnergy"],
+              "13": ["compulsion", "freedomOfMovement"],
+              "17": ["legendLore", "yolandesRegalPresence"]
+            }
+          }
+        ],
+        "7": [
+          {
+            "key": "auraOfAlacrity",
+            "name": "Aura d'entrain",
+            "description": "Vitesse du paladin +3 m. Allié entrant ou débutant son tour dans l'Aura de protection : +3 m de Vitesse jusqu'à la fin de son prochain tour."
+          }
+        ],
+        "15": [],
+        "20": []
+      },
+      "_note": "Les capacités de niveau 15 (Glorious Defense) et 20 (Living Legend) ne sont pas détaillées sur AideDD."
+    },
+    {
+      "key": "oath-of-vengeance",
+      "name": "Serment de Vengeance",
+      "description": "Punit les actes de cruauté extrême. Préceptes : Ne montrer aucune pitié envers les scélérats, Combattre l'injustice et ses causes, Aider les victimes d'injustice.",
+      "features": {
+        "3": [
+          {
+            "key": "vowOfEnmity",
+            "name": "Vœu d'hostilité",
+            "description": "Action Attaque + Conduit divin. Avantage aux jets d'attaque contre une créature dans 9 m pendant 1 min. Transférable si la cible tombe à 0 PV."
+          },
+          {
+            "key": "oathSpells",
+            "name": "Sorts du Serment de Vengeance",
+            "description": "Sorts toujours préparés selon le niveau de paladin.",
+            "spells": {
+              "3": ["bane", "huntersMark"],
+              "5": ["holdPerson", "mistyStep"],
+              "9": ["haste", "protectionFromEnergy"],
+              "13": ["banishment", "dimensionDoor"],
+              "17": ["holdMonster", "scrying"]
+            }
+          }
+        ],
+        "7": [
+          {
+            "key": "relentlessAvenger",
+            "name": "Vengeur implacable",
+            "description": "Sur attaque d'Opportunité réussie : réduit la Vitesse de la cible à 0 jusqu'à la fin du tour, puis peut se déplacer de la moitié de sa Vitesse (sans provoquer d'attaques d'Opportunité)."
+          }
+        ],
+        "15": [],
+        "20": []
+      },
+      "_note": "Les capacités de niveau 15 (Soul of Vengeance) et 20 (Avenging Angel) ne sont pas détaillées sur AideDD."
+    }
+  ]
+}

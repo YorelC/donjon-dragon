@@ -1,0 +1,254 @@
+{
+  "key": "bard",
+  "name": "Barde",
+  "primaryAbility": ["charisma"],
+  "hitDie": "d8",
+  "hpAtLevel1": "8 + modificateur de Constitution",
+  "hpAtHigherLevels": "1d8 (ou 5) + modificateur de Constitution par niveau de barde après le niveau 1",
+  "savingThrows": ["dexterity", "charisma"],
+  "skillChoices": {"count": 3},
+  "weaponProficiencies": "armes courantes",
+  "armorTraining": "armures légères",
+  "toolProficiencies": "3 instruments de musique au choix",
+  "startingEquipment": {
+    "choiceA": "Armure de cuir, 2 dagues, instrument de musique (de votre choix), sac d'artiste et 19 po",
+    "choiceB": "90 po"
+  },
+  "multiclassPrerequisites": [{"ability": "charisma", "min": 13}],
+  "multiclassProficiencies": {
+    "armorTraining": "armures légères",
+    "skillCount": 1,
+    "toolProficiencies": "1 instrument de musique"
+  },
+  "spellcasting": {
+    "ability": "charisma",
+    "type": "full",
+    "cantripsAtLevel1": 2,
+    "spellFocus": "instrument de musique"
+  },
+  "progression": [
+    {
+      "level": 1,
+      "proficiencyBonus": 2,
+      "features": ["Inspiration bardique", "Sorts"],
+      "cantripsKnown": 2,
+      "preparedSpells": 4,
+      "spellSlots": {"1": 2},
+      "bardicInspirationDie": "d6"
+    },
+    {
+      "level": 2,
+      "proficiencyBonus": 2,
+      "features": ["Expertise", "Touche-à-tout"],
+      "cantripsKnown": 2,
+      "preparedSpells": 5,
+      "spellSlots": {"1": 3},
+      "bardicInspirationDie": "d6"
+    },
+    {
+      "level": 3,
+      "proficiencyBonus": 2,
+      "features": ["Sous-classe de barde"],
+      "cantripsKnown": 2,
+      "preparedSpells": 6,
+      "spellSlots": {"1": 4, "2": 2},
+      "bardicInspirationDie": "d6"
+    },
+    {
+      "level": 4,
+      "proficiencyBonus": 2,
+      "features": ["Amélioration de caractéristique"],
+      "cantripsKnown": 3,
+      "preparedSpells": 7,
+      "spellSlots": {"1": 4, "2": 3},
+      "bardicInspirationDie": "d6"
+    },
+    {
+      "level": 5,
+      "proficiencyBonus": 3,
+      "features": ["Source d'inspiration"],
+      "cantripsKnown": 3,
+      "preparedSpells": 9,
+      "spellSlots": {"1": 4, "2": 3, "3": 2},
+      "bardicInspirationDie": "d8"
+    },
+    {
+      "level": 6,
+      "proficiencyBonus": 3,
+      "features": ["Capacité de sous-classe"],
+      "cantripsKnown": 3,
+      "preparedSpells": 10,
+      "spellSlots": {"1": 4, "2": 3, "3": 3},
+      "bardicInspirationDie": "d8"
+    },
+    {
+      "level": 7,
+      "proficiencyBonus": 3,
+      "features": ["Contre-charme"],
+      "cantripsKnown": 3,
+      "preparedSpells": 11,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 1},
+      "bardicInspirationDie": "d8"
+    },
+    {
+      "level": 8,
+      "proficiencyBonus": 3,
+      "features": ["Amélioration de caractéristique"],
+      "cantripsKnown": 3,
+      "preparedSpells": 12,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 2},
+      "bardicInspirationDie": "d8"
+    },
+    {
+      "level": 9,
+      "proficiencyBonus": 4,
+      "features": ["Expertise"],
+      "cantripsKnown": 3,
+      "preparedSpells": 14,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 1},
+      "bardicInspirationDie": "d8"
+    },
+    {
+      "level": 10,
+      "proficiencyBonus": 4,
+      "features": ["Secrets magiques"],
+      "cantripsKnown": 4,
+      "preparedSpells": 15,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2},
+      "bardicInspirationDie": "d10"
+    },
+    {
+      "level": 11,
+      "proficiencyBonus": 4,
+      "features": [],
+      "cantripsKnown": 4,
+      "preparedSpells": 16,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1},
+      "bardicInspirationDie": "d10"
+    },
+    {
+      "level": 12,
+      "proficiencyBonus": 4,
+      "features": ["Amélioration de caractéristique"],
+      "cantripsKnown": 4,
+      "preparedSpells": 16,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1},
+      "bardicInspirationDie": "d10"
+    },
+    {
+      "level": 13,
+      "proficiencyBonus": 5,
+      "features": [],
+      "cantripsKnown": 4,
+      "preparedSpells": 17,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1},
+      "bardicInspirationDie": "d10"
+    },
+    {
+      "level": 14,
+      "proficiencyBonus": 5,
+      "features": ["Capacité de sous-classe"],
+      "cantripsKnown": 4,
+      "preparedSpells": 17,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1},
+      "bardicInspirationDie": "d10"
+    },
+    {
+      "level": 15,
+      "proficiencyBonus": 5,
+      "features": [],
+      "cantripsKnown": 4,
+      "preparedSpells": 18,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1},
+      "bardicInspirationDie": "d12"
+    },
+    {
+      "level": 16,
+      "proficiencyBonus": 5,
+      "features": ["Amélioration de caractéristique"],
+      "cantripsKnown": 4,
+      "preparedSpells": 18,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1},
+      "bardicInspirationDie": "d12"
+    },
+    {
+      "level": 17,
+      "proficiencyBonus": 6,
+      "features": [],
+      "cantripsKnown": 4,
+      "preparedSpells": 19,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1, "9": 1},
+      "bardicInspirationDie": "d12"
+    },
+    {
+      "level": 18,
+      "proficiencyBonus": 6,
+      "features": ["Inspiration supérieure"],
+      "cantripsKnown": 4,
+      "preparedSpells": 20,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 1, "7": 1, "8": 1, "9": 1},
+      "bardicInspirationDie": "d12"
+    },
+    {
+      "level": 19,
+      "proficiencyBonus": 6,
+      "features": ["Faveur épique"],
+      "cantripsKnown": 4,
+      "preparedSpells": 21,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 1, "8": 1, "9": 1},
+      "bardicInspirationDie": "d12"
+    },
+    {
+      "level": 20,
+      "proficiencyBonus": 6,
+      "features": ["Verbe de la création"],
+      "cantripsKnown": 4,
+      "preparedSpells": 22,
+      "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 2, "8": 1, "9": 1},
+      "bardicInspirationDie": "d12"
+    }
+  ],
+  "subclasses": [
+    {
+      "key": "college-de-la-danse",
+      "name": "Collège de la Danse",
+      "levelAvailable": 3,
+      "features": [
+        {"level": 3, "name": "Pirouettes éblouissantes"},
+        {"level": 6, "name": "Déplacement exaltant"},
+        {"level": 6, "name": "Pirouettes coordonnées"}
+      ]
+    },
+    {
+      "key": "college-du-savoir",
+      "name": "Collège du Savoir",
+      "levelAvailable": 3,
+      "features": [
+        {"level": 3, "name": "Maîtrises supplémentaires"},
+        {"level": 3, "name": "Mots cinglants"},
+        {"level": 6, "name": "Découvertes magiques"},
+        {"level": 14, "name": "Compétence hors pair"}
+      ]
+    },
+    {
+      "key": "college-de-la-seduction",
+      "name": "Collège de la Séduction",
+      "levelAvailable": 3,
+      "features": [
+        {"level": 3, "name": "Magie envoûtante"},
+        {"level": 3, "name": "Mante d'inspiration"},
+        {"level": 6, "name": "Mante de majesté"}
+      ]
+    },
+    {
+      "key": "college-de-la-vaillance",
+      "name": "Collège de la Vaillance",
+      "levelAvailable": 3,
+      "features": [
+        {"level": 3, "name": "Inspiration martiale"},
+        {"level": 3, "name": "Formation martiale"},
+        {"level": 6, "name": "Attaque supplémentaire"}
+      ]
+    }
+  ]
+}

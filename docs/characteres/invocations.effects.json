@@ -1,0 +1,291 @@
+{
+  "armor-of-shadows": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "mage-armor",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    }
+  ],
+  "lifedrinker": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "damage",
+        "value": "1d6",
+        "condition": "avec votre arme de pacte"
+      },
+      "note": "Type de dégâts au choix : nécrotique, psychique ou radiant"
+    },
+    {
+      "application": "informational",
+      "note": "Vous pouvez dépenser 1 dé de vie pour regagner des points de vie égaux à 1d6 + votre modificateur de Constitution"
+    }
+  ],
+  "eldritch-smite": [
+    {
+      "application": "informational",
+      "note": "En dépensant un emplacement de sort, votre arme de pacte inflige 1d8 + 1d8 par niveau d'emplacement de dégâts de Force et met la cible À terre (1/tour)"
+    }
+  ],
+  "agonizing-blast": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "damage",
+        "value": "charisma modifier",
+        "condition": "sort mineur d'occultiste choisi"
+      }
+    }
+  ],
+  "repelling-blast": [
+    {
+      "application": "informational",
+      "note": "Un sort mineur d'occultiste avec jet d'attaque repousse une créature (taille G ou moins) de jusqu'à 3 m"
+    }
+  ],
+  "investment-of-the-chain-master": [
+    {
+      "application": "informational",
+      "note": "Quand vous lancez appel de familier : le familier gagne Vol ou Nage (12 m), Attaque rapide, votre DD de sauvegarde et Résistance"
+    }
+  ],
+  "lessons-of-the-first-ones": [
+    {
+      "application": "informational",
+      "note": "Octroie un don d'origine"
+    }
+  ],
+  "eldritch-mind": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "advantage",
+        "target": "savingThrow",
+        "condition": "jets de sauvegarde de Constitution pour maintenir la Concentration"
+      }
+    }
+  ],
+  "thirsting-blade": [
+    {
+      "application": "informational",
+      "note": "Octroie une Attaque supplémentaire avec votre arme de pacte"
+    }
+  ],
+  "devouring-blade": [
+    {
+      "application": "informational",
+      "note": "L'attaque supplémentaire de Lame assoiffée confère deux attaques additionnelles au lieu d'une"
+    }
+  ],
+  "eldritch-spear": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "spellModifier",
+        "spellAspect": "range",
+        "value": "9 m × niveau d'occultiste",
+        "condition": "sort mineur d'occultiste infligeant des dégâts avec une portée de 3 m ou plus"
+      }
+    }
+  ],
+  "master-of-myriad-forms": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "alter-self",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    }
+  ],
+  "one-with-shadows": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "invisibility",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      },
+      "note": "Uniquement dans une Lumière faible ou des Ténèbres"
+    }
+  ],
+  "mask-of-the-many-faces": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "disguise-self",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    }
+  ],
+  "whispers-of-the-grave": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "speak-with-dead",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    }
+  ],
+  "pact-of-the-chain": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "find-familiar",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      },
+      "note": "Formes spéciales de familier ; le familier peut attaquer à votre place"
+    }
+  ],
+  "pact-of-the-blade": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "set",
+        "target": "attackBonus",
+        "value": "charisma modifier",
+        "condition": "avec votre arme de pacte"
+      }
+    },
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "set",
+        "target": "damage",
+        "value": "charisma modifier",
+        "condition": "avec votre arme de pacte"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Conjure une arme de pacte au corps-à-corps. Dégâts au choix : nécrotique, psychique ou radiant"
+    }
+  ],
+  "pact-of-the-tome": [
+    {
+      "application": "informational",
+      "note": "Conjure un Codex avec 3 sorts mineurs et 2 sorts (rituels) de niveau 1 de n'importe quelle classe, toujours préparés"
+    }
+  ],
+  "ascendant-step": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "levitate",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    }
+  ],
+  "gaze-of-two-minds": [
+    {
+      "application": "informational",
+      "note": "Perçoit via les sens d'une créature consentante ; peut lancer des sorts depuis elle si 18 m max entre les deux"
+    }
+  ],
+  "gift-of-the-depths": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "water-breathing",
+          "frequency": "oncePerLongRest",
+          "usesSlot": false
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Respire sous l'eau et dispose d'une Vitesse de nage"
+    }
+  ],
+  "gift-of-the-protectors": [
+    {
+      "application": "informational",
+      "note": "Une créature nommée sur le Codex tombe à 1 pv au lieu de 0 pv si elle n'est pas tuée (1/Repos long)"
+    }
+  ],
+  "visions-of-distant-realms": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "arcane-eye",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    }
+  ],
+  "otherworldly-leap": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "jump",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    }
+  ],
+  "fiendish-vigor": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "false-life",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      },
+      "note": "Obtient le maximum de points de vie temporaires"
+    }
+  ],
+  "devils-sight": [
+    {
+      "application": "informational",
+      "note": "Vision normale dans les Ténèbres ou une Lumière faible (magique ou non) jusqu'à 36 m"
+    }
+  ],
+  "witch-sight": [
+    {
+      "application": "informational",
+      "note": "Octroie Vision véritable dans un rayon de 9 m"
+    }
+  ],
+  "misty-visions": [
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "silent-image",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    }
+  ]
+}

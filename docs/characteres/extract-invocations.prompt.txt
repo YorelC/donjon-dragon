@@ -1,0 +1,26 @@
+Tu vas extraire la liste complète des manifestations d'occultiste de D&D 2024 depuis AideDD et produire un fichier JSON de seed.
+
+SOURCE
+- Liste : https://www.aidedd.org/invocation/fr/ (le contenu est dans le HTML statique, curl suffit, pas besoin du navigateur)
+
+SCHÉMA CIBLE
+Un fichier JSON contenant un tableau. Un objet par manifestation :
+{
+  "key": string,          // kebab-case anglais, dérivé du nom de la colonne EN (ex "Armor of Shadows" -> "armor-of-shadows")
+  "name": string,         // nom français
+  "prerequisiteText": string | null,  // texte brut des prérequis, ou null si la colonne Prérequis indique "-"
+  "repeatable": boolean,  // true si la colonne Répétable est marquée, sinon false
+  "description": string   // le résumé français de la ligne
+}
+
+RÈGLES
+- Un seul fichier JSON valide, un tableau, pas de texte autour.
+- Champ absent de la source : null (ou false pour un booléen).
+- "prerequisiteText" : null si le don n'a pas de prérequis ("-").
+- "repeatable" : true uniquement si la colonne Répétable est marquée.
+- Garde le résumé tel quel, sans le reformuler.
+
+SORTIE
+Écris le fichier JSON à ce chemin absolu exact (pas un chemin relatif) :
+C:\_work\my_projects\donjon-dragon\docs\characteres\invocations.seed.json
+Puis réponds en une seule ligne : le nombre de manifestations extraites et le chemin du fichier.

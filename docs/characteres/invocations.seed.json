@@ -1,0 +1,198 @@
+[
+  {
+    "key": "armor-of-shadows",
+    "name": "Armure d'ombres",
+    "prerequisiteText": null,
+    "repeatable": false,
+    "description": "Lance armure de mage sur vous sans dépenser un emplacement de sort"
+  },
+  {
+    "key": "lifedrinker",
+    "name": "Buveuse de vie",
+    "prerequisiteText": "Occultiste de niveau 9+, manifestation Pacte de la lame",
+    "repeatable": false,
+    "description": "+1d6 avec arme de pacte (nécrotique, psychique ou radiant) et dépense 1 DV pour regagner des pv (le d6+Mod.Constitution)"
+  },
+  {
+    "key": "eldritch-smite",
+    "name": "Châtiment occulte|Frappe occulte",
+    "prerequisiteText": "Occultiste de niveau 5+, manifestation Pacte de la lame",
+    "repeatable": false,
+    "description": "Un emplacement pour infliger 1d8+1d8/niv d'emplacement de Force et mettre la cible À terre avec l'arme de pacte (1/tour)"
+  },
+  {
+    "key": "agonizing-blast",
+    "name": "Décharge déchirante",
+    "prerequisiteText": "Occultiste de niveau 2+, un sort mineur d'occultiste infligeant des dégâts",
+    "repeatable": true,
+    "description": "Ajoute mod.Charisme aux dégâts d'un sort mineur d'occultiste choisi"
+  },
+  {
+    "key": "repelling-blast",
+    "name": "Décharge répulsive",
+    "prerequisiteText": "Occultiste de niveau 2+, un sort mineur d'occultiste infligeant des dégâts via un jet d'attaque",
+    "repeatable": true,
+    "description": "Un sort mineur d'occultiste avec jet d'attaque repousse une créature (taille G ou moins) de jusqu'à 3 m"
+  },
+  {
+    "key": "investment-of-the-chain-master",
+    "name": "Engagement du maître des chaînes",
+    "prerequisiteText": "Occultiste de niveau 5+, manifestation Pacte de la chaîne",
+    "repeatable": false,
+    "description": "Vol ou Nage (12 m), Attaque rapide, votre DD de sauvegarde, Résistance, si vous lancez appel de familier"
+  },
+  {
+    "key": "lessons-of-the-first-ones",
+    "name": "Enseignement des Premiers-Nés",
+    "prerequisiteText": "Occultiste de niveau 2+",
+    "repeatable": true,
+    "description": "Octroie un don d'origine"
+  },
+  {
+    "key": "eldritch-mind",
+    "name": "Esprit occulte",
+    "prerequisiteText": null,
+    "repeatable": false,
+    "description": "Octroie un Avantage aux jets de sauvegarde de Constitution pour maintenir la Concentration"
+  },
+  {
+    "key": "thirsting-blade",
+    "name": "Lame assoiffée",
+    "prerequisiteText": "Occultiste de niveau 5+, manifestation Pacte de la lame",
+    "repeatable": false,
+    "description": "Octroie Attaque supplémentaire avec votre arme de pacte"
+  },
+  {
+    "key": "devouring-blade",
+    "name": "Lame dévorante",
+    "prerequisiteText": "Occultiste de niveau 12+, manifestation Lame assoiffée",
+    "repeatable": false,
+    "description": "L'attaque supplémentaire de Lame assoiffée confère deux attaques additionnelles au lieu d'une"
+  },
+  {
+    "key": "eldritch-spear",
+    "name": "Lance occulte",
+    "prerequisiteText": "Occultiste de niveau 2+, un sort mineur d'occultiste infligeant des dégâts",
+    "repeatable": true,
+    "description": "Augmente la portée d'un sort mineur d'occultiste infligeant des dégâts (portée 3 m ou plus) de 9 m x le niveau d'occultiste"
+  },
+  {
+    "key": "master-of-myriad-forms",
+    "name": "Maître des formes",
+    "prerequisiteText": "Occultiste de niveau 5+",
+    "repeatable": false,
+    "description": "Lance modification d'apparence sans dépenser un emplacement de sort"
+  },
+  {
+    "key": "one-with-shadows",
+    "name": "Maître des ombres",
+    "prerequisiteText": "Occultiste de niveau 5+",
+    "repeatable": false,
+    "description": "Dans Lumière faible ou Ténèbres, lance invisibilité sur vous sans dépenser un emplacement de sort"
+  },
+  {
+    "key": "mask-of-the-many-faces",
+    "name": "Mille visages",
+    "prerequisiteText": "Occultiste de niveau 2+",
+    "repeatable": false,
+    "description": "Lance déguisement sans dépenser un emplacement de sort"
+  },
+  {
+    "key": "whispers-of-the-grave",
+    "name": "Murmures de la tombe",
+    "prerequisiteText": "Occultiste de niveau 7+",
+    "repeatable": false,
+    "description": "Lance communication avec les morts sans dépenser un emplacement de sort"
+  },
+  {
+    "key": "pact-of-the-chain",
+    "name": "Pacte de la chaîne",
+    "prerequisiteText": null,
+    "repeatable": false,
+    "description": "Lance appel de familier sans emplacement de sort. Formes spéciales. Le familier peut attaquer à votre place"
+  },
+  {
+    "key": "pact-of-the-blade",
+    "name": "Pacte de la lame",
+    "prerequisiteText": null,
+    "repeatable": false,
+    "description": "Conjure une arme de pacte (corps-à-corps). Mod.Charisme pour Attaque/Dégâts. Dégâts nécrotiques, psychiques ou radiants"
+  },
+  {
+    "key": "pact-of-the-tome",
+    "name": "Pacte du grimoire",
+    "prerequisiteText": null,
+    "repeatable": false,
+    "description": "Conjure un Codex avec 3 sorts mineurs et 2 sorts (rituels) de niveau 1 de n'importe quelle classe, toujours préparés"
+  },
+  {
+    "key": "ascendant-step",
+    "name": "Pas aérien",
+    "prerequisiteText": "Occultiste de niveau 5+",
+    "repeatable": false,
+    "description": "Lance lévitation sur vous sans dépenser un emplacement de sort"
+  },
+  {
+    "key": "gaze-of-two-minds",
+    "name": "Perception transférée",
+    "prerequisiteText": "Occultiste de niveau 5+",
+    "repeatable": false,
+    "description": "Perçoit via les sens d'une créature consentante. Lance des sorts depuis elle si 18 m max entre les deux"
+  },
+  {
+    "key": "gift-of-the-depths",
+    "name": "Présent des profondeurs",
+    "prerequisiteText": "Occultiste de niveau 5+",
+    "repeatable": false,
+    "description": "Respire sous l'eau et Vitesse de nage. Lance respiration aquatique sans dépenser un emplacement de sort (1/Repos long)"
+  },
+  {
+    "key": "gift-of-the-protectors",
+    "name": "Présent des sauveurs",
+    "prerequisiteText": "Occultiste de niveau 9+, manifestation Pacte du grimoire",
+    "repeatable": false,
+    "description": "Une créature nommée sur le Codex tombe à 1 pv au lieu de 0 pv si elle n'est pas tuée (1/Repos long)"
+  },
+  {
+    "key": "visions-of-distant-realms",
+    "name": "Royaumes lointains",
+    "prerequisiteText": "Occultiste de niveau 9+",
+    "repeatable": false,
+    "description": "Lance oeil du mage sans dépenser un emplacement de sort"
+  },
+  {
+    "key": "otherworldly-leap",
+    "name": "Saut d'Outremonde",
+    "prerequisiteText": "Occultiste de niveau 2+",
+    "repeatable": false,
+    "description": "Lance saut sur vous sans dépenser un emplacement de sort"
+  },
+  {
+    "key": "fiendish-vigor",
+    "name": "Vigueur fiélonne",
+    "prerequisiteText": "Occultiste de niveau 2+",
+    "repeatable": false,
+    "description": "Lance simulacre de vie sur vous sans dépenser un emplacement de sort et obtient le max de pv temporaires"
+  },
+  {
+    "key": "devils-sight",
+    "name": "Vision du diable",
+    "prerequisiteText": "Occultiste de niveau 2+",
+    "repeatable": false,
+    "description": "Permet une vision normale dans les Ténèbres ou une Lumière faible (magique ou non) jusqu'à 36 m"
+  },
+  {
+    "key": "witch-sight",
+    "name": "Vision sorcière",
+    "prerequisiteText": "Occultiste de niveau 15+",
+    "repeatable": false,
+    "description": "Octroie Vision véritable avec une portée de 9 m"
+  },
+  {
+    "key": "misty-visions",
+    "name": "Visions embrumées",
+    "prerequisiteText": "Occultiste de niveau 2+",
+    "repeatable": false,
+    "description": "Lance image silencieuse sans dépenser un emplacement de sort"
+  }
+]

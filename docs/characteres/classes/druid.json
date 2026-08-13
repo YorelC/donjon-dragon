@@ -1,0 +1,151 @@
+{
+  "key": "druid",
+  "name": "Druide",
+  "primaryAbility": ["wisdom"],
+  "hitDie": "d8",
+  "hpAtLevel1": "8 + modificateur de Constitution",
+  "savingThrows": ["intelligence", "wisdom"],
+  "skillChoices": {
+    "count": 2,
+    "from": ["Dressage", "Arcanes", "Intuition", "Médecine", "Nature", "Perception", "Religion", "Survie"]
+  },
+  "weaponProficiencies": "Armes courantes",
+  "armorTraining": "Armures légères, boucliers",
+  "toolProficiencies": "Kit d'herboriste",
+  "startingEquipment": {
+    "choiceA": "Armure de cuir, bouclier, serpe, focaliseur druidique (bâton), sac d'explorateur, kit d'herboriste et 9 po",
+    "choiceB": "50 po"
+  },
+  "multiclassPrerequisites": [
+    {"ability": "wisdom", "min": 13}
+  ],
+  "multiclassProficiencies": {
+    "armorTraining": "armures légères",
+    "shields": true
+  },
+  "spellcasting": {
+    "ability": "wisdom",
+    "type": "full",
+    "cantripsAtLevel1": 2,
+    "preparesSpells": true,
+    "ritualCasting": true,
+    "spellcastingFocus": "Focaliseur druidique"
+  },
+  "progression": [
+    {"level": 1, "proficiencyBonus": 2, "features": ["Sorts", "Druidique", "Ordre primitif"], "cantripsKnown": 2, "preparedSpells": 4, "spellSlots": {"1": 2}},
+    {"level": 2, "proficiencyBonus": 2, "features": ["Forme sauvage", "Compagnon sauvage"], "cantripsKnown": 2, "preparedSpells": 5, "spellSlots": {"1": 3}, "wildShapeUses": 2},
+    {"level": 3, "proficiencyBonus": 2, "features": ["Sous-classe de druide"], "cantripsKnown": 2, "preparedSpells": 6, "spellSlots": {"1": 4, "2": 2}, "wildShapeUses": 2},
+    {"level": 4, "proficiencyBonus": 2, "features": ["Amélioration de caractéristique"], "cantripsKnown": 3, "preparedSpells": 7, "spellSlots": {"1": 4, "2": 3}, "wildShapeUses": 2},
+    {"level": 5, "proficiencyBonus": 3, "features": ["Regain sauvage"], "cantripsKnown": 3, "preparedSpells": 9, "spellSlots": {"1": 4, "2": 3, "3": 2}, "wildShapeUses": 2},
+    {"level": 6, "proficiencyBonus": 3, "features": ["Capacité de sous-classe"], "cantripsKnown": 3, "preparedSpells": 10, "spellSlots": {"1": 4, "2": 3, "3": 3}, "wildShapeUses": 3},
+    {"level": 7, "proficiencyBonus": 3, "features": ["Fureur élémentaire"], "cantripsKnown": 3, "preparedSpells": 11, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 1}, "wildShapeUses": 3},
+    {"level": 8, "proficiencyBonus": 3, "features": ["Amélioration de caractéristique"], "cantripsKnown": 3, "preparedSpells": 12, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 2}, "wildShapeUses": 3},
+    {"level": 9, "proficiencyBonus": 4, "features": [], "cantripsKnown": 3, "preparedSpells": 14, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 1}, "wildShapeUses": 3},
+    {"level": 10, "proficiencyBonus": 4, "features": ["Capacité de sous-classe"], "cantripsKnown": 4, "preparedSpells": 15, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2}, "wildShapeUses": 3},
+    {"level": 11, "proficiencyBonus": 4, "features": [], "cantripsKnown": 4, "preparedSpells": 16, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1}, "wildShapeUses": 3},
+    {"level": 12, "proficiencyBonus": 4, "features": ["Amélioration de caractéristique"], "cantripsKnown": 4, "preparedSpells": 16, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1}, "wildShapeUses": 3},
+    {"level": 13, "proficiencyBonus": 5, "features": [], "cantripsKnown": 4, "preparedSpells": 17, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1}, "wildShapeUses": 3},
+    {"level": 14, "proficiencyBonus": 5, "features": ["Capacité de sous-classe"], "cantripsKnown": 4, "preparedSpells": 17, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1}, "wildShapeUses": 3},
+    {"level": 15, "proficiencyBonus": 5, "features": ["Fureur élémentaire améliorée"], "cantripsKnown": 4, "preparedSpells": 18, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1}, "wildShapeUses": 3},
+    {"level": 16, "proficiencyBonus": 5, "features": ["Amélioration de caractéristique"], "cantripsKnown": 4, "preparedSpells": 18, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1}, "wildShapeUses": 3},
+    {"level": 17, "proficiencyBonus": 6, "features": [], "cantripsKnown": 4, "preparedSpells": 19, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1, "9": 1}, "wildShapeUses": 4},
+    {"level": 18, "proficiencyBonus": 6, "features": ["Incantation animale"], "cantripsKnown": 4, "preparedSpells": 20, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 1, "7": 1, "8": 1, "9": 1}, "wildShapeUses": 4},
+    {"level": 19, "proficiencyBonus": 6, "features": ["Faveur épique"], "cantripsKnown": 4, "preparedSpells": 21, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 1, "8": 1, "9": 1}, "wildShapeUses": 4},
+    {"level": 20, "proficiencyBonus": 6, "features": ["Archidruide"], "cantripsKnown": 4, "preparedSpells": 22, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 2, "8": 1, "9": 1}, "wildShapeUses": 4}
+  ],
+  "subclasses": [
+    {
+      "key": "cercle-des-etoiles",
+      "name": "Cercle des Étoiles",
+      "levelAvailable": 3,
+      "features": [],
+      "note": "Voir le Manuel des Joueurs — détails non disponibles sur AideDD"
+    },
+    {
+      "key": "cercle-de-la-terre",
+      "name": "Cercle de la Terre",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Sorts du Cercle de la Terre",
+          "description": "Lorsque vous terminez un Repos long, choisissez un type d'environnement : aride, polaire, tempéré ou tropical. Les sorts correspondants sont toujours préparés pour vous. Aride : flou, mains brûlantes, trait de feu (niv.3), boule de feu (niv.5), flétrissement (niv.7), mur de pierre (niv.9). Polaire : nappe de brouillard, immobilisation de personne, rayon de givre (niv.3), tempête de neige (niv.5), tempête de grêle (niv.7), cône de froid (niv.9). Tempéré : foulée brumeuse, poigne électrique, sommeil (niv.3), éclair (niv.5), liberté de mouvement (niv.7), passage par les arbres (niv.9). Tropical : aspersion d'acide, rayon empoisonné, toile d'araignée (niv.3), nuage nauséabond (niv.5), métamorphose (niv.7), fléau d'insectes (niv.9)."
+        },
+        {
+          "level": 3,
+          "name": "Aval de la terre",
+          "description": "Par une action Magie, vous pouvez dépenser une utilisation de Forme sauvage et choisir un point dans un rayon de 18 m. Des fleurs nourricières et des épines drainantes apparaissent dans une Sphère de 3 m de rayon. Chaque créature de votre choix dans la Sphère effectue un jet de sauvegarde de Constitution : 2d6 dégâts nécrotiques (échec) ou moitié (réussite). Une créature de votre choix dans la zone récupère 2d6 PV. Les dégâts et soins augmentent de 1d6 aux niveaux 10 (3d6) et 14 (4d6)."
+        },
+        {
+          "level": 6,
+          "name": "Ressourcement",
+          "description": "Vous pouvez lancer un sort préparé de niveau 1+ via Sorts du Cercle sans dépenser d'emplacement (1 fois, récupération au Repos long). Après un Repos court, vous pouvez récupérer des emplacements de sort dépensés dont le niveau combiné ≤ moitié du niveau de druide (arrondi supérieur), aucun de niveau 6+. Usage unique par Repos long."
+        },
+        {
+          "level": 10,
+          "name": "Protégé de dame nature",
+          "description": "Immunité à l'état Empoisonné et Résistance au type de dégâts associé à votre environnement : Aride/Feu, Polaire/Froid, Tempéré/Foudre, Tropical/Poison."
+        },
+        {
+          "level": 14,
+          "name": "Sanctuaire de dame Nature",
+          "description": "Par une action Magie, dépensez une utilisation de Forme sauvage pour faire apparaître des plantes grimpantes et arbres spectraux dans un Cube de 4,50 m (portée 36 m). Persiste 1 min (ou jusqu'à Incapable d'agir ou mort). Vous et vos alliés bénéficiez d'un Abri partiel et de la Résistance de Protégé de dame Nature. Par une action Bonus, déplacez le Cube au sol de 18 m max (dans les 36 m)."
+        }
+      ]
+    },
+    {
+      "key": "cercle-des-mers",
+      "name": "Cercle des Mers",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Sorts du Cercle des Mers",
+          "description": "Niveau 3 : nappe de brouillard, bourrasque, rayon de givre, vague tonnante. Niveau 5 : éclair, respiration aquatique. Niveau 7 : contrôle de l'eau, tempête de grêle. Niveau 9 : invocation d'élémentaire, immobilisation de monstre."
+        },
+        {
+          "level": 3,
+          "name": "Courroux des mers",
+          "description": "Par une action Bonus, dépensez une utilisation de Forme sauvage pour manifester une Émanation de 1,50 m d'embruns marins vous enveloppant pendant 10 min (fin si dissipée, manifestée à nouveau, ou Incapable d'agir). À la manifestation et en action Bonus les tours suivants, une créature visible dans l'Émanation doit réussir un jet de sauvegarde de Constitution ou subir des dégâts de froid (nombre de d6 = modificateur de Sagesse, min 1) et, si taille G ou inférieure, être repoussée de 4,50 m."
+        },
+        {
+          "level": 6,
+          "name": "Affinité aquatique",
+          "description": "L'Émanation de Courroux des mers passe à 3 m de rayon. Votre Vitesse de nage est égale à votre Vitesse."
+        },
+        {
+          "level": 10,
+          "name": "Enfant des tempêtes",
+          "description": "Lorsque Courroux des mers est actif : vous gagnez une Vitesse de vol égale à votre Vitesse et la Résistance aux dégâts de froid, de foudre et de tonnerre."
+        }
+      ]
+    },
+    {
+      "key": "cercle-de-la-lune",
+      "name": "Cercle de la Lune",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Forme du cercle",
+          "description": "Lorsque vous prenez une Forme sauvage, vous canalisez la magie lunaire : FP max = niveau de druide ÷ 3 (arrondi inférieur), CA = 13 + modificateur de Sagesse (si supérieure à la CA de la Bête), PV temporaires = 3 × niveau de druide."
+        },
+        {
+          "level": 3,
+          "name": "Sorts du Cercle de la Lune",
+          "description": "Toujours préparés, lançables sous Forme sauvage. Niveau 3 : soins, rayon de lune, poussière d'étoile. Niveau 5 : invocation d'animaux. Niveau 7 : fontaine de lune. Niveau 9 : soins de groupe."
+        },
+        {
+          "level": 6,
+          "name": "Formes du cercle améliorées",
+          "description": "Sous Forme sauvage : Radiance lunaire (chaque attaque peut infliger des dégâts normaux ou radiants, au choix à chaque touche) et Robustesse accrue (ajoutez votre modificateur de Sagesse à vos jets de sauvegarde de Constitution)."
+        },
+        {
+          "level": 10,
+          "name": "Foulée sélène",
+          "description": "Par une action Bonus, téléportez-vous de 9 m dans un espace libre visible et gagnez un Avantage au prochain jet d'attaque avant la fin du tour. Utilisations = modificateur de Sagesse (min 1), récupération au Repos long. Vous pouvez aussi récupérer des utilisations en dépensant un emplacement de sort de niveau 2+ par utilisation (pas d'action requise)."
+        }
+      ]
+    }
+  ]
+}

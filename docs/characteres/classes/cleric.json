@@ -1,0 +1,167 @@
+{
+  "key": "cleric",
+  "name": "Clerc",
+  "primaryAbility": ["wisdom"],
+  "hitDie": "d8",
+  "hpAtLevel1": "8 + modificateur de Constitution",
+  "savingThrows": ["wisdom", "charisma"],
+  "skillChoices": {
+    "count": 2,
+    "from": ["Histoire", "Intuition", "Médecine", "Persuasion", "Religion"]
+  },
+  "weaponProficiencies": "Armes courantes",
+  "armorTraining": "Armures légères et intermédiaires, boucliers",
+  "multiclassPrerequisites": [
+    {"ability": "wisdom", "min": 13}
+  ],
+  "multiclassProficiencies": {
+    "armorTraining": "armures légères et intermédiaires",
+    "shields": true
+  },
+  "spellcasting": {
+    "ability": "wisdom",
+    "type": "full",
+    "cantripsAtLevel1": 3,
+    "preparesSpells": true,
+    "spellsPreparedFormula": "modificateur de Sagesse + niveau de clerc",
+    "ritualCasting": true,
+    "spellcastingFocus": "Symbole sacré"
+  },
+  "progression": [
+    {"level": 1, "proficiencyBonus": 2, "features": ["Sorts", "Ordre divin"], "cantripsKnown": 3, "spellSlots": {"1": 2}},
+    {"level": 2, "proficiencyBonus": 2, "features": ["Conduit divin"], "cantripsKnown": 3, "spellSlots": {"1": 3}},
+    {"level": 3, "proficiencyBonus": 2, "features": ["Sous-classe de clerc"], "cantripsKnown": 3, "spellSlots": {"1": 4, "2": 2}},
+    {"level": 4, "proficiencyBonus": 2, "features": ["Amélioration de caractéristique"], "cantripsKnown": 4, "spellSlots": {"1": 4, "2": 3}},
+    {"level": 5, "proficiencyBonus": 3, "features": ["Calcination de mort-vivant"], "cantripsKnown": 4, "spellSlots": {"1": 4, "2": 3, "3": 2}},
+    {"level": 6, "proficiencyBonus": 3, "features": ["Capacité de sous-classe"], "cantripsKnown": 4, "spellSlots": {"1": 4, "2": 3, "3": 3}},
+    {"level": 7, "proficiencyBonus": 3, "features": ["Frappes bénies"], "cantripsKnown": 4, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 1}},
+    {"level": 8, "proficiencyBonus": 3, "features": ["Amélioration de caractéristique"], "cantripsKnown": 4, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 2}},
+    {"level": 9, "proficiencyBonus": 4, "features": [], "cantripsKnown": 4, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 1}},
+    {"level": 10, "proficiencyBonus": 4, "features": ["Intervention divine"], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2}},
+    {"level": 11, "proficiencyBonus": 4, "features": [], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1}},
+    {"level": 12, "proficiencyBonus": 4, "features": ["Amélioration de caractéristique"], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1}},
+    {"level": 13, "proficiencyBonus": 5, "features": [], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1}},
+    {"level": 14, "proficiencyBonus": 5, "features": ["Impacts bénis améliorés"], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1}},
+    {"level": 15, "proficiencyBonus": 5, "features": [], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1}},
+    {"level": 16, "proficiencyBonus": 5, "features": ["Amélioration de caractéristique"], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1}},
+    {"level": 17, "proficiencyBonus": 6, "features": ["Capacité de sous-classe"], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 2, "6": 1, "7": 1, "8": 1, "9": 1}},
+    {"level": 18, "proficiencyBonus": 6, "features": [], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 1, "7": 1, "8": 1, "9": 1}},
+    {"level": 19, "proficiencyBonus": 6, "features": ["Faveur épique"], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 1, "8": 1, "9": 1}},
+    {"level": 20, "proficiencyBonus": 6, "features": ["Intervention divine suprême"], "cantripsKnown": 5, "spellSlots": {"1": 4, "2": 3, "3": 3, "4": 3, "5": 3, "6": 2, "7": 2, "8": 1, "9": 1}}
+  ],
+  "subclasses": [
+    {
+      "key": "war",
+      "name": "Domaine de la Guerre",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Frappe guidée",
+          "description": "Lorsque vous ou une créature dans un rayon de 9 mètres ratez un jet d'attaque, vous pouvez dépenser une utilisation de votre Conduit divin pour octroyer un bonus de +10 à ce jet."
+        },
+        {
+          "level": 3,
+          "name": "Sorts du Domaine de la Guerre",
+          "description": "Vous avez toujours certains sorts préparés : niveau 3 (rayon traçant, arme magique, bouclier de la foi, arme spirituelle), niveau 5 (aura du croisé, esprits gardiens), niveau 7 (bouclier de feu, liberté de mouvement), niveau 9 (immobilisation de monstre, frappe du vent d'acier)."
+        },
+        {
+          "level": 3,
+          "name": "Prêtre de guerre",
+          "description": "Par une action Bonus, vous pouvez effectuer une attaque avec une arme ou une attaque à mains nues, un nombre de fois égal à votre modificateur de Sagesse (minimum une fois). Récupération au Repos court ou long."
+        },
+        {
+          "level": 6,
+          "name": "Bénédiction du dieu de la guerre",
+          "description": "Vous pouvez dépenser une utilisation de Conduit divin pour lancer bouclier de la foi ou arme spirituelle sans emplacement de sort, sans Concentration, durée 1 minute."
+        }
+      ]
+    },
+    {
+      "key": "light",
+      "name": "Domaine de la Lumière",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Sorts du Domaine de la Lumière",
+          "description": "Vous avez toujours certains sorts préparés : niveau 3 (mains brûlantes, lueurs féeriques, rayon ardent, détection de l'invisibilité), niveau 5 (lumière du jour, boule de feu), niveau 7 (œil du mage, mur de feu), niveau 9 (colonne de flamme, scrutation)."
+        },
+        {
+          "level": 3,
+          "name": "Radiance de l'Aube",
+          "description": "Par une action Magie, utilisez Conduit divin pour émettre une Émanation de 9 mètres. Dissipe les ténèbres magiques; chaque créature choisie subit 2d10 + niveau de clerc dégâts radiants (Constitution, moitié si réussi)."
+        },
+        {
+          "level": 3,
+          "name": "Éclat protecteur",
+          "description": "En Réaction, imposez un Désavantage au jet d'attaque d'une créature dans un rayon de 9 mètres. Utilisations = modificateur de Sagesse (min. 1), récupération au Repos long."
+        },
+        {
+          "level": 6,
+          "name": "Éclat protecteur améliorée",
+          "description": "Récupération des utilisations d'Éclat protecteur au Repos court ou long. De plus, confère 2d6 + modificateur de Sagesse points de vie temporaires à la cible de l'attaque."
+        }
+      ]
+    },
+    {
+      "key": "trickery",
+      "name": "Domaine de la Ruse",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Faveur du filou",
+          "description": "Par une action Magie, conférez un avantage aux jets de Dextérité (Discrétion) à vous-même ou une créature consentante dans un rayon de 9 mètres. Dure jusqu'au prochain Repos long."
+        },
+        {
+          "level": 3,
+          "name": "Invocation de réplique",
+          "description": "Par une action Bonus, dépensez Conduit divin pour créer une illusion parfaite de vous-même (9 mètres, 1 minute). Permet incantation depuis l'illusion, avantage aux attaques contre les créatures proches de l'illusion, et déplacement de l'illusion en action Bonus."
+        },
+        {
+          "level": 3,
+          "name": "Sorts du Domaine de la Ruse",
+          "description": "Vous avez toujours certains sorts préparés : niveau 3 (charme-personne, déguisement, invisibilité, passage sans trace), niveau 5 (motif hypnotique, antidétection), niveau 7 (confusion, porte dimensionnelle), niveau 9 (domination de personne, modification de mémoire)."
+        },
+        {
+          "level": 6,
+          "name": "Troc du filou",
+          "description": "Lorsque vous créez ou déplacez l'illusion d'Invocation de réplique, vous pouvez vous téléporter et échanger votre place avec l'illusion."
+        }
+      ]
+    },
+    {
+      "key": "life",
+      "name": "Domaine de la Vie",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Disciple de la Vie",
+          "description": "Lorsqu'un sort avec un emplacement de sort restaure des PV, la cible récupère 2 + niveau de l'emplacement de sort PV supplémentaires."
+        },
+        {
+          "level": 3,
+          "name": "Sorts du Domaine de la Vie",
+          "description": "Vous avez toujours certains sorts préparés : niveau 3 (aide, bénédiction, soins, restauration partielle), niveau 5 (mot de guérison de groupe, retour à la vie), niveau 7 (aura de vie, protection contre la mort), niveau 9 (restauration suprême, soins de groupe)."
+        },
+        {
+          "level": 3,
+          "name": "Survivance",
+          "description": "Par une action Magie, dépensez Conduit divin pour restaurer un total de 5 × niveau de clerc PV, répartis entre les créatures En péril dans un rayon de 9 mètres. Ne peut restaurer qu'à la moitié du maximum de PV."
+        },
+        {
+          "level": 6,
+          "name": "Guérisseur béni",
+          "description": "Après avoir lancé un sort qui restaure des PV à d'autres créatures avec un emplacement de sort, vous récupérez 2 + niveau de l'emplacement de sort PV."
+        },
+        {
+          "level": 17,
+          "name": "Guérison suprême",
+          "description": "Quand vous lancez des dés pour restaurer des PV via un sort ou Conduit divin, utilisez la valeur maximale de chaque dé au lieu de lancer."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "key": "tiefling",
+  "name": "Tieffelin",
+  "creatureType": "humanoid",
+  "size": "Medium",
+  "sizeNote": "M (entre 1,20 m et 2,15 m) ou P (entre 90 cm et 1,20 m), choisie lors de la sélection de cette espèce",
+  "speed": 9,
+  "darkvision": 18,
+  "traits": [
+    {
+      "key": "darkvision",
+      "name": "Vision dans le noir",
+      "description": "Vous possédez la Vision dans le noir sur 18 m."
+    },
+    {
+      "key": "fiendishLegacy",
+      "name": "Héritage fiélon",
+      "description": "Vous êtes le bénéficiaire d'un héritage qui vous confère des pouvoirs surnaturels. Choisissez un héritage dans la table Héritages fiélons. Vous bénéficiez du niveau 1 de l'héritage choisi. Lorsque vous atteignez les niveaux 3 et 5, vous apprenez un sort de niveau supérieur. Ce sort est toujours préparé pour vous. Vous pouvez le lancer une fois sans dépenser d'emplacement de sort, et vous retrouvez cette capacité lorsque vous terminez un Repos long. Vous pouvez également lancer le sort en utilisant n'importe quel emplacement de sort du niveau approprié. L'Intelligence, la Sagesse ou le Charisme est votre caractéristique d'incantation pour les sorts lancés avec ce trait (choisissez la caractéristique lors de la sélection de l'héritage)."
+    },
+    {
+      "key": "otherworldlyPresence",
+      "name": "Présence d'Outremonde",
+      "description": "Vous connaissez le sort mineur thaumaturgie. Lorsque vous le lancez avec ce trait, le sort utilise la même caractéristique que celle utilisée pour votre trait Héritage fiélon."
+    }
+  ],
+  "subcategories": [
+    {
+      "key": "abyssal",
+      "name": "Abyssal",
+      "description": "L'entropie des Abysses, le chaos du Pandémonium et le désespoir des Carcères attirent les tieffelins porteurs de l'héritage abyssal. Cornes, fourrure, défenses et odeurs particulières sont des caractéristiques physiques communes à ces tieffelins, dont la plupart ont le sang des démons qui coule dans leurs veines.",
+      "traits": [
+        {
+          "key": "abyssalResistance",
+          "name": "Résistance abyssale",
+          "description": "Résistance aux dégâts de poison."
+        },
+        {
+          "key": "abyssalCantrip",
+          "name": "Sort mineur abyssal",
+          "description": "Vous connaissez le sort mineur bouffée de poison."
+        },
+        {
+          "key": "abyssalLevel3",
+          "name": "Sort abyssal (niveau 3)",
+          "description": "Vous avez toujours préparé le sort rayon empoisonné."
+        },
+        {
+          "key": "abyssalLevel5",
+          "name": "Sort abyssal (niveau 5)",
+          "description": "Vous avez toujours préparé le sort immobilisation de personne."
+        }
+      ]
+    },
+    {
+      "key": "chthonian",
+      "name": "Chtonien",
+      "description": "Les tieffelins porteurs de l'héritage chtonien ressentent non seulement l'attirance des Carcères, mais aussi l'avidité de la Géhenne et les ténèbres de l'Hadès. Certains de ces tieffelins ont l'air cadavérique. D'autres possèdent la beauté surnaturelle d'une succube, ou partagent des traits physiques avec une guenaude, un yugoloth ou tout autre ancêtre diabolique Neutre Mauvais.",
+      "traits": [
+        {
+          "key": "chthonianResistance",
+          "name": "Résistance chtonienne",
+          "description": "Résistance aux dégâts nécrotiques."
+        },
+        {
+          "key": "chthonianCantrip",
+          "name": "Sort mineur chtonien",
+          "description": "Vous connaissez le sort mineur contact glacial."
+        },
+        {
+          "key": "chthonianLevel3",
+          "name": "Sort chtonien (niveau 3)",
+          "description": "Vous avez toujours préparé le sort simulacre de vie."
+        },
+        {
+          "key": "chthonianLevel5",
+          "name": "Sort chtonien (niveau 5)",
+          "description": "Vous avez toujours préparé le sort rayon affaiblissant."
+        }
+      ]
+    },
+    {
+      "key": "infernal",
+      "name": "Infernal",
+      "description": "L'héritage infernal relie les tieffelins non seulement à la Géhenne, mais aussi aux Neuf Enfers et aux champs de bataille déchaînés de l'Achéron. Cornes, épines, queues, yeux dorés et une légère odeur de soufre ou de fumée sont des caractéristiques physiques courantes de ces tieffelins, dont la plupart ont une ascendance qui remonte aux diables.",
+      "traits": [
+        {
+          "key": "infernalResistance",
+          "name": "Résistance infernale",
+          "description": "Résistance aux dégâts de feu."
+        },
+        {
+          "key": "infernalCantrip",
+          "name": "Sort mineur infernal",
+          "description": "Vous connaissez le sort mineur trait de feu."
+        },
+        {
+          "key": "infernalLevel3",
+          "name": "Sort infernal (niveau 3)",
+          "description": "Vous avez toujours préparé le sort représailles infernales."
+        },
+        {
+          "key": "infernalLevel5",
+          "name": "Sort infernal (niveau 5)",
+          "description": "Vous avez toujours préparé le sort ténèbres."
+        }
+      ]
+    }
+  ]
+}

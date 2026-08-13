@@ -1,0 +1,36 @@
+Tu vas extraire la liste complète des dons de D&D 2024 depuis le site AideDD et produire un fichier JSON de seed.
+
+SOURCE
+- Liste des dons : https://www.aidedd.org/feat/fr/ (page dynamique, utilise le navigateur pour charger le tableau complet)
+- La page peut afficher un bandeau cookies : clique "Refuser" avant d'interagir.
+- Pour chaque don, ouvre sa page de détail pour récupérer la description complète.
+
+SCHÉMA CIBLE
+Un fichier JSON contenant un tableau. Un objet par don, avec exactement ces champs :
+{
+  "key": string,          // identifiant stable, kebab-case anglais. Prends le slug du lien EN de la ligne si disponible, sinon traduis le nom.
+  "name": string,         // nom français
+  "category": string,     // voir mapping ci-dessous
+  "repeatable": boolean,  // true si la colonne Répétable est marquée, sinon false
+  "prerequisiteText": string | null,  // texte brut français des prérequis, ou null si la ligne indique "-"
+  "description": string   // texte français complet de la page individuelle
+}
+
+MAPPING CATÉGORIES (français -> anglais)
+Don d'origines -> origin
+Don général -> general
+Don de Style de combat -> fightingStyle
+Don de faveur épique -> epicBoon
+Don de dracogramme -> dragonmark
+
+RÈGLES
+- Un seul fichier JSON valide, un tableau, pas de texte autour.
+- Champ absent de la source : null (ou false pour un booléen).
+- "repeatable" : true uniquement si la colonne "Répétable" de la liste est marquée.
+- "prerequisiteText" : null si le don n'a pas de prérequis (colonne "-").
+- Si une description n'est pas disponible sur le site (mention "not available"), laisse "description" à "" et signale-le en fin de travail.
+
+SORTIE
+Écris le fichier JSON à ce chemin absolu exact (pas un chemin relatif) :
+C:\_work\my_projects\donjon-dragon\docs\characteres\feats.seed.json
+Puis réponds en une seule ligne : le nombre de dons extraits et le chemin du fichier.

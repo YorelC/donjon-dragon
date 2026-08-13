@@ -1,0 +1,26 @@
+{
+  "key": "orc",
+  "name": "Orc",
+  "creatureType": "humanoid",
+  "size": "Medium",
+  "speed": 9,
+  "darkvision": 36,
+  "traits": [
+    {
+      "key": "adrenaline-rush",
+      "name": "Poussée d'adrénaline",
+      "description": "Vous pouvez prendre l'action Pointe comme action Bonus. Ce faisant, vous gagnez un nombre de points de vie temporaires égal à votre bonus de maîtrise. Vous pouvez utiliser ce trait un nombre de fois égal à votre bonus de maîtrise, et vous récupérez toutes les utilisations dépensées lorsque vous terminez un Repos court ou long."
+    },
+    {
+      "key": "darkvision",
+      "name": "Vision dans le noir",
+      "description": "Vous possédez la Vision dans le noir sur 36 m."
+    },
+    {
+      "key": "relentless-endurance",
+      "name": "Acharnement",
+      "description": "Si vous tombez à 0 point de vie sans être tué, vous pouvez remonter à 1 point de vie. Une fois ce trait utilisé, vous ne pouvez plus le réutiliser avant d'avoir terminé un Repos long."
+    }
+  ],
+  "subcategories": []
+}

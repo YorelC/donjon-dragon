@@ -1,0 +1,649 @@
+{
+  "class": {
+    "key": "monk",
+    "name": "Moine",
+    "nameEn": "Monk",
+    "source": "PHB 2024",
+    "sourceUrl": "https://www.aidedd.org/regles-24/classes/moine/",
+    "flavor": "Les moines utilisent un entraînement au combat rigoureux et une discipline mentale pour s'aligner avec le multivers et puiser dans leur réserve de puissance intérieure. Ils canalisent une vitesse et une force surnaturelles dans leurs attaques, avec ou sans armes.",
+    "primaryAbility": ["dexterity", "wisdom"],
+    "hitDie": "d8",
+    "savingThrowProficiencies": ["strength", "dexterity"],
+    "skillProficiencies": {
+      "count": 2,
+      "choices": ["acrobatics", "athletics", "history", "insight", "religion", "stealth"]
+    },
+    "weaponProficiencies": [
+      "simpleMelee",
+      "martialWeaponsWithLightProperty"
+    ],
+    "toolProficiencies": {
+      "count": 1,
+      "choices": ["artisansTools", "musicalInstrument"]
+    },
+    "armorTraining": "none",
+    "startingEquipment": {
+      "optionA": ["spear", "5 daggers", "artisansTools or musicalInstrument", "explorersPack", "11 gp"],
+      "optionB": ["50 gp"]
+    },
+    "multiclassPrerequisites": {
+      "abilityScores": [
+        { "ability": "dexterity", "minimum": 13 },
+        { "ability": "wisdom", "minimum": 13 }
+      ]
+    },
+    "spellcasting": null
+  },
+  "progression": [
+    { "level": 1,  "proficiencyBonus": 2,  "martialArtsDie": "1d6",  "kiPoints": 0,  "unarmoredMovement": 0,      "features": ["martialArts", "unarmoredDefense"] },
+    { "level": 2,  "proficiencyBonus": 2,  "martialArtsDie": "1d6",  "kiPoints": 2,  "unarmoredMovement": 3,      "features": ["monksDiscipline", "unarmoredMovement", "uncannyMetabolism"] },
+    { "level": 3,  "proficiencyBonus": 2,  "martialArtsDie": "1d6",  "kiPoints": 3,  "unarmoredMovement": 3,      "features": ["deflectAttacks", "monkSubclass"] },
+    { "level": 4,  "proficiencyBonus": 2,  "martialArtsDie": "1d6",  "kiPoints": 4,  "unarmoredMovement": 3,      "features": ["abilityScoreImprovement", "slowFall"] },
+    { "level": 5,  "proficiencyBonus": 3,  "martialArtsDie": "1d8",  "kiPoints": 5,  "unarmoredMovement": 3,      "features": ["extraAttack", "stunningStrike"] },
+    { "level": 6,  "proficiencyBonus": 3,  "martialArtsDie": "1d8",  "kiPoints": 6,  "unarmoredMovement": 4.5,    "features": ["empoweredStrikes", "subclassFeature"] },
+    { "level": 7,  "proficiencyBonus": 3,  "martialArtsDie": "1d8",  "kiPoints": 7,  "unarmoredMovement": 4.5,    "features": ["evasion"] },
+    { "level": 8,  "proficiencyBonus": 3,  "martialArtsDie": "1d8",  "kiPoints": 8,  "unarmoredMovement": 4.5,    "features": ["abilityScoreImprovement"] },
+    { "level": 9,  "proficiencyBonus": 4,  "martialArtsDie": "1d8",  "kiPoints": 9,  "unarmoredMovement": 4.5,    "features": ["acrobaticMovement"] },
+    { "level": 10, "proficiencyBonus": 4,  "martialArtsDie": "1d8",  "kiPoints": 10, "unarmoredMovement": 6,      "features": ["heightenedDiscipline", "selfRestoration"] },
+    { "level": 11, "proficiencyBonus": 4,  "martialArtsDie": "1d10", "kiPoints": 11, "unarmoredMovement": 6,      "features": ["subclassFeature"] },
+    { "level": 12, "proficiencyBonus": 4,  "martialArtsDie": "1d10", "kiPoints": 12, "unarmoredMovement": 6,      "features": ["abilityScoreImprovement"] },
+    { "level": 13, "proficiencyBonus": 5,  "martialArtsDie": "1d10", "kiPoints": 13, "unarmoredMovement": 6,      "features": ["deflectEnergy"] },
+    { "level": 14, "proficiencyBonus": 5,  "martialArtsDie": "1d10", "kiPoints": 14, "unarmoredMovement": 7.5,    "features": ["disciplinedSurvivor"] },
+    { "level": 15, "proficiencyBonus": 5,  "martialArtsDie": "1d10", "kiPoints": 15, "unarmoredMovement": 7.5,    "features": ["perfectDiscipline"] },
+    { "level": 16, "proficiencyBonus": 5,  "martialArtsDie": "1d10", "kiPoints": 16, "unarmoredMovement": 7.5,    "features": ["abilityScoreImprovement"] },
+    { "level": 17, "proficiencyBonus": 6,  "martialArtsDie": "1d12", "kiPoints": 17, "unarmoredMovement": 7.5,    "features": ["subclassFeature"] },
+    { "level": 18, "proficiencyBonus": 6,  "martialArtsDie": "1d12", "kiPoints": 18, "unarmoredMovement": 9,      "features": ["superiorDefense"] },
+    { "level": 19, "proficiencyBonus": 6,  "martialArtsDie": "1d12", "kiPoints": 19, "unarmoredMovement": 9,      "features": ["epicBoon"] },
+    { "level": 20, "proficiencyBonus": 6,  "martialArtsDie": "1d12", "kiPoints": 20, "unarmoredMovement": 9,      "features": ["bodyAndMind"] }
+  ],
+  "features": {
+    "martialArts": {
+      "name": "Arts martiaux",
+      "nameEn": "Martial Arts",
+      "level": 1,
+      "description": "Maîtrise des styles de combat utilisant les Frappes à mains nues et les armes de moine (armes courantes de corps à corps, armes de guerre avec propriété Légère). Avantages lorsque sans armure, sans bouclier, et utilisant uniquement des armes de moine.",
+      "effects": [
+        {
+          "application": "active",
+          "name": "Frappe à mains nues supplémentaire",
+          "description": "Vous pouvez effectuer une Frappe à mains nues en tant qu'action Bonus.",
+          "action": "bonusAction"
+        },
+        {
+          "application": "passive",
+          "name": "Dé d'Arts martiaux",
+          "target": "unarmedDamage",
+          "description": "Remplace les dégâts normaux de vos Frappes à mains nues et armes de moine par le dé d'Arts martiaux. Évolue : 1d6 (niv.1-4) → 1d8 (niv.5-10) → 1d10 (niv.11-16) → 1d12 (niv.17-20).",
+          "formula": "martialArtsDie"
+        },
+        {
+          "application": "passive",
+          "name": "Attaques lestes",
+          "target": "attackBonus",
+          "description": "Utilisez la Dextérité au lieu de la Force pour les jets d'attaque et de dégâts de vos Frappes à mains nues et armes de moine. DD de sauvegarde des options Lutte/Bousculade basé sur la Dextérité.",
+          "formula": "dexterityModifier"
+        }
+      ]
+    },
+    "unarmoredDefense": {
+      "name": "Défense sans armure",
+      "nameEn": "Unarmored Defense",
+      "level": 1,
+      "description": "Lorsque vous ne portez pas d'armure et ne maniez pas de bouclier, votre CA de base = 10 + modificateur de Dextérité + modificateur de Sagesse.",
+      "effects": [
+        {
+          "application": "passive",
+          "target": "armorClass",
+          "formula": "10 + dexterityModifier + wisdomModifier"
+        }
+      ]
+    },
+    "monksDiscipline": {
+      "name": "Credo du moine",
+      "nameEn": "Monk's Discipline",
+      "level": 2,
+      "description": "Exploite une énergie intérieure représentée par des points de Credo (Ki). Récupération : Repos court ou long. DD de sauvegarde = 8 + modificateur de Sagesse + bonus de maîtrise.",
+      "effects": [
+        {
+          "application": "active",
+          "name": "Points de Credo",
+          "resource": {
+            "key": "kiPoints",
+            "max": "monkLevel",
+            "recovery": "shortRest"
+          }
+        },
+        {
+          "application": "active",
+          "name": "Déluge de coups",
+          "nameEn": "Flurry of Blows",
+          "description": "Dépensez 1 point de Credo pour effectuer deux Frappes à mains nues en tant qu'action Bonus.",
+          "action": "bonusAction",
+          "kiCost": 1
+        },
+        {
+          "application": "active",
+          "name": "Patience défensive",
+          "nameEn": "Patient Defense",
+          "description": "Prenez l'action Désengagement en tant qu'action Bonus. Dépensez 1 point de Credo pour prendre Désengagement ET Esquive en action Bonus.",
+          "action": "bonusAction",
+          "kiCost": 0,
+          "kiCostEnhanced": 1
+        },
+        {
+          "application": "active",
+          "name": "Porté par le vent",
+          "nameEn": "Step of the Wind",
+          "description": "Prenez l'action Pointe en tant qu'action Bonus. Dépensez 1 point de Credo pour prendre Désengagement ET Pointe en action Bonus, distance de saut doublée pour le tour.",
+          "action": "bonusAction",
+          "kiCost": 0,
+          "kiCostEnhanced": 1
+        }
+      ]
+    },
+    "unarmoredMovement": {
+      "name": "Déplacement sans armure",
+      "nameEn": "Unarmored Movement",
+      "level": 2,
+      "description": "Bonus de Vitesse lorsque sans armure et sans bouclier. Évolue : +3m (niv.2-5) → +4,5m (niv.6-9) → +6m (niv.10-13) → +7,5m (niv.14-17) → +9m (niv.18-20).",
+      "effects": [
+        {
+          "application": "passive",
+          "target": "speed",
+          "formula": "unarmoredMovementBonus"
+        }
+      ]
+    },
+    "uncannyMetabolism": {
+      "name": "Métabolisme surnaturel",
+      "nameEn": "Uncanny Metabolism",
+      "level": 2,
+      "description": "En lançant l'Initiative, récupérez tous vos points de Credo dépensés et gagnez des PV = niveau de moine + résultat du dé d'Arts martiaux. 1 fois par Repos long.",
+      "effects": [
+        {
+          "application": "active",
+          "trigger": {
+            "event": "onCombatStart",
+            "timing": "after",
+            "action": "noAction"
+          },
+          "resource": {
+            "key": "uncannyMetabolism",
+            "max": 1,
+            "recovery": "longRest"
+          },
+          "healing": "monkLevel + martialArtsDie",
+          "description": "Récupère tous les points de Credo dépensés et gagne des PV égaux au niveau de moine + résultat du dé d'Arts martiaux."
+        }
+      ]
+    },
+    "deflectAttacks": {
+      "name": "Déviation d'assaut",
+      "nameEn": "Deflect Attacks",
+      "level": 3,
+      "description": "Réaction : réduisez les dégâts contondants/perforants/tranchants d'une attaque qui vous touche de 1d10 + modificateur de Dextérité + niveau de moine. Si réduits à 0, dépensez 1 pt de Credo pour rediriger : cible dans un rayon (1,5m mêlée ou 18m distance, sans Abri total), jet de sauvegarde Dextérité ou dégâts = 2× dé d'Arts martiaux + mod. Dextérité (même type de dégâts).",
+      "effects": [
+        {
+          "application": "reactive",
+          "trigger": {
+            "event": "onBeingHit",
+            "timing": "after",
+            "action": "reaction",
+            "consumesReaction": true
+          },
+          "damageReduction": "1d10 + dexterityModifier + monkLevel",
+          "damageTypes": ["bludgeoning", "piercing", "slashing"],
+          "description": "Réduit les dégâts de 1d10 + mod. Dextérité + niveau de moine. Si réduits à 0 : 1 pt de Credo pour riposte (2× dé d'Arts martiaux + mod. Dextérité, jet Dextérité)."
+        }
+      ]
+    },
+    "monkSubclass": {
+      "name": "Sous-classe de moine",
+      "nameEn": "Monk Subclass",
+      "level": 3,
+      "description": "Choisissez une sous-classe : Credo des Éléments, Credo de l'Ombre, ou Credo de la Paume (Credo de la Miséricorde disponible dans le Manuel des Joueurs).",
+      "effects": []
+    },
+    "abilityScoreImprovement": {
+      "name": "Amélioration de caractéristique",
+      "nameEn": "Ability Score Improvement",
+      "level": 4,
+      "description": "Obtenez le don Amélioration de caractéristiques ou un autre don pour lequel vous êtes qualifié. Également aux niveaux 8, 12 et 16.",
+      "effects": [
+        {
+          "application": "grant",
+          "description": "Don au choix (Amélioration de caractéristiques recommandé) aux niveaux 4, 8, 12 et 16."
+        }
+      ]
+    },
+    "slowFall": {
+      "name": "Chute ralentie",
+      "nameEn": "Slow Fall",
+      "level": 4,
+      "description": "Réaction en tombant : réduisez les dégâts de chute d'un montant égal à 5 × niveau de moine.",
+      "effects": [
+        {
+          "application": "reactive",
+          "trigger": {
+            "event": "onDamageTaken",
+            "timing": "after",
+            "action": "reaction",
+            "consumesReaction": true
+          },
+          "damageReduction": "5 * monkLevel",
+          "condition": "fallDamage"
+        }
+      ]
+    },
+    "extraAttack": {
+      "name": "Attaque supplémentaire",
+      "nameEn": "Extra Attack",
+      "level": 5,
+      "description": "Vous pouvez attaquer deux fois lorsque vous prenez l'action Attaque.",
+      "effects": [
+        {
+          "application": "passive",
+          "target": "attackBonus",
+          "description": "2 attaques par action Attaque."
+        }
+      ]
+    },
+    "stunningStrike": {
+      "name": "Frappe étourdissante",
+      "nameEn": "Stunning Strike",
+      "level": 5,
+      "description": "1×/tour, en touchant avec une arme de moine ou Frappe à mains nues, dépensez 1 pt de Credo. Cible : jet de sauvegarde Constitution. Échec = état Étourdi jusqu'au début de votre prochain tour. Réussite = Vitesse divisée par 2 jusqu'à votre prochain tour, et le prochain jet d'attaque contre la cible a Avantage.",
+      "effects": [
+        {
+          "application": "active",
+          "action": "noAction",
+          "kiCost": 1,
+          "frequency": "oncePerTurn",
+          "description": "Cible effectue jet Constitution. Échec : Étourdi. Réussite : Vitesse/2 + prochaine attaque contre cible avec Avantage."
+        }
+      ]
+    },
+    "empoweredStrikes": {
+      "name": "Frappes renforcées",
+      "nameEn": "Empowered Strikes",
+      "level": 6,
+      "description": "Vos Frappes à mains nues peuvent infliger des dégâts de Force au lieu du type normal.",
+      "effects": [
+        {
+          "application": "passive",
+          "target": "unarmedDamage",
+          "description": "Choix entre dégâts de Force ou type normal pour les Frappes à mains nues."
+        }
+      ]
+    },
+    "evasion": {
+      "name": "Esquive totale",
+      "nameEn": "Evasion",
+      "level": 7,
+      "description": "Jet de sauvegarde Dextérité pour demi-dégâts : aucun dégât en cas de réussite, demi-dégâts en cas d'échec. Ne fonctionne pas si Incapable d'agir.",
+      "effects": [
+        {
+          "application": "reactive",
+          "trigger": {
+            "event": "onSavingThrow",
+            "timing": "instead"
+          },
+          "condition": "dexteritySavingThrowForHalfDamage",
+          "description": "Réussite = 0 dégât. Échec = moitié. Inopérant si Incapable d'agir."
+        }
+      ]
+    },
+    "acrobaticMovement": {
+      "name": "Déplacement acrobatique",
+      "nameEn": "Acrobatic Movement",
+      "level": 9,
+      "description": "Sans armure ni bouclier, vous pouvez vous déplacer le long de surfaces verticales et à travers des liquides sans tomber pendant le mouvement.",
+      "effects": [
+        {
+          "application": "passive",
+          "target": "speed",
+          "description": "Déplacement sur surfaces verticales et à travers les liquides sans tomber."
+        }
+      ]
+    },
+    "heightenedDiscipline": {
+      "name": "Credo accru",
+      "nameEn": "Heightened Discipline",
+      "level": 10,
+      "description": "Amélioration des trois capacités de Credo du moine : Déluge de coups (3 frappes pour 1 pt), Patience défensive (PV temporaires = 2× dé d'Arts martiaux), Porté par le vent (déplacez une créature consentante avec vous).",
+      "effects": [
+        {
+          "application": "passive",
+          "name": "Déluge de coups amélioré",
+          "description": "1 pt de Credo = trois Frappes à mains nues (au lieu de deux)."
+        },
+        {
+          "application": "passive",
+          "name": "Patience défensive améliorée",
+          "description": "En dépensant 1 pt de Credo pour Patience défensive : gagnez PV temporaires = 2× dé d'Arts martiaux."
+        },
+        {
+          "application": "passive",
+          "name": "Porté par le vent amélioré",
+          "description": "En dépensant 1 pt de Credo pour Porté par le vent : déplacez une créature consentante (taille G ou inférieure) dans 1,5m avec vous. Pas d'attaque d'opportunité."
+        }
+      ]
+    },
+    "selfRestoration": {
+      "name": "Autosubsistance",
+      "nameEn": "Self-Restoration",
+      "level": 10,
+      "description": "À la fin de chacun de vos tours, libérez-vous d'un état parmi : Charmé, Effrayé ou Empoisonné. Ne pas manger/boire ne donne pas de niveaux d'Épuisement.",
+      "effects": [
+        {
+          "application": "passive",
+          "description": "Fin de tour : supprime Charmé, Effrayé ou Empoisonné. Immunité à l'Épuisement par faim/soif."
+        }
+      ]
+    },
+    "deflectEnergy": {
+      "name": "Parade énergétique",
+      "nameEn": "Deflect Energy",
+      "level": 13,
+      "description": "Déviation d'assaut fonctionne désormais contre tous les types de dégâts, pas seulement contondants/perforants/tranchants.",
+      "effects": [
+        {
+          "application": "passive",
+          "description": "Étend Déviation d'assaut à tous les types de dégâts."
+        }
+      ]
+    },
+    "disciplinedSurvivor": {
+      "name": "Survivant discipliné",
+      "nameEn": "Disciplined Survivor",
+      "level": 14,
+      "description": "Maîtrise de tous les jets de sauvegarde. Si vous ratez un jet de sauvegarde, dépensez 1 pt de Credo pour le rejouer (nouveau jet conservé).",
+      "effects": [
+        {
+          "application": "passive",
+          "target": "savingThrow",
+          "description": "Maîtrise de TOUS les jets de sauvegarde."
+        },
+        {
+          "application": "reactive",
+          "trigger": {
+            "event": "onSavingThrow",
+            "timing": "after"
+          },
+          "kiCost": 1,
+          "description": "Si échec, dépensez 1 pt de Credo pour rejouer le jet et conserver le nouveau résultat."
+        }
+      ]
+    },
+    "perfectDiscipline": {
+      "name": "Credo parachevé",
+      "nameEn": "Perfect Discipline",
+      "level": 15,
+      "description": "En lançant l'Initiative, si vous n'utilisez pas Métabolisme surnaturel et avez moins de 4 pts de Credo, récupérez jusqu'à en avoir 4.",
+      "effects": [
+        {
+          "application": "passive",
+          "trigger": {
+            "event": "onCombatStart",
+            "timing": "after"
+          },
+          "description": "Si <4 pts de Credo et pas de Métabolisme surnaturel, récupérez jusqu'à 4 pts de Credo."
+        }
+      ]
+    },
+    "superiorDefense": {
+      "name": "Défense supérieure",
+      "nameEn": "Superior Defense",
+      "level": 18,
+      "description": "Au début de votre tour, dépensez 3 pts de Credo pour Résistance à tous les dégâts (sauf Force) pendant 1 minute. Prend fin si Incapable d'agir.",
+      "effects": [
+        {
+          "application": "active",
+          "action": "noAction",
+          "kiCost": 3,
+          "duration": "1 minute",
+          "description": "Résistance à tous les dégâts sauf Force. Fin si Incapable d'agir."
+        }
+      ]
+    },
+    "epicBoon": {
+      "name": "Faveur épique",
+      "nameEn": "Epic Boon",
+      "level": 19,
+      "description": "Recevez un don de Faveur épique ou un autre don. Faveur d'attaque irrésistible recommandé.",
+      "effects": [
+        {
+          "application": "grant",
+          "description": "Don de Faveur épique au choix (Attaque irrésistible recommandé)."
+        }
+      ]
+    },
+    "bodyAndMind": {
+      "name": "Esprit et corps",
+      "nameEn": "Body and Mind",
+      "level": 20,
+      "description": "Vos valeurs de Dextérité et Sagesse augmentent de 4 (max 25).",
+      "effects": [
+        {
+          "application": "passive",
+          "target": "abilityScore",
+          "abilities": ["dexterity", "wisdom"],
+          "bonus": 4,
+          "max": 25
+        }
+      ]
+    }
+  },
+  "subclasses": [
+    {
+      "key": "warriorOfTheElements",
+      "name": "Credo des Éléments",
+      "nameEn": "Warrior of the Elements",
+      "source": "PHB 2024",
+      "description": "Les moines du Credo des Éléments puisent dans la puissance des plans Élémentaires, apprivoisant l'énergie du Chaos élémentaire pour se renforcer au combat.",
+      "features": {
+        "elementalAttunement": {
+          "name": "Lien élémentaire",
+          "nameEn": "Elemental Attunement",
+          "level": 3,
+          "description": "Au début de votre tour, dépensez 1 pt de Credo pour vous imprégner d'énergie élémentaire (10 minutes ou jusqu'à Incapable d'agir).",
+          "effects": [
+            {
+              "application": "active",
+              "action": "noAction",
+              "kiCost": 1,
+              "duration": "10 minutes",
+              "description": "Allonge +3m pour les Frappes à mains nues."
+            },
+            {
+              "application": "passive",
+              "description": "Frappes élémentaires : Frappes à mains nues peuvent infliger dégâts d'acide/froid/feu/foudre/tonnerre. Si dégâts élémentaires : jet Force ou attirer/repousser de 3m."
+            }
+          ]
+        },
+        "elementalManipulation": {
+          "name": "Manipulation des éléments",
+          "nameEn": "Elemental Manipulation",
+          "level": 3,
+          "description": "Vous connaissez le sort élémentalisme. Sagesse = caractéristique d'incantation.",
+          "effects": [
+            {
+              "application": "grant",
+              "grants": {
+                "spellcasting": {
+                  "type": "virtualFeat",
+                  "ability": "wisdom",
+                  "spells": ["elementalism"]
+                }
+              }
+            }
+          ]
+        },
+        "elementalBlast": {
+          "name": "Décharge élémentaire",
+          "nameEn": "Elemental Blast",
+          "level": 6,
+          "description": "Action Magie : dépensez 2 pts de Credo. Sphère de 6m de rayon dans un rayon de 36m. Choisissez type : acide/froid/feu/foudre/tonnerre. Jet Dextérité : échec = 3× dé d'Arts martiaux de dégâts, réussite = moitié.",
+          "effects": [
+            {
+              "application": "active",
+              "action": "magic",
+              "kiCost": 2,
+              "damage": "3 * martialArtsDie",
+              "damageTypes": ["acid", "cold", "fire", "lightning", "thunder"],
+              "savingThrow": "dexterity",
+              "areaOfEffect": {
+                "type": "sphere",
+                "radius": 6,
+                "range": 36
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "warriorOfShadow",
+      "name": "Credo de l'Ombre",
+      "nameEn": "Warrior of Shadow",
+      "source": "PHB 2024",
+      "description": "Les moines du Credo de l'Ombre puisent leur pouvoir dans la Gisombre, se fondant dans les ténèbres pour se dissimuler, bondir d'ombre en ombre et prendre forme spectrale.",
+      "features": {
+        "shadowArts": {
+          "name": "Artiste des ombres",
+          "nameEn": "Shadow Arts",
+          "level": 3,
+          "description": "Vous avez appris à puiser dans le pouvoir de la Gisombre.",
+          "effects": [
+            {
+              "application": "active",
+              "name": "Ténèbres",
+              "description": "Dépensez 1 pt de Credo pour lancer ténèbres sans composante. Vous voyez dans la zone. Déplacez la zone de 18m au début de chaque tour.",
+              "kiCost": 1
+            },
+            {
+              "application": "passive",
+              "name": "Vision dans le noir",
+              "description": "Vision dans le noir 18m (ou +18m si déjà possédée)."
+            },
+            {
+              "application": "grant",
+              "name": "Fantaisies de sombres",
+              "grants": {
+                "spellcasting": {
+                  "type": "virtualFeat",
+                  "ability": "wisdom",
+                  "cantrips": ["minorIllusion"]
+                }
+              }
+            }
+          ]
+        },
+        "shadowStep": {
+          "name": "Foulée d'ombre",
+          "nameEn": "Shadow Step",
+          "level": 6,
+          "description": "En zone de Lumière faible ou Ténèbres, action Bonus : téléportation 18m vers un espace inoccupé également en zone de Lumière faible/Ténèbres. Avantage sur la prochaine attaque au corps à corps avant la fin du tour.",
+          "effects": [
+            {
+              "application": "active",
+              "action": "bonusAction",
+              "teleportRange": 18,
+              "condition": "dimLightOrDarkness",
+              "bonusEffect": "advantage on next melee attack this turn"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "warriorOfTheOpenHand",
+      "name": "Credo de la Paume",
+      "nameEn": "Warrior of the Open Hand",
+      "source": "PHB 2024",
+      "description": "Maîtres du combat à mains nues, les moines du Credo de la Paume apprennent à repousser et faire trébucher leurs adversaires, et manipulent leur énergie pour se protéger.",
+      "features": {
+        "openHandTechnique": {
+          "name": "Technique de la Paume",
+          "nameEn": "Open Hand Technique",
+          "level": 3,
+          "description": "Quand vous touchez une créature avec Déluge de coups, imposez l'un de ces effets : Hésitation (pas d'attaques d'opportunité), Bourrade (jet Force ou repoussé de 4,5m), Renversement (jet Dextérité ou À terre).",
+          "effects": [
+            {
+              "application": "active",
+              "options": [
+                { "name": "Hésitation", "description": "Pas d'attaques d'Opportunité jusqu'au début du prochain tour de la cible." },
+                { "name": "Bourrade", "description": "Jet Sauvegarde Force ou repoussé de 4,5m.", "savingThrow": "strength", "pushDistance": 4.5 },
+                { "name": "Renversement", "description": "Jet Sauvegarde Dextérité ou état À terre.", "savingThrow": "dexterity", "condition": "prone" }
+              ]
+            }
+          ]
+        },
+        "wholenessOfBody": {
+          "name": "Plénitude physique",
+          "nameEn": "Wholeness of Body",
+          "level": 6,
+          "description": "Action Bonus : lancez votre dé d'Arts martiaux, récupérez PV = résultat + mod. Sagesse (min 1). Utilisations = mod. Sagesse (min 1), récupération Repos long.",
+          "effects": [
+            {
+              "application": "active",
+              "action": "bonusAction",
+              "healing": "martialArtsDie + wisdomModifier",
+              "resource": {
+                "key": "wholenessOfBody",
+                "max": "max(wisdomModifier, 1)",
+                "recovery": "longRest"
+              }
+            }
+          ]
+        },
+        "fleetStep": {
+          "name": "Foulée preste",
+          "nameEn": "Fleet Step",
+          "level": 11,
+          "description": "Après une action Bonus (autre que Porté par le vent), vous pouvez aussi utiliser Porté par le vent immédiatement après.",
+          "effects": [
+            {
+              "application": "passive",
+              "description": "Action Bonus non Porté par le vent → Porté par le vent gratuit immédiatement après."
+            }
+          ]
+        },
+        "quiveringPalm": {
+          "name": "Paume vibratoire",
+          "nameEn": "Quivering Palm",
+          "level": 17,
+          "description": "En touchant avec une attaque à mains nues, dépensez 4 pts de Credo : vibrations mortelles durant [niveau de moine] jours. Action (ou renoncez à une attaque du tour) pour y mettre fin. Cible : jet Constitution. Échec = 10d12 dégâts de Force, réussite = moitié. 1 créature à la fois. Résiliation inoffensive possible (pas d'action).",
+          "effects": [
+            {
+              "application": "active",
+              "kiCost": 4,
+              "duration": "monkLevel days",
+              "damage": "10d12",
+              "damageType": "force",
+              "savingThrow": "constitution",
+              "description": "Vibrations mortelles. Action pour déclencher : 10d12 Force (jet Constitution, moitié si réussi). 1 créature max. Fin inoffensive gratuite possible."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "warriorOfMercy",
+      "name": "Credo de la Miséricorde",
+      "nameEn": "Warrior of Mercy",
+      "source": "PHB 2024",
+      "description": "Voir le Manuel des Joueurs. Détails non disponibles sur AideDD.",
+      "features": {},
+      "note": "Sous-classe mentionnée sur AideDD mais non détaillée. Contenu complet dans le Player's Handbook 2024."
+    }
+  ],
+  "discrepancies": [
+    {
+      "field": "subclasses",
+      "taskExpected": "Credo de la Main",
+      "aideddActual": "Credo de la Paume (Open Hand) et Credo de la Miséricorde (Mercy)",
+      "resolution": "« Credo de la Main » n'existe pas sur AideDD. Credo de la Paume = Warrior of the Open Hand (le nom anglais correspond à « Main Ouverte », mais la traduction officielle est « Paume »). Credo de la Miséricorde est mentionné mais sans détails."
+    }
+  ]
+}

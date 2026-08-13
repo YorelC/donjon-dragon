@@ -1,0 +1,27 @@
+{
+  "key": "halfling",
+  "name": "Halfelin",
+  "creatureType": "humanoid",
+  "size": "Small",
+  "speed": 9,
+  "darkvision": 0,
+  "traits": [
+    {
+      "name": "Brave",
+      "description": "Vous bénéficiez d'un Avantage aux jets de sauvegarde effectués pour éviter ou mettre fin à l'état Effrayé."
+    },
+    {
+      "name": "Agilité halfeline",
+      "description": "Vous pouvez traverser la case de toute créature d'une taille supérieure à la vôtre, mais vous ne pouvez pas vous arrêter dans la même case."
+    },
+    {
+      "name": "Chance",
+      "description": "Lorsque vous obtenez un 1 au d20 d'un jet de d20, vous pouvez relancer le dé et utiliser le nouveau résultat."
+    },
+    {
+      "name": "Discrétion naturelle",
+      "description": "Vous pouvez prendre l'action Furtivité même si vous n'êtes masqué que par une créature d'au moins une taille supérieure à la vôtre."
+    }
+  ],
+  "subcategories": []
+}

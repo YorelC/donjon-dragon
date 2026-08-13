@@ -1,0 +1,367 @@
+{
+  "key": "ranger",
+  "name": "Rôdeur",
+  "name_en": "Ranger",
+  "source": {
+    "book": "PHB 2024",
+    "page": "https://www.aidedd.org/regles-24/classes/rodeur/"
+  },
+  "primaryAbilities": ["dexterity", "wisdom"],
+  "hitDie": "d10",
+  "savingThrows": ["strength", "dexterity"],
+  "skillProficiencies": {
+    "count": 3,
+    "options": ["animalHandling", "athletics", "insight", "investigation", "nature", "perception", "stealth", "survival"]
+  },
+  "weaponProficiencies": ["simple", "martial"],
+  "armorTraining": ["light", "medium", "shield"],
+  "startingEquipment": {
+    "optionA": [
+      "studded leather armor",
+      "scimitar",
+      "shortsword",
+      "longbow",
+      "20 arrows",
+      "quiver",
+      "druidic focus (mistletoe sprig)",
+      "explorer's pack",
+      "7 gp"
+    ],
+    "optionB": "150 gp"
+  },
+  "multiclassRequirements": {
+    "dexterity": 13,
+    "wisdom": 13
+  },
+  "spellcasting": {
+    "type": "half",
+    "ability": "wisdom",
+    "focus": "druidic focus",
+    "preparation": "prepared",
+    "maxSpellLevel": 5,
+    "cantripsKnownAtLevel1": 0,
+    "multiclassSlotContribution": 0.5,
+    "description": "Vous devez préparer la liste des sorts de niveau 1 ou supérieur que vous pouvez lancer. Chaque fois que vous terminez un Repos long, vous pouvez remplacer un sort préparé."
+  },
+  "progression": [
+    { "level": 1,  "profBonus": 2, "features": ["Spellcasting", "Favored Enemy", "Weapon Mastery"], "favoredEnemy": 2, "spellsPrepared": 2,  "spellSlots": [2, 0, 0, 0, 0] },
+    { "level": 2,  "profBonus": 2, "features": ["Deft Explorer", "Fighting Style"],                    "favoredEnemy": 2, "spellsPrepared": 3,  "spellSlots": [2, 0, 0, 0, 0] },
+    { "level": 3,  "profBonus": 2, "features": ["Ranger Subclass"],                                     "favoredEnemy": 2, "spellsPrepared": 4,  "spellSlots": [3, 0, 0, 0, 0] },
+    { "level": 4,  "profBonus": 2, "features": ["Ability Score Improvement"],                            "favoredEnemy": 2, "spellsPrepared": 5,  "spellSlots": [3, 0, 0, 0, 0] },
+    { "level": 5,  "profBonus": 3, "features": ["Extra Attack"],                                        "favoredEnemy": 3, "spellsPrepared": 6,  "spellSlots": [4, 2, 0, 0, 0] },
+    { "level": 6,  "profBonus": 3, "features": ["Roving"],                                              "favoredEnemy": 3, "spellsPrepared": 6,  "spellSlots": [4, 2, 0, 0, 0] },
+    { "level": 7,  "profBonus": 3, "features": ["Subclass Feature"],                                    "favoredEnemy": 3, "spellsPrepared": 7,  "spellSlots": [4, 3, 0, 0, 0] },
+    { "level": 8,  "profBonus": 3, "features": ["Ability Score Improvement"],                            "favoredEnemy": 3, "spellsPrepared": 7,  "spellSlots": [4, 3, 0, 0, 0] },
+    { "level": 9,  "profBonus": 4, "features": ["Expertise"],                                           "favoredEnemy": 4, "spellsPrepared": 9,  "spellSlots": [4, 3, 2, 0, 0] },
+    { "level": 10, "profBonus": 4, "features": ["Tireless"],                                            "favoredEnemy": 4, "spellsPrepared": 9,  "spellSlots": [4, 3, 2, 0, 0] },
+    { "level": 11, "profBonus": 4, "features": ["Subclass Feature"],                                    "favoredEnemy": 4, "spellsPrepared": 10, "spellSlots": [4, 3, 3, 0, 0] },
+    { "level": 12, "profBonus": 4, "features": ["Ability Score Improvement"],                            "favoredEnemy": 4, "spellsPrepared": 10, "spellSlots": [4, 3, 3, 0, 0] },
+    { "level": 13, "profBonus": 5, "features": ["Relentless Hunter"],                                   "favoredEnemy": 5, "spellsPrepared": 11, "spellSlots": [4, 3, 3, 1, 0] },
+    { "level": 14, "profBonus": 5, "features": ["Nature's Veil"],                                       "favoredEnemy": 5, "spellsPrepared": 11, "spellSlots": [4, 3, 3, 1, 0] },
+    { "level": 15, "profBonus": 5, "features": ["Subclass Feature"],                                    "favoredEnemy": 5, "spellsPrepared": 12, "spellSlots": [4, 3, 3, 2, 0] },
+    { "level": 16, "profBonus": 5, "features": ["Ability Score Improvement"],                            "favoredEnemy": 5, "spellsPrepared": 12, "spellSlots": [4, 3, 3, 2, 0] },
+    { "level": 17, "profBonus": 6, "features": ["Precise Hunter"],                                      "favoredEnemy": 6, "spellsPrepared": 14, "spellSlots": [4, 3, 3, 3, 1] },
+    { "level": 18, "profBonus": 6, "features": ["Feral Senses"],                                        "favoredEnemy": 6, "spellsPrepared": 14, "spellSlots": [4, 3, 3, 3, 1] },
+    { "level": 19, "profBonus": 6, "features": ["Epic Boon"],                                           "favoredEnemy": 6, "spellsPrepared": 15, "spellSlots": [4, 3, 3, 3, 2] },
+    { "level": 20, "profBonus": 6, "features": ["Foe Slayer"],                                          "favoredEnemy": 6, "spellsPrepared": 15, "spellSlots": [4, 3, 3, 3, 2] }
+  ],
+  "features": [
+    {
+      "key": "spellcasting",
+      "name": "Sorts",
+      "name_en": "Spellcasting",
+      "level": 1,
+      "application": "grant",
+      "description": "Vous avez appris à canaliser l'essence magique de la nature pour lancer des sorts. La Sagesse est votre caractéristique d'incantation. Vous utilisez un focaliseur druidique. Vous préparez des sorts et récupérez vos emplacements après un Repos long.",
+      "grants": {
+        "spellcasting": {
+          "type": "half",
+          "ability": "wisdom",
+          "focus": "druidicFocus"
+        }
+      }
+    },
+    {
+      "key": "favoredEnemy",
+      "name": "Ennemi juré",
+      "name_en": "Favored Enemy",
+      "level": 1,
+      "application": "active",
+      "description": "Le sort marque du chasseur est toujours préparé. Vous pouvez le lancer sans dépenser d'emplacement un nombre de fois égal à la colonne Ennemi juré. Récupération au Repos long.",
+      "grants": {
+        "alwaysPreparedSpells": ["huntersMark"]
+      },
+      "resource": {
+        "key": "favoredEnemyUses",
+        "recovery": "longRest"
+      }
+    },
+    {
+      "key": "weaponMastery",
+      "name": "Bottes d'arme",
+      "name_en": "Weapon Mastery",
+      "level": 1,
+      "application": "passive",
+      "description": "Vous pouvez utiliser la propriété Botte de deux types d'armes de votre choix que vous maîtrisez. Vous pouvez changer de type d'arme après un Repos long."
+    },
+    {
+      "key": "deftExplorer",
+      "name": "Fin explorateur",
+      "name_en": "Deft Explorer",
+      "level": 2,
+      "application": "grant",
+      "description": "Expertise dans une compétence maîtrisée de votre choix. Vous connaissez deux langues supplémentaires de votre choix."
+    },
+    {
+      "key": "fightingStyle",
+      "name": "Style de combat",
+      "name_en": "Fighting Style",
+      "level": 2,
+      "application": "grant",
+      "description": "Vous obtenez un don de Style de Combat de votre choix. Alternative : Combattant druidique (deux sorts mineurs de druide)."
+    },
+    {
+      "key": "rangerSubclass",
+      "name": "Sous-classe de rôdeur",
+      "name_en": "Ranger Subclass",
+      "level": 3,
+      "application": "grant",
+      "description": "Vous obtenez une sous-classe de rôdeur. Sous-classes disponibles : Belluaire, Chasseur, Traqueur des ténèbres, Vagabond féerique."
+    },
+    {
+      "key": "asi4",
+      "name": "Amélioration de caractéristique",
+      "name_en": "Ability Score Improvement",
+      "level": 4,
+      "application": "grant",
+      "description": "Vous obtenez le don Amélioration de caractéristiques ou un autre don pour lequel vous êtes qualifié. Également aux niveaux 8, 12 et 16."
+    },
+    {
+      "key": "extraAttack",
+      "name": "Attaque supplémentaire",
+      "name_en": "Extra Attack",
+      "level": 5,
+      "application": "passive",
+      "description": "Vous pouvez attaquer deux fois, au lieu d'une, chaque fois que vous prenez l'action Attaque à votre tour."
+    },
+    {
+      "key": "roving",
+      "name": "Arpenteur",
+      "name_en": "Roving",
+      "level": 6,
+      "application": "passive",
+      "description": "Votre Vitesse augmente de 3 mètres si vous ne portez pas d'armure lourde. Vous disposez également d'une Vitesse d'escalade et d'une Vitesse de nage égales à votre Vitesse.",
+      "formula": { "speedBonus": 3, "unit": "meters", "condition": "noHeavyArmor" }
+    },
+    {
+      "key": "expertise9",
+      "name": "Expertise",
+      "name_en": "Expertise",
+      "level": 9,
+      "application": "passive",
+      "description": "Vous gagnez l'Expertise dans deux de vos maîtrises de compétences de votre choix."
+    },
+    {
+      "key": "tireless",
+      "name": "Infatigable",
+      "name_en": "Tireless",
+      "level": 10,
+      "application": "active",
+      "description": "Action : 1d8 + mod. Sagesse PV temporaires, utilisable mod. Sagesse fois par Repos long. Repos court : Épuisement diminue de 1.",
+      "resource": {
+        "key": "tirelessUses",
+        "max": "wisdomModifier",
+        "recovery": "longRest"
+      }
+    },
+    {
+      "key": "relentlessHunter",
+      "name": "Chasseur implacable",
+      "name_en": "Relentless Hunter",
+      "level": 13,
+      "application": "passive",
+      "description": "Subir des dégâts ne peut pas briser votre Concentration sur marque du chasseur."
+    },
+    {
+      "key": "naturesVeil",
+      "name": "Voile de la nature",
+      "name_en": "Nature's Veil",
+      "level": 14,
+      "application": "active",
+      "description": "Action Bonus : état Invisible jusqu'à la fin de votre tour suivant. Utilisable mod. Sagesse fois par Repos long.",
+      "resource": {
+        "key": "naturesVeilUses",
+        "max": "wisdomModifier",
+        "recovery": "longRest"
+      }
+    },
+    {
+      "key": "preciseHunter",
+      "name": "Chasseur précis",
+      "name_en": "Precise Hunter",
+      "level": 17,
+      "application": "passive",
+      "description": "Avantage aux jets d'attaque contre la créature affectée par votre marque du chasseur."
+    },
+    {
+      "key": "feralSenses",
+      "name": "Sens sauvages",
+      "name_en": "Feral Senses",
+      "level": 18,
+      "application": "passive",
+      "description": "Vision aveugle dans un rayon de 9 mètres."
+    },
+    {
+      "key": "epicBoon",
+      "name": "Faveur épique",
+      "name_en": "Epic Boon",
+      "level": 19,
+      "application": "grant",
+      "description": "Vous recevez un don de Faveur épique ou un autre don pour lequel vous remplissez les conditions. Faveur de Déplacement dimensionnel recommandé."
+    },
+    {
+      "key": "foeSlayer",
+      "name": "Tueur implacable",
+      "name_en": "Foe Slayer",
+      "level": 20,
+      "application": "passive",
+      "description": "Le dé de dégâts de votre marque du chasseur passe de d6 à d10."
+    }
+  ],
+  "subclasses": [
+    {
+      "key": "beastMaster",
+      "name": "Belluaire",
+      "name_en": "Beast Master",
+      "source": "PHB 2024",
+      "description": "Tisse un lien mystique avec un animal particulier, puisant dans une magie primordiale et une connexion profonde avec le monde naturel.",
+      "features": [
+        {
+          "key": "primalCompanion",
+          "name": "Compagnon primitif",
+          "name_en": "Primal Companion",
+          "level": 3,
+          "application": "active",
+          "description": "Invoquez magiquement une bête primitive. Choisissez son profil : bête des terres, bête des mers ou bête des cieux. En combat, la bête agit à votre tour (Esquive par défaut). Action Bonus pour lui ordonner d'agir, ou sacrifiez une attaque pour l'action Frappe. Si la bête meurt, dépensez un emplacement de sort pour la ressusciter. Remplaçable après un Repos long."
+        },
+        {
+          "key": "exceptionalTraining",
+          "name": "Coordination facilitée",
+          "name_en": "Exceptional Training",
+          "level": 7,
+          "application": "passive",
+          "description": "Lorsque vous ordonnez à votre compagnon d'agir (Action Bonus), il peut aussi utiliser son Action Bonus pour Pointe, Désengagement, Esquive ou Soutien. Ses dégâts peuvent être de force ou son type normal."
+        }
+      ]
+    },
+    {
+      "key": "hunter",
+      "name": "Chasseur",
+      "name_en": "Hunter",
+      "source": "PHB 2024",
+      "description": "Traque des proies dans la nature ou ailleurs, utilisant ses capacités de chasseur pour protéger la nature et les gens.",
+      "features": [
+        {
+          "key": "huntersLore",
+          "name": "Savoir du chasseur",
+          "name_en": "Hunter's Lore",
+          "level": 3,
+          "application": "informational",
+          "description": "Lorsqu'une créature est marquée par votre marque du chasseur, vous connaissez ses Immunités, Résistances et Vulnérabilités."
+        },
+        {
+          "key": "huntersPrey",
+          "name": "Proie du chasseur",
+          "name_en": "Hunter's Prey",
+          "level": 3,
+          "application": "passive",
+          "description": "Choisissez entre Goût du sang (1d8 dégâts supplémentaires 1x/tour si la cible n'est pas à PV max) ou Briseur de hordes (attaque supplémentaire contre une créature adjacente différente 1x/tour). Changeable au Repos court ou long."
+        },
+        {
+          "key": "defensiveTactics",
+          "name": "Tactiques défensives",
+          "name_en": "Defensive Tactics",
+          "level": 7,
+          "application": "passive",
+          "description": "Choisissez entre Cauchemar de la horde (Désavantage aux attaques d'opportunité contre vous) ou Défense contre les attaques multiples (si touché, l'attaquant a Désavantage sur ses autres attaques ce tour). Changeable au Repos court ou long."
+        },
+        {
+          "key": "superiorHuntersPrey",
+          "name": "Proie du chasseur supérieure",
+          "name_en": "Superior Hunter's Prey",
+          "level": 11,
+          "application": "passive",
+          "description": "1x/tour, quand vous infligez des dégâts à une créature marquée par marque du chasseur, vous pouvez infliger les dégâts supplémentaires du sort à une autre créature visible dans un rayon de 9 m."
+        },
+        {
+          "key": "superiorHuntersDefense",
+          "name": "Défense de chasseur supérieure",
+          "name_en": "Superior Hunter's Defense",
+          "level": 15,
+          "application": "reactive",
+          "description": "Quand vous subissez des dégâts, Réaction pour obtenir Résistance aux dégâts du même type jusqu'à la fin du tour.",
+          "trigger": { "event": "onDamageTaken", "action": "reaction", "consumesReaction": true, "frequency": "unlimited" }
+        }
+      ]
+    },
+    {
+      "key": "gloomStalker",
+      "name": "Traqueur des ténèbres",
+      "name_en": "Gloom Stalker",
+      "source": "PHB 2024",
+      "description": "Chez eux dans les endroits les plus sombres, maniant une magie puisée dans la Gisombre pour combattre les ennemis qui rôdent dans l'obscurité.",
+      "features": [
+        {
+          "key": "dreadAmbusher",
+          "name": "Embuscade effrayante",
+          "name_en": "Dread Ambusher",
+          "level": 3,
+          "application": "passive",
+          "description": "Prestesse de l'embusqué : +3 m Vitesse au 1er tour de combat. Frappe effroyable : 2d6 dégâts psychiques supplémentaires 1x/tour, mod. Sagesse fois par Repos long. Bonus d'Initiative : ajoutez mod. Sagesse à l'Initiative."
+        },
+        {
+          "key": "gloomStalkerSpells",
+          "name": "Sorts de Traqueur des ténèbres",
+          "name_en": "Gloom Stalker Spells",
+          "level": 3,
+          "application": "grant",
+          "description": "Sorts toujours préparés : niv.3 déguisement, niv.5 corde enchantée, niv.9 peur, niv.13 invisibilité suprême, niv.17 apparence trompeuse.",
+          "grants": {
+            "alwaysPreparedSpells": {
+              "3": ["disguiseSelf"],
+              "5": ["ropeTrick"],
+              "9": ["fear"],
+              "13": ["greaterInvisibility"],
+              "17": ["seeming"]
+            }
+          }
+        },
+        {
+          "key": "umbralSight",
+          "name": "Vision ombreuse",
+          "name_en": "Umbral Sight",
+          "level": 3,
+          "application": "passive",
+          "description": "Vision dans le noir sur 18 m (+18 m si déjà possédée). Si complètement dans les Ténèbres, état Invisible vis-à-vis des créatures utilisant Vision dans le noir."
+        },
+        {
+          "key": "ironMind",
+          "name": "Mental d'acier",
+          "name_en": "Iron Mind",
+          "level": 7,
+          "application": "grant",
+          "description": "Maîtrise des jets de sauvegarde de Sagesse. Si déjà maîtrisé, maîtrise des jets d'Intelligence ou de Charisme (au choix)."
+        }
+      ]
+    },
+    {
+      "key": "feyWanderer",
+      "name": "Vagabond féerique",
+      "name_en": "Fey Wanderer",
+      "source": "PHB 2024",
+      "description": "Sous-classe mentionnée sur AideDD mais non détaillée (contenu non OGL). Voir le Manuel des Joueurs.",
+      "features": [],
+      "note": "Détails non disponibles sur AideDD (contenu non OGL). Marcheur des horizons (Horizon Walker) est une sous-classe de 2014 non reprise dans le PHB 2024."
+    }
+  ]
+}

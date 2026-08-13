@@ -1,0 +1,145 @@
+[
+  {
+    "key": "padded",
+    "name": "Armure matelassée",
+    "category": "armure légère",
+    "cost": "5 po",
+    "baseAC": 11,
+    "dexterityModifier": "full",
+    "strengthRequirement": null,
+    "stealthDisadvantage": true,
+    "weight": "4 kg"
+  },
+  {
+    "key": "leather",
+    "name": "Armure de cuir",
+    "category": "armure légère",
+    "cost": "10 po",
+    "baseAC": 11,
+    "dexterityModifier": "full",
+    "strengthRequirement": null,
+    "stealthDisadvantage": false,
+    "weight": "5 kg"
+  },
+  {
+    "key": "studded-leather",
+    "name": "Armure de cuir clouté",
+    "category": "armure légère",
+    "cost": "45 po",
+    "baseAC": 12,
+    "dexterityModifier": "full",
+    "strengthRequirement": null,
+    "stealthDisadvantage": false,
+    "weight": "6,5 kg"
+  },
+  {
+    "key": "hide",
+    "name": "Armure de peaux",
+    "category": "armure intermédiaire",
+    "cost": "10 po",
+    "baseAC": 12,
+    "dexterityModifier": "partial",
+    "strengthRequirement": null,
+    "stealthDisadvantage": false,
+    "weight": "6 kg"
+  },
+  {
+    "key": "chain-shirt",
+    "name": "Chemise de mailles",
+    "category": "armure intermédiaire",
+    "cost": "50 po",
+    "baseAC": 13,
+    "dexterityModifier": "partial",
+    "strengthRequirement": null,
+    "stealthDisadvantage": false,
+    "weight": "10 kg"
+  },
+  {
+    "key": "scale-mail",
+    "name": "Armure d'écailles",
+    "category": "armure intermédiaire",
+    "cost": "50 po",
+    "baseAC": 14,
+    "dexterityModifier": "partial",
+    "strengthRequirement": null,
+    "stealthDisadvantage": true,
+    "weight": "22,5 kg"
+  },
+  {
+    "key": "breastplate",
+    "name": "Cuirasse",
+    "category": "armure intermédiaire",
+    "cost": "400 po",
+    "baseAC": 14,
+    "dexterityModifier": "partial",
+    "strengthRequirement": null,
+    "stealthDisadvantage": false,
+    "weight": "10 kg"
+  },
+  {
+    "key": "half-plate",
+    "name": "Demi-plate",
+    "category": "armure intermédiaire",
+    "cost": "750 po",
+    "baseAC": 15,
+    "dexterityModifier": "partial",
+    "strengthRequirement": null,
+    "stealthDisadvantage": true,
+    "weight": "20 kg"
+  },
+  {
+    "key": "ring-mail",
+    "name": "Broigne",
+    "category": "armure lourde",
+    "cost": "30 po",
+    "baseAC": 14,
+    "dexterityModifier": "none",
+    "strengthRequirement": null,
+    "stealthDisadvantage": true,
+    "weight": "20 kg"
+  },
+  {
+    "key": "chain-mail",
+    "name": "Cotte de mailles",
+    "category": "armure lourde",
+    "cost": "75 po",
+    "baseAC": 16,
+    "dexterityModifier": "none",
+    "strengthRequirement": 13,
+    "stealthDisadvantage": true,
+    "weight": "27,5 kg"
+  },
+  {
+    "key": "splint",
+    "name": "Clibanion",
+    "category": "armure lourde",
+    "cost": "200 po",
+    "baseAC": 17,
+    "dexterityModifier": "none",
+    "strengthRequirement": 15,
+    "stealthDisadvantage": true,
+    "weight": "30 kg"
+  },
+  {
+    "key": "plate",
+    "name": "Harnois",
+    "category": "armure lourde",
+    "cost": "1 500 po",
+    "baseAC": 18,
+    "dexterityModifier": "none",
+    "strengthRequirement": 15,
+    "stealthDisadvantage": true,
+    "weight": "32,5 kg"
+  },
+  {
+    "key": "shield",
+    "name": "Bouclier",
+    "category": "bouclier",
+    "cost": "10 po",
+    "baseAC": 2,
+    "dexterityModifier": "none",
+    "strengthRequirement": null,
+    "stealthDisadvantage": false,
+    "weight": "3 kg"
+  }
+]

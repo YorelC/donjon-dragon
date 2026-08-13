@@ -1,0 +1,487 @@
+{
+  "_meta": {
+    "source": "https://www.aidedd.org/regles-24/classes/occultiste/",
+    "extractedAt": "2026-08-13",
+    "version": "D&D 2024",
+    "language": "fr"
+  },
+  "key": "warlock",
+  "name": "Occultiste",
+  "description": "Les occultistes sont en quête du savoir caché dans la trame du multivers. Ils commencent souvent leur quête de pouvoir magique en fouillant dans des livres de savoir interdit, en s'adonnant à des invocations destinées à attirer le pouvoir d'êtres extraplanaires, ou en recherchant des lieux de pouvoir où l'influence de ces êtres peut se faire sentir. En un rien de temps, chaque occultiste est lié par un pacte avec un puissant protecteur. S'appuyant sur le savoir ancestral d'êtres tels que les anges, archifées, démons, diables, guenaudes et entités extraterrestres du Royaume Lointain, les occultistes rassemblent des secrets arcaniques pour renforcer leur propre pouvoir.",
+  "primaryAbility": ["charisma"],
+  "hitDie": "d8",
+  "hpAtLevel1": 8,
+  "savingThrows": ["wisdom", "charisma"],
+  "skillChoices": {
+    "count": 2,
+    "from": ["arcana", "deception", "history", "intimidation", "investigation", "nature", "religion"]
+  },
+  "weaponProficiencies": "Armes courantes",
+  "armorTraining": "Armures légères",
+  "toolProficiencies": null,
+  "startingEquipment": {
+    "options": [
+      {
+        "choice": "A",
+        "items": "Armure de cuir, serpe, 2 dagues, focaliseur arcanique (orbe), livre (savoir occulte), sac d'érudit et 15 po"
+      },
+      {
+        "choice": "B",
+        "items": "100 po"
+      }
+    ],
+    "defaultGold": 100
+  },
+  "spellcasting": {
+    "ability": "charisma",
+    "type": "pact",
+    "cantripsAtLevel1": 2,
+    "preparedSpellsAtLevel1": 2,
+    "focus": "Focaliseur arcanique",
+    "multiclassSlotContribution": 0,
+    "preparationRule": "known",
+    "knownCantripsProgression": [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+    "knownSpellsProgression": [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15]
+  },
+  "progression": [
+    { "level": 1,  "proficiencyBonus": 2, "invocationsKnown": 1,  "cantripsKnown": 2, "spellsPrepared": 2,  "pactSlots": { "count": 1, "level": 1 }, "features": ["Manifestations occultes", "Magie de pacte"] },
+    { "level": 2,  "proficiencyBonus": 2, "invocationsKnown": 3,  "cantripsKnown": 2, "spellsPrepared": 3,  "pactSlots": { "count": 2, "level": 1 }, "features": ["Rouerie magique"] },
+    { "level": 3,  "proficiencyBonus": 2, "invocationsKnown": 3,  "cantripsKnown": 2, "spellsPrepared": 4,  "pactSlots": { "count": 2, "level": 2 }, "features": ["Sous-classe d'occultiste"] },
+    { "level": 4,  "proficiencyBonus": 2, "invocationsKnown": 3,  "cantripsKnown": 3, "spellsPrepared": 5,  "pactSlots": { "count": 2, "level": 2 }, "features": ["Amélioration de caractéristique"] },
+    { "level": 5,  "proficiencyBonus": 3, "invocationsKnown": 5,  "cantripsKnown": 3, "spellsPrepared": 6,  "pactSlots": { "count": 2, "level": 3 }, "features": [] },
+    { "level": 6,  "proficiencyBonus": 3, "invocationsKnown": 5,  "cantripsKnown": 3, "spellsPrepared": 7,  "pactSlots": { "count": 2, "level": 3 }, "features": ["Capacité de sous-classe"] },
+    { "level": 7,  "proficiencyBonus": 3, "invocationsKnown": 6,  "cantripsKnown": 3, "spellsPrepared": 8,  "pactSlots": { "count": 2, "level": 4 }, "features": [] },
+    { "level": 8,  "proficiencyBonus": 3, "invocationsKnown": 6,  "cantripsKnown": 3, "spellsPrepared": 9,  "pactSlots": { "count": 2, "level": 4 }, "features": ["Amélioration de caractéristique"] },
+    { "level": 9,  "proficiencyBonus": 4, "invocationsKnown": 7,  "cantripsKnown": 3, "spellsPrepared": 10, "pactSlots": { "count": 2, "level": 5 }, "features": ["Communication avec le protecteur"] },
+    { "level": 10, "proficiencyBonus": 4, "invocationsKnown": 7,  "cantripsKnown": 4, "spellsPrepared": 10, "pactSlots": { "count": 2, "level": 5 }, "features": ["Capacité de sous-classe"] },
+    { "level": 11, "proficiencyBonus": 4, "invocationsKnown": 7,  "cantripsKnown": 4, "spellsPrepared": 11, "pactSlots": { "count": 3, "level": 5 }, "features": ["Arcanum mystique (niveau 6)"] },
+    { "level": 12, "proficiencyBonus": 4, "invocationsKnown": 8,  "cantripsKnown": 4, "spellsPrepared": 11, "pactSlots": { "count": 3, "level": 5 }, "features": ["Amélioration de caractéristique"] },
+    { "level": 13, "proficiencyBonus": 5, "invocationsKnown": 8,  "cantripsKnown": 4, "spellsPrepared": 12, "pactSlots": { "count": 3, "level": 5 }, "features": ["Arcanum mystique (niveau 7)"] },
+    { "level": 14, "proficiencyBonus": 5, "invocationsKnown": 8,  "cantripsKnown": 4, "spellsPrepared": 12, "pactSlots": { "count": 3, "level": 5 }, "features": ["Capacité de sous-classe"] },
+    { "level": 15, "proficiencyBonus": 5, "invocationsKnown": 9,  "cantripsKnown": 4, "spellsPrepared": 13, "pactSlots": { "count": 3, "level": 5 }, "features": ["Arcanum mystique (niveau 8)"] },
+    { "level": 16, "proficiencyBonus": 5, "invocationsKnown": 9,  "cantripsKnown": 4, "spellsPrepared": 13, "pactSlots": { "count": 3, "level": 5 }, "features": ["Amélioration de caractéristique"] },
+    { "level": 17, "proficiencyBonus": 6, "invocationsKnown": 9,  "cantripsKnown": 4, "spellsPrepared": 14, "pactSlots": { "count": 4, "level": 5 }, "features": ["Arcanum mystique (niveau 9)"] },
+    { "level": 18, "proficiencyBonus": 6, "invocationsKnown": 10, "cantripsKnown": 4, "spellsPrepared": 14, "pactSlots": { "count": 4, "level": 5 }, "features": [] },
+    { "level": 19, "proficiencyBonus": 6, "invocationsKnown": 10, "cantripsKnown": 4, "spellsPrepared": 15, "pactSlots": { "count": 4, "level": 5 }, "features": ["Faveur épique"] },
+    { "level": 20, "proficiencyBonus": 6, "invocationsKnown": 10, "cantripsKnown": 4, "spellsPrepared": 15, "pactSlots": { "count": 4, "level": 5 }, "features": ["Maître de l'occulte"] }
+  ],
+  "features": {
+    "manifestationsOccultes": {
+      "name": "Manifestations occultes",
+      "level": 1,
+      "description": "Vous avez découvert des Manifestations occultes, des fragments de savoir interdit qui vous confèrent des pouvoirs magiques. Vous obtenez une manifestation de votre choix. Si une manifestation possède un prérequis, vous devez le remplir pour l'apprendre. Chaque fois que vous gagnez un niveau d'occultiste, vous pouvez remplacer une de vos manifestations par une autre pour laquelle vous remplissez les conditions. Vous ne pouvez pas choisir plusieurs fois la même manifestation, sauf indication contraire.",
+      "mechanicalEffect": {
+        "type": "grant",
+        "details": {
+          "count": "progression",
+          "category": "eldritchInvocations",
+          "replaceablePerLevel": true,
+          "prerequisiteRequired": true
+        }
+      }
+    },
+    "magieDePacte": {
+      "name": "Magie de pacte",
+      "level": 1,
+      "description": "Par le biais d'une cérémonie occulte, vous avez conclu un pacte avec une entité mystérieuse pour obtenir des pouvoirs magiques. Sorts mineurs : vous connaissez deux sorts mineurs au niveau 1 (Décharge occulte et Prestidigitation recommandés). Emplacements de sort de pacte : tous du même niveau, récupérés après un Repos court ou long. Sorts préparés : vous préparez deux sorts de niveau 1 (Charme-personne et Maléfice recommandés). Le Charisme est votre caractéristique d'incantation.",
+      "mechanicalEffect": {
+        "type": "spellcasting",
+        "details": {
+          "ability": "charisma",
+          "type": "pact",
+          "cantripsAtLevel1": 2,
+          "preparedSpellsAtLevel1": 2,
+          "focus": "arcane",
+          "slotRecovery": "shortRest"
+        }
+      }
+    },
+    "rouerieMagique": {
+      "name": "Rouerie magique",
+      "level": 2,
+      "description": "Vous pouvez effectuer un rite ésotérique pendant 1 minute. À la fin, vous récupérez des emplacements de sorts de Magie du Pacte dépensés, mais pas plus de la moitié de votre maximum (arrondi à l'entier supérieur). Une fois cette capacité utilisée, vous ne pouvez plus la réutiliser avant d'avoir terminé un Repos long.",
+      "mechanicalEffect": {
+        "type": "active",
+        "details": {
+          "resource": { "key": "magicalCunning", "max": 1, "recovery": "longRest" },
+          "duration": "1 minute",
+          "effect": "recover up to half (rounded up) of expended Pact Magic slots"
+        }
+      }
+    },
+    "ameliorationCaracteristique": {
+      "name": "Amélioration de caractéristique",
+      "level": 4,
+      "description": "Vous obtenez le don Amélioration de caractéristiques ou un autre don de votre choix pour lequel vous êtes qualifié. Vous obtenez de nouveau cette capacité aux niveaux 8, 12 et 16.",
+      "mechanicalEffect": {
+        "type": "grant",
+        "details": {
+          "category": "feat",
+          "levels": [4, 8, 12, 16]
+        }
+      }
+    },
+    "communicationProtecteur": {
+      "name": "Communication avec le protecteur",
+      "level": 9,
+      "description": "Vous pouvez communiquer directement avec votre protecteur. Le sort Contact avec les plans est toujours préparé pour vous. Vous pouvez le lancer sans dépenser d'emplacement de sort pour contacter votre protecteur, et votre jet de sauvegarde est automatiquement réussi. Une fois par Repos long.",
+      "mechanicalEffect": {
+        "type": "active",
+        "details": {
+          "spell": "contact_other_plane",
+          "alwaysPrepared": true,
+          "freeCasting": { "frequency": "oncePerLongRest" },
+          "autoPassSavingThrow": true
+        }
+      }
+    },
+    "arcanumMystique": {
+      "name": "Arcanum mystique",
+      "level": 11,
+      "description": "Votre protecteur vous octroie un secret magique appelé arcanum. Choisissez un sort d'occultiste de niveau 6 (puis 7 au niv.13, 8 au niv.15, 9 au niv.17). Vous pouvez le lancer sans dépenser d'emplacement, 1 fois par Repos long. Remplacement possible à chaque niveau.",
+      "mechanicalEffect": {
+        "type": "grant",
+        "details": {
+          "levels": {
+            "11": 6,
+            "13": 7,
+            "15": 8,
+            "17": 9
+          },
+          "freeCasting": { "frequency": "oncePerLongRest" },
+          "replaceablePerLevel": true
+        }
+      }
+    },
+    "faveurEpique": {
+      "name": "Faveur épique",
+      "level": 19,
+      "description": "Vous recevez un don de Faveur épique ou un autre don de votre choix pour lequel vous remplissez les conditions. Faveur du destin est recommandé.",
+      "mechanicalEffect": {
+        "type": "grant",
+        "details": { "category": "epicBoon" }
+      }
+    },
+    "maitreOcculte": {
+      "name": "Maître de l'occulte",
+      "level": 20,
+      "description": "Lorsque vous utilisez votre capacité Rouerie magique, vous récupérez tous les emplacements de sort dépensés de Magie de pacte.",
+      "mechanicalEffect": {
+        "type": "passive",
+        "details": {
+          "upgradeTo": "magicalCunning",
+          "effect": "recover all expended Pact Magic slots instead of half"
+        }
+      }
+    }
+  },
+  "subclasses": [
+    {
+      "key": "protecteur-archifee",
+      "name": "Protecteur Archifée",
+      "description": "Votre pacte puise sa source dans le pouvoir de la Féerie. Vous pouvez conclure un accord avec une archifée, comme le Prince du Gel, la Reine de l'Air et des Ténèbres, Titania de la cour du Soleil, ou une guenaude ancestrale. Quel que soit votre protecteur, il est souvent insondable et capricieux.",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Sorts de l'Archifée",
+          "description": "Les sorts suivants sont toujours préparés : niv.3 (apaisement des émotions, lueurs féeriques, foulée brumeuse, force fantasmagorique, sommeil), niv.5 (clignotement, croissance végétale), niv.7 (domination de bête, invisibilité suprême), niv.9 (domination de personne, apparence trompeuse).",
+          "mechanicalEffect": {
+            "type": "grant",
+            "details": {
+              "alwaysPrepared": {
+                "3": ["calm_emotions", "faerie_fire", "misty_step", "phantasmal_force", "sleep"],
+                "5": ["blink", "plant_growth"],
+                "7": ["dominate_beast", "greater_invisibility"],
+                "9": ["dominate_person", "seeming"]
+              }
+            }
+          }
+        },
+        {
+          "level": 3,
+          "name": "Foulée des fées",
+          "description": "Vous pouvez lancer foulée brumeuse sans dépenser d'emplacement un nombre de fois égal à votre modificateur de Charisme (minimum 1), récupération au Repos long. À chaque utilisation, choisissez un effet : Foulée revigorante (vous ou une créature à 3 m gagnez 1d10 PV temporaires) ou Foulée provocatrice (créatures à 1,50 m de l'espace quitté : jet de sauvegarde de Sagesse ou Désavantage aux attaques contre les autres jusqu'au début de votre prochain tour).",
+          "mechanicalEffect": {
+            "type": "active",
+            "details": {
+              "spell": "misty_step",
+              "freeCasting": { "frequency": "chaModifierPerLongRest", "minimum": 1 },
+              "additionalEffects": ["refreshing_step", "taunting_step"]
+            }
+          }
+        },
+        {
+          "level": 6,
+          "name": "Échappatoire brumeuse",
+          "description": "Vous pouvez lancer foulée brumeuse en Réaction en réponse à des dégâts subis. Ajoute deux nouvelles options à Foulée des fées : Foulée de disparition (état Invisible jusqu'au début du prochain tour ou jusqu'à attaque/dégâts/sort) et Foulée effroyable (créatures à 1,50 m de l'espace quitté ou d'arrivée : JS Sagesse ou 2d10 dégâts psychiques).",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "upgradeTo": "mistyStep",
+              "reactionCast": "when taking damage",
+              "additionalEffects": ["disappearing_step", "dreadful_step"]
+            }
+          }
+        },
+        {
+          "level": 10,
+          "name": "Charmantes défenses",
+          "description": "Vous êtes immunisé contre l'état Charmé. De plus, après avoir été touché par une attaque, en Réaction vous pouvez réduire les dégâts de moitié et forcer l'attaquant à un JS de Sagesse : en cas d'échec, il subit des dégâts psychiques égaux aux dégâts subis. 1 utilisation par Repos long, ou dépensez un emplacement de Magie de pacte pour réactiver.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "immunity": "charmed",
+              "reaction": {
+                "trigger": "hit by attack from visible creature",
+                "effect": "half damage taken; attacker must make WIS save or take psychic damage equal to damage reduced",
+                "resource": { "max": 1, "recovery": "longRest", "alternateRecovery": "pactSlot" }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "protecteur-celeste",
+      "name": "Protecteur Céleste",
+      "description": "Votre pacte puise dans les plans Supérieurs, royaumes de félicité éternelle. Vous pourriez conclure un accord avec un empyréen, un couatl, un sphinx, une licorne ou toute autre entité céleste. Votre pacte vous permet d'entrevoir la lumière sacrée qui illumine le multivers.",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Sorts du Céleste",
+          "description": "Les sorts suivants sont toujours préparés : niv.3 (aide, soins, rayon traçant, restauration partielle, lumière, flamme sacrée), niv.5 (lumière du jour, retour à la vie), niv.7 (gardien de la foi, mur de feu), niv.9 (restauration suprême, convocation de céleste).",
+          "mechanicalEffect": {
+            "type": "grant",
+            "details": {
+              "alwaysPrepared": {
+                "3": ["aid", "cure_wounds", "guiding_bolt", "lesser_restoration", "light", "sacred_flame"],
+                "5": ["daylight", "revivify"],
+                "7": ["guardian_of_faith", "wall_of_fire"],
+                "9": ["greater_restoration", "summon_celestial"]
+              }
+            }
+          }
+        },
+        {
+          "level": 3,
+          "name": "Lumière guérisseuse",
+          "description": "Vous disposez d'une réserve de d6 égaux à 1 + votre niveau d'occultiste pour soigner. Par une action Bonus, dépensez jusqu'à votre modificateur de Charisme (min 1) dés pour soigner une créature visible dans un rayon de 18 m du total du jet. La réserve se reconstitue au Repos long.",
+          "mechanicalEffect": {
+            "type": "active",
+            "details": {
+              "resource": { "key": "healingLight", "max": "1 + warlock level in d6s", "recovery": "longRest" },
+              "action": "bonusAction",
+              "range": "18 m",
+              "maxDicePerUse": "CHA modifier (min 1)"
+            }
+          }
+        },
+        {
+          "level": 6,
+          "name": "Âme radiante",
+          "description": "Vous bénéficiez d'une Résistance aux dégâts radiants. Une fois par tour, lorsqu'un sort que vous lancez inflige des dégâts radiants ou de feu, vous pouvez ajouter votre modificateur de Charisme aux dégâts contre l'une de ses cibles.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "damageResistance": "radiant",
+              "damageBonus": {
+                "trigger": "spell dealing radiant or fire damage",
+                "frequency": "oncePerTurn",
+                "bonus": "+CHA modifier"
+              }
+            }
+          }
+        },
+        {
+          "level": 10,
+          "name": "Résilience céleste",
+          "description": "Vous gagnez des points de vie temporaires (niveau d'occultiste + modificateur de Charisme) chaque fois que vous utilisez Rouerie magique ou terminez un Repos court ou long. De plus, jusqu'à 5 créatures visibles gagnent des PV temporaires (moitié du niveau + modificateur de Charisme).",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "trigger": "magicalCunning or shortRest or longRest",
+              "tempHP": { "self": "warlockLevel + CHA", "allies": "halfWarlockLevel + CHA (up to 5 creatures)" }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "protecteur-fielon",
+      "name": "Protecteur Fiélon",
+      "description": "Votre pacte s'étend aux plans Inférieurs, royaumes de la perdition. Vous avez conclu un pacte avec un seigneur démon comme Démogorgon ou Orcus, avec un archidiable comme Asmodée, ou avec un diantre-fosse, un balor, un yugoloth ou une guenaude nocturne particulièrement puissante. Les objectifs de ce protecteur sont maléfiques : la corruption ou la destruction de toute chose.",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Bénédiction du Ténébreux",
+          "description": "Lorsque vous réduisez un ennemi à 0 point de vie, vous gagnez des PV temporaires égaux à votre modificateur de Charisme + votre niveau d'occultiste (min 1). Vous bénéficiez également de cet avantage si une autre personne réduit à 0 PV un ennemi dans un rayon de 3 mètres de vous.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "trigger": "reduce enemy to 0 HP (self or ally within 3 m)",
+              "tempHP": "CHA modifier + warlock level (min 1)"
+            }
+          }
+        },
+        {
+          "level": 3,
+          "name": "Sorts du Fiélon",
+          "description": "Les sorts suivants sont toujours préparés : niv.3 (mains brûlantes, injonction, rayon ardent, suggestion), niv.5 (boule de feu, nuage nauséabond), niv.7 (bouclier de feu, mur de feu), niv.9 (quête, fléau d'insectes).",
+          "mechanicalEffect": {
+            "type": "grant",
+            "details": {
+              "alwaysPrepared": {
+                "3": ["burning_hands", "command", "scorching_ray", "suggestion"],
+                "5": ["fireball", "stinking_cloud"],
+                "7": ["fire_shield", "wall_of_fire"],
+                "9": ["geas", "insect_plague"]
+              }
+            }
+          }
+        },
+        {
+          "level": 6,
+          "name": "Chance du Ténébreux",
+          "description": "Lors d'un jet de caractéristique ou de sauvegarde, vous pouvez ajouter 1d10 à votre jet (après avoir vu le résultat mais avant que les effets ne se produisent). Nombre d'utilisations égal au modificateur de Charisme (min 1), une fois par jet maximum. Récupération au Repos long.",
+          "mechanicalEffect": {
+            "type": "reactive",
+            "details": {
+              "trigger": "ability check or saving throw",
+              "effect": "add 1d10",
+              "resource": { "key": "darkOnesOwnLuck", "max": "CHA modifier (min 1)", "recovery": "longRest" },
+              "limitPerRoll": 1
+            }
+          }
+        },
+        {
+          "level": 10,
+          "name": "Résistance fiélonne",
+          "description": "Choisissez un type de dégâts autre que Force chaque fois que vous terminez un Repos court ou long. Vous bénéficiez d'une Résistance à ce type de dégâts jusqu'à ce que vous en choisissiez un autre.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "trigger": "shortRest or longRest",
+              "choices": "any damage type except force",
+              "effect": "resistance to chosen type until changed"
+            }
+          }
+        },
+        {
+          "level": 14,
+          "name": "Traversée des enfers",
+          "description": "Une fois par tour, quand vous touchez une créature avec un jet d'attaque, la cible doit réussir un JS de Charisme ou être projetée dans les Plans Inférieurs : 8d10 dégâts psychiques (si non-Fiélon) et état Incapable d'agir jusqu'à la fin de votre prochain tour. 1 utilisation par Repos long, ou dépensez un emplacement de Magie de pacte pour récupérer l'usage.",
+          "mechanicalEffect": {
+            "type": "active",
+            "details": {
+              "trigger": "hit creature with attack roll",
+              "frequency": "oncePerTurn",
+              "savingThrow": { "ability": "charisma", "vs": "spellSaveDC" },
+              "onFail": {
+                "damage": { "amount": "8d10", "type": "psychic", "condition": "target is not a fiend" },
+                "condition": "incapacitated until end of your next turn"
+              },
+              "resource": { "max": 1, "recovery": "longRest", "alternateRecovery": "pactSlot" }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "protecteur-grand-ancien",
+      "name": "Protecteur Grand Ancien",
+      "description": "Vous pourriez vous lier à un être indicible du Royaume Lointain ou à un dieu ancien – comme Tharizdun le dieu enchaîné, Zargon le Ressurgi, Hadar le Dévoreur sombre, ou le Grand Cthulhu. Les motivations de ces êtres sont insondables, mais les secrets que vous avez appris vous permettent d'en tirer une magie étrange.",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Esprit éveillé",
+          "description": "Par une action Bonus, établissez une connexion télépathique avec une créature visible dans un rayon de 9 m. Communication télépathique tant que la distance est ≤ modificateur de Charisme × 1,5 km (min 1,5 km). Durée : niveau d'occultiste en minutes. Une seule connexion à la fois.",
+          "mechanicalEffect": {
+            "type": "active",
+            "details": {
+              "action": "bonusAction",
+              "range": "9 m",
+              "maxDistance": "CHA modifier × 1,5 km (min 1,5 km)",
+              "duration": "warlock level minutes",
+              "maxConnections": 1
+            }
+          }
+        },
+        {
+          "level": 3,
+          "name": "Sorts du Grand Ancien",
+          "description": "Les sorts suivants sont toujours préparés : niv.3 (détection des pensées, murmures dissonants, force fantasmagorique, fou rire de Tasha), niv.5 (clairvoyance, voracité de Hadar), niv.7 (confusion, convocation d'aberration), niv.9 (modification de mémoire, télékinésie).",
+          "mechanicalEffect": {
+            "type": "grant",
+            "details": {
+              "alwaysPrepared": {
+                "3": ["detect_thoughts", "dissonant_whispers", "phantasmal_force", "tashas_hideous_laughter"],
+                "5": ["clairvoyance", "hunger_of_hadar"],
+                "7": ["confusion", "summon_aberration"],
+                "9": ["modify_memory", "telekinesis"]
+              }
+            }
+          }
+        },
+        {
+          "level": 3,
+          "name": "Sorts psychiques",
+          "description": "Lorsque vous lancez un sort d'occultiste qui inflige des dégâts, vous pouvez changer son type de dégâts en psychique. De plus, lorsque vous lancez un sort d'occultiste d'Enchantement ou d'Illusion, vous pouvez le faire sans composante verbale ni somatique.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "damageTypeChange": "any to psychic",
+              "subtleSpell": "enchantment or illusion spells without V, S components"
+            }
+          }
+        },
+        {
+          "level": 6,
+          "name": "Combattant clairvoyant",
+          "description": "Lorsque vous établissez un lien télépathique via Esprit éveillé, vous pouvez forcer la cible à un JS de Sagesse. En cas d'échec, Désavantage aux attaques contre vous et Avantage à vos attaques contre elle. 1 utilisation par Repos court ou long, ou dépensez un emplacement de Magie de pacte pour réactiver.",
+          "mechanicalEffect": {
+            "type": "active",
+            "details": {
+              "prerequisite": "awakenedMind link active",
+              "savingThrow": { "ability": "wisdom", "vs": "spellSaveDC" },
+              "onFail": {
+                "targetDisadvantage": "attack rolls against you",
+                "yourAdvantage": "attack rolls against target"
+              },
+              "resource": { "max": 1, "recovery": "shortRest", "alternateRecovery": "pactSlot" }
+            }
+          }
+        },
+        {
+          "level": 10,
+          "name": "Maléfice occulte",
+          "description": "Vous avez toujours le sort maléfice préparé. Lorsque vous lancez maléfice et choisissez une caractéristique, la cible subit également un Désavantage aux jets de sauvegarde de la caractéristique choisie pendant toute la durée du sort.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "spell": "hex",
+              "alwaysPrepared": true,
+              "upgrade": "target also has disadvantage on saving throws of the chosen ability"
+            }
+          }
+        },
+        {
+          "level": 10,
+          "name": "Bouclier mental",
+          "description": "Vos pensées ne peuvent être lues par télépathie ni par aucun autre moyen sans votre consentement. Vous bénéficiez également d'une Résistance aux dégâts psychiques, et lorsqu'une créature vous inflige des dégâts psychiques, elle subit des dégâts équivalents aux vôtres.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "immunity": "mind reading without consent",
+              "damageResistance": "psychic",
+              "damageReflection": "psychic damage dealt to you is also dealt to attacker"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

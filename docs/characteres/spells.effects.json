@@ -1,0 +1,4359 @@
+{
+  "enlarge-reduce": [
+    {
+      "application": "informational",
+      "note": "Agrandit ou rapetisse une créature/objet : taille +1/-1, avantage/désavantage aux tests de Force, +1d4/-1d4 aux dégâts d'arme."
+    }
+  ],
+  "aid": [
+    {
+      "application": "active",
+      "note": "+5 PV max et actuels (3 cibles max)"
+    }
+  ],
+  "alarm": [
+    {
+      "application": "informational",
+      "note": "Vous mettez en place une alarme contre les intrusions..."
+    }
+  ],
+  "befuddlement": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "10d12",
+        "type": "psychic",
+        "attackRoll": false,
+        "save": {
+          "ability": "intelligence",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "planar-ally": [
+    {
+      "application": "informational",
+      "note": "Vous implorez l'assistance d'une entité d'outre-monde..."
+    }
+  ],
+  "friends": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "animal-friendship": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "24 heures",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "enhance-ability": [
+    {
+      "application": "active",
+      "note": "Avantage aux jets de la caractéristique choisie"
+    }
+  ],
+  "animate-dead": [
+    {
+      "application": "informational",
+      "note": "Choisissez un tas d'os ou le cadavre d'un humanoïde de..."
+    }
+  ],
+  "animate-objects": [
+    {
+      "application": "informational",
+      "note": "Les objets s'animent à votre commande..."
+    }
+  ],
+  "nondetection": [
+    {
+      "application": "informational",
+      "note": "Pendant la durée du sort, vous protégez une cible que..."
+    }
+  ],
+  "calm-emotions": [
+    {
+      "application": "active",
+      "note": "Supprime ou immunise Charmé et Effrayé"
+    }
+  ],
+  "seeming": [
+    {
+      "application": "informational",
+      "note": "Vous donnez une apparence illusoire à toute créature de votre..."
+    }
+  ],
+  "find-steed": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated",
+        "duration": "Instantanée"
+      }
+    }
+  ],
+  "find-familiar": [
+    {
+      "application": "informational",
+      "note": "Vous obtenez les services d'un familier, un esprit qui prend..."
+    }
+  ],
+  "call-lightning": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d10",
+        "type": "lightning",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    }
+  ],
+  "magic-weapon": [
+    {
+      "application": "active",
+      "note": "+1 attaque et dégâts de l'arme"
+    }
+  ],
+  "spiritual-weapon": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d8",
+        "type": "force",
+        "attackRoll": true
+      }
+    }
+  ],
+  "elemental-weapon": [
+    {
+      "application": "informational",
+      "note": "Arme enchantée : +1 à l'attaque, +1d4 dégâts élémentaires (acide, froid, feu, foudre ou tonnerre, au choix)."
+    }
+  ],
+  "armor-of-agathys": [
+    {
+      "application": "active",
+      "note": "Gain de 5 points de vie temporaires"
+    },
+    {
+      "application": "reactive",
+      "damage": {
+        "dice": "5",
+        "type": "cold",
+        "attackRoll": false
+      },
+      "note": "En riposte quand une créature vous touche au corps à corps"
+    }
+  ],
+  "mage-armor": [
+    {
+      "application": "active",
+      "note": "CA = 13 + modificateur de Dextérité"
+    }
+  ],
+  "time-stop": [
+    {
+      "application": "informational",
+      "note": "Vous mettez un bref coup d'arrêt à l'écoulement du temps,..."
+    }
+  ],
+  "acid-splash": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d6",
+        "type": "acid",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "phantasmal-killer": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d10",
+        "type": "psychic",
+        "attackRoll": false,
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    }
+  ],
+  "guidance": [
+    {
+      "application": "active",
+      "note": "+1d4 à un jet de caractéristique"
+    }
+  ],
+  "augury": [
+    {
+      "application": "informational",
+      "note": "Vous recevez un présage d'une entité surnaturelle concernant les résultats..."
+    }
+  ],
+  "aura-of-purity": [
+    {
+      "application": "active",
+      "note": "Résistance au poison, Avantage JdS contre états"
+    }
+  ],
+  "aura-of-life": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "1"
+      }
+    },
+    {
+      "application": "active",
+      "note": "Résistance nécrotique, soigne 1 PV si 0 PV"
+    }
+  ],
+  "aura-of-vitality": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "2d6"
+      }
+    }
+  ],
+  "crusader-s-mantle": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d4",
+        "type": "radiant",
+        "attackRoll": true
+      }
+    },
+    {
+      "application": "active",
+      "note": "+1d4 dégâts radiants aux attaques alliées"
+    }
+  ],
+  "nystul-s-magic-aura": [
+    {
+      "application": "informational",
+      "note": "D'un simple contact, vous placez une illusion sur une créature..."
+    }
+  ],
+  "holy-aura": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "note": "Avantage aux JdS des alliés, Désavantage aux attaques ennemies"
+    }
+  ],
+  "antipathy-sympathy": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "10 jours",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "frightened",
+        "duration": "10 jours",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "glibness": [
+    {
+      "application": "active",
+      "note": "Substitue 15 aux jets de Charisme"
+    }
+  ],
+  "goodberry": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "1"
+      }
+    }
+  ],
+  "banishment": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "charisma",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "blade-barrier": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "6d10",
+        "type": "force",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "6d10",
+        "type": "slashing",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "inflict-wounds": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d10",
+        "type": "necrotic",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    }
+  ],
+  "magic-mouth": [
+    {
+      "application": "informational",
+      "note": "Vous implantez un message dans un objet à portée. Ce..."
+    }
+  ],
+  "shield": [
+    {
+      "application": "reactive",
+      "note": "+5 CA jusqu'au début du prochain tour"
+    }
+  ],
+  "fire-shield": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "type": "fire",
+        "attackRoll": false
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "type": "cold",
+        "attackRoll": false
+      }
+    },
+    {
+      "application": "active",
+      "note": "Résistance feu/froid, 2d8 riposte au contact"
+    }
+  ],
+  "shield-of-faith": [
+    {
+      "application": "active",
+      "note": "+2 à la CA"
+    }
+  ],
+  "poison-spray": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d12",
+        "type": "poison",
+        "attackRoll": true
+      }
+    }
+  ],
+  "fireball": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "8d6",
+        "type": "fire",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "delayed-blast-fireball": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "type": "fire",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "note": "+1d6 par tour (max 22d6)"
+      }
+    }
+  ],
+  "gust-of-wind": [
+    {
+      "application": "active",
+      "note": "Repousse de 4,50 m, terrain difficile contre le vent"
+    }
+  ],
+  "cloudkill": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d8",
+        "type": "poison",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      }
+    }
+  ],
+  "bless": [
+    {
+      "application": "active",
+      "note": "+1d4 aux jets d'attaque et de sauvegarde"
+    }
+  ],
+  "forcecage": [
+    {
+      "application": "informational",
+      "note": "Une prison cubique, immobile et Invisible de force magique se..."
+    }
+  ],
+  "vampiric-touch": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d6",
+        "type": "necrotic",
+        "attackRoll": true,
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "circle-of-death": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "8d8",
+        "type": "necrotic",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "2d8"
+      }
+    }
+  ],
+  "circle-of-power": [
+    {
+      "application": "active",
+      "note": "Avantage aux JdS, zéro dégât si réussite"
+    }
+  ],
+  "teleportation-circle": [
+    {
+      "application": "informational",
+      "note": "En lançant le sort, vous dessinez au sol un cercle..."
+    }
+  ],
+  "magic-circle": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "1 heure"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "frightened",
+        "duration": "1 heure"
+      }
+    }
+  ],
+  "antimagic-field": [
+    {
+      "application": "informational",
+      "note": "Une aura d'antimagie vous entoure sous forme d'une Émanation de..."
+    }
+  ],
+  "shapechange": [
+    {
+      "application": "informational",
+      "note": "Vous vous métamorphosez en une autre créature pour toute la..."
+    }
+  ],
+  "plane-shift": [
+    {
+      "application": "informational",
+      "note": "Vous et un maximum de huit créatures consentantes avec lesquelles..."
+    }
+  ],
+  "charm-monster": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "1 heure",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "charm-person": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "1 heure",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "tasha-s-bubbling-cauldron": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez un chaudron à pieds griffus rempli d'un liquide..."
+    }
+  ],
+  "chain-lightning": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "10d8",
+        "type": "lightning",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    }
+  ],
+  "mordenkainen-s-faithful-hound": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d8",
+        "type": "force",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "wrathful-smite": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d6",
+        "type": "necrotic",
+        "attackRoll": true,
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "frightened",
+        "duration": "1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "blinding-smite": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d8",
+        "type": "radiant",
+        "attackRoll": true,
+        "perUpcastLevel": "1d8"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "duration": "1 minute",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "searing-smite": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d6",
+        "type": "fire",
+        "attackRoll": true,
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "shining-smite": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "type": "radiant",
+        "attackRoll": true,
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "invisible",
+        "duration": "Concentration, jusqu'à 1 minute"
+      }
+    }
+  ],
+  "staggering-smite": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d6",
+        "type": "psychic",
+        "attackRoll": true,
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "stunned",
+        "duration": "Until end of your next turn",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "thunderous-smite": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "type": "thunder",
+        "attackRoll": true,
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "prone",
+        "duration": "Instantanée",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "divine-smite": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "type": "radiant",
+        "attackRoll": true,
+        "perUpcastLevel": "1d8"
+      }
+    }
+  ],
+  "banishing-smite": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d10",
+        "type": "force",
+        "attackRoll": true
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "charisma",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "clairvoyance": [
+    {
+      "application": "informational",
+      "note": "Vous créez un capteur invisible à portée, dans un lieu..."
+    }
+  ],
+  "blink": [
+    {
+      "application": "informational",
+      "note": "Lancez 1d6 à la fin de chacun de vos tours..."
+    }
+  ],
+  "clone": [
+    {
+      "application": "informational",
+      "note": "Vous touchez physiquement une créature ou au moins 15 cm3..."
+    }
+  ],
+  "leomund-s-secret-chest": [
+    {
+      "application": "informational",
+      "note": "Vous cachez un coffre et tout son contenu sur le..."
+    }
+  ],
+  "flame-strike": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d6",
+        "type": "fire",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d6",
+        "type": "radiant",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "speak-with-animals": [
+    {
+      "application": "informational",
+      "note": "Pendant toute la durée du sort, vous pouvez comprendre et..."
+    }
+  ],
+  "speak-with-dead": [
+    {
+      "application": "informational",
+      "note": "Vous accordez un semblant de vie à un cadavre de..."
+    }
+  ],
+  "speak-with-plants": [
+    {
+      "application": "informational",
+      "note": "Vous imprégnez les plantes dans une Émanation immobile de 9..."
+    }
+  ],
+  "sending": [
+    {
+      "application": "informational",
+      "note": "Vous envoyez un court message de 25 mots maximum à..."
+    }
+  ],
+  "commune": [
+    {
+      "application": "informational",
+      "note": "Vous contactez une divinité ou un mandataire divin et lui..."
+    }
+  ],
+  "commune-with-nature": [
+    {
+      "application": "informational",
+      "note": "Vous communiez avec les esprits de la nature et acquérez..."
+    }
+  ],
+  "comprehend-languages": [
+    {
+      "application": "informational",
+      "note": "Pendant toute la durée du sort, vous comprenez le sens..."
+    }
+  ],
+  "compulsion": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "confusion": [
+    {
+      "application": "active",
+      "note": "Comportement aléatoire (table 1d10) chaque tour"
+    }
+  ],
+  "contact-other-plane": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "6d6",
+        "type": "psychic",
+        "attackRoll": false,
+        "save": {
+          "ability": "intelligence",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated",
+        "duration": "1 minute"
+      }
+    }
+  ],
+  "chill-touch": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d10",
+        "type": "necrotic",
+        "attackRoll": true,
+        "perUpcastLevel": "1d10"
+      }
+    }
+  ],
+  "contagion": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "11d8",
+        "type": "necrotic",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "poisoned",
+        "duration": "7 jours",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "harm": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "14d6",
+        "type": "necrotic",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "counterspell": [
+    {
+      "application": "reactive",
+      "note": "Interrompt un sort de niveau 3 ou moins"
+    }
+  ],
+  "control-water": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "type": "bludgeoning",
+        "attackRoll": false,
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "type": "bludgeoning",
+        "attackRoll": false,
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        },
+        "note": "Tourbillon"
+      }
+    }
+  ],
+  "control-weather": [
+    {
+      "application": "informational",
+      "note": "Vous prenez le contrôle du climat dans un rayon de..."
+    }
+  ],
+  "summon-aberration": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez l'esprit d'une aberration..."
+    }
+  ],
+  "summon-construct": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez l'esprit d'un artificiel..."
+    }
+  ],
+  "summon-elemental": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez l'esprit d'un élémentaire..."
+    }
+  ],
+  "summon-beast": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez l'esprit d'une bête. Celui-ci se manifeste dans un..."
+    }
+  ],
+  "summon-celestial": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez l'esprit d'un céleste..."
+    }
+  ],
+  "summon-dragon": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez l'esprit d'un dragon..."
+    }
+  ],
+  "summon-fiend": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez un esprit fiélon. Il se manifeste dans un..."
+    }
+  ],
+  "summon-fey": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez l'esprit d'un être féerique..."
+    }
+  ],
+  "summon-undead": [
+    {
+      "application": "informational",
+      "note": "Vous invoquez l'esprit d'un mort-vivant..."
+    }
+  ],
+  "drawmij-s-instant-summons": [
+    {
+      "application": "informational",
+      "note": "Vous touchez le saphir de l'incantation et un objet d'un..."
+    }
+  ],
+  "antilife-shell": [
+    {
+      "application": "active",
+      "note": "Barrière de 3 m contre les créatures vivantes"
+    }
+  ],
+  "rope-trick": [
+    {
+      "application": "informational",
+      "note": "Vous touchez une corde. Une extrémité se dresse vers le..."
+    }
+  ],
+  "cordon-of-arrows": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d4",
+        "type": "piercing",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "color-spray": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "duration": "Until end of your next turn",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "true-strike": [
+    {
+      "application": "active",
+      "note": "Attaque avec carac. d'incantation, dégâts radiants"
+    }
+  ],
+  "thunderclap": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d6",
+        "type": "thunder",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "crown-of-madness": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "ice-knife": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d10",
+        "type": "piercing",
+        "attackRoll": true
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "type": "cold",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "spike-growth": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d4",
+        "type": "piercing",
+        "attackRoll": false
+      }
+    }
+  ],
+  "plant-growth": [
+    {
+      "application": "informational",
+      "note": "Ce sort canalise la vitalité dans des plantes..."
+    }
+  ],
+  "shillelagh": [
+    {
+      "application": "active",
+      "note": "Carac. d'incantation pour attaques, dé d8"
+    }
+  ],
+  "creation": [
+    {
+      "application": "informational",
+      "note": "Vous extrayez des volutes de matière d'ombre de la Gisombre..."
+    }
+  ],
+  "create-undead": [
+    {
+      "application": "informational",
+      "note": "Vous ne pouvez lancer ce sort que de nuit. Choisissez..."
+    }
+  ],
+  "create-food-and-water": [
+    {
+      "application": "informational",
+      "note": "Vous préparez 22,5 kg de nourriture et 120 litres d'eau..."
+    }
+  ],
+  "create-or-destroy-water": [
+    {
+      "application": "informational",
+      "note": "Vous effectuez l'une des actions suivantes : Création d'eau. Vous..."
+    }
+  ],
+  "blindness-deafness": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "duration": "1 minute",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "deafened",
+        "duration": "1 minute",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "cone-of-cold": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "8d8",
+        "type": "cold",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      }
+    }
+  ],
+  "otto-s-irresistible-dance": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "demiplane": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "prone",
+        "duration": "1 heure"
+      }
+    }
+  ],
+  "enthrall": [
+    {
+      "application": "active",
+      "note": "-10 Perception passive et Sagesse (Perception)"
+    }
+  ],
+  "tenser-s-floating-disk": [
+    {
+      "application": "informational",
+      "note": "Ce sort crée un plan de force circulaire et horizontal,..."
+    }
+  ],
+  "sequester": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "invisible",
+        "duration": "Jusqu'à dissipation"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "unconscious",
+        "duration": "Jusqu'à dissipation"
+      }
+    }
+  ],
+  "dispel-magic": [
+    {
+      "application": "active",
+      "note": "Dissipe les effets magiques de niveau 3 ou moins"
+    }
+  ],
+  "dispel-evil-and-good": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "charisma",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "frightened",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "charisma",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "divination": [
+    {
+      "application": "informational",
+      "note": "Ce sort vous met en contact avec un dieu ou..."
+    }
+  ],
+  "finger-of-death": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "7d8+30",
+        "type": "necrotic",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        }
+      }
+    }
+  ],
+  "dominate-beast": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "dominate-monster": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "Concentration, jusqu'à 1 heure",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "dominate-person": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "Concentration, jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "tongues": [
+    {
+      "application": "informational",
+      "note": "comprendre toute langue parlée et le langage des signes"
+    }
+  ],
+  "mislead": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "invisible",
+        "duration": "jusqu'à 1 heure"
+      },
+      "note": "double illusoire ; l'invisibilité cesse si vous attaquez ou lancez un sort"
+    }
+  ],
+  "gentle-repose": [
+    {
+      "application": "active",
+      "note": "protège un cadavre de la décomposition et de la transformation en mort-vivant"
+    }
+  ],
+  "druidcraft": [
+    {
+      "application": "informational",
+      "note": "effets sensoriels inoffensifs, prédiction météo, floraison, allumer une flamme"
+    }
+  ],
+  "compelled-duel": [
+    {
+      "application": "active",
+      "note": "contraint une créature au duel (JdS Sagesse) ; désavantage à ses attaques contre autrui"
+    }
+  ],
+  "knock": [
+    {
+      "application": "active",
+      "note": "déverrouille un objet ou supprime verrou arcanique pendant 10 minutes"
+    }
+  ],
+  "eldritch-blast": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d10",
+        "attackRoll": true,
+        "type": "force"
+      }
+    }
+  ],
+  "maze": [
+    {
+      "application": "active",
+      "note": "bannit une créature dans un demi-plan labyrinthique (JdS Intelligence DD 20 pour s'évader)"
+    }
+  ],
+  "disguise-self": [
+    {
+      "application": "informational",
+      "note": "modifie votre apparence (illusion)"
+    }
+  ],
+  "remove-curse": [
+    {
+      "application": "active",
+      "note": "met fin aux malédictions affectant une créature ou un objet"
+    }
+  ],
+  "disintegrate": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "10d6+40",
+        "attackRoll": false,
+        "type": "force",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        },
+        "perUpcastLevel": "3d6"
+      },
+      "note": "cible réduite à 0 PV désintégrée"
+    }
+  ],
+  "see-invisibility": [
+    {
+      "application": "informational",
+      "note": "voir les créatures et objets invisibles et le plan éthéré"
+    }
+  ],
+  "detect-magic": [
+    {
+      "application": "informational",
+      "note": "ressent la magie et identifie l'école d'un sort dans un rayon de 9 m"
+    }
+  ],
+  "detect-thoughts": [
+    {
+      "application": "informational",
+      "note": "perçoit la présence de pensées et lit les pensées superficielles (JdS Sagesse)"
+    }
+  ],
+  "find-traps": [
+    {
+      "application": "informational",
+      "note": "détecte les pièges visibles à portée"
+    }
+  ],
+  "detect-evil-and-good": [
+    {
+      "application": "informational",
+      "note": "détecte aberrations, célestes, élémentaires, fées, fiélons et morts-vivants"
+    }
+  ],
+  "detect-poison-and-disease": [
+    {
+      "application": "informational",
+      "note": "détecte poisons, créatures venimeuses et contagions magiques"
+    }
+  ],
+  "prismatic-spray": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      },
+      "note": "type selon le rayon (feu, acide, foudre, poison, froid)"
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      },
+      "note": "rayon indigo : entravé puis pétrifié après 3 échecs de JdS Con"
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      },
+      "note": "rayon violet : aveuglé puis téléporté dans un autre plan en cas d'échec"
+    }
+  ],
+  "imprisonment": [
+    {
+      "application": "active",
+      "note": "emprisonne la cible jusqu'à dissipation (JdS Sagesse ; options : entravé, inconscient, gemme)"
+    }
+  ],
+  "entangle": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      },
+      "note": "zone transformée en terrain difficile"
+    }
+  ],
+  "weird": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "10d10",
+        "attackRoll": false,
+        "type": "psychic",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "frightened",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "reactive",
+      "note": "cible effrayée : 5d10 dégâts psychiques par tour en cas d'échec de JdS Sagesse"
+    }
+  ],
+  "planar-binding": [
+    {
+      "application": "active",
+      "note": "lie un céleste, élémentaire, fée ou fiélon à votre service (JdS Charisme)"
+    }
+  ],
+  "mind-blank": [
+    {
+      "application": "active",
+      "note": "immunité aux dégâts psychiques et à l'état charmé ; protège l'esprit des divinations"
+    }
+  ],
+  "spirit-guardians": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d8",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      },
+      "note": "ou nécrotique si mauvais ; vitesse divisée par deux dans l'émanation"
+    }
+  ],
+  "fabricate": [
+    {
+      "application": "active",
+      "note": "transforme des matières premières en un objet du même matériau"
+    }
+  ],
+  "divine-favor": [
+    {
+      "application": "active",
+      "note": "vos attaques d'arme infligent 1d4 dégâts radiants supplémentaires"
+    }
+  ],
+  "stone-shape": [
+    {
+      "application": "active",
+      "note": "façonne un objet en pierre de taille M ou inférieure"
+    }
+  ],
+  "heroes-feast": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "2d10"
+      },
+      "note": "augmente aussi le maximum de PV ; résistance au poison ; immunité effrayé et empoisonné (24 h)"
+    }
+  ],
+  "feather-fall": [
+    {
+      "application": "reactive",
+      "note": "réduit la vitesse de chute à 18 m/round ; aucun dégât de chute"
+    }
+  ],
+  "sacred-flame": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d8",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "continual-flame": [
+    {
+      "application": "active",
+      "note": "flamme sans chaleur qui éclaire (lumière vive 6 m)"
+    }
+  ],
+  "produce-flame": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d8",
+        "attackRoll": true,
+        "type": "fire"
+      }
+    }
+  ],
+  "blur": [
+    {
+      "application": "active",
+      "note": "désavantage aux jets d'attaque contre vous"
+    }
+  ],
+  "melf-s-acid-arrow": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d4",
+        "attackRoll": true,
+        "type": "acid",
+        "perUpcastLevel": "1d4"
+      },
+      "note": "moitié des dégâts initiaux en cas d'échec"
+    },
+    {
+      "application": "reactive",
+      "note": "2d4 dégâts d'acide supplémentaires à la fin du prochain tour de la cible"
+    }
+  ],
+  "lightning-arrow": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d8",
+        "attackRoll": false,
+        "type": "lightning",
+        "perUpcastLevel": "1d8"
+      },
+      "note": "remplace les dégâts de l'attaque ; moitié si l'attaque rate"
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "attackRoll": false,
+        "type": "lightning",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      },
+      "note": "créatures dans un rayon de 3 m"
+    }
+  ],
+  "insect-plague": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d10",
+        "attackRoll": false,
+        "type": "piercing",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    }
+  ],
+  "blight": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "8d8",
+        "attackRoll": false,
+        "type": "necrotic",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      }
+    }
+  ],
+  "fount-of-moonlight": [
+    {
+      "application": "active",
+      "note": "résistance aux dégâts radiants ; +2d6 dégâts radiants sur vos attaques de corps à corps"
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "duration": "jusqu'à la fin de votre prochain tour",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      },
+      "note": "en Réaction quand une créature visible vous blesse"
+    }
+  ],
+  "phantasmal-force": [
+    {
+      "application": "active",
+      "note": "illusion mentale (JdS Intelligence) ; peut infliger 2d8 dégâts psychiques par tour"
+    }
+  ],
+  "gaseous-form": [
+    {
+      "application": "active",
+      "note": "forme gazeuse : résistance contondant/perforant/tranchant, vol 3 m"
+    }
+  ],
+  "etherealness": [
+    {
+      "application": "active",
+      "note": "passe dans le plan éthéré"
+    }
+  ],
+  "tasha-s-hideous-laughter": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "prone",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "thorn-whip": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d6",
+        "attackRoll": true,
+        "type": "piercing"
+      },
+      "note": "cible de taille G ou moins rapprochée de 3 m"
+    }
+  ],
+  "misty-step": [
+    {
+      "application": "active",
+      "note": "téléportation jusqu'à 9 m"
+    }
+  ],
+  "shatter": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d8",
+        "attackRoll": false,
+        "type": "thunder",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      }
+    }
+  ],
+  "steel-wind-strike": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "6d10",
+        "attackRoll": true,
+        "type": "force"
+      },
+      "note": "jusqu'à 5 cibles ; téléportation à côté d'une cible"
+    }
+  ],
+  "ensnaring-strike": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "reactive",
+      "note": "1d6 dégâts perforants par tour tant qu'entravée ; +1d6 par niveau supérieur"
+    }
+  ],
+  "meld-into-stone": [
+    {
+      "application": "active",
+      "note": "fusionne avec la pierre ; expulsion inflige 6d6 ou 50 dégâts de force"
+    }
+  ],
+  "guardian-of-faith": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "20",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      },
+      "note": "gardien spectral ; disparaît après 60 dégâts infligés"
+    }
+  ],
+  "toll-the-dead": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d8",
+        "attackRoll": false,
+        "type": "necrotic",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      },
+      "note": "1d12 si la cible n'a plus tous ses PV"
+    }
+  ],
+  "move-earth": [
+    {
+      "application": "active",
+      "note": "remodèle la terre, le sable ou l'argile sur une zone de 12 m"
+    }
+  ],
+  "globe-of-invulnerability": [
+    {
+      "application": "active",
+      "note": "bloque les sorts de niveau 5 ou moins dans une émanation de 3 m"
+    }
+  ],
+  "glyph-of-warding": [
+    {
+      "application": "reactive",
+      "damage": {
+        "dice": "5d8",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      },
+      "note": "rune explosive au déclenchement ; type au choix (acide, froid, feu, foudre, tonnerre)"
+    },
+    {
+      "application": "reactive",
+      "note": "glyphe à sort : stocke un sort qui se déclenche"
+    }
+  ],
+  "grease": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "prone",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      },
+      "note": "zone transformée en terrain difficile"
+    }
+  ],
+  "longstrider": [
+    {
+      "application": "active",
+      "note": "vitesse de la cible +3 m"
+    }
+  ],
+  "hail-of-thorns": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d10",
+        "attackRoll": false,
+        "type": "piercing",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    }
+  ],
+  "heal": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "70"
+      },
+      "note": "met fin aux états assourdi, aveuglé et empoisonné ; +10 PV par niveau supérieur"
+    }
+  ],
+  "mass-heal": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "700"
+      },
+      "note": "répartis entre les créatures ; met fin à assourdi, aveuglé et empoisonné"
+    }
+  ],
+  "haste": [
+    {
+      "application": "active",
+      "note": "vitesse doublée, +2 CA, avantage aux JdS Dextérité, action supplémentaire"
+    }
+  ],
+  "heroism": [
+    {
+      "application": "active",
+      "note": "immunité à l'état effrayé ; PV temporaires égaux au modificateur d'incantation chaque tour"
+    }
+  ],
+  "identify": [
+    {
+      "application": "informational",
+      "note": "révèle les propriétés d'un objet magique ou les sorts affectant une créature"
+    }
+  ],
+  "minor-illusion": [
+    {
+      "application": "informational",
+      "note": "illusion sonore ou visuelle (cube 1,50 m)"
+    }
+  ],
+  "programmed-illusion": [
+    {
+      "application": "informational",
+      "note": "illusion scénarisée déclenchée par un stimulus"
+    }
+  ],
+  "major-image": [
+    {
+      "application": "informational",
+      "note": "illusion réaliste avec sons, odeurs et température (cube 6 m)"
+    }
+  ],
+  "mirror-image": [
+    {
+      "application": "active",
+      "note": "3 copies illusoires détournent les attaques"
+    }
+  ],
+  "project-image": [
+    {
+      "application": "informational",
+      "note": "double illusoire à distance ; vous voyez et entendez par lui"
+    }
+  ],
+  "silent-image": [
+    {
+      "application": "informational",
+      "note": "image visuelle pure (cube 4,50 m)"
+    }
+  ],
+  "hold-monster": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "paralyzed",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "hold-person": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "paralyzed",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "bane": [
+    {
+      "application": "active",
+      "note": "JdS Charisme ; la cible soustrait 1d4 à ses jets d'attaque et de sauvegarde"
+    }
+  ],
+  "command": [
+    {
+      "application": "active",
+      "note": "JdS Sagesse ; impose un ordre d'un mot (approche, lâche, fuis, rampe, halte)"
+    }
+  ],
+  "giant-insect": [
+    {
+      "application": "active",
+      "note": "invoque un insecte géant (mille-pattes, araignée ou guêpe)"
+    }
+  ],
+  "forbiddance": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d10",
+        "attackRoll": false,
+        "type": "necrotic"
+      },
+      "note": "ou radiants ; aux créatures désignées entrant dans la zone ; bloque la téléportation"
+    }
+  ],
+  "reverse-gravity": [
+    {
+      "application": "active",
+      "note": "inverse la gravité (JdS Dextérité pour s'accrocher) ; chute vers le haut"
+    }
+  ],
+  "invisibility": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "invisible",
+        "duration": "jusqu'à 1 heure"
+      },
+      "note": "cesse si la cible attaque, blesse ou lance un sort"
+    }
+  ],
+  "greater-invisibility": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "invisible",
+        "duration": "jusqu'à 1 minute"
+      }
+    }
+  ],
+  "conjure-animals": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d10",
+        "attackRoll": false,
+        "type": "slashing",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    }
+  ],
+  "conjure-elemental": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "8d8",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        },
+        "perUpcastLevel": "1d8"
+      },
+      "note": "type selon l'élément (foudre, tonnerre, feu, froid) ; cible aussi entravée"
+    },
+    {
+      "application": "reactive",
+      "note": "cible entravée : 4d8 dégâts par tour en cas d'échec de JdS Dextérité"
+    }
+  ],
+  "conjure-minor-elementals": [
+    {
+      "application": "active",
+      "note": "+2d8 dégâts (acide, froid, feu ou foudre) sur vos attaques ; +1d8 par niveau supérieur"
+    }
+  ],
+  "conjure-woodland-beings": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d8",
+        "attackRoll": false,
+        "type": "force",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      }
+    }
+  ],
+  "conjure-celestial": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "6d12",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d12"
+      },
+      "note": "au choix ; ou soins (voir ci-dessous)"
+    },
+    {
+      "application": "active",
+      "healing": {
+        "dice": "4d12"
+      },
+      "note": "au choix ; plus modificateur d'incantation ; +1d12 par niveau supérieur"
+    }
+  ],
+  "conjure-fey": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d12",
+        "attackRoll": true,
+        "type": "psychic",
+        "perUpcastLevel": "1d12"
+      },
+      "note": "plus modificateur d'incantation"
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "frightened",
+        "duration": "jusqu'au début de votre prochain tour"
+      }
+    }
+  ],
+  "conjure-barrage": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d8",
+        "attackRoll": false,
+        "type": "force",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      }
+    }
+  ],
+  "conjure-volley": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "8d8",
+        "attackRoll": false,
+        "type": "force",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    }
+  ],
+  "flame-blade": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d6",
+        "attackRoll": true,
+        "type": "fire",
+        "perUpcastLevel": "1d6"
+      },
+      "note": "plus modificateur d'incantation"
+    }
+  ],
+  "slow": [
+    {
+      "application": "active",
+      "note": "JdS Sagesse ; vitesse divisée par deux, -2 CA, pas de Réactions, une seule attaque"
+    }
+  ],
+  "grasping-vine": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d8",
+        "attackRoll": true,
+        "type": "bludgeoning"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "grappled",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      },
+      "note": "évasion DD du sort ; tire la cible de 9 m"
+    }
+  ],
+  "freedom-of-movement": [
+    {
+      "application": "active",
+      "note": "immunité à paralysé/entravé, terrain difficile ignoré, vitesse de nage"
+    }
+  ],
+  "warding-bond": [
+    {
+      "application": "active",
+      "note": "+1 CA et aux JdS, résistance à tous les dégâts ; vous partagez les dégâts subis"
+    }
+  ],
+  "rary-s-telepathic-bond": [
+    {
+      "application": "informational",
+      "note": "lien télépathique entre jusqu'à 8 créatures"
+    }
+  ],
+  "locate-animals-or-plants": [
+    {
+      "application": "informational",
+      "note": "direction et distance de la bête ou plante la plus proche (7,5 km)"
+    }
+  ],
+  "locate-object": [
+    {
+      "application": "informational",
+      "note": "direction d'un objet familier dans un rayon de 300 m"
+    }
+  ],
+  "locate-creature": [
+    {
+      "application": "informational",
+      "note": "direction d'une créature familière dans un rayon de 300 m"
+    }
+  ],
+  "beacon-of-hope": [
+    {
+      "application": "active",
+      "note": "avantage aux JdS Sagesse et contre la mort ; soins maximisés"
+    }
+  ],
+  "faerie-fire": [
+    {
+      "application": "active",
+      "note": "JdS Dextérité ; cible délimitée par la lumière, attaques avec avantage, ne peut être invisible"
+    }
+  ],
+  "light": [
+    {
+      "application": "active",
+      "note": "objet émet une lumière vive (6 m) et faible (6 m)"
+    }
+  ],
+  "daylight": [
+    {
+      "application": "active",
+      "note": "lumière solaire sur une sphère de 18 m ; dissipe les ténèbres de niveau 3 ou moins"
+    }
+  ],
+  "dancing-lights": [
+    {
+      "application": "active",
+      "note": "jusqu'à 4 lumières mobiles (lumière faible 3 m chacune)"
+    }
+  ],
+  "levitate": [
+    {
+      "application": "active",
+      "note": "JdS Constitution ; cible lévite jusqu'à 6 m"
+    }
+  ],
+  "bigby-s-hand": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d8",
+        "attackRoll": true,
+        "type": "force"
+      },
+      "note": "poing serré ; autres options : pousser, agripper (4d6 contondants), abri"
+    }
+  ],
+  "mage-hand": [
+    {
+      "application": "active",
+      "note": "main spectrale qui manipule des objets jusqu'à 5 kg"
+    }
+  ],
+  "burning-hands": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d6",
+        "attackRoll": false,
+        "type": "fire",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "bestow-curse": [
+    {
+      "application": "active",
+      "note": "JdS Sagesse ; malédiction : désavantage ou 1d8 dégâts nécrotiques supplémentaires"
+    }
+  ],
+  "hex": [
+    {
+      "application": "active",
+      "note": "+1d6 dégâts nécrotiques par attaque ; désavantage aux jets de la caractéristique choisie"
+    }
+  ],
+  "mordenkainen-s-magnificent-mansion": [
+    {
+      "application": "active",
+      "note": "demeure extradimensionnelle meublée et servie"
+    }
+  ],
+  "water-walk": [
+    {
+      "application": "active",
+      "note": "marcher sur les surfaces liquides"
+    }
+  ],
+  "hunter-s-mark": [
+    {
+      "application": "active",
+      "note": "+1d6 dégâts de force par attaque touchée ; avantage Perception/Survie pour trouver la cible"
+    }
+  ],
+  "eyebite": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "unconscious",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      },
+      "note": "au choix : inconscient, empoisonné ou effrayé"
+    }
+  ],
+  "message": [
+    {
+      "application": "informational",
+      "note": "murmure un message à une créature à portée"
+    }
+  ],
+  "animal-messenger": [
+    {
+      "application": "informational",
+      "note": "une bête transmet un message à un destinataire"
+    }
+  ],
+  "mirage-arcane": [
+    {
+      "application": "informational",
+      "note": "illusion de terrain sur 1,5 km, tous sens confondus"
+    }
+  ],
+  "alter-self": [
+    {
+      "application": "active",
+      "note": "adaptation aquatique, changement d'aspect ou armes naturelles (1d6)"
+    }
+  ],
+  "modify-memory": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated",
+        "duration": "jusqu'à 1 minute"
+      },
+      "note": "remodèle un souvenir des dernières 24 heures"
+    }
+  ],
+  "phantom-steed": [
+    {
+      "application": "active",
+      "note": "monture fantôme (vitesse 30 m)"
+    }
+  ],
+  "vicious-mockery": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d6",
+        "attackRoll": false,
+        "type": "psychic",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      },
+      "note": "désavantage au prochain jet d'attaque de la cible"
+    }
+  ],
+  "healing-word": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "2d4"
+      },
+      "note": "plus modificateur d'incantation ; +2d4 par niveau supérieur"
+    }
+  ],
+  "mass-healing-word": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "2d4"
+      },
+      "note": "jusqu'à 6 créatures ; plus modificateur ; +1d4 par niveau supérieur"
+    }
+  ],
+  "power-word-fortify": [
+    {
+      "application": "active",
+      "note": "120 points de vie temporaires répartis entre jusqu'à 6 créatures"
+    }
+  ],
+  "power-word-heal": [
+    {
+      "application": "active",
+      "note": "la cible récupère tous ses PV ; fin de charmé, effrayé, empoisonné, étourdi, paralysé"
+    }
+  ],
+  "power-word-kill": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d12",
+        "attackRoll": false,
+        "type": "psychic"
+      },
+      "note": "si la cible a plus de 100 PV ; sinon elle meurt"
+    }
+  ],
+  "power-word-stun": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "stunned",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      },
+      "note": "si 150 PV ou moins ; sinon vitesse 0 jusqu'à votre prochain tour"
+    }
+  ],
+  "word-of-radiance": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d6",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "word-of-recall": [
+    {
+      "application": "active",
+      "note": "vous téléporte, vous et 5 créatures, vers un sanctuaire désigné"
+    }
+  ],
+  "hypnotic-pattern": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "jusqu'à 1 minute",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated",
+        "duration": "jusqu'à 1 minute"
+      },
+      "note": "vitesse 0 ; cesse si la cible subit des dégâts"
+    }
+  ],
+  "wall-of-thorns": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "7d8",
+        "attackRoll": false,
+        "type": "piercing",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      },
+      "note": "à l'apparition du mur"
+    },
+    {
+      "application": "reactive",
+      "damage": {
+        "dice": "7d8",
+        "type": "slashing",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      },
+      "note": "créature qui entre dans le mur ou y termine son tour"
+    }
+  ],
+  "wall-of-fire": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d8",
+        "attackRoll": false,
+        "type": "fire",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      },
+      "note": "à l'apparition du mur"
+    },
+    {
+      "application": "reactive",
+      "note": "5d8 dégâts de feu aux créatures à 3 m du côté choisi ou traversant le mur"
+    }
+  ],
+  "wall-of-force": [
+    {
+      "application": "active",
+      "note": "mur de force invisible et invulnérable"
+    }
+  ],
+  "wall-of-ice": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "10d6",
+        "attackRoll": false,
+        "type": "cold",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      },
+      "note": "à l'apparition ; +2d6 par niveau supérieur"
+    },
+    {
+      "application": "reactive",
+      "note": "nappe d'air glacial : 5d6 dégâts de froid (JdS Constitution)"
+    }
+  ],
+  "wall-of-stone": [
+    {
+      "application": "active",
+      "note": "mur de pierre (CA 15, 30 PV par tranche de 2,50 cm)"
+    }
+  ],
+  "wind-wall": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d8",
+        "attackRoll": false,
+        "type": "bludgeoning",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "half"
+        }
+      },
+      "note": "à l'apparition du mur ; dévie les projectiles"
+    }
+  ],
+  "prismatic-wall": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "duration": "1 minute",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Créature approchant à 6 m du mur ou y commençant son tour : Aveuglé 1 min"
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "attackRoll": false,
+        "type": "fire",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "attackRoll": false,
+        "type": "acid",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "attackRoll": false,
+        "type": "lightning",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "attackRoll": false,
+        "type": "poison",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "attackRoll": false,
+        "type": "cold",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Sept couches destructibles : deux couches entravantes et deux infligeant 10d6 tonnerre/radiant"
+    }
+  ],
+  "dissonant-whispers": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d6",
+        "attackRoll": false,
+        "type": "psychic",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échec : la cible utilise sa Réaction pour s'éloigner le plus loin possible"
+    }
+  ],
+  "legend-lore": [
+    {
+      "application": "informational",
+      "note": "Révèle un résumé d'informations sur une personne, un lieu ou un objet célèbre"
+    }
+  ],
+  "heat-metal": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "attackRoll": false,
+        "type": "fire",
+        "perUpcastLevel": "1d8"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Créature tenant/portant l'objet et subissant des dégâts : JdS Constitution ou lâcher l'objet, sinon Désavantage aux jets d'attaque et de caractéristique"
+    }
+  ],
+  "polymorph": [
+    {
+      "application": "informational",
+      "note": "JdS Sagesse ou métamorphose en bête de FP <= FP/niveau de la cible ; PV temporaires = PV de la bête"
+    }
+  ],
+  "animal-shapes": [
+    {
+      "application": "informational",
+      "note": "Transforme des créatures consentantes en Bêtes (FP <= 4), PV temporaires = PV de la forme"
+    }
+  ],
+  "true-polymorph": [
+    {
+      "application": "informational",
+      "note": "Créature non consentante : JdS Sagesse ; transformation persistante si Concentration maintenue sur toute la durée"
+    }
+  ],
+  "fog-cloud": [
+    {
+      "application": "informational",
+      "note": "Sphère de brouillard de 6 m de rayon, zone à Visibilité nulle"
+    }
+  ],
+  "incendiary-cloud": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "10d8",
+        "attackRoll": false,
+        "type": "fire",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    }
+  ],
+  "stinking-cloud": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "poisoned",
+        "duration": "until end of current turn",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Créature commençant son tour dans la Sphère ; empoisonnée : aucune action ni action Bonus"
+    }
+  ],
+  "cloud-of-daggers": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d4",
+        "attackRoll": false,
+        "type": "slashing",
+        "perUpcastLevel": "2d4"
+      }
+    }
+  ],
+  "meteor-swarm": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "20d6",
+        "attackRoll": false,
+        "type": "fire",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "20d6",
+        "attackRoll": false,
+        "type": "bludgeoning",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    }
+  ],
+  "arcane-eye": [
+    {
+      "application": "informational",
+      "note": "Oeil invisible et invulnérable transmettant des informations visuelles"
+    }
+  ],
+  "chromatic-orb": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d8",
+        "attackRoll": true,
+        "perUpcastLevel": "1d8"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Type choisi : acide, froid, feu, foudre, poison ou tonnerre ; l'orbe peut rebondir"
+    }
+  ],
+  "find-the-path": [
+    {
+      "application": "informational",
+      "note": "Trouve le chemin le plus direct vers un lieu connu"
+    }
+  ],
+  "divine-word": [
+    {
+      "application": "informational",
+      "note": "JdS Charisme ; effets selon les PV : 0-20 mort, 21-30 Assourdi/Aveuglé/Étourdi 1 h, 31-40 Assourdi/Aveuglé 10 min, 41-50 Assourdi 1 min"
+    },
+    {
+      "application": "informational",
+      "note": "Céleste/Élémentaire/Fée/Fiélon ratant le JdS : renvoyé sur son plan 24 h"
+    }
+  ],
+  "tree-stride": [
+    {
+      "application": "informational",
+      "note": "Se déplace entre deux arbres de même espèce dans un rayon de 150 m"
+    }
+  ],
+  "pass-without-trace": [
+    {
+      "application": "informational",
+      "note": "+10 aux jets de Dextérité (Discrétion), aucune trace laissée"
+    }
+  ],
+  "passwall": [
+    {
+      "application": "informational",
+      "note": "Ouvre un passage dans une surface en bois, plâtre ou pierre"
+    }
+  ],
+  "spider-climb": [
+    {
+      "application": "informational",
+      "note": "Vitesse d'escalade égale à la Vitesse, déplacement sur plafonds"
+    }
+  ],
+  "barkskin": [
+    {
+      "application": "informational",
+      "note": "CA de la cible portée à 17 si inférieure"
+    }
+  ],
+  "stoneskin": [
+    {
+      "application": "informational",
+      "note": "Résistance aux dégâts contondants, perforants et tranchants"
+    }
+  ],
+  "beast-sense": [
+    {
+      "application": "informational",
+      "note": "Perçoit à travers les sens d'une Bête consentante touchée"
+    }
+  ],
+  "synaptic-static": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "8d6",
+        "attackRoll": false,
+        "type": "psychic",
+        "save": {
+          "ability": "intelligence",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échec : -1d6 aux jets d'attaque, de caractéristique et JdS Con (Concentration) pendant 1 min, JdS Int en fin de tour pour y mettre fin"
+    }
+  ],
+  "leomund-s-tiny-hut": [
+    {
+      "application": "informational",
+      "note": "Émanation protectrice immobile de 3 m de diamètre, opaque de l'extérieur"
+    }
+  ],
+  "fear": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "frightened",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      },
+      "note": "La créature lâche ce qu'elle tient et s'éloigne par le chemin le plus sûr ; JdS Sagesse si hors ligne de vue"
+    }
+  ],
+  "mind-sliver": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d6",
+        "attackRoll": false,
+        "type": "psychic",
+        "save": {
+          "ability": "intelligence",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échec : -1d4 au prochain jet de sauvegarde avant la fin de votre prochain tour"
+    }
+  ],
+  "shocking-grasp": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d8",
+        "attackRoll": true,
+        "type": "lightning"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Touche : la cible ne peut effectuer d'attaques d'opportunité avant le début de son prochain tour"
+    }
+  ],
+  "gate": [
+    {
+      "application": "informational",
+      "note": "Portail vers un autre plan ; peut attirer une créature nommée"
+    }
+  ],
+  "arcane-gate": [
+    {
+      "application": "informational",
+      "note": "Deux portails de téléportation liés, ouverts d'un seul côté"
+    }
+  ],
+  "dimension-door": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d6",
+        "attackRoll": false,
+        "type": "force"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Dégâts uniquement si arrivée en espace occupé ; la téléportation échoue alors"
+    }
+  ],
+  "starry-wisp": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d8",
+        "attackRoll": true,
+        "type": "radiant"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Touche : la cible émet une Lumière faible (3 m) et ne peut bénéficier d'Invisibilité jusqu'à votre prochain tour"
+    }
+  ],
+  "prestidigitation": [
+    {
+      "application": "informational",
+      "note": "Effets sensoriels, nettoyage, marques et créations mineures inoffensives"
+    }
+  ],
+  "prayer-of-healing": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "2d8",
+        "perUpcastLevel": "1d8"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Jusqu'à 5 créatures bénéficiant d'un Repos court"
+    }
+  ],
+  "magic-missile": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d4+1",
+        "attackRoll": false,
+        "type": "force"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Trois fléchettes à répartition libre, touchent automatiquement"
+    }
+  ],
+  "astral-projection": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "unconscious"
+      },
+      "note": "Le corps abandonné de chaque cible devient inconscient, en animation suspendue"
+    }
+  ],
+  "protection-from-energy": [
+    {
+      "application": "informational",
+      "note": "Résistance à un type de dégâts au choix : acide, froid, feu, foudre ou tonnerre"
+    }
+  ],
+  "death-ward": [
+    {
+      "application": "informational",
+      "note": "Tombe à 1 PV au lieu de 0 une fois ; annule un effet tuant instantanément sans dégâts"
+    }
+  ],
+  "protection-from-evil-and-good": [
+    {
+      "application": "informational",
+      "note": "Désavantage aux attaques de certaines créatures ; immunité aux états Charmé, Effrayé et à la possession"
+    }
+  ],
+  "protection-from-poison": [
+    {
+      "application": "informational",
+      "note": "Met fin à l'état Empoisonné ; Avantage aux JdS contre l'empoisonnement ; résistance aux dégâts de poison"
+    }
+  ],
+  "guards-and-wards": [
+    {
+      "application": "informational",
+      "note": "Barrière protégeant une zone : brume, escaliers entravants, portes verrouillées"
+    }
+  ],
+  "foresight": [
+    {
+      "application": "informational",
+      "note": "Cible : Avantage aux jets de d20 ; attaquants : Désavantage aux jets d'attaque contre elle"
+    }
+  ],
+  "contingency": [
+    {
+      "application": "informational",
+      "note": "Déclenche un sort préparé de niveau <= 5 quand une condition survient"
+    }
+  ],
+  "yolande-s-regal-presence": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d6",
+        "attackRoll": false,
+        "type": "psychic",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "prone",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Échec : 4d6 psychiques, À terre, repoussée de 3 m"
+    }
+  ],
+  "purify-food-and-drink": [
+    {
+      "application": "informational",
+      "note": "Élimine poison et pourriture des aliments et boissons non magiques"
+    }
+  ],
+  "flesh-to-stone": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Échec initial : Entravé ; JdS Con à chaque fin de tour, 3 échecs -> Pétrifié"
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "petrified"
+      },
+      "note": "Après 3 échecs de JdS Constitution"
+    }
+  ],
+  "geas": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Durée prolongée avec emplacement de niveau 7-8 (365 j) ou 9 (jusqu'à dissipation)"
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d10",
+        "attackRoll": false,
+        "type": "psychic"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Charmée : 5d10 psychiques une fois par jour si elle agit contre l'ordre"
+    }
+  ],
+  "raise-dead": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "1"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Ressuscite une créature morte depuis <= 10 jours avec 1 PV ; malus -4 aux jets de d20"
+    }
+  ],
+  "ray-of-enfeeblement": [
+    {
+      "application": "informational",
+      "note": "JdS Constitution ; échec : Désavantage aux jets de d20 de Force et -1d8 aux jets de dégâts pour la durée, JdS Con en fin de tour"
+    }
+  ],
+  "scorching-ray": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "attackRoll": true,
+        "type": "fire"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Trois rayons, un jet d'attaque de sort à distance par rayon"
+    }
+  ],
+  "ray-of-frost": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d8",
+        "attackRoll": true,
+        "type": "cold"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Touche : Vitesse réduite de 3 m jusqu'au début de votre prochain tour"
+    }
+  ],
+  "moonbeam": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d10",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échec : un changeur de forme reprend sa forme véritable"
+    }
+  ],
+  "sunbeam": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "6d8",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "duration": "until start of your next turn",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "ray-of-sickness": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "attackRoll": true,
+        "type": "poison",
+        "perUpcastLevel": "1d8"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "poisoned",
+        "duration": "until end of your next turn"
+      }
+    }
+  ],
+  "guiding-bolt": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d6",
+        "attackRoll": true,
+        "type": "radiant",
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Touche : le prochain jet d'attaque contre la cible avant votre prochain tour a l'Avantage"
+    }
+  ],
+  "expeditious-retreat": [
+    {
+      "application": "informational",
+      "note": "Action Pointe puis en action Bonus jusqu'à la fin du sort"
+    }
+  ],
+  "hellish-rebuke": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d10",
+        "attackRoll": false,
+        "type": "fire",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    }
+  ],
+  "water-breathing": [
+    {
+      "application": "informational",
+      "note": "Jusqu'à 10 créatures peuvent respirer sous l'eau"
+    }
+  ],
+  "lesser-restoration": [
+    {
+      "application": "informational",
+      "note": "Met fin à un état : Aveuglé, Assourdi, Paralysé ou Empoisonné"
+    }
+  ],
+  "greater-restoration": [
+    {
+      "application": "informational",
+      "note": "Retire 1 niveau d'Épuisement, Charmé/Pétrifié, une malédiction, une réduction de caractéristique ou de PV max"
+    }
+  ],
+  "revivify": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "1"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Ressuscite une créature morte depuis <= 1 minute avec 1 PV"
+    }
+  ],
+  "regenerate": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "4d8+15"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Puis 1 PV au début de chacun de ses tours ; membres sectionnés repoussent en 2 min"
+    }
+  ],
+  "reincarnate": [
+    {
+      "application": "informational",
+      "note": "Crée un nouveau corps pour un humanoïde mort depuis <= 10 jours"
+    }
+  ],
+  "mending": [
+    {
+      "application": "informational",
+      "note": "Répare une cassure ou déchirure (<= 30 cm) sur un objet"
+    }
+  ],
+  "resistance": [
+    {
+      "application": "informational",
+      "note": "Réduit de 1d4 les dégâts du type choisi avant la fin du sort"
+    }
+  ],
+  "resurrection": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "all"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Ressuscite une créature morte depuis <= 1 siècle avec tous ses PV ; malus -4 aux jets de d20"
+    }
+  ],
+  "true-resurrection": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "all"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Ressuscite une créature morte depuis <= 200 ans avec tous ses PV ; referme plaies et lève malédictions"
+    }
+  ],
+  "hallow": [
+    {
+      "application": "informational",
+      "note": "Zone sacrée/impie : barrière contre certains types de créatures + effet supplémentaire"
+    }
+  ],
+  "sanctuary": [
+    {
+      "application": "informational",
+      "note": "Attaquant ciblant la créature protégée : JdS Sagesse ou nouvelle cible/perte de l'attaque"
+    }
+  ],
+  "mordenkainen-s-private-sanctum": [
+    {
+      "application": "informational",
+      "note": "Zone sécurisée : bloque son, vision, divination et téléportation"
+    }
+  ],
+  "jump": [
+    {
+      "application": "informational",
+      "note": "La cible peut sauter jusqu'à 9 m pour 3 m de mouvement"
+    }
+  ],
+  "scrying": [
+    {
+      "application": "informational",
+      "note": "JdS Sagesse (modifié par la familiarité) ; échec : capteur invisible autour de la cible"
+    }
+  ],
+  "unseen-servant": [
+    {
+      "application": "informational",
+      "note": "Force invisible accomplissant des tâches simples"
+    }
+  ],
+  "silence": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "deafened"
+      },
+      "note": "Créatures entièrement dans la Sphère : Assourdi ; immunité aux dégâts de tonnerre"
+    }
+  ],
+  "simulacrum": [
+    {
+      "application": "informational",
+      "note": "Simulacre d'une Bête ou Humanoïde avec la moitié de ses PV max"
+    }
+  ],
+  "false-life": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "2d4+4"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Points de vie temporaires ; +5 PV temporaires par niveau d'emplacement supérieur"
+    }
+  ],
+  "cure-wounds": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "2d8",
+        "perUpcastLevel": "2d8"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "+ modificateur de caractéristique d'incantation"
+    }
+  ],
+  "mass-cure-wounds": [
+    {
+      "application": "active",
+      "healing": {
+        "dice": "5d8",
+        "perUpcastLevel": "1d8"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Jusqu'à 6 créatures ; + modificateur de caractéristique d'incantation"
+    }
+  ],
+  "sleep": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated",
+        "duration": "until end of its next turn",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Échec du 1er JdS ; 2e JdS raté : Inconscient pour toute la durée"
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "unconscious"
+      },
+      "note": "Si la cible rate le 2e jet de sauvegarde de Sagesse"
+    }
+  ],
+  "dream": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d6",
+        "attackRoll": false,
+        "type": "psychic",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Cauchemar : la cible ne tire aucun avantage de son repos et subit 3d6 psychiques au réveil"
+    }
+  ],
+  "dragon-s-breath": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d6",
+        "attackRoll": false,
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Type choisi : acide, froid, feu, foudre ou poison ; cône de 4,5 m via action Magie"
+    }
+  ],
+  "wish": [
+    {
+      "application": "informational",
+      "note": "Reproduit un sort de niveau <= 8, ou effets puissants : soin complet, résistance, immunité..."
+    }
+  ],
+  "flaming-sphere": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "attackRoll": false,
+        "type": "fire",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "vitriolic-sphere": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "10d4",
+        "attackRoll": false,
+        "type": "acid",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "2d4"
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d4",
+        "attackRoll": false,
+        "type": "acid"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échec initial : 5d4 supplémentaires à la fin du prochain tour de la cible"
+    }
+  ],
+  "otiluke-s-freezing-sphere": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "10d6",
+        "attackRoll": false,
+        "type": "cold",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained"
+      },
+      "note": "Créatures à la surface d'une eau gelée : Entravé dans la glace"
+    }
+  ],
+  "otiluke-s-resilient-sphere": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Créature réticente enfermée dans une sphère impénétrable pour la durée"
+    }
+  ],
+  "spare-the-dying": [
+    {
+      "application": "informational",
+      "note": "Stabilise une créature à 0 PV ; portée doublée aux niveaux 5, 11 et 17"
+    }
+  ],
+  "suggestion": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "La cible charmée suit une suggestion formulée en <= 25 mots"
+    }
+  ],
+  "mass-suggestion": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Jusqu'à 12 créatures charmées ; durée rallongée avec emplacement de niveau 7/8/9"
+    }
+  ],
+  "symbol": [
+    {
+      "application": "informational",
+      "note": "Glyphe déclencheur : discorde, douleur, étourdissement, sommeil, terreur ou mort (effets variables)"
+    }
+  ],
+  "fire-storm": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "7d10",
+        "attackRoll": false,
+        "type": "fire",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    }
+  ],
+  "ice-storm": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d10",
+        "attackRoll": false,
+        "type": "bludgeoning",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d6",
+        "attackRoll": false,
+        "type": "cold",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Sol du Cylindre transformé en Terrain difficile jusqu'à votre prochain tour"
+    }
+  ],
+  "sleet-storm": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "prone",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Entrée dans le Cylindre ou début de tour : À terre et perte de concentration en cas d'échec"
+    }
+  ],
+  "jallarzi-s-storm-of-radiance": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d10",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d10",
+        "attackRoll": false,
+        "type": "thunder",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d10"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded"
+      },
+      "note": "Créatures dans la zone : Aveuglé et Assourdi, pas de sorts à composante verbale"
+    }
+  ],
+  "storm-of-vengeance": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "attackRoll": false,
+        "type": "thunder",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "deafened",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Tour 2 : 4d6 acide ; tour 3 : 10d6 foudre (JdS Dex) ; tour 4 : 2d6 contondant ; tours 5-10 : 1d6 froid"
+    }
+  ],
+  "arms-of-hadar": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "attackRoll": false,
+        "type": "necrotic",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échec : la cible ne peut plus prendre de Réactions avant le début de son prochain tour"
+    }
+  ],
+  "evard-s-black-tentacles": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d6",
+        "attackRoll": false,
+        "type": "bludgeoning",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained",
+        "duration": "until end of spell",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      }
+    }
+  ],
+  "hallucinatory-terrain": [
+    {
+      "application": "informational",
+      "note": "Illusion de terrain naturel sur un Cube de 45 m de côté"
+    }
+  ],
+  "illusory-script": [
+    {
+      "application": "informational",
+      "note": "Écriture illisible pour les non-désignés, durant toute la durée"
+    }
+  ],
+  "thaumaturgy": [
+    {
+      "application": "informational",
+      "note": "Petit miracle : voix retentissante, flammes modifiées, secousses inoffensives"
+    }
+  ],
+  "web": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      },
+      "note": "JdS Dex ou Entravé dans les toiles ; libération par JdS Force (Athlétisme)"
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d4",
+        "attackRoll": false,
+        "type": "fire"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Toiles enflammées : 2d4 feu à toute créature commençant son tour dans le feu"
+    }
+  ],
+  "fire-bolt": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d10",
+        "attackRoll": true,
+        "type": "fire"
+      }
+    }
+  ],
+  "witch-bolt": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d12",
+        "attackRoll": true,
+        "type": "lightning",
+        "perUpcastLevel": "1d12"
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d12",
+        "attackRoll": false,
+        "type": "lightning"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Tours suivants : 1d12 foudre automatique via action Bonus"
+    }
+  ],
+  "earthquake": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "prone",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        }
+      },
+      "note": "À terre et Concentration rompue en cas d'échec ; crevasses et effondrements de structures"
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "attackRoll": false,
+        "type": "bludgeoning",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Effondrement d'une structure proche : 12d6 contondants et À terre, enseveli"
+    }
+  ],
+  "tsunami": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "6d10",
+        "attackRoll": false,
+        "type": "bludgeoning",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d10",
+        "attackRoll": false,
+        "type": "bludgeoning",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Tours suivants : 5d10 contondants, dégâts diminuant de 1d10 par round"
+    }
+  ],
+  "telekinesis": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "restrained",
+        "duration": "until end of your next turn",
+        "save": {
+          "ability": "strength",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Créature déplacée de 9 m et Entravée ; peut rester suspendue en l'air"
+    }
+  ],
+  "teleport": [
+    {
+      "application": "informational",
+      "note": "Vous transporte (et 8 créatures ou 1 objet) vers une destination connue"
+    }
+  ],
+  "darkness": [
+    {
+      "application": "informational",
+      "note": "Sphère de Ténèbres magiques de 4,5 m de rayon"
+    }
+  ],
+  "magic-jar": [
+    {
+      "application": "informational",
+      "note": "JdS Charisme ; échec : possession d'un Humanoïde, l'âme de la cible est séquestrée"
+    }
+  ],
+  "destructive-wave": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d6",
+        "attackRoll": false,
+        "type": "thunder",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "5d6",
+        "attackRoll": false,
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "prone",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "5d6 radiants ou nécrotiques (au choix) ; échec : À terre"
+    }
+  ],
+  "thunderwave": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d8",
+        "attackRoll": false,
+        "type": "thunder",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échec : repoussée de 3 m"
+    }
+  ],
+  "wind-walk": [
+    {
+      "application": "informational",
+      "note": "Forme gazeuse : vol 90 m, immunité À terre, résistance contondant/perforant/tranchant"
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "stunned",
+        "duration": "1 minute"
+      },
+      "note": "Pendant la reprise de forme normale, la cible est Étourdi"
+    }
+  ],
+  "arcane-lock": [
+    {
+      "application": "informational",
+      "note": "Verrouille magiquement un objet fermé"
+    }
+  ],
+  "swift-quiver": [
+    {
+      "application": "informational",
+      "note": "Deux attaques à l'arc/arbalète en action Bonus"
+    }
+  ],
+  "arcane-vigor": [
+    {
+      "application": "informational",
+      "note": "Lance 1-2 dés de vie non dépensés et récupère le total + modificateur d'incantation"
+    }
+  ],
+  "darkvision": [
+    {
+      "application": "informational",
+      "note": "Vision dans le noir sur 45 m"
+    }
+  ],
+  "true-seeing": [
+    {
+      "application": "informational",
+      "note": "Vision véritable sur 36 m"
+    }
+  ],
+  "transport-via-plants": [
+    {
+      "application": "informational",
+      "note": "Lien de téléportation entre deux plantes de taille G ou supérieure"
+    }
+  ],
+  "blade-ward": [
+    {
+      "application": "informational",
+      "note": "L'attaquant soustrait 1d4 à son jet d'attaque contre vous"
+    }
+  ],
+  "fly": [
+    {
+      "application": "informational",
+      "note": "Vitesse de vol de 18 m et vol stationnaire"
+    }
+  ],
+  "hunger-of-hadar": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "attackRoll": false,
+        "type": "cold",
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "active",
+      "damage": {
+        "dice": "2d6",
+        "attackRoll": false,
+        "type": "acid",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "none"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded"
+      },
+      "note": "Créatures entièrement dans la Sphère : Aveuglé"
+    },
+    {
+      "application": "informational",
+      "note": "Début de tour : 2d6 froid ; fin de tour : 2d6 acide (JdS Dex)"
+    }
+  ],
+  "zone-of-truth": [
+    {
+      "application": "informational",
+      "note": "JdS Charisme ; échec : la créature ne peut mentir délibérément dans la zone"
+    }
+  ],
+  "lightning-bolt": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "8d6",
+        "attackRoll": false,
+        "type": "lightning",
+        "save": {
+          "ability": "dexterity",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d6"
+      }
+    }
+  ],
+  "sunburst": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "12d6",
+        "attackRoll": false,
+        "type": "radiant",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "half"
+        }
+      }
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded",
+        "duration": "1 minute",
+        "save": {
+          "ability": "constitution",
+          "onSuccess": "none"
+        }
+      },
+      "note": "Échec : Aveuglé 1 min ; JdS Con en fin de tour pour y mettre fin"
+    }
+  ],
+  "elementalism": [
+    {
+      "application": "informational",
+      "note": "Petits effets élémentaires inoffensifs : brise, poussière, braises, bruine"
+    }
+  ],
+  "mind-spike": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "3d8",
+        "attackRoll": false,
+        "type": "psychic",
+        "save": {
+          "ability": "wisdom",
+          "onSuccess": "half"
+        },
+        "perUpcastLevel": "1d8"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échec : vous connaissez l'emplacement de la cible ; elle ne peut se cacher de vous"
+    }
+  ],
+  "mordenkainen-s-sword": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "4d12",
+        "attackRoll": true,
+        "type": "force"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "+ modificateur de caractéristique d'incantation ; réattaque possible par action Bonus"
+    }
+  ],
+  "sorcerous-burst": [
+    {
+      "application": "active",
+      "damage": {
+        "dice": "1d8",
+        "attackRoll": true
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Type au choix : acide, froid, feu, foudre, poison, psychique ou tonnerre ; 8 sur un d8 = d8 supplémentaire"
+    }
+  ],
+  "feign-death": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "blinded"
+      },
+      "note": "Cible : Aveuglé et Incapable d'agir, Vitesse 0 ; résistance à tous les dégâts sauf psychiques"
+    },
+    {
+      "application": "active",
+      "condition": {
+        "state": "incapacitated"
+      }
+    }
+  ],
+  "awaken": [
+    {
+      "application": "active",
+      "condition": {
+        "state": "charmed",
+        "duration": "30 days"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Bête ou Plante : Intelligence 10, parle une langue ; la plante éveillée est Charmée 30 j"
+    }
+  ]
+}

@@ -1,0 +1,358 @@
+{
+  "_meta": {
+    "source": "https://www.aidedd.org/regles-24/classes/ensorceleur/",
+    "extractedAt": "2026-08-13",
+    "version": "D&D 2024",
+    "language": "fr"
+  },
+  "key": "sorcerer",
+  "name": "Ensorceleur",
+  "description": "Les ensorceleurs exercent une magie innée, gravée dans leur être. Certains ne peuvent nommer l'origine de leur pouvoir, tandis que d'autres l'imputent à d'étranges événements de leur histoire personnelle ou familiale. Les ensorceleurs n'apprennent pas la magie ; leur pouvoir brut et bouillonnant est inné. L'art essentiel d'un ensorceleur consiste à maîtriser et à canaliser cette magie innée, lui permettant ainsi de découvrir de nouvelles et étonnantes façons de libérer son pouvoir.",
+  "primaryAbility": ["charisma"],
+  "hitDie": "d6",
+  "hpAtLevel1": 6,
+  "savingThrows": ["constitution", "charisma"],
+  "skillChoices": {
+    "count": 2,
+    "from": ["arcana", "deception", "insight", "intimidation", "persuasion", "religion"]
+  },
+  "weaponProficiencies": "Armes courantes",
+  "armorTraining": "Aucune",
+  "toolProficiencies": null,
+  "startingEquipment": {
+    "options": [
+      {
+        "choice": "A",
+        "items": "Lance, 2 dagues, focaliseur arcanique (cristal), sac d'exploration souterraine et 28 po"
+      },
+      {
+        "choice": "B",
+        "items": "50 po"
+      }
+    ],
+    "defaultGold": 50
+  },
+  "spellcasting": {
+    "ability": "charisma",
+    "type": "full",
+    "cantripsAtLevel1": 4,
+    "preparedSpellsAtLevel1": 2,
+    "focus": "Focaliseur arcanique",
+    "multiclassSlotContribution": 1,
+    "preparationRule": "known",
+    "knownCantripsProgression": [4, 4, 4, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6],
+    "knownSpellsProgression": [2, 4, 6, 7, 9, 10, 11, 12, 14, 15, 16, 16, 17, 17, 18, 18, 19, 20, 21, 22]
+  },
+  "progression": [
+    { "level": 1,  "proficiencyBonus": 2, "sorceryPoints": 0,  "cantripsKnown": 4, "spellsPrepared": 2,  "spellSlots": [2, 0, 0, 0, 0, 0, 0, 0, 0], "features": ["Sorts", "Sorcellerie innée"] },
+    { "level": 2,  "proficiencyBonus": 2, "sorceryPoints": 2,  "cantripsKnown": 4, "spellsPrepared": 4,  "spellSlots": [3, 0, 0, 0, 0, 0, 0, 0, 0], "features": ["Réserve arcanique", "Métamagie"] },
+    { "level": 3,  "proficiencyBonus": 2, "sorceryPoints": 3,  "cantripsKnown": 4, "spellsPrepared": 6,  "spellSlots": [4, 2, 0, 0, 0, 0, 0, 0, 0], "features": ["Sous-classe d'ensorceleur"] },
+    { "level": 4,  "proficiencyBonus": 2, "sorceryPoints": 4,  "cantripsKnown": 5, "spellsPrepared": 7,  "spellSlots": [4, 3, 0, 0, 0, 0, 0, 0, 0], "features": ["Amélioration de caractéristique"] },
+    { "level": 5,  "proficiencyBonus": 3, "sorceryPoints": 5,  "cantripsKnown": 5, "spellsPrepared": 9,  "spellSlots": [4, 3, 2, 0, 0, 0, 0, 0, 0], "features": ["Restauration ensorcelée"] },
+    { "level": 6,  "proficiencyBonus": 3, "sorceryPoints": 6,  "cantripsKnown": 5, "spellsPrepared": 10, "spellSlots": [4, 3, 3, 0, 0, 0, 0, 0, 0], "features": ["Capacité de sous-classe"] },
+    { "level": 7,  "proficiencyBonus": 3, "sorceryPoints": 7,  "cantripsKnown": 5, "spellsPrepared": 11, "spellSlots": [4, 3, 3, 1, 0, 0, 0, 0, 0], "features": ["Sorcellerie incarnée"] },
+    { "level": 8,  "proficiencyBonus": 3, "sorceryPoints": 8,  "cantripsKnown": 5, "spellsPrepared": 12, "spellSlots": [4, 3, 3, 2, 0, 0, 0, 0, 0], "features": ["Amélioration de caractéristique"] },
+    { "level": 9,  "proficiencyBonus": 4, "sorceryPoints": 9,  "cantripsKnown": 5, "spellsPrepared": 14, "spellSlots": [4, 3, 3, 3, 1, 0, 0, 0, 0], "features": [] },
+    { "level": 10, "proficiencyBonus": 4, "sorceryPoints": 10, "cantripsKnown": 6, "spellsPrepared": 15, "spellSlots": [4, 3, 3, 3, 2, 0, 0, 0, 0], "features": ["Métamagie"] },
+    { "level": 11, "proficiencyBonus": 4, "sorceryPoints": 11, "cantripsKnown": 6, "spellsPrepared": 16, "spellSlots": [4, 3, 3, 3, 2, 1, 0, 0, 0], "features": [] },
+    { "level": 12, "proficiencyBonus": 4, "sorceryPoints": 12, "cantripsKnown": 6, "spellsPrepared": 16, "spellSlots": [4, 3, 3, 3, 2, 1, 0, 0, 0], "features": ["Amélioration de caractéristique"] },
+    { "level": 13, "proficiencyBonus": 5, "sorceryPoints": 13, "cantripsKnown": 6, "spellsPrepared": 17, "spellSlots": [4, 3, 3, 3, 2, 1, 1, 0, 0], "features": [] },
+    { "level": 14, "proficiencyBonus": 5, "sorceryPoints": 14, "cantripsKnown": 6, "spellsPrepared": 17, "spellSlots": [4, 3, 3, 3, 2, 1, 1, 0, 0], "features": ["Capacité de sous-classe"] },
+    { "level": 15, "proficiencyBonus": 5, "sorceryPoints": 15, "cantripsKnown": 6, "spellsPrepared": 18, "spellSlots": [4, 3, 3, 3, 2, 1, 1, 1, 0], "features": [] },
+    { "level": 16, "proficiencyBonus": 5, "sorceryPoints": 16, "cantripsKnown": 6, "spellsPrepared": 18, "spellSlots": [4, 3, 3, 3, 2, 1, 1, 1, 0], "features": ["Amélioration de caractéristique"] },
+    { "level": 17, "proficiencyBonus": 6, "sorceryPoints": 17, "cantripsKnown": 6, "spellsPrepared": 19, "spellSlots": [4, 3, 3, 3, 2, 1, 1, 1, 1], "features": ["Métamagie"] },
+    { "level": 18, "proficiencyBonus": 6, "sorceryPoints": 18, "cantripsKnown": 6, "spellsPrepared": 20, "spellSlots": [4, 3, 3, 3, 3, 1, 1, 1, 1], "features": ["Capacité de sous-classe"] },
+    { "level": 19, "proficiencyBonus": 6, "sorceryPoints": 19, "cantripsKnown": 6, "spellsPrepared": 21, "spellSlots": [4, 3, 3, 3, 3, 2, 1, 1, 1], "features": ["Faveur épique"] },
+    { "level": 20, "proficiencyBonus": 6, "sorceryPoints": 20, "cantripsKnown": 6, "spellsPrepared": 22, "spellSlots": [4, 3, 3, 3, 3, 2, 2, 1, 1], "features": ["Apothéose arcanique"] }
+  ],
+  "features": {
+    "sorts": {
+      "name": "Sorts",
+      "level": 1,
+      "description": "En puisant dans votre magie innée, vous pouvez lancer des sorts. Vous connaissez quatre sorts mineurs au niveau 1. Vous préparez deux sorts de niveau 1. Le Charisme est votre caractéristique d'incantation. Vous pouvez utiliser un focaliseur arcanique. À chaque niveau, vous pouvez remplacer un sort mineur ou un sort préparé.",
+      "mechanicalEffect": {
+        "type": "spellcasting",
+        "details": {
+          "ability": "charisma",
+          "type": "full",
+          "cantripsAtLevel1": 4,
+          "preparedSpellsAtLevel1": 2,
+          "focus": "arcane"
+        }
+      }
+    },
+    "sorcellerieInnee": {
+      "name": "Sorcellerie innée",
+      "level": 1,
+      "description": "Par une action Bonus, vous libérez une magie frémissante pendant 1 minute : le DD de sauvegarde de vos sorts d'ensorceleur augmente de 1, et vous bénéficiez d'un Avantage aux jets d'attaque des sorts d'ensorceleur. 2 utilisations par Repos long.",
+      "mechanicalEffect": {
+        "type": "active",
+        "details": {
+          "resource": { "key": "innateSorcery", "max": 2, "recovery": "longRest" },
+          "duration": "1 minute",
+          "action": "bonusAction",
+          "effects": {
+            "saveDC": "+1",
+            "attackRolls": "advantage"
+          }
+        }
+      }
+    },
+    "reserveArcanique": {
+      "name": "Réserve arcanique",
+      "level": 2,
+      "description": "Vous disposez de points de Sorcellerie (2 au niveau 2, jusqu'à 20 au niveau 20). Vous pouvez convertir des emplacements de sort en points (1 emplacement de niveau N → N points) ou créer des emplacements (coût : 2 pts → niv.1, 3→2, 5→3, 6→4, 7→5). Récupération au Repos long.",
+      "mechanicalEffect": {
+        "type": "active",
+        "details": {
+          "resource": { "key": "sorceryPoints", "max": "progression", "recovery": "longRest" },
+          "conversion": {
+            "slotsToPoints": { "formula": "slotLevel" },
+            "pointsToSlots": { "1": { "cost": 2, "minLevel": 2 }, "2": { "cost": 3, "minLevel": 3 }, "3": { "cost": 5, "minLevel": 5 }, "4": { "cost": 6, "minLevel": 7 }, "5": { "cost": 7, "minLevel": 9 } }
+          }
+        }
+      }
+    },
+    "metamagie": {
+      "name": "Métamagie",
+      "level": 2,
+      "description": "Vous obtenez 2 options de Métamagie au niveau 2, 2 supplémentaires au niveau 10, et 2 au niveau 17. Vous pouvez remplacer une option à chaque niveau. Une seule option par sort (sauf avec Sorcellerie incarnée au niveau 7).",
+      "mechanicalEffect": {
+        "type": "grant",
+        "details": {
+          "optionsAtLevels": { "2": 2, "10": 4, "17": 6 },
+          "maxPerSpell": 1,
+          "upgradeAt7": "two per spell with innate sorcery active"
+        }
+      },
+      "options": {
+        "sortAccelere": { "name": "Sort accéléré", "cost": 2, "effect": "Temps d'incantation passe d'une Action à une action Bonus. Limité : pas de sort niv.1+ dans le même tour." },
+        "sortAmple": { "name": "Sort ample", "cost": 1, "effect": "Double la portée du sort (min 1,50 m), ou portée contact → 9 mètres." },
+        "sortChercheur": { "name": "Sort chercheur", "cost": 1, "effect": "Relancer un d20 de jet d'attaque de sort raté. Cumulable avec une autre Métamagie." },
+        "sortEtendu": { "name": "Sort étendu", "cost": 1, "effect": "Double la durée (max 24h). Si Concentration : Avantage aux jets de sauvegarde de Concentration." },
+        "sortIntensifie": { "name": "Sort intensifié", "cost": 2, "effect": "Une cible du sort subit un Désavantage à son jet de sauvegarde." },
+        "sortJumeau": { "name": "Sort jumeau", "cost": 1, "effect": "Augmente le niveau effectif du sort de 1 (pour cibler une créature supplémentaire)." },
+        "sortPrevenant": { "name": "Sort prévenant", "cost": 1, "effect": "Jusqu'à CHA créatures (min 1) réussissent automatiquement leur JS et ne subissent aucun dégât." },
+        "sortRenforce": { "name": "Sort renforcé", "cost": 1, "effect": "Relancer jusqu'à CHA dés de dégâts (min 1), utiliser les nouveaux jets. Cumulable." },
+        "sortSubtil": { "name": "Sort subtil", "cost": 1, "effect": "Lancer sans composantes V, S, M (sauf M consommées ou avec coût spécifié)." },
+        "sortTransmute": { "name": "Sort transmuté", "cost": 1, "effect": "Changer le type de dégâts parmi : acide, feu, foudre, froid, poison, tonnerre." }
+      }
+    },
+    "restaurationEnsorcelee": {
+      "name": "Restauration ensorcelée",
+      "level": 5,
+      "description": "Lors d'un Repos court, récupérez jusqu'à la moitié de votre niveau d'ensorceleur (arrondi à l'inférieur) en points de Sorcellerie. 1 fois par Repos long.",
+      "mechanicalEffect": {
+        "type": "active",
+        "details": {
+          "frequency": "oncePerLongRest",
+          "trigger": "shortRest",
+          "recovery": "floor(level / 2) sorcery points"
+        }
+      }
+    },
+    "sorcellerieIncarnée": {
+      "name": "Sorcellerie incarnée",
+      "level": 7,
+      "description": "Si vous n'avez plus d'utilisation de Sorcellerie innée, dépensez 2 points de Sorcellerie (action Bonus) pour l'activer. De plus, tant que la Sorcellerie innée est active, vous pouvez utiliser jusqu'à deux options de Métamagie par sort.",
+      "mechanicalEffect": {
+        "type": "active",
+        "details": {
+          "cost": "2 sorcery points",
+          "action": "bonusAction",
+          "requires": "no innate sorcery uses remaining",
+          "upgrade": "two metamagic options per spell while innate sorcery is active"
+        }
+      }
+    },
+    "faveurEpique": {
+      "name": "Faveur épique",
+      "level": 19,
+      "description": "Vous recevez un don de Faveur épique ou un autre don de votre choix pour lequel vous remplissez les conditions. Faveur de Déplacement dimensionnel est recommandé.",
+      "mechanicalEffect": {
+        "type": "grant",
+        "details": { "category": "epicBoon" }
+      }
+    },
+    "apotheoseArcanique": {
+      "name": "Apothéose arcanique",
+      "level": 20,
+      "description": "Tant que votre capacité Sorcellerie innée est active, vous pouvez recourir à une option de Métamagie à chacun de vos tours sans dépenser de points de Sorcellerie.",
+      "mechanicalEffect": {
+        "type": "active",
+        "details": {
+          "requires": "innate sorcery active",
+          "effect": "one free metamagic option per turn"
+        }
+      }
+    }
+  },
+  "subclasses": [
+    {
+      "key": "magie-psionique",
+      "name": "Magie psionique",
+      "altName": "Sorcellerie aberrante",
+      "description": "Voir le Manuel des Joueurs. Sous-classe issue de Tasha's Cauldron of Everything, reprise dans le PHB 2024.",
+      "levelAvailable": 3,
+      "features": [
+        { "level": 3, "name": "Capacité de niveau 3", "description": "Voir le Manuel des Joueurs." },
+        { "level": 6, "name": "Capacité de niveau 6", "description": "Voir le Manuel des Joueurs." },
+        { "level": 14, "name": "Capacité de niveau 14", "description": "Voir le Manuel des Joueurs." },
+        { "level": 18, "name": "Capacité de niveau 18", "description": "Voir le Manuel des Joueurs." }
+      ]
+    },
+    {
+      "key": "sorcellerie-draconique",
+      "name": "Sorcellerie draconique",
+      "description": "Votre magie innée vous vient du don d'un dragon. Un dragon ancien vous a légué une partie de son pouvoir magique, ou vous avez absorbé la magie d'un lieu imprégné de la puissance des dragons.",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Résistance draconique",
+          "description": "Votre maximum de points de vie augmente de 3, et de 1 chaque fois que vous gagnez un niveau d'ensorceleur. Vous êtes partiellement recouvert d'écailles draconiques : lorsque vous ne portez pas d'armure, votre CA de base = 10 + modificateur de Dextérité + modificateur de Charisme.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "hpBonus": { "initial": 3, "perLevel": 1 },
+              "armorClass": { "formula": "10 + DEX + CHA", "condition": "no armor" }
+            }
+          }
+        },
+        {
+          "level": 3,
+          "name": "Sorts draconiques",
+          "description": "Les sorts suivants sont toujours préparés : niv.3 (modification d'apparence, orbe chromatique, injonction, souffle du dragon), niv.5 (peur, vol), niv.7 (œil du mage, charme-monstre), niv.9 (mythes et légendes, convocation de dragon).",
+          "mechanicalEffect": {
+            "type": "grant",
+            "details": {
+              "alwaysPrepared": {
+                "3": ["alter_self", "chromatic_orb", "command", "dragons_breath"],
+                "5": ["fear", "fly"],
+                "7": ["arcane_eye", "charm_monster"],
+                "9": ["legend_lore", "summon_dragon"]
+              }
+            }
+          }
+        },
+        {
+          "level": 6,
+          "name": "Affinité élémentaire",
+          "description": "Choisissez un type de dégâts parmi acide, froid, feu, foudre ou poison. Vous avez la Résistance à ce type de dégâts, et lorsque vous lancez un sort infligeant des dégâts de ce type, vous pouvez ajouter votre modificateur de Charisme à un jet de dégâts.",
+          "mechanicalEffect": {
+            "type": "passive",
+            "details": {
+              "choices": ["acid", "cold", "fire", "lightning", "poison"],
+              "grants": {
+                "damageResistance": "chosen type",
+                "damageBonus": "+CHA modifier to one damage roll of that type"
+              }
+            }
+          }
+        },
+        {
+          "level": 14,
+          "name": "Ailes draconiques",
+          "description": "Par une action Bonus, faites apparaître des ailes draconiques (Vitesse de vol de 18 m, durée 1 heure ou jusqu'à révocation). 1 utilisation par Repos long, ou dépensez 3 points de Sorcellerie pour réactiver.",
+          "mechanicalEffect": {
+            "type": "active",
+            "details": {
+              "resource": { "key": "draconicWings", "max": 1, "recovery": "longRest" },
+              "alternateRecovery": "3 sorcery points",
+              "action": "bonusAction",
+              "duration": "1 hour",
+              "grants": { "flySpeed": "18 m" }
+            }
+          }
+        },
+        {
+          "level": 18,
+          "name": "Compagnon draconique",
+          "description": "Vous pouvez lancer convocation de dragon sans composante matérielle. 1 fois sans dépenser d'emplacement de sort (récupération au Repos long). Vous pouvez modifier l'incantation pour qu'elle ne nécessite pas de Concentration (durée 1 minute).",
+          "mechanicalEffect": {
+            "type": "active",
+            "details": {
+              "spell": "summon_dragon",
+              "freeMaterial": true,
+              "freeCasting": { "frequency": "oncePerLongRest" },
+              "optionalNoConcentration": { "duration": "1 minute" }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "sorcellerie-cosmique",
+      "name": "Sorcellerie cosmique",
+      "altName": "Sorcellerie mécanique",
+      "description": "Voir le Manuel des Joueurs. Sous-classe issue de Tasha's Cauldron of Everything, reprise dans le PHB 2024.",
+      "levelAvailable": 3,
+      "features": [
+        { "level": 3, "name": "Capacité de niveau 3", "description": "Voir le Manuel des Joueurs." },
+        { "level": 6, "name": "Capacité de niveau 6", "description": "Voir le Manuel des Joueurs." },
+        { "level": 14, "name": "Capacité de niveau 14", "description": "Voir le Manuel des Joueurs." },
+        { "level": 18, "name": "Capacité de niveau 18", "description": "Voir le Manuel des Joueurs." }
+      ]
+    },
+    {
+      "key": "sorcellerie-sauvage",
+      "name": "Sorcellerie sauvage",
+      "description": "Votre magie innée provient des forces du chaos qui sous-tendent l'ordre de la création. Cette magie bouillonne en vous, attendant le moindre exutoire.",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Bouffée de Sorcellerie sauvage",
+          "description": "Une fois par tour, après avoir lancé un sort d'ensorceleur avec un emplacement de sort, lancez 1d20. Sur un 20, déclenchez un effet de la table Bouffée de Sorcellerie sauvage (1d100). Les sorts produits ne sont pas affectés par la Métamagie.",
+          "mechanicalEffect": {
+            "type": "reactive",
+            "details": {
+              "trigger": "cast sorcerer spell using spell slot",
+              "frequency": "oncePerTurn",
+              "activation": "d20 roll, triggers on 20",
+              "table": "wildMagicSurge (1d100)",
+              "restriction": "surge spells not affected by Metamagic"
+            }
+          }
+        },
+        {
+          "level": 3,
+          "name": "Marée du chaos",
+          "description": "Vous pouvez vous octroyer un Avantage à un jet de d20 avant de lancer le dé. Ensuite, vous devez lancer un sort d'ensorceleur avec un emplacement de sort ou terminer un Repos long avant de réutiliser cette capacité. Si vous lancez un sort avant un Repos long, vous déclenchez automatiquement une Bouffée de Sorcellerie sauvage.",
+          "mechanicalEffect": {
+            "type": "active",
+            "details": {
+              "effect": "grant advantage on one d20 test",
+              "recharge": "cast sorcerer spell with slot OR finish long rest",
+              "sideEffect": "automatic wild magic surge on next spell cast"
+            }
+          }
+        },
+        {
+          "level": 6,
+          "name": "Comme par hasard",
+          "description": "Immédiatement après qu'une autre créature visible ait lancé un d20, par une Réaction et 1 point de Sorcellerie, lancez 1d4 et appliquez le résultat comme bonus ou malus (au choix) au jet.",
+          "mechanicalEffect": {
+            "type": "reactive",
+            "details": {
+              "trigger": "another creature rolls d20",
+              "action": "reaction",
+              "cost": "1 sorcery point",
+              "effect": "add or subtract 1d4 to/from the roll"
+            }
+          }
+        },
+        {
+          "level": 14,
+          "name": "Capacité de niveau 14",
+          "description": "Voir le Manuel des Joueurs pour le détail de la capacité de niveau 14 de la Sorcellerie sauvage."
+        },
+        {
+          "level": 18,
+          "name": "Capacité de niveau 18",
+          "description": "Voir le Manuel des Joueurs pour le détail de la capacité de niveau 18 de la Sorcellerie sauvage."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "key": "goliath",
+  "name": "Goliath",
+  "creatureType": "humanoid",
+  "size": "Medium",
+  "speed": 10.5,
+  "darkvision": 0,
+  "traits": [
+    {
+      "key": "giant-ancestry",
+      "name": "Ascendance gigante",
+      "description": "Vous descendez de géants. Choisissez l'un des bénéfices suivants, qui est un bienfait surnaturel issu de votre ascendance ; vous pouvez utiliser le bénéfice choisi un nombre de fois égal à votre bonus de maîtrise, et vous récupérez toutes les utilisations dépensées lorsque vous terminez un Repos long :\n• Saut des nuées (géants des nuages) : Par une action Bonus, vous vous téléportez magiquement jusqu'à 9 m dans une case libre que vous pouvez voir.\n• Brûlure ignée (géants du feu) : Lorsque vous touchez une cible avec un jet d'attaque et lui infligez des dégâts, vous pouvez lui infliger 1d10 dégâts de feu supplémentaires.\n• Froid mordant (géants du givre) : Lorsque vous touchez une cible avec un jet d'attaque et lui infligez des dégâts, vous pouvez lui infliger 1d6 dégâts de froid supplémentaires et réduire sa Vitesse de 3 mètres jusqu'au début de votre prochain tour.\n• Renversement des coteaux (géants des collines) : Lorsque vous touchez une créature de taille G ou inférieure avec un jet d'attaque et lui infligez des dégâts, vous pouvez lui faire subir l'état À terre.\n• Endurance de la pierre (géants des pierres) : Lorsque vous subissez des dégâts, vous pouvez prendre une Réaction pour lancer 1d12. Ajoutez votre modificateur de Constitution au résultat obtenu et réduisez les dégâts du total.\n• Tonnerre des cieux (géants des tempêtes) : Lorsque vous subissez des dégâts d'une créature située dans un rayon de 18 mètres, vous pouvez prendre une Réaction pour lui infliger 1d8 dégâts de tonnerre."
+    },
+    {
+      "key": "large-form",
+      "name": "Forme de géant",
+      "description": "À partir du niveau 5, vous pouvez passer à la taille G par une action Bonus si vous vous trouvez dans un espace suffisamment grand. Cette transformation dure 10 minutes ou jusqu'à ce que vous y mettiez fin (aucune action requise). Pendant cette durée, vous bénéficiez d'un Avantage aux jets de Force et votre Vitesse augmente de 3 mètres. Une fois ce trait utilisé, vous ne pouvez plus le réutiliser avant d'avoir terminé un Repos long."
+    },
+    {
+      "key": "powerful-build",
+      "name": "Forte carrure",
+      "description": "Vous bénéficiez d'un Avantage à tous les jets de caractéristique que vous effectuez pour mettre fin à l'état Agrippé. Vous comptez également comme une taille supérieure pour déterminer votre capacité de charge."
+    }
+  ],
+  "subcategories": []
+}

@@ -1,0 +1,342 @@
+{
+  "key": "wizard",
+  "name": "Magicien",
+  "primaryAbility": "intelligence",
+  "hitDie": "d6",
+  "hpAtLevel1": 6,
+  "savingThrows": ["intelligence", "sagesse"],
+  "skillChoices": {
+    "count": 2,
+    "from": [
+      "arcanes",
+      "histoire",
+      "intuition",
+      "investigation",
+      "medecine",
+      "nature",
+      "religion"
+    ]
+  },
+  "weaponProficiencies": [
+    "armes courantes"
+  ],
+  "armorTraining": "aucune",
+  "multiclassPrerequisites": {
+    "intelligence": 13
+  },
+  "multiclassProficiencies": [
+    "armes courantes"
+  ],
+  "spellcasting": {
+    "ability": "intelligence",
+    "type": "full",
+    "cantripsAtLevel1": 3,
+    "preparesSpells": true,
+    "ritualCasting": true,
+    "spellbook": true,
+    "focus": "focaliseur arcanique ou grimoire"
+  },
+  "progression": [
+    {
+      "level": 1,
+      "proficiencyBonus": 2,
+      "cantripsKnown": 3,
+      "spellsPrepared": 4,
+      "spellSlots": [2, 0, 0, 0, 0, 0, 0, 0, 0],
+      "features": [
+        "Sorts",
+        "Savoir rituel",
+        "Restauration magique"
+      ]
+    },
+    {
+      "level": 2,
+      "proficiencyBonus": 2,
+      "cantripsKnown": 3,
+      "spellsPrepared": 5,
+      "spellSlots": [3, 0, 0, 0, 0, 0, 0, 0, 0],
+      "features": [
+        "Érudition"
+      ]
+    },
+    {
+      "level": 3,
+      "proficiencyBonus": 2,
+      "cantripsKnown": 3,
+      "spellsPrepared": 6,
+      "spellSlots": [4, 2, 0, 0, 0, 0, 0, 0, 0],
+      "features": [
+        "Sous-classe de magicien"
+      ]
+    },
+    {
+      "level": 4,
+      "proficiencyBonus": 2,
+      "cantripsKnown": 4,
+      "spellsPrepared": 7,
+      "spellSlots": [4, 3, 0, 0, 0, 0, 0, 0, 0],
+      "features": [
+        "Amélioration de caractéristique"
+      ]
+    },
+    {
+      "level": 5,
+      "proficiencyBonus": 3,
+      "cantripsKnown": 4,
+      "spellsPrepared": 9,
+      "spellSlots": [4, 3, 2, 0, 0, 0, 0, 0, 0],
+      "features": [
+        "Mémorisation de sort"
+      ]
+    },
+    {
+      "level": 6,
+      "proficiencyBonus": 3,
+      "cantripsKnown": 4,
+      "spellsPrepared": 10,
+      "spellSlots": [4, 3, 3, 0, 0, 0, 0, 0, 0],
+      "features": [
+        "Capacité de sous-classe"
+      ]
+    },
+    {
+      "level": 7,
+      "proficiencyBonus": 3,
+      "cantripsKnown": 4,
+      "spellsPrepared": 11,
+      "spellSlots": [4, 3, 3, 1, 0, 0, 0, 0, 0],
+      "features": []
+    },
+    {
+      "level": 8,
+      "proficiencyBonus": 3,
+      "cantripsKnown": 4,
+      "spellsPrepared": 12,
+      "spellSlots": [4, 3, 3, 2, 0, 0, 0, 0, 0],
+      "features": [
+        "Amélioration de caractéristique"
+      ]
+    },
+    {
+      "level": 9,
+      "proficiencyBonus": 4,
+      "cantripsKnown": 4,
+      "spellsPrepared": 14,
+      "spellSlots": [4, 3, 3, 3, 1, 0, 0, 0, 0],
+      "features": []
+    },
+    {
+      "level": 10,
+      "proficiencyBonus": 4,
+      "cantripsKnown": 5,
+      "spellsPrepared": 15,
+      "spellSlots": [4, 3, 3, 3, 2, 0, 0, 0, 0],
+      "features": [
+        "Capacité de sous-classe"
+      ]
+    },
+    {
+      "level": 11,
+      "proficiencyBonus": 4,
+      "cantripsKnown": 5,
+      "spellsPrepared": 16,
+      "spellSlots": [4, 3, 3, 3, 2, 1, 0, 0, 0],
+      "features": []
+    },
+    {
+      "level": 12,
+      "proficiencyBonus": 4,
+      "cantripsKnown": 5,
+      "spellsPrepared": 16,
+      "spellSlots": [4, 3, 3, 3, 2, 1, 0, 0, 0],
+      "features": [
+        "Amélioration de caractéristique"
+      ]
+    },
+    {
+      "level": 13,
+      "proficiencyBonus": 5,
+      "cantripsKnown": 5,
+      "spellsPrepared": 17,
+      "spellSlots": [4, 3, 3, 3, 2, 1, 1, 0, 0],
+      "features": []
+    },
+    {
+      "level": 14,
+      "proficiencyBonus": 5,
+      "cantripsKnown": 5,
+      "spellsPrepared": 18,
+      "spellSlots": [4, 3, 3, 3, 2, 1, 1, 0, 0],
+      "features": [
+        "Capacité de sous-classe"
+      ]
+    },
+    {
+      "level": 15,
+      "proficiencyBonus": 5,
+      "cantripsKnown": 5,
+      "spellsPrepared": 19,
+      "spellSlots": [4, 3, 3, 3, 2, 1, 1, 1, 0],
+      "features": []
+    },
+    {
+      "level": 16,
+      "proficiencyBonus": 5,
+      "cantripsKnown": 5,
+      "spellsPrepared": 21,
+      "spellSlots": [4, 3, 3, 3, 2, 1, 1, 1, 0],
+      "features": [
+        "Amélioration de caractéristique"
+      ]
+    },
+    {
+      "level": 17,
+      "proficiencyBonus": 6,
+      "cantripsKnown": 5,
+      "spellsPrepared": 22,
+      "spellSlots": [4, 3, 3, 3, 2, 1, 1, 1, 1],
+      "features": []
+    },
+    {
+      "level": 18,
+      "proficiencyBonus": 6,
+      "cantripsKnown": 5,
+      "spellsPrepared": 23,
+      "spellSlots": [4, 3, 3, 3, 3, 1, 1, 1, 1],
+      "features": [
+        "Maîtrise des sorts"
+      ]
+    },
+    {
+      "level": 19,
+      "proficiencyBonus": 6,
+      "cantripsKnown": 5,
+      "spellsPrepared": 24,
+      "spellSlots": [4, 3, 3, 3, 3, 2, 1, 1, 1],
+      "features": [
+        "Faveur épique"
+      ]
+    },
+    {
+      "level": 20,
+      "proficiencyBonus": 6,
+      "cantripsKnown": 5,
+      "spellsPrepared": 25,
+      "spellSlots": [4, 3, 3, 3, 3, 2, 2, 1, 1],
+      "features": [
+        "Sorts de prédilection"
+      ]
+    }
+  ],
+  "subclasses": [
+    {
+      "key": "abjurateur",
+      "name": "Abjurateur",
+      "features": [
+        {
+          "level": 3,
+          "name": "Abjurateur érudit",
+          "description": "Choisissez deux sorts de magicien de l'école d'Abjuration (niveau ≤ 2) ajoutés gratuitement au grimoire. À chaque nouveau niveau d'emplacement de sort, ajoutez gratuitement un sort d'Abjuration."
+        },
+        {
+          "level": 3,
+          "name": "Égide arcanique",
+          "description": "Protection magique créée en lançant un sort d'Abjuration. PV max = 2 × niveau de magicien + modificateur d'Intelligence. Absorbe les dégâts à votre place. Se recharge en lançant des sorts d'Abjuration ou en action Bonus."
+        },
+        {
+          "level": 6,
+          "name": "Égide projetée",
+          "description": "En Réaction, votre Égide arcanique peut absorber les dégâts subis par une créature visible dans un rayon de 9 m."
+        },
+        {
+          "level": 10,
+          "name": "Briseur de sorts",
+          "description": "Contresort et Dissipation de la magie toujours préparés. Dissipation de la magie en action Bonus avec bonus de maîtrise au jet. Emplacement non dépensé si le sort échoue à contrecarrer."
+        }
+      ]
+    },
+    {
+      "key": "devin",
+      "name": "Devin",
+      "features": [
+        {
+          "level": 3,
+          "name": "Devin érudit",
+          "description": "Choisissez deux sorts de magicien de l'école de Divination (niveau ≤ 2) ajoutés gratuitement au grimoire. À chaque nouveau niveau d'emplacement de sort, ajoutez gratuitement un sort de Divination."
+        },
+        {
+          "level": 3,
+          "name": "Présage",
+          "description": "Après chaque Repos long, lancez 2d20 et notez les résultats. Remplacez n'importe quel jet de d20 (vous ou créature visible) par un de ces jets. Un remplacement par tour max."
+        },
+        {
+          "level": 6,
+          "name": "Divination experte",
+          "description": "En lançant un sort de Divination avec un emplacement de niveau ≥ 2, récupérez un emplacement de sort dépensé de niveau inférieur (max niveau 5)."
+        },
+        {
+          "level": 10,
+          "name": "Troisième Œil",
+          "description": "Action Bonus : choisissez Vision dans le noir 36 m, Compréhension supérieure (toute langue), ou Détection de l'invisibilité gratuit. Dure jusqu'au prochain Repos court ou long."
+        }
+      ]
+    },
+    {
+      "key": "evocateur",
+      "name": "Évocateur",
+      "features": [
+        {
+          "level": 3,
+          "name": "Évocateur érudit",
+          "description": "Choisissez deux sorts de magicien de l'école d'Évocation (niveau ≤ 2) ajoutés gratuitement au grimoire. À chaque nouveau niveau d'emplacement de sort, ajoutez gratuitement un sort d'Évocation."
+        },
+        {
+          "level": 3,
+          "name": "Sort mineur appuyé",
+          "description": "Sorts mineurs infligeant des dégâts : si l'attaque rate ou la sauvegarde réussit, la cible subit la moitié des dégâts (sans effet supplémentaire)."
+        },
+        {
+          "level": 6,
+          "name": "Façonneur de sorts",
+          "description": "Lors du lancement d'un sort d'Évocation, choisissez 1 + niveau du sort créatures visibles : elles réussissent automatiquement leur sauvegarde et ne subissent aucun dégât si normalement moitié."
+        },
+        {
+          "level": 10,
+          "name": "Évocation améliorée",
+          "description": "Ajoutez votre modificateur d'Intelligence à un jet de dégâts de vos sorts d'Évocation."
+        },
+        {
+          "level": 14,
+          "name": "Surcharge magique",
+          "description": "Sort de niveau 1-5 infligeant des dégâts : infligez le maximum de dégâts. La 1ère fois sans effet. Réutilisations avant Repos long : 2d12 dégâts nécrotiques par niveau d'emplacement, +1d12 par réutilisation."
+        }
+      ]
+    },
+    {
+      "key": "illusionniste",
+      "name": "Illusionniste",
+      "features": [
+        {
+          "level": 3,
+          "name": "Illusionniste érudit",
+          "description": "Choisissez deux sorts de magicien de l'école d'Illusion (niveau ≤ 2) ajoutés gratuitement au grimoire. À chaque nouveau niveau d'emplacement de sort, ajoutez gratuitement un sort d'Illusion."
+        },
+        {
+          "level": 3,
+          "name": "Illusions améliorées",
+          "description": "Sorts d'Illusion sans composante verbale. Portée augmentée de 18 m (si ≥ 3 m). Illusion mineure gratuit (non comptabilisé), son+image en une incantation, action Bonus."
+        },
+        {
+          "level": 6,
+          "name": "Créatures fantasmagoriques",
+          "description": "Convocation de bête et Convocation de fée toujours préparés. École changée en Illusion (apparence spectrale). Version gratuite sans emplacement : PV/2. Une fois par Repos long."
+        },
+        {
+          "level": 10,
+          "name": "Calque illusoire",
+          "description": "En Réaction quand touché par une attaque : double illusoire, l'attaque rate automatiquement. 1/Repos court ou long, ou réactivation en dépensant un emplacement de niveau ≥ 2."
+        }
+      ]
+    }
+  ]
+}

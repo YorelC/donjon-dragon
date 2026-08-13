@@ -1,0 +1,134 @@
+{
+  "key": "barbarian",
+  "name": "Barbare",
+  "primaryAbility": ["strength"],
+  "hitDie": "d12",
+  "hpAtLevel1": "12 + modificateur de Constitution",
+  "savingThrows": ["strength", "constitution"],
+  "skillChoices": {
+    "count": 2,
+    "from": ["dressage", "athletisme", "intimidation", "nature", "perception", "survie"]
+  },
+  "weaponProficiencies": "Armes courantes et de guerre",
+  "armorTraining": "Armures légères et intermédiaires, boucliers",
+  "startingEquipment": [
+    "Hache à deux mains, 4 hachettes, sac d'explorateur et 15 po",
+    "75 po"
+  ],
+  "multiclassPrerequisites": [
+    { "ability": "strength", "min": 13 }
+  ],
+  "multiclassProficiencies": {
+    "hitDie": true,
+    "weaponProficiencies": "Armes de guerre",
+    "shields": true
+  },
+  "spellcasting": null,
+  "progression": [
+    { "level": 1, "proficiencyBonus": 2, "features": ["Rage", "Défense sans armure", "Bottes d'arme"], "rageUses": 2, "rageDamage": 2, "weaponMasteries": 2 },
+    { "level": 2, "proficiencyBonus": 2, "features": ["Sens du danger", "Témérité"], "rageUses": 2, "rageDamage": 2, "weaponMasteries": 2 },
+    { "level": 3, "proficiencyBonus": 2, "features": ["Sous-classe de barbare", "Savoir primal"], "rageUses": 3, "rageDamage": 2, "weaponMasteries": 2 },
+    { "level": 4, "proficiencyBonus": 2, "features": ["Amélioration de caractéristique"], "rageUses": 3, "rageDamage": 2, "weaponMasteries": 3 },
+    { "level": 5, "proficiencyBonus": 3, "features": ["Attaque supplémentaire", "Déplacement rapide"], "rageUses": 3, "rageDamage": 2, "weaponMasteries": 3 },
+    { "level": 6, "proficiencyBonus": 3, "features": ["Capacité de sous-classe"], "rageUses": 4, "rageDamage": 2, "weaponMasteries": 3 },
+    { "level": 7, "proficiencyBonus": 3, "features": ["Instinct sauvage", "Bond agressif"], "rageUses": 4, "rageDamage": 2, "weaponMasteries": 3 },
+    { "level": 8, "proficiencyBonus": 3, "features": ["Amélioration de caractéristique"], "rageUses": 4, "rageDamage": 2, "weaponMasteries": 3 },
+    { "level": 9, "proficiencyBonus": 4, "features": ["Coup brutal"], "rageUses": 4, "rageDamage": 3, "weaponMasteries": 3 },
+    { "level": 10, "proficiencyBonus": 4, "features": ["Capacité de sous-classe"], "rageUses": 4, "rageDamage": 3, "weaponMasteries": 4 },
+    { "level": 11, "proficiencyBonus": 4, "features": ["Rage implacable"], "rageUses": 4, "rageDamage": 3, "weaponMasteries": 4 },
+    { "level": 12, "proficiencyBonus": 4, "features": ["Amélioration de caractéristique"], "rageUses": 5, "rageDamage": 3, "weaponMasteries": 4 },
+    { "level": 13, "proficiencyBonus": 5, "features": ["Coup brutal amélioré"], "rageUses": 5, "rageDamage": 3, "weaponMasteries": 4 },
+    { "level": 14, "proficiencyBonus": 5, "features": ["Capacité de sous-classe"], "rageUses": 5, "rageDamage": 3, "weaponMasteries": 4 },
+    { "level": 15, "proficiencyBonus": 5, "features": ["Rage persistante"], "rageUses": 5, "rageDamage": 3, "weaponMasteries": 4 },
+    { "level": 16, "proficiencyBonus": 5, "features": ["Amélioration de caractéristique"], "rageUses": 5, "rageDamage": 4, "weaponMasteries": 4 },
+    { "level": 17, "proficiencyBonus": 6, "features": ["Coup brutal amélioré"], "rageUses": 6, "rageDamage": 4, "weaponMasteries": 4 },
+    { "level": 18, "proficiencyBonus": 6, "features": ["Puissance indomptable"], "rageUses": 6, "rageDamage": 4, "weaponMasteries": 4 },
+    { "level": 19, "proficiencyBonus": 6, "features": ["Faveur épique"], "rageUses": 6, "rageDamage": 4, "weaponMasteries": 4 },
+    { "level": 20, "proficiencyBonus": 6, "features": ["Champion primitif"], "rageUses": 6, "rageDamage": 4, "weaponMasteries": 4 }
+  ],
+  "subclasses": [
+    {
+      "key": "arbre-monde",
+      "name": "Voie de l'Arbre-Monde",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Vitalité de l'arbre",
+          "description": "Lorsque vous activez votre Rage, vous gagnez un nombre de points de vie temporaires égal à votre niveau de barbare. Au début de chacun de vos tours, si votre Rage est active, vous pouvez choisir une autre créature dans un rayon de 3 mètres autour de vous et lui octroyer des points de vie temporaires : lancez un nombre de d6 égal à votre bonus de Rage aux dégâts, et additionnez les résultats."
+        },
+        {
+          "level": 6,
+          "name": "Branches de l'Arbre",
+          "description": "Lorsqu'une créature que vous pouvez voir commence son tour dans un rayon de 9 mètres autour de vous alors que votre Rage est active, vous pouvez prendre une Réaction pour invoquer des branches spectrales de l'Arbre-Monde autour d'elle. La cible doit réussir un jet de sauvegarde de Force (DD 8 + modificateur de Force + bonus de maîtrise) ou être téléportée dans un espace libre dans un rayon de 1,50 mètre autour de vous. Après la téléportation, vous pouvez réduire la Vitesse de la cible à 0 jusqu'à la fin du tour en cours."
+        },
+        {
+          "level": 10,
+          "name": "Rosée de racines",
+          "description": "Durant votre tour, votre allonge est augmentée de 3 mètres avec toute arme de corps à corps possédant la propriété Lourde ou Polyvalente. Lorsque vous touchez avec une telle arme durant votre tour, vous pouvez activer la botte Poussée ou Renversement en plus d'une autre botte que vous utilisez avec cette arme."
+        }
+      ]
+    },
+    {
+      "key": "berserker",
+      "name": "Voie du Berserker",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Frénésie",
+          "description": "Si vous utilisez Témérité alors que votre Rage est active, vous infligez des dégâts supplémentaires à la première cible touchée lors de votre tour avec une attaque basée sur la Force. Pour déterminer les dégâts supplémentaires, lancez un nombre de d6 égal à votre bonus de dégâts de Rage et additionnez-les. Les dégâts sont du même type que l'arme ou la Frappe à mains nues utilisée pour l'attaque."
+        },
+        {
+          "level": 6,
+          "name": "Rage aveugle",
+          "description": "Vous avez l'Immunité aux états Charmé et Effrayé tant que votre Rage est active. Si vous êtes charmé ou effrayé au moment d'entrer en Rage, l'état prend fin."
+        },
+        {
+          "level": 10,
+          "name": "Représailles",
+          "description": "Lorsque vous subissez des dégâts d'une créature qui se trouve dans un rayon de 1,50 mètre, vous pouvez prendre une Réaction pour effectuer une attaque au corps à corps contre cette créature, en utilisant une arme ou une Frappe à mains nues."
+        },
+        {
+          "level": 14,
+          "name": "Présence intimidante",
+          "description": "Par une action Bonus, chaque créature de votre choix dans une Émanation de 9 m centrée sur vous effectue un jet de sauvegarde de Sagesse (DD 8 + modificateur de Force + bonus de maîtrise). En cas d'échec, la créature subit l'état Effrayé pendant 1 minute. À la fin de chacun des tours d'une créature Effrayée, celle-ci réitère le jet de sauvegarde et met un terme à l'effet en cas de réussite. Une fois cette capacité utilisée, vous devez terminer un Repos long ou dépenser une utilisation de votre Rage (pas d'action requise) pour en récupérer l'usage."
+        }
+      ]
+    },
+    {
+      "key": "coeur-sauvage",
+      "name": "Voie du Cœur sauvage",
+      "levelAvailable": 3,
+      "features": [
+        {
+          "level": 3,
+          "name": "Orateur animal",
+          "description": "Vous pouvez lancer les sorts perception bestiale et communication avec les animaux, mais uniquement sous forme de rituels. La Sagesse est votre caractéristique d'incantation pour ces sorts."
+        },
+        {
+          "level": 3,
+          "name": "Rage du prédateur",
+          "description": "Lorsque vous activez votre Rage, choisissez une option : Ours (Résistance à tous les dégâts sauf force, nécrotique, psychique et radiant), Aigle (actions Désengagement et Pointe en action Bonus), ou Loup (vos alliés bénéficient d'un Avantage aux jets d'attaque contre tout ennemi dans un rayon de 1,50 m autour de vous)."
+        },
+        {
+          "level": 6,
+          "name": "Aspect de faune",
+          "description": "Choisissez une option (modifiable à chaque Repos long) : Chouette (Vision dans le noir sur 18 mètres, ou +18 m si déjà possédée), Panthère (Vitesse d'escalade égale à votre Vitesse), ou Saumon (Vitesse de nage égale à votre Vitesse)."
+        },
+        {
+          "level": 10,
+          "name": "Orateur de la nature",
+          "description": "Vous pouvez lancer le sort communion avec la nature, mais uniquement sous forme de rituel. La Sagesse est votre caractéristique d'incantation pour ce sort."
+        }
+      ]
+    },
+    {
+      "key": "zelateur",
+      "name": "Voie du Zélateur",
+      "levelAvailable": 3,
+      "features": [],
+      "note": "Voir le Manuel des Joueurs — détails non disponibles sur AideDD"
+    }
+  ]
+}

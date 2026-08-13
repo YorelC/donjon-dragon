@@ -1,0 +1,130 @@
+{
+  "espece": "Elfe",
+  "source": "AideDD - Règles D&D 2024",
+  "type_creature": "Humanoïde",
+  "taille": "M",
+  "taille_description": "entre 1,50 m et 1,85 m",
+  "vitesse": "9 m",
+  "vitesse_metres": 9,
+  "description": "Les elfes sont un peuple magique d'une grâce surnaturelle, vivant dans le monde sans tout à fait en faire partie. Ils ont été imprégnés de la magie issue des croisements entre la Féerie et le plan Matériel. Ils possèdent trois lignages principaux : drows (elfes noirs), hauts-elfes et elfes des bois.",
+  "traits_communs": [
+    {
+      "nom": "Vision dans le noir",
+      "description": "Vous possédez la Vision dans le noir sur 18 m.",
+      "portee_metres": 18
+    },
+    {
+      "nom": "Lignage elfique",
+      "description": "Vous faites partie d'un lignage qui vous confère des pouvoirs surnaturels. Choisissez-en une parmi les trois variantes (Drow, Haut-elfe, Elfe des bois). Vous obtenez le bénéfice de niveau 1 de ce lignage. Lorsque vous atteignez les niveaux 3 et 5, vous apprenez un sort de niveau supérieur. Chaque sort est toujours préparé pour vous. Vous pouvez le lancer une fois sans dépenser d'emplacement de sort, et vous retrouvez cette capacité lorsque vous terminez un Repos long. Vous pouvez également lancer le sort en utilisant n'importe quel emplacement de sort du niveau approprié.",
+      "caracteristique_incantation": "Intelligence, Sagesse ou Charisme (au choix, lors de la sélection du lignage)"
+    },
+    {
+      "nom": "Ascendance féerique",
+      "description": "Vous bénéficiez d'un Avantage aux jets de sauvegarde que vous effectuez pour éviter ou mettre fin à l'état Charmé."
+    },
+    {
+      "nom": "Sens aiguisés",
+      "description": "Vous maîtrisez la compétence Intuition, Perception ou Survie (au choix)."
+    },
+    {
+      "nom": "Transe",
+      "description": "Vous n'avez pas besoin de dormir, et la magie ne peut pas vous endormir. Vous pouvez terminer un Repos long en 4 heures si vous passez ces heures en trance méditative durant laquelle vous restez conscient."
+    }
+  ],
+  "variantes": [
+    {
+      "nom": "Drow (Elfe noir)",
+      "description_fluff": "Les drows vivent généralement dans l'Outreterre, où ils ont été façonnés. Certains individus et sociétés drows évitent toutefois l'Outreterre, tout en conservant sa magie. Dans l'univers d'Éberron, par exemple, les drows vivent dans les forêts tropicales et les ruines cyclopéennes du continent de Xen'drik.",
+      "traits_specifiques": [
+        {
+          "nom": "Vision dans le noir supérieure",
+          "description": "La portée de votre Vision dans le noir passe à 36 m.",
+          "portee_metres": 36
+        }
+      ],
+      "sorts_lignage": {
+        "mineur": {
+          "nom": "Lumières dansantes",
+          "niveau": 0,
+          "acquis_au_niveau": 1,
+          "toujours_prepare": true
+        },
+        "niveau_1": {
+          "nom": "Lueurs féeriques",
+          "niveau_sort": 1,
+          "acquis_au_niveau": 3,
+          "toujours_prepare": true,
+          "usage_gratuit": "1 fois par Repos long"
+        },
+        "niveau_2": {
+          "nom": "Ténèbres",
+          "niveau_sort": 2,
+          "acquis_au_niveau": 5,
+          "toujours_prepare": true,
+          "usage_gratuit": "1 fois par Repos long"
+        }
+      }
+    },
+    {
+      "nom": "Haut-elfe",
+      "description_fluff": "Les hauts-elfes ont été imprégnés de la magie issue des croisements entre la Féerie et le plan Matériel. Sur certains mondes, les hauts-elfes se désignent eux-mêmes par d'autres noms. Par exemple, ils se nomment elfes du soleil ou de la lune dans l'univers des Royaumes Oubliés, silvanesti et qualinesti dans l'univers de Dragonlance, ou Aereni dans l'univers d'Éberron.",
+      "traits_specifiques": [],
+      "sorts_lignage": {
+        "mineur": {
+          "nom": "Prestidigitation",
+          "niveau": 0,
+          "acquis_au_niveau": 1,
+          "toujours_prepare": true,
+          "remplacable": "À chaque Repos long, vous pouvez le remplacer par un autre sort mineur de magicien."
+        },
+        "niveau_1": {
+          "nom": "Détection de la magie",
+          "niveau_sort": 1,
+          "acquis_au_niveau": 3,
+          "toujours_prepare": true,
+          "usage_gratuit": "1 fois par Repos long"
+        },
+        "niveau_2": {
+          "nom": "Foulée brumeuse",
+          "niveau_sort": 2,
+          "acquis_au_niveau": 5,
+          "toujours_prepare": true,
+          "usage_gratuit": "1 fois par Repos long"
+        }
+      }
+    },
+    {
+      "nom": "Elfe des bois",
+      "description_fluff": "Les elfes des bois portent en eux la magie des forêts primitives. On les connaît sous de nombreux autres noms, notamment elfes sauvages, elfes verts, elfes des forêts ou elfes sylvestres. Les grugach sont des elfes des bois reclus du monde de Greyhawk, tandis que les kagonesti et les tairnadal sont respectivement des elfes des bois des mondes de Dragonlance et d'Éberron.",
+      "traits_specifiques": [
+        {
+          "nom": "Vitesse accrue",
+          "description": "Votre Vitesse passe à 10,50 m.",
+          "vitesse_metres": 10.5
+        }
+      ],
+      "sorts_lignage": {
+        "mineur": {
+          "nom": "Druidisme",
+          "niveau": 0,
+          "acquis_au_niveau": 1,
+          "toujours_prepare": true
+        },
+        "niveau_1": {
+          "nom": "Grande foulée",
+          "niveau_sort": 1,
+          "acquis_au_niveau": 3,
+          "toujours_prepare": true,
+          "usage_gratuit": "1 fois par Repos long"
+        },
+        "niveau_2": {
+          "nom": "Passage sans trace",
+          "niveau_sort": 2,
+          "acquis_au_niveau": 5,
+          "toujours_prepare": true,
+          "usage_gratuit": "1 fois par Repos long"
+        }
+      }
+    }
+  ]
+}

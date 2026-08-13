@@ -1,0 +1,725 @@
+[
+  {
+    "key": "quarterstaff",
+    "name": "Bâton de combat",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "2 pa",
+    "damage": {
+      "dice": "1d6",
+      "type": "bludgeoning"
+    },
+    "versatile": "1d8",
+    "range": null,
+    "weight": "2 kg",
+    "properties": [
+      "Polyvalente (1d8)"
+    ]
+  },
+  {
+    "key": "dagger",
+    "name": "Dague",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "2 po",
+    "damage": {
+      "dice": "1d4",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 6.0,
+      "max": 18
+    },
+    "weight": "0,5 kg",
+    "properties": [
+      "Finesse",
+      "Lancer (portée 6/18)",
+      "Légère"
+    ]
+  },
+  {
+    "key": "club",
+    "name": "Gourdin",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "1 pa",
+    "damage": {
+      "dice": "1d4",
+      "type": "bludgeoning"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "1 kg",
+    "properties": [
+      "Légère"
+    ]
+  },
+  {
+    "key": "handaxe",
+    "name": "Hachette",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "5 po",
+    "damage": {
+      "dice": "1d6",
+      "type": "slashing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 6.0,
+      "max": 18
+    },
+    "weight": "1 kg",
+    "properties": [
+      "Lancer (portée 6/18)",
+      "Légère"
+    ]
+  },
+  {
+    "key": "javelin",
+    "name": "Javeline",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "5 pa",
+    "damage": {
+      "dice": "1d6",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 9.0,
+      "max": 36
+    },
+    "weight": "1 kg",
+    "properties": [
+      "Lancer (portée 9/36)"
+    ]
+  },
+  {
+    "key": "spear",
+    "name": "Lance",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "1 po",
+    "damage": {
+      "dice": "1d6",
+      "type": "piercing"
+    },
+    "versatile": "1d8",
+    "range": {
+      "normal": 6.0,
+      "max": 18
+    },
+    "weight": "1,5 kg",
+    "properties": [
+      "Lancer (portée 6/18)",
+      "Polyvalente (1d8)"
+    ]
+  },
+  {
+    "key": "light-hammer",
+    "name": "Marteau léger",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "2 po",
+    "damage": {
+      "dice": "1d4",
+      "type": "bludgeoning"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 6.0,
+      "max": 18
+    },
+    "weight": "1 kg",
+    "properties": [
+      "Lancer (portée 6/18)",
+      "Légère"
+    ]
+  },
+  {
+    "key": "mace",
+    "name": "Masse d'armes",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "5 po",
+    "damage": {
+      "dice": "1d6",
+      "type": "bludgeoning"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "2 kg",
+    "properties": []
+  },
+  {
+    "key": "greatclub",
+    "name": "Massue",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "2 pa",
+    "damage": {
+      "dice": "1d8",
+      "type": "bludgeoning"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "5 kg",
+    "properties": [
+      "Deux mains"
+    ]
+  },
+  {
+    "key": "sickle",
+    "name": "Serpe",
+    "category": "arme courante",
+    "type": "corps à corps",
+    "cost": "1 po",
+    "damage": {
+      "dice": "1d4",
+      "type": "slashing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "1 kg",
+    "properties": [
+      "Légère"
+    ]
+  },
+  {
+    "key": "light-crossbow",
+    "name": "Arbalète légère",
+    "category": "arme courante",
+    "type": "à distance",
+    "cost": "25 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 24.0,
+      "max": 96
+    },
+    "weight": "2,5 kg",
+    "properties": [
+      "Chargement",
+      "Deux mains",
+      "Munitions (portée 24/96 ; carreaux)"
+    ]
+  },
+  {
+    "key": "shortbow",
+    "name": "Arc court",
+    "category": "arme courante",
+    "type": "à distance",
+    "cost": "25 po",
+    "damage": {
+      "dice": "1d6",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 24.0,
+      "max": 96
+    },
+    "weight": "1 kg",
+    "properties": [
+      "Deux mains",
+      "Munitions (portée 24/96 ; flèches)"
+    ]
+  },
+  {
+    "key": "dart",
+    "name": "Fléchette",
+    "category": "arme courante",
+    "type": "à distance",
+    "cost": "5 pc",
+    "damage": {
+      "dice": "1d4",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 6.0,
+      "max": 18
+    },
+    "weight": "125 g",
+    "properties": [
+      "Finesse",
+      "Lancer (portée 6/18)"
+    ]
+  },
+  {
+    "key": "sling",
+    "name": "Fronde",
+    "category": "arme courante",
+    "type": "à distance",
+    "cost": "1 pa",
+    "damage": {
+      "dice": "1d4",
+      "type": "bludgeoning"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 9.0,
+      "max": 36
+    },
+    "weight": null,
+    "properties": [
+      "Munitions (portée 9/36 ; billes)"
+    ]
+  },
+  {
+    "key": "scimitar",
+    "name": "Cimeterre",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "25 po",
+    "damage": {
+      "dice": "1d6",
+      "type": "slashing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "1,5 kg",
+    "properties": [
+      "Finesse",
+      "Légère"
+    ]
+  },
+  {
+    "key": "glaive",
+    "name": "Coutille",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "20 po",
+    "damage": {
+      "dice": "1d10",
+      "type": "slashing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "3 kg",
+    "properties": [
+      "Allonge",
+      "Deux mains",
+      "Lourde"
+    ]
+  },
+  {
+    "key": "greatsword",
+    "name": "Épée à deux mains",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "50 po",
+    "damage": {
+      "dice": "2d6",
+      "type": "slashing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "3 kg",
+    "properties": [
+      "Deux mains",
+      "Lourde"
+    ]
+  },
+  {
+    "key": "shortsword",
+    "name": "Épée courte",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "10 po",
+    "damage": {
+      "dice": "1d6",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "1 kg",
+    "properties": [
+      "Finesse",
+      "Légère"
+    ]
+  },
+  {
+    "key": "longsword",
+    "name": "Épée longue",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "15 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "slashing"
+    },
+    "versatile": "1d10",
+    "range": null,
+    "weight": "1,5 kg",
+    "properties": [
+      "Polyvalente (1d10)"
+    ]
+  },
+  {
+    "key": "flail",
+    "name": "Fléau d'armes",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "10 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "bludgeoning"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "1 kg",
+    "properties": []
+  },
+  {
+    "key": "whip",
+    "name": "Fouet",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "2 po",
+    "damage": {
+      "dice": "1d4",
+      "type": "slashing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "1,5 kg",
+    "properties": [
+      "Allonge",
+      "Finesse"
+    ]
+  },
+  {
+    "key": "greataxe",
+    "name": "Hache à deux mains",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "30 po",
+    "damage": {
+      "dice": "1d12",
+      "type": "slashing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "3,5 kg",
+    "properties": [
+      "Deux mains",
+      "Lourde"
+    ]
+  },
+  {
+    "key": "battleaxe",
+    "name": "Hache d'armes",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "10 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "slashing"
+    },
+    "versatile": "1d10",
+    "range": null,
+    "weight": "2 kg",
+    "properties": [
+      "Polyvalente (1d10)"
+    ]
+  },
+  {
+    "key": "halberd",
+    "name": "Hallebarde",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "20 po",
+    "damage": {
+      "dice": "1d10",
+      "type": "slashing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "3 kg",
+    "properties": [
+      "Allonge",
+      "Deux mains",
+      "Lourde"
+    ]
+  },
+  {
+    "key": "lance",
+    "name": "Lance d'arçon",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "10 po",
+    "damage": {
+      "dice": "1d10",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "3 kg",
+    "properties": [
+      "Allonge",
+      "Deux mains (sauf à cheval)",
+      "Lourde"
+    ]
+  },
+  {
+    "key": "maul",
+    "name": "Maillet d'armes",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "10 po",
+    "damage": {
+      "dice": "2d6",
+      "type": "bludgeoning"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "5 kg",
+    "properties": [
+      "Deux mains",
+      "Lourde"
+    ]
+  },
+  {
+    "key": "warhammer",
+    "name": "Marteau de guerre",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "15 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "bludgeoning"
+    },
+    "versatile": "1d10",
+    "range": null,
+    "weight": "2,5 kg",
+    "properties": [
+      "Polyvalente (1d10)"
+    ]
+  },
+  {
+    "key": "morningstar",
+    "name": "Morgenstern",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "15 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "2 kg",
+    "properties": []
+  },
+  {
+    "key": "war-pick",
+    "name": "Pic de guerre",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "5 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "piercing"
+    },
+    "versatile": "1d10",
+    "range": null,
+    "weight": "1 kg",
+    "properties": [
+      "Polyvalente (1d10)"
+    ]
+  },
+  {
+    "key": "pike",
+    "name": "Pique",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "5 po",
+    "damage": {
+      "dice": "1d10",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "9 kg",
+    "properties": [
+      "Allonge",
+      "Deux mains",
+      "Lourde"
+    ]
+  },
+  {
+    "key": "rapier",
+    "name": "Rapière",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "25 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": null,
+    "weight": "1 kg",
+    "properties": [
+      "Finesse"
+    ]
+  },
+  {
+    "key": "trident",
+    "name": "Trident",
+    "category": "arme de guerre",
+    "type": "corps à corps",
+    "cost": "5 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "piercing"
+    },
+    "versatile": "1d10",
+    "range": {
+      "normal": 6.0,
+      "max": 18
+    },
+    "weight": "2 kg",
+    "properties": [
+      "Lancer (portée 6/18)",
+      "Polyvalente (1d10)"
+    ]
+  },
+  {
+    "key": "hand-crossbow",
+    "name": "Arbalète de poing",
+    "category": "arme de guerre",
+    "type": "à distance",
+    "cost": "75 po",
+    "damage": {
+      "dice": "1d6",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 9.0,
+      "max": 36
+    },
+    "weight": "1,5 kg",
+    "properties": [
+      "Chargement",
+      "Légère",
+      "Munitions (portée 9/36 ; carreaux)"
+    ]
+  },
+  {
+    "key": "heavy-crossbow",
+    "name": "Arbalète lourde",
+    "category": "arme de guerre",
+    "type": "à distance",
+    "cost": "50 po",
+    "damage": {
+      "dice": "1d10",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 30.0,
+      "max": 120
+    },
+    "weight": "9 kg",
+    "properties": [
+      "Chargement",
+      "Deux mains",
+      "Lourde",
+      "Munitions (portée 30/120 ; carreaux)"
+    ]
+  },
+  {
+    "key": "longbow",
+    "name": "Arc long",
+    "category": "arme de guerre",
+    "type": "à distance",
+    "cost": "50 po",
+    "damage": {
+      "dice": "1d8",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 45.0,
+      "max": 180
+    },
+    "weight": "1 kg",
+    "properties": [
+      "Deux mains",
+      "Lourde",
+      "Munitions (portée 45/180 ; flèches)"
+    ]
+  },
+  {
+    "key": "musket",
+    "name": "Mousquet",
+    "category": "arme de guerre",
+    "type": "à distance",
+    "cost": "500 po",
+    "damage": {
+      "dice": "1d12",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 12.0,
+      "max": 36
+    },
+    "weight": "5 kg",
+    "properties": [
+      "Chargement",
+      "Deux mains",
+      "Munitions (portée 12/36 ; balles)"
+    ]
+  },
+  {
+    "key": "pistol",
+    "name": "Pistolet",
+    "category": "arme de guerre",
+    "type": "à distance",
+    "cost": "250 po",
+    "damage": {
+      "dice": "1d10",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 9.0,
+      "max": 27
+    },
+    "weight": "1,5 kg",
+    "properties": [
+      "Chargement",
+      "Munitions (portée 9/27 ; balles)"
+    ]
+  },
+  {
+    "key": "blowgun",
+    "name": "Sarbacane",
+    "category": "arme de guerre",
+    "type": "à distance",
+    "cost": "10 po",
+    "damage": {
+      "dice": "1",
+      "type": "piercing"
+    },
+    "versatile": null,
+    "range": {
+      "normal": 7.5,
+      "max": 30
+    },
+    "weight": "0,5 kg",
+    "properties": [
+      "Chargement",
+      "Munitions (portée 7,50/30 ; dards)"
+    ]
+  }
+]

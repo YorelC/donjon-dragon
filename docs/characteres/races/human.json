@@ -1,0 +1,26 @@
+{
+  "key": "human",
+  "name": "Humain",
+  "creatureType": "humanoid",
+  "size": "Medium",
+  "speed": 9,
+  "darkvision": 0,
+  "traits": [
+    {
+      "key": "resourceful",
+      "name": "Ingénieux",
+      "description": "Vous gagnez l'Inspiration héroïque chaque fois que vous terminez un Repos long."
+    },
+    {
+      "key": "skilled",
+      "name": "Compétent",
+      "description": "Vous maîtrisez une compétence de votre choix."
+    },
+    {
+      "key": "versatile",
+      "name": "Polyvalent",
+      "description": "Vous gagnez un don d'Origines de votre choix. Doué est recommandé."
+    }
+  ],
+  "subcategories": []
+}

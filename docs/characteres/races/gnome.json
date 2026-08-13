@@ -1,0 +1,134 @@
+{
+  "key": "gnome",
+  "name": "Gnome",
+  "creatureType": "humanoid",
+  "size": "Small",
+  "sizeMetric": "P (entre 90 cm et 1,20 m)",
+  "speed": 9,
+  "darkvision": 18,
+  "features": [
+    {
+      "key": "darkvision",
+      "name": "Vision dans le noir",
+      "source": "species",
+      "description": "Vous possédez la Vision dans le noir sur 18 m.",
+      "effects": [
+        {
+          "application": "passive",
+          "passive": {
+            "kind": "set",
+            "target": "darkvision",
+            "value": "18"
+          }
+        }
+      ]
+    },
+    {
+      "key": "gnomeCunning",
+      "name": "Ruse gnome",
+      "source": "species",
+      "description": "Vous avez un Avantage aux jets de sauvegarde d'Intelligence, de Sagesse et de Charisme.",
+      "effects": [
+        {
+          "application": "passive",
+          "passive": {
+            "kind": "advantage",
+            "target": "savingThrow",
+            "condition": {
+              "any": [
+                { "ability": "intelligence" },
+                { "ability": "wisdom" },
+                { "ability": "charisma" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "gnomeLineage",
+      "name": "Lignage gnome",
+      "source": "species",
+      "description": "Vous appartenez à un lignage qui vous confère des pouvoirs surnaturels. Choisissez l'une des options suivantes : Gnome des forêts ou Gnome des roches. Quelle que soit votre sélection, l'Intelligence, la Sagesse ou le Charisme est votre caractéristique d'incantation pour les sorts que vous lancez avec ce trait (choisissez la caractéristique lors de la sélection du lignage).",
+      "effects": [
+        {
+          "application": "informational",
+          "note": "Choisir un lignage parmi : Gnome des forêts, Gnome des roches. La caractéristique d'incantation (INT, SAG ou CHA) est choisie à la sélection."
+        }
+      ],
+      "subLineages": [
+        {
+          "key": "forestGnome",
+          "name": "Gnome des forêts",
+          "source": "species",
+          "description": "Vous connaissez le sort mineur illusion mineure. Vous avez également toujours préparé le sort communication avec les animaux. Vous pouvez le lancer sans dépenser d'emplacement de sort un nombre de fois égal à votre bonus de maîtrise, et vous récupérez toutes les utilisations dépensées lorsque vous terminez un Repos long. Vous pouvez également lancer ce sort en dépensant un emplacement de sort adapté.",
+          "effects": [
+            {
+              "application": "grant",
+              "grants": {
+                "grantSpell": {
+                  "spellKey": "minor-illusion",
+                  "frequency": "atWill",
+                  "usesSlot": false
+                }
+              }
+            },
+            {
+              "application": "grant",
+              "grants": {
+                "grantSpell": {
+                  "spellKey": "speak-with-animals",
+                  "frequency": "oncePerLongRest",
+                  "usesSlot": false,
+                  "usesPerRest": "PB"
+                }
+              },
+              "note": "Également lançable en dépensant un emplacement de sort adapté."
+            }
+          ]
+        },
+        {
+          "key": "rockGnome",
+          "name": "Gnome des roches",
+          "source": "species",
+          "description": "Vous connaissez les sorts mineurs réparation et prestidigitation. De plus, vous pouvez consacrer 10 minutes à lancer prestidigitation pour créer un appareil mécanique de taille TP (CA 5, 1 pv) comme un jouet, un allume-feu ou une boîte à musique. Lors de la création de l'appareil, vous déterminez sa fonction en choisissant l'un des effets de prestidigitation ; l'appareil produit cet effet chaque fois que vous ou une autre créature prenez une action Bonus pour l'activer par contact. Vous pouvez avoir trois appareils de ce type en même temps, et chacun arrête de fonctionner 8 heures après sa création ou lorsque vous le démantelez par contact avec l'action Utilisation.",
+          "effects": [
+            {
+              "application": "grant",
+              "grants": {
+                "grantSpell": {
+                  "spellKey": "mending",
+                  "frequency": "atWill",
+                  "usesSlot": false
+                }
+              }
+            },
+            {
+              "application": "grant",
+              "grants": {
+                "grantSpell": {
+                  "spellKey": "prestidigitation",
+                  "frequency": "atWill",
+                  "usesSlot": false
+                }
+              }
+            },
+            {
+              "application": "active",
+              "trigger": {
+                "event": "onShortRest",
+                "action": "noAction"
+              },
+              "resource": {
+                "name": "Appareil mécanique",
+                "max": 3,
+                "resetOn": "creation"
+              },
+              "note": "Créer un appareil mécanique de taille TP (CA 5, 1 pv) en 10 minutes avec un effet de prestidigitation. Maximum 3 appareils simultanés, durée 8 heures."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

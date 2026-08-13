@@ -1,0 +1,1014 @@
+{
+  "aberrant-dragonmark": [],
+  "boon-of-bloodshed": [],
+  "boon-of-bountiful-health": [],
+  "boon-of-combat-prowess": [],
+  "boon-of-communication": [],
+  "boon-of-desperate-resilience": [],
+  "boon-of-dimensional-travel": [],
+  "boon-of-energy-resistance": [],
+  "boon-of-exquisite-radiance": [],
+  "boon-of-fate": [],
+  "boon-of-fluid-forms": [],
+  "boon-of-fortitude": [],
+  "boon-of-fortunes-favor": [],
+  "boon-of-irresistible-offense": [],
+  "boon-of-poison-mastery": [],
+  "boon-of-recovery": [],
+  "boon-of-revelry": [],
+  "boon-of-siberys": [],
+  "boon-of-skill": [],
+  "boon-of-speed": [],
+  "boon-of-spell-recall": [],
+  "boon-of-terror": [],
+  "boon-of-the-bright-sun": [],
+  "boon-of-the-furious-storm": [],
+  "boon-of-the-night-spirit": [],
+  "boon-of-the-soul-drinker": [],
+  "boon-of-truesight": [],
+  "cold-caster": [],
+  "cult-of-the-dragon-initiate": [],
+  "dragonscarred": [],
+  "emerald-enclave-fledgling": [],
+  "enclave-magic": [],
+  "fairy-trickster": [],
+  "genie-magic": [],
+  "greater-aberrant-mark": [],
+  "greater-mark-of-detection": [],
+  "greater-mark-of-finding": [],
+  "greater-mark-of-handling": [],
+  "greater-mark-of-healing": [],
+  "greater-mark-of-hospitality": [],
+  "greater-mark-of-making": [],
+  "greater-mark-of-passage": [],
+  "greater-mark-of-scribing": [],
+  "greater-mark-of-sentinel": [],
+  "greater-mark-of-shadow": [],
+  "greater-mark-of-storm": [],
+  "greater-mark-of-warding": [],
+  "harper-agent": [],
+  "harper-teamwork": [],
+  "lordly-resolve": [],
+  "lords-alliance-agent": [],
+  "mark-of-detection": [],
+  "mark-of-finding": [],
+  "mark-of-handling": [],
+  "mark-of-healing": [],
+  "mark-of-hospitality": [],
+  "mark-of-making": [],
+  "mark-of-passage": [],
+  "mark-of-scribing": [],
+  "mark-of-sentinel": [],
+  "mark-of-shadow": [],
+  "mark-of-storm": [],
+  "mark-of-warding": [],
+  "mythal-touched": [],
+  "orders-resilience": [],
+  "potent-dragonmark": [],
+  "purple-dragon-commandant": [],
+  "purple-dragon-rook": [],
+  "spellfire-adept": [],
+  "spellfire-spark": [],
+  "street-justice": [],
+  "tyro-of-the-gauntlet": [],
+  "zhentarim-ruffian": [],
+  "zhentarim-tactics": [],
+  "ability-score-improvement": [
+    {
+      "application": "informational",
+      "note": "Augmentez une valeur de caractéristique de 2, ou deux valeurs de 1 (maximum 20). Répétable."
+    }
+  ],
+  "actor": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "charisma"
+      }
+    },
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "advantage",
+        "target": "skillCheck",
+        "condition": "Charisme (Tromperie ou Représentation) pour convaincre que vous êtes la personne imitée"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Imitation : imitez les bruits et la parole d'autrui ; jet de Sagesse (Intuition) pour déceler l'imitation."
+    }
+  ],
+  "alert": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "initiative",
+        "value": "proficiencyBonus"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Échange d'Initiative : après le jet d'Initiative, échangez-la avec celle d'un allié consentant."
+    }
+  ],
+  "archery": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "attackBonus",
+        "value": "2",
+        "condition": "armes à distance"
+      }
+    }
+  ],
+  "athlete": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Vitesse d'escalade égale à votre Vitesse ; redressement et saut avec seulement 1,50 m de mouvement."
+    }
+  ],
+  "blind-fighting": [
+    {
+      "application": "informational",
+      "note": "Vision aveugle avec une portée de 3 mètres."
+    }
+  ],
+  "charger": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Pointe améliorée (+3 m) et Attaque de charge : +1d8 de dégâts ou repousse de 3 m, une fois par tour."
+    }
+  ],
+  "chef": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "constitution or wisdom"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "toolProficiencies": [
+          "cook's utensils"
+        ]
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Repas reconstituant (+1d8 PV lors d'un Repos court) et Friandises galvanisantes (PV temporaires)."
+    }
+  ],
+  "crafter": [
+    {
+      "application": "grant",
+      "grants": {
+        "toolProficiencies": [
+          "artisan's tools"
+        ]
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Ristourne de 20 % sur les objets non magiques ; Façonnage rapide à la fin d'un Repos long."
+    }
+  ],
+  "crossbow-expert": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Ignore la propriété Chargement ; pas de Désavantage au corps à corps ; arbalète secondaire avec modificateur."
+    }
+  ],
+  "crusher": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or constitution"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Bourrade (déplace la cible de 1,50 m) et Critique renforcé (Avantage des alliés contre la cible)."
+    }
+  ],
+  "defense": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "armorClass",
+        "value": "1",
+        "condition": "en portant une armure"
+      }
+    }
+  ],
+  "defensive-duelist": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Parade : Réaction pour ajouter votre bonus de maîtrise à la CA contre une attaque au corps à corps."
+    }
+  ],
+  "dual-wielder": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Combat à deux armes amélioré et Dégainage rapide."
+    }
+  ],
+  "dueling": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "damage",
+        "value": "2",
+        "condition": "arme de corps à corps tenue à une main"
+      }
+    }
+  ],
+  "durable": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "constitution"
+      }
+    },
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "advantage",
+        "target": "savingThrow",
+        "condition": "jets de sauvegarde contre la mort"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Récupération rapide : action Bonus pour dépenser un Dé de vie et récupérer des PV."
+    }
+  ],
+  "elemental-adept": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence, wisdom or charisma"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Maîtrise des énergies : vos sorts ignorent la Résistance au type choisi et les 1 des dés de dégâts comptent comme 2. Répétable."
+    }
+  ],
+  "fey-touched": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence, wisdom or charisma"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "misty-step",
+          "frequency": "oncePerLongRest",
+          "usesSlot": false
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Choisissez un sort de niveau 1 de Divination ou d'Enchantement toujours préparé (lancement gratuit, récupéré après un Repos long)."
+    }
+  ],
+  "grappler": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "advantage",
+        "target": "attackBonus",
+        "condition": "contre une créature que vous agrippez"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Frappe et empoignade (Dégâts + Lutte) ; déplacement d'une créature agrippée sans mouvement supplémentaire."
+    }
+  ],
+  "great-weapon-fighting": [
+    {
+      "application": "informational",
+      "note": "Avec une arme à deux mains ou Polyvalente, considérez les 1 et 2 des dés de dégâts comme des 3."
+    }
+  ],
+  "great-weapon-master": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Dégâts supplémentaires égaux à votre bonus de maîtrise (arme Lourde) ; Abattage (attaque Bonus après un critique ou une mise à 0 PV)."
+    }
+  ],
+  "healer": [
+    {
+      "application": "informational",
+      "note": "Soigneur de bataille (trousse de soins + Dé de vie) et relance des 1 sur les dés de soin."
+    }
+  ],
+  "heavily-armored": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "constitution or strength"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "armorTraining": "heavy"
+      }
+    }
+  ],
+  "heavy-armor-master": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "constitution or strength"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Réduction des dégâts contondants/perforants/tranchants égale à votre bonus de maîtrise (armure lourde)."
+    }
+  ],
+  "inspiring-leader": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "wisdom or charisma"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Représentation galvanisante : PV temporaires aux alliés après un Repos court ou long."
+    }
+  ],
+  "interception": [
+    {
+      "application": "informational",
+      "note": "Réaction pour réduire de 1d10 + bonus de maîtrise les dégâts infligés à un allié proche."
+    }
+  ],
+  "keen-mind": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Érudition : maîtrise (ou Expertise) d'une compétence d'Intelligence ; action Étude en action Bonus."
+    }
+  ],
+  "lightly-armored": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "armorTraining": "light and shields"
+      }
+    }
+  ],
+  "lucky": [
+    {
+      "application": "informational",
+      "note": "Points de Chance égaux à votre bonus de maîtrise pour donner Avantage/Désavantage sur les tests de d20."
+    }
+  ],
+  "mage-slayer": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Briseur de concentration (Désavantage sur la Concentration de l'ennemi) ; Esprit préservé (transforme un échec de JdS mental en succès)."
+    }
+  ],
+  "magic-initiate": [
+    {
+      "application": "informational",
+      "note": "Deux sorts mineurs et un sort de niveau 1 (lancement gratuit une fois, récupéré après un Repos long). Répétable."
+    }
+  ],
+  "martial-weapon-training": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "weaponProficiencies": "martial"
+      }
+    }
+  ],
+  "medium-armor-master": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Porteur agile : ajoutez 3 (au lieu de 2) à la CA en armure intermédiaire si Dextérité 16 ou plus."
+    }
+  ],
+  "moderately-armored": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "armorTraining": "medium"
+      }
+    }
+  ],
+  "mounted-combatant": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength, dexterity or wisdom"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Frappe montée (Avantage), Pas de côté (dégâts évités) et Déviation (redirige une attaque vers vous)."
+    }
+  ],
+  "musician": [
+    {
+      "application": "grant",
+      "grants": {
+        "toolProficiencies": [
+          "musical instruments"
+        ]
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Chant d'encouragement : Inspiration héroïque à des alliés après un Repos court ou long."
+    }
+  ],
+  "observant": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence or wisdom"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Observateur attentif : maîtrise (ou Expertise) d'une compétence ; action Observation en action Bonus."
+    }
+  ],
+  "piercer": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Perforation : relancez un dé de dégâts perforants ; Critique renforcé (dé de dégâts supplémentaire)."
+    }
+  ],
+  "poisoner": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "dexterity or intelligence"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "toolProficiencies": [
+          "poisoner's kit"
+        ]
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Poison virulent (ignore la Résistance au poison) ; préparation de doses de poison."
+    }
+  ],
+  "polearm-master": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "dexterity or strength"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Frappe double (action Bonus d4) et Frappe réactive (attaque d'opportunité à l'entrée dans l'allonge)."
+    }
+  ],
+  "protection": [
+    {
+      "application": "informational",
+      "note": "Réaction pour imposer un Désavantage aux jets d'attaque contre un allié proche (bouclier requis)."
+    }
+  ],
+  "resilient": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "choice of one ability"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Maîtrise des jets de sauvegarde de la caractéristique choisie."
+    }
+  ],
+  "ritual-caster": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence, wisdom or charisma"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Sorts rituels toujours préparés ; Rituel rapide (temps d'incantation normal, sans emplacement, une fois par Repos long)."
+    }
+  ],
+  "savage-attacker": [
+    {
+      "application": "informational",
+      "note": "Une fois par tour, relancez les dés de dégâts d'une arme et gardez le meilleur résultat."
+    }
+  ],
+  "sentinel": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Gardien (attaque d'opportunité élargie) et Immobilisation (vitesse 0 sur attaque d'opportunité)."
+    }
+  ],
+  "shadow-touched": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence, wisdom or charisma"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "invisibility",
+          "frequency": "oncePerLongRest",
+          "usesSlot": false
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Choisissez un sort de niveau 1 d'Illusion ou de Nécromancie toujours préparé (lancement gratuit, récupéré après un Repos long)."
+    }
+  ],
+  "sharpshooter": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Contournement d'abri, pas de Désavantage au corps à corps ni à longue portée (armes à distance)."
+    }
+  ],
+  "shield-master": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Coup de bouclier (repousse ou met À terre) et Interposition de bouclier (aucun dégât sur JdS de Dextérité réussi)."
+    }
+  ],
+  "skill-expert": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "choice of one ability"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Maîtrise d'une compétence au choix et Expertise dans une compétence maîtrisée."
+    }
+  ],
+  "skilled": [
+    {
+      "application": "informational",
+      "note": "Maîtrise de trois compétences ou outils au choix. Répétable."
+    }
+  ],
+  "skulker": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "dexterity"
+      }
+    },
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "advantage",
+        "target": "skillCheck",
+        "condition": "Dextérité (Discrétion) pendant le combat"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Vision aveugle (3 m) ; position non révélée en cas d'attaque cachée ratée."
+    }
+  ],
+  "slasher": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Coupe-jarret (réduit la vitesse de 3 m) et Critique amélioré (Désavantage aux attaques de la cible)."
+    }
+  ],
+  "speedy": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "dexterity or constitution"
+      }
+    },
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "speed",
+        "value": "3"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Pointe sur terrain difficile ; attaques d'opportunité contre vous en Désavantage."
+    }
+  ],
+  "spell-sniper": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence, wisdom or charisma"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Contournement d'abri, pas de Désavantage au corps à corps et portée augmentée de 18 m (sorts)."
+    }
+  ],
+  "tavern-brawler": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "set",
+        "target": "unarmedDamage",
+        "value": "1d4"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "weaponProficiencies": "improvised"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Relance des 1 sur les dés de dégâts à mains nues ; Bourrade (repousse de 1,50 m)."
+    }
+  ],
+  "telekinetic": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence, wisdom or charisma"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "mage-hand",
+          "frequency": "atWill",
+          "usesSlot": false
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Bourrade télékinétique : action Bonus pour repousser une créature (jet de sauvegarde de Force)."
+    }
+  ],
+  "telepathic": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence, wisdom or charisma"
+      }
+    },
+    {
+      "application": "grant",
+      "grants": {
+        "grantSpell": {
+          "spellKey": "detect-thoughts",
+          "frequency": "oncePerLongRest",
+          "usesSlot": false
+        }
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Parole télépathique avec une créature visible dans un rayon de 18 m."
+    }
+  ],
+  "thrown-weapon-fighting": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "damage",
+        "value": "2",
+        "condition": "arme dotée de la propriété Lancer"
+      }
+    }
+  ],
+  "tough": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "maxHp",
+        "value": "2 * level"
+      }
+    }
+  ],
+  "two-weapon-fighting": [
+    {
+      "application": "informational",
+      "note": "Ajoutez votre modificateur de caractéristique aux dégâts de l'attaque supplémentaire (arme Légère)."
+    }
+  ],
+  "unarmed-fighting": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "set",
+        "target": "unarmedDamage",
+        "value": "1d6"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "d8 sans arme ni bouclier ; 1d4 dégâts contondants au début du tour à une créature agrippée."
+    }
+  ],
+  "war-caster": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "intelligence, wisdom or charisma"
+      }
+    },
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "advantage",
+        "target": "savingThrow",
+        "condition": "Constitution pour maintenir la Concentration"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Sort réactif (attaque d'opportunité remplacée par un sort) et composantes somatiques avec armes/bouclier."
+    }
+  ],
+  "weapon-master": [
+    {
+      "application": "passive",
+      "passive": {
+        "kind": "bonus",
+        "target": "abilityScore",
+        "value": "1",
+        "condition": "strength or dexterity"
+      }
+    },
+    {
+      "application": "informational",
+      "note": "Propriété botte : accès à la botte d'un type d'arme maîtrisé (changeable après un Repos long)."
+    }
+  ]
+}

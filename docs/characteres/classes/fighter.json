@@ -1,0 +1,648 @@
+{
+  "key": "fighter",
+  "name": "Guerrier",
+  "source": "PHB 2024",
+  "url": "https://www.aidedd.org/regles-24/classes/guerrier/",
+  "primaryAbility": ["strength", "dexterity"],
+  "hitDie": "d10",
+  "savingThrows": ["strength", "constitution"],
+  "skillProficiencies": {
+    "count": 2,
+    "options": ["acrobatics", "animalHandling", "athletics", "history", "insight", "intimidation", "persuasion", "perception", "survival"]
+  },
+  "weaponProficiencies": ["simple", "martial"],
+  "armorTraining": ["light", "medium", "heavy", "shields"],
+  "startingEquipment": {
+    "options": [
+      {
+        "id": "A",
+        "items": "Cotte de mailles, épée à deux mains, fléau d'armes, 8 javelines, sac d'exploration souterraine, 4 po"
+      },
+      {
+        "id": "B",
+        "items": "Armure de cuir clouté, cimeterre, épée courte, arc long, 20 flèches, carquois, sac d'exploration souterraine, 11 po"
+      },
+      {
+        "id": "C",
+        "items": "155 po"
+      }
+    ]
+  },
+  "multiclass": {
+    "prerequisites": [
+      { "ability": "strength", "min": 13 },
+      { "ability": "dexterity", "min": 13 }
+    ],
+    "gains": {
+      "hitDie": "d10",
+      "weaponProficiencies": ["martial"],
+      "armorTraining": ["light", "medium", "shields"],
+      "skillProficiencies": { "count": 0 },
+      "spellSlotContribution": null
+    }
+  },
+  "spellcasting": null,
+  "progression": [
+    {
+      "level": 1,
+      "proficiencyBonus": 2,
+      "features": ["fightingStyle", "secondWind", "weaponMastery"],
+      "secondWindUses": 2,
+      "weaponMasteries": 3
+    },
+    {
+      "level": 2,
+      "proficiencyBonus": 2,
+      "features": ["actionSurge", "tacticalMind"],
+      "secondWindUses": 2,
+      "weaponMasteries": 3
+    },
+    {
+      "level": 3,
+      "proficiencyBonus": 2,
+      "features": ["fighterSubclass"],
+      "secondWindUses": 2,
+      "weaponMasteries": 3
+    },
+    {
+      "level": 4,
+      "proficiencyBonus": 2,
+      "features": ["abilityScoreImprovement"],
+      "secondWindUses": 3,
+      "weaponMasteries": 4
+    },
+    {
+      "level": 5,
+      "proficiencyBonus": 3,
+      "features": ["extraAttack", "tacticalShift"],
+      "secondWindUses": 3,
+      "weaponMasteries": 4
+    },
+    {
+      "level": 6,
+      "proficiencyBonus": 3,
+      "features": ["abilityScoreImprovement"],
+      "secondWindUses": 3,
+      "weaponMasteries": 4
+    },
+    {
+      "level": 7,
+      "proficiencyBonus": 3,
+      "features": ["subclassFeature"],
+      "secondWindUses": 3,
+      "weaponMasteries": 4
+    },
+    {
+      "level": 8,
+      "proficiencyBonus": 3,
+      "features": ["abilityScoreImprovement"],
+      "secondWindUses": 3,
+      "weaponMasteries": 4
+    },
+    {
+      "level": 9,
+      "proficiencyBonus": 4,
+      "features": ["indomitable", "tacticalMaster"],
+      "secondWindUses": 3,
+      "weaponMasteries": 4
+    },
+    {
+      "level": 10,
+      "proficiencyBonus": 4,
+      "features": ["subclassFeature"],
+      "secondWindUses": 4,
+      "weaponMasteries": 5
+    },
+    {
+      "level": 11,
+      "proficiencyBonus": 4,
+      "features": ["twoExtraAttacks"],
+      "secondWindUses": 4,
+      "weaponMasteries": 5
+    },
+    {
+      "level": 12,
+      "proficiencyBonus": 4,
+      "features": ["abilityScoreImprovement"],
+      "secondWindUses": 4,
+      "weaponMasteries": 5
+    },
+    {
+      "level": 13,
+      "proficiencyBonus": 5,
+      "features": ["studiedAttacks", "indomitableImprovement"],
+      "secondWindUses": 4,
+      "weaponMasteries": 5
+    },
+    {
+      "level": 14,
+      "proficiencyBonus": 5,
+      "features": ["abilityScoreImprovement"],
+      "secondWindUses": 4,
+      "weaponMasteries": 5
+    },
+    {
+      "level": 15,
+      "proficiencyBonus": 5,
+      "features": ["subclassFeature"],
+      "secondWindUses": 4,
+      "weaponMasteries": 5
+    },
+    {
+      "level": 16,
+      "proficiencyBonus": 5,
+      "features": ["abilityScoreImprovement"],
+      "secondWindUses": 4,
+      "weaponMasteries": 6
+    },
+    {
+      "level": 17,
+      "proficiencyBonus": 6,
+      "features": ["actionSurgeImprovement", "indomitableImprovement2"],
+      "secondWindUses": 4,
+      "weaponMasteries": 6
+    },
+    {
+      "level": 18,
+      "proficiencyBonus": 6,
+      "features": ["subclassFeature"],
+      "secondWindUses": 4,
+      "weaponMasteries": 6
+    },
+    {
+      "level": 19,
+      "proficiencyBonus": 6,
+      "features": ["epicBoon"],
+      "secondWindUses": 4,
+      "weaponMasteries": 6
+    },
+    {
+      "level": 20,
+      "proficiencyBonus": 6,
+      "features": ["threeExtraAttacks"],
+      "secondWindUses": 4,
+      "weaponMasteries": 6
+    }
+  ],
+  "features": {
+    "fightingStyle": {
+      "name": "Style de combat",
+      "level": 1,
+      "description": "Vous avez perfectionné vos prouesses martiales et obtenez un don de Style de combat de votre choix. Défense est recommandé. Chaque fois que vous gagnez un niveau de guerrier, vous pouvez remplacer le don choisi par un autre don de Style de combat.",
+      "application": "grant",
+      "grants": { "fightingStyle": true }
+    },
+    "secondWind": {
+      "name": "Second souffle",
+      "level": 1,
+      "description": "Vous disposez d'une réserve limitée d'endurance physique et mentale. Par une action Bonus, vous pouvez l'utiliser pour regagner des points de vie égaux à 1d10 plus votre niveau de guerrier. Vous pouvez utiliser cette capacité deux fois. Vous récupérez une utilisation dépensée lorsque vous terminez un Repos court, et toutes les utilisations dépensées lorsque vous terminez un Repos long.",
+      "application": "active",
+      "action": "bonusAction",
+      "resource": { "key": "secondWind", "max": 2, "recovery": "shortRest" },
+      "effect": { "formula": "1d10 + fighterLevel", "target": "hitPoints" }
+    },
+    "weaponMastery": {
+      "name": "Bottes d'arme",
+      "level": 1,
+      "description": "Votre entraînement aux armes vous permet d'utiliser la botte de trois types d'armes courantes ou de guerre de votre choix. Lorsque vous terminez un Repos long, vous pouvez vous entraîner aux armes et modifier l'une des armes choisies.",
+      "application": "passive",
+      "grants": { "weaponMasteries": 3 }
+    },
+    "actionSurge": {
+      "name": "Fougue",
+      "level": 2,
+      "description": "Vous pouvez repousser vos limites pendant un instant. À votre tour, vous pouvez prendre une action supplémentaire, à l'exception de l'action Magie. Une fois cette capacité utilisée, vous ne pouvez plus la réutiliser avant d'avoir terminé un Repos court ou long.",
+      "application": "active",
+      "action": "free",
+      "frequency": "oncePerTurn",
+      "resource": { "key": "actionSurge", "max": 1, "recovery": "shortRest" },
+      "improvements": {
+        "17": { "max": 2 }
+      }
+    },
+    "tacticalMind": {
+      "name": "Sens tactique",
+      "level": 2,
+      "description": "Vous avez le sens de la tactique aussi bien sur le champ de bataille qu'en dehors. En cas d'échec à un jet de caractéristique, vous pouvez utiliser votre Second souffle pour obtenir une réussite. Au lieu de regagner des points de vie, vous lancez 1d10 et ajoutez le résultat obtenu au jet de caractéristique, ce qui peut potentiellement le transformer en succès. Si le jet échoue à nouveau, cette utilisation de Second souffle n'est pas dépensée.",
+      "application": "reactive",
+      "trigger": { "event": "onAbilityCheck", "timing": "after" },
+      "consumesResource": "secondWind"
+    },
+    "fighterSubclass": {
+      "name": "Sous-classe de guerrier",
+      "level": 3,
+      "description": "Vous obtenez la sous-classe de guerrier de votre choix. Les sous-classes Champion, Chevalier occulte, Maître de guerre et Soldat psi sont disponibles.",
+      "application": "grant",
+      "grants": { "subclassChoice": ["champion", "eldritchKnight", "battleMaster", "psiWarrior"] }
+    },
+    "abilityScoreImprovement": {
+      "name": "Amélioration de caractéristique",
+      "level": 4,
+      "description": "Vous obtenez le don Amélioration de caractéristiques ou un autre don de votre choix pour lequel vous êtes qualifié.",
+      "application": "grant",
+      "grants": { "feat": true },
+      "levels": [4, 6, 8, 12, 14, 16]
+    },
+    "extraAttack": {
+      "name": "Attaque supplémentaire",
+      "level": 5,
+      "description": "Vous pouvez attaquer deux fois, au lieu d'une, chaque fois que vous prenez l'action Attaque à votre tour.",
+      "application": "passive",
+      "grants": { "extraAttacks": 1 }
+    },
+    "tacticalShift": {
+      "name": "Décalage tactique",
+      "level": 5,
+      "description": "Chaque fois que vous activez votre Second souffle par une action Bonus, vous pouvez vous déplacer jusqu'à la moitié de votre Vitesse sans provoquer d'attaques d'Opportunité.",
+      "application": "reactive",
+      "trigger": { "event": "onSecondWindActivation" }
+    },
+    "indomitable": {
+      "name": "Inflexible",
+      "level": 9,
+      "description": "Si vous échouez à un jet de sauvegarde, vous pouvez le relancer avec un bonus égal à votre niveau de guerrier. Vous devez utiliser le nouveau jet.",
+      "application": "reactive",
+      "trigger": { "event": "onSavingThrow", "timing": "instead" },
+      "resource": { "key": "indomitable", "max": 1, "recovery": "longRest" },
+      "effect": { "formula": "fighterLevel", "target": "savingThrow" },
+      "improvements": {
+        "13": { "max": 2 },
+        "17": { "max": 3 }
+      }
+    },
+    "tacticalMaster": {
+      "name": "Botte tactique",
+      "level": 9,
+      "description": "Lorsque vous attaquez avec une arme dont vous pouvez utiliser la botte, vous pouvez remplacer cette botte par la botte Poussée, Sape ou Ralentissement pour cette attaque.",
+      "application": "active",
+      "grants": { "tacticalMasteries": ["push", "sap", "slow"] }
+    },
+    "twoExtraAttacks": {
+      "name": "Double attaque supplémentaire",
+      "level": 11,
+      "description": "Vous pouvez attaquer trois fois au lieu d'une lorsque vous entreprenez l'action Attaque à votre tour.",
+      "application": "passive",
+      "grants": { "extraAttacks": 2 }
+    },
+    "studiedAttacks": {
+      "name": "Attaques avisées",
+      "level": 13,
+      "description": "Vous savez étudier la défense de l'adversaire au fil de vos attaques. Si vous effectuez un jet d'attaque contre une créature et que vous ratez, vous avez l'Avantage à votre prochain jet d'attaque contre elle intervenant avant la fin de votre tour suivant.",
+      "application": "reactive",
+      "trigger": { "event": "onMiss", "timing": "after" }
+    },
+    "indomitableImprovement": {
+      "name": "Inflexible (2 utilisations)",
+      "level": 13,
+      "description": "Vous pouvez utiliser Inflexible deux fois entre deux Repos longs.",
+      "application": "passive"
+    },
+    "actionSurgeImprovement": {
+      "name": "Fougue (2 utilisations)",
+      "level": 17,
+      "description": "Vous pouvez utiliser Fougue deux fois avant un repos, mais une seule fois par tour.",
+      "application": "passive"
+    },
+    "indomitableImprovement2": {
+      "name": "Inflexible (3 utilisations)",
+      "level": 17,
+      "description": "Vous pouvez utiliser Inflexible trois fois entre deux Repos longs.",
+      "application": "passive"
+    },
+    "epicBoon": {
+      "name": "Faveur épique",
+      "level": 19,
+      "description": "Vous recevez un don de Faveur épique ou un autre don de votre choix pour lequel vous remplissez les conditions. Faveur de prouesse martiale est recommandé.",
+      "application": "grant",
+      "grants": { "epicBoon": true }
+    },
+    "threeExtraAttacks": {
+      "name": "Triple attaque supplémentaire",
+      "level": 20,
+      "description": "Vous pouvez attaquer quatre fois au lieu d'une lorsque vous entreprenez l'action Attaque à votre tour.",
+      "application": "passive",
+      "grants": { "extraAttacks": 3 }
+    }
+  },
+  "subclasses": {
+    "champion": {
+      "key": "champion",
+      "name": "Champion",
+      "description": "Un champion se concentre sur le développement de ses qualités martiales dans une quête incessante de la victoire. Il allie entraînement rigoureux et condition physique pour porter des coups dévastateurs, résister aux dangers et s'assurer la gloire.",
+      "features": {
+        "improvedCritical": {
+          "name": "Critique amélioré",
+          "level": 3,
+          "description": "Vos jets d'attaque avec des armes et vos Frappes à mains nues obtiennent un Coup critique sur un résultat de 19 ou 20 sur le d20.",
+          "application": "passive",
+          "effect": { "target": "criticalRange", "value": 19 }
+        },
+        "remarkableAthlete": {
+          "name": "Athlète accompli",
+          "level": 3,
+          "description": "Grâce à vos qualités athlétiques, vous bénéficiez d'un Avantage aux jets d'Initiative et de Force (Athlétisme). De plus, immédiatement après un Coup critique, vous pouvez vous déplacer jusqu'à la moitié de votre Vitesse sans provoquer d'attaques d'Opportunité.",
+          "application": "passive",
+          "grants": { "advantageOn": ["initiative", "athletics"] }
+        },
+        "additionalFightingStyle": {
+          "name": "Style de combat supplémentaire",
+          "level": 7,
+          "description": "Vous gagnez un autre don de Style de combat de votre choix.",
+          "application": "grant",
+          "grants": { "fightingStyle": true }
+        },
+        "heroicWarrior": {
+          "name": "Héros du champ d'honneur",
+          "level": 10,
+          "description": "Le frisson du combat vous porte vers la victoire. Pendant un combat, vous pouvez vous octroyer une Inspiration héroïque chaque fois que vous commencez votre tour sans en avoir une.",
+          "application": "active",
+          "trigger": { "event": "onTurnStart", "frequency": "perCombat" }
+        },
+        "superiorCritical": {
+          "name": "Critique supérieur",
+          "level": 15,
+          "description": "Vos jets d'attaque avec des armes et à mains nues obtiennent un Coup critique sur un résultat de 18, 19 ou 20 sur le d20.",
+          "application": "passive",
+          "effect": { "target": "criticalRange", "value": 18 }
+        },
+        "survivor": {
+          "name": "Survivant",
+          "level": 18,
+          "description": "Vous atteignez le summum de l'endurance martiale. Avantage aux jets de sauvegarde contre la mort (18-20 compte comme 20). Au début de chacun de vos tours, si vous êtes En péril avec au moins 1 pv, récupérez 5 + mod. Constitution pv.",
+          "application": "passive",
+          "effect": {
+            "regeneration": { "formula": "5 + constitutionModifier", "condition": "bloodied" }
+          }
+        }
+      }
+    },
+    "eldritchKnight": {
+      "key": "eldritchKnight",
+      "name": "Chevalier occulte",
+      "description": "Les chevaliers occultes allient la maîtrise martiale commune à tous les guerriers à une étude approfondie de la magie. Leurs sorts complètent et étendent leurs compétences de combat.",
+      "spellcasting": {
+        "ability": "intelligence",
+        "type": "third",
+        "spellList": "wizard",
+        "multiclassSlotContribution": 0.33,
+        "cantripsKnown": {
+          "3": 2,
+          "10": 3
+        },
+        "spellsPreparedByLevel": {
+          "3": 3, "4": 4, "5": 4, "6": 4, "7": 5, "8": 6, "9": 6,
+          "10": 7, "11": 8, "12": 8, "13": 9, "14": 10, "15": 10,
+          "16": 11, "17": 11, "18": 11, "19": 12, "20": 13
+        },
+        "slotsByLevel": {
+          "3":  { "1": 2, "2": 0, "3": 0, "4": 0 },
+          "4":  { "1": 3, "2": 0, "3": 0, "4": 0 },
+          "5":  { "1": 3, "2": 0, "3": 0, "4": 0 },
+          "6":  { "1": 3, "2": 0, "3": 0, "4": 0 },
+          "7":  { "1": 4, "2": 2, "3": 0, "4": 0 },
+          "8":  { "1": 4, "2": 2, "3": 0, "4": 0 },
+          "9":  { "1": 4, "2": 2, "3": 0, "4": 0 },
+          "10": { "1": 4, "2": 3, "3": 0, "4": 0 },
+          "11": { "1": 4, "2": 3, "3": 0, "4": 0 },
+          "12": { "1": 4, "2": 3, "3": 0, "4": 0 },
+          "13": { "1": 4, "2": 3, "3": 2, "4": 0 },
+          "14": { "1": 4, "2": 3, "3": 2, "4": 0 },
+          "15": { "1": 4, "2": 3, "3": 2, "4": 0 },
+          "16": { "1": 4, "2": 3, "3": 3, "4": 0 },
+          "17": { "1": 4, "2": 3, "3": 3, "4": 0 },
+          "18": { "1": 4, "2": 3, "3": 3, "4": 0 },
+          "19": { "1": 4, "2": 3, "3": 3, "4": 1 },
+          "20": { "1": 4, "2": 3, "3": 3, "4": 1 }
+        }
+      },
+      "features": {
+        "spellcasting": {
+          "name": "Sorts",
+          "level": 3,
+          "description": "Vous apprenez à lancer des sorts de magicien. Intelligence est votre caractéristique d'incantation. Vous connaissez 2 sorts mineurs (3 au niveau 10) et préparez des sorts de niveaux 1+ selon la table de progression.",
+          "application": "grant",
+          "grants": { "spellcasting": true }
+        },
+        "weaponBond": {
+          "name": "Arme occulte",
+          "level": 3,
+          "description": "Vous apprenez un rituel qui crée un lien magique entre vous et une arme (1 heure, possible pendant un Repos court). Une fois lié, vous ne pouvez être désarmé que si Incapable d'agir. Action Bonus pour invoquer l'arme depuis le même plan. Maximum 2 armes liées.",
+          "application": "active",
+          "action": "bonusAction"
+        },
+        "warMagic": {
+          "name": "Magie de guerre",
+          "level": 7,
+          "description": "Lorsque vous prenez l'action Attaque pendant votre tour, vous pouvez remplacer l'une des attaques par le lancement d'un de vos sorts mineurs de magicien dont le temps d'incantation est d'une action.",
+          "application": "active"
+        },
+        "eldritchStrike": {
+          "name": "Fragilisation occulte",
+          "level": 10,
+          "description": "Lorsque vous touchez une créature par une attaque avec une arme, elle subit un Désavantage au prochain jet de sauvegarde qu'elle effectue contre un sort que vous lancez avant la fin de votre prochain tour.",
+          "application": "reactive",
+          "trigger": { "event": "onHit" }
+        },
+        "improvedWarMagic": {
+          "name": "Magie de guerre améliorée",
+          "level": 18,
+          "description": "Lorsque vous prenez l'action Attaque, vous pouvez remplacer deux de vos attaques par le lancement d'un sort de magicien de niveau 1 ou 2 dont le temps d'incantation est d'une action.",
+          "application": "active"
+        }
+      }
+    },
+    "battleMaster": {
+      "key": "battleMaster",
+      "name": "Maître de guerre",
+      "description": "Les maîtres de guerre sont des étudiants de l'art martial, apprenant des techniques transmises de génération en génération. Ils allient compétences de combat affûtées à des études académiques en histoire, théorie et arts martiaux.",
+      "features": {
+        "combatSuperiority": {
+          "name": "Disciple martial / Supériorité martiale",
+          "level": 3,
+          "description": "Vous gagnez la maîtrise d'un outil d'artisan et d'une compétence de guerrier au choix. Vous apprenez 3 manœuvres et disposez de 4 dés de Supériorité (d8). Récupération : Repos court ou long.",
+          "application": "grant",
+          "grants": {
+            "toolProficiency": { "type": "artisansTools", "count": 1 },
+            "skillProficiency": { "count": 1, "options": ["acrobatics", "animalHandling", "athletics", "history", "insight", "intimidation", "persuasion", "perception", "survival"] }
+          },
+          "resource": { "key": "superiorityDice", "max": 4, "dieSize": "d8", "recovery": "shortRest" },
+          "improvements": {
+            "maneuversKnown": { "3": 3, "7": 5, "10": 7, "15": 9 },
+            "superiorityDice": { "3": 4, "7": 5, "15": 6 }
+          }
+        },
+        "knowYourEnemy": {
+          "name": "Observation de l'ennemi",
+          "level": 7,
+          "description": "Par une action Bonus, discernez les Immunités, Résistances ou Vulnérabilités d'une créature visible dans un rayon de 9 m. 1 fois/Repos long, ou en dépensant un dé de Supériorité.",
+          "application": "active",
+          "action": "bonusAction",
+          "resource": { "key": "knowYourEnemy", "max": 1, "recovery": "longRest" }
+        },
+        "improvedCombatSuperiority": {
+          "name": "Supériorité martiale améliorée",
+          "level": 10,
+          "description": "Vos dés de Supériorité deviennent des d10.",
+          "application": "passive",
+          "effect": { "dieSize": "d10" }
+        },
+        "relentless": {
+          "name": "Implacable",
+          "level": 15,
+          "description": "Lorsque vous lancez l'initiative et n'avez plus de dé de Supériorité, vous en récupérez un.",
+          "application": "reactive",
+          "trigger": { "event": "onInitiativeRoll" }
+        }
+      },
+      "maneuvers": {
+        "commanderStrike": {
+          "name": "Instruction",
+          "description": "Remplacez une attaque pour ordonner à un allié d'attaquer avec sa Réaction, en ajoutant le dé de Supériorité aux dégâts.",
+          "action": "attackReplacement"
+        },
+        "disarmingAttack": {
+          "name": "Désarmement",
+          "description": "Dépensez un dé pour tenter de désarmer la cible (JS Force). Ajoutez le dé aux dégâts.",
+          "save": "strength"
+        },
+        "distractingStrike": {
+          "name": "Diversion",
+          "description": "Ajoutez le dé aux dégâts. Le prochain jet d'attaque d'un allié contre la cible a Avantage.",
+          "save": null
+        },
+        "evasiveFootwork": {
+          "name": "Jeu de jambes défensif",
+          "description": "Action Bonus : Désengagement + ajoutez le dé à votre CA jusqu'au début de votre prochain tour.",
+          "action": "bonusAction"
+        },
+        "feintingAttack": {
+          "name": "Feinte",
+          "description": "Action Bonus : Avantage à votre prochaine attaque + ajoutez le dé aux dégâts si elle touche.",
+          "action": "bonusAction"
+        },
+        "goadingAttack": {
+          "name": "Provocation",
+          "description": "Ajoutez le dé aux dégâts. JS Sagesse ou Désavantage contre les autres cibles.",
+          "save": "wisdom"
+        },
+        "lungingAttack": {
+          "name": "Fente",
+          "description": "Action Bonus : Action Pointe. Si déplacement ≥ 1,50 m avant l'attaque, ajoutez le dé aux dégâts.",
+          "action": "bonusAction"
+        },
+        "maneuveringAttack": {
+          "name": "Manœuvre tactique",
+          "description": "Ajoutez le dé aux dégâts. Un allié peut se déplacer de la moitié de sa Vitesse sans AO.",
+          "save": null
+        },
+        "menacingAttack": {
+          "name": "Attaque menaçante",
+          "description": "Ajoutez le dé aux dégâts. JS Sagesse ou état Effrayé.",
+          "save": "wisdom"
+        },
+        "parry": {
+          "name": "Parade",
+          "description": "Réaction : réduisez les dégâts d'une attaque au corps à corps de (dé + mod. FOR ou DEX).",
+          "action": "reaction"
+        },
+        "precisionAttack": {
+          "name": "Attaque précise",
+          "description": "En cas d'échec à un jet d'attaque, dépensez un dé et ajoutez-le au jet.",
+          "save": null
+        },
+        "pushingAttack": {
+          "name": "Bélier",
+          "description": "Ajoutez le dé aux dégâts. JS Force ou cible repoussée de 4,50 m.",
+          "save": "strength"
+        },
+        "rally": {
+          "name": "Regain",
+          "description": "Action Bonus : un allié dans 9 m gagne des pv temporaires = dé + moitié niveau guerrier.",
+          "action": "bonusAction"
+        },
+        "riposte": {
+          "name": "Riposte",
+          "description": "Réaction quand une créature vous rate au corps à corps : attaquez-la et ajoutez le dé aux dégâts.",
+          "action": "reaction"
+        },
+        "sweepingAttack": {
+          "name": "Balayage",
+          "description": "Infligez le résultat du dé en dégâts à une seconde créature dans un rayon de 1,50 m.",
+          "save": null
+        },
+        "tripAttack": {
+          "name": "Croc-en-jambe",
+          "description": "Ajoutez le dé aux dégâts. JS Force ou état À terre.",
+          "save": "strength"
+        },
+        "baitAndSwitch": {
+          "name": "Chassé-croisé",
+          "description": "Échangez de place avec une créature consentante dans 1,50 m. Jusqu'au prochain tour, bonus CA = résultat du dé.",
+          "save": null
+        },
+        "ambush": {
+          "name": "Embuscade",
+          "description": "Lors d'un jet de Dextérité (Discrétion) ou d'Initiative, ajoutez le dé au résultat.",
+          "save": null
+        },
+        "commandersPresence": {
+          "name": "Autorité naturelle",
+          "description": "Lors d'un jet de Charisme (Intimidation, Représentation, Persuasion), ajoutez le dé au résultat.",
+          "save": null
+        },
+        "tacticalAssessment": {
+          "name": "Évaluation tactique",
+          "description": "Lors d'un jet d'Intelligence (Histoire, Investigation) ou Sagesse (Intuition), ajoutez le dé au résultat.",
+          "save": null
+        }
+      }
+    },
+    "psiWarrior": {
+      "key": "psiWarrior",
+      "name": "Porteur de l'esprit",
+      "description": "Voir le Manuel des Joueurs pour les détails complets. Les soldats psi utilisent des pouvoirs psioniques pour améliorer leurs capacités martiales.",
+      "sourceNote": "Les détails complets ne sont pas disponibles sur AideDD (contenu non OGL). Référez-vous au PHB 2024.",
+      "features": {
+        "psionicPower": {
+          "name": "Pouvoir psionique",
+          "level": 3,
+          "description": "Vous obtenez des dés d'énergie psionique (Psi Energy Dice) que vous pouvez utiliser pour alimenter diverses capacités psioniques.",
+          "application": "grant"
+        },
+        "telekineticMovement": {
+          "name": "Mouvement télékinétique",
+          "level": 7,
+          "description": "Vous pouvez déplacer des objets ou des créatures par télékinésie.",
+          "application": "active"
+        },
+        "guardedMind": {
+          "name": "Esprit protégé",
+          "level": 10,
+          "description": "Vous obtenez une résistance aux dégâts psychiques.",
+          "application": "passive"
+        },
+        "bulwarkOfForce": {
+          "name": "Rempart de force",
+          "level": 15,
+          "description": "Vous pouvez utiliser votre télékinésie pour protéger vos alliés.",
+          "application": "active"
+        },
+        "telekineticMaster": {
+          "name": "Maître télékinétique",
+          "level": 18,
+          "description": "Vous pouvez lancer Télékinésie sans dépenser d'emplacement de sort.",
+          "application": "active"
+        }
+      }
+    }
+  },
+  "_meta": {
+    "levels": 20,
+    "sourcePath": "docs/characteres/classes/fighter.json",
+    "extractedFrom": "https://www.aidedd.org/regles-24/classes/guerrier/",
+    "extractedAt": "2026-08-13",
+    "subclassCount": 4,
+    "featureCount": 18,
+    "note": "Porteur de l'esprit (Psi Warrior) partiellement extrait : détails non OGL sur AideDD"
+  }
+}

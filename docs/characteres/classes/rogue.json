@@ -1,0 +1,409 @@
+{
+  "key": "rogue",
+  "name": "Roublard",
+  "source": "PHB 2024",
+  "url": "https://www.aidedd.org/regles-24/classes/roublard/",
+  "primaryAbility": ["dexterity"],
+  "hitDie": "d8",
+  "savingThrows": ["dexterity", "intelligence"],
+  "skillProficiencies": {
+    "count": 4,
+    "options": [
+      "acrobatics",
+      "athletics",
+      "deception",
+      "insight",
+      "intimidation",
+      "investigation",
+      "perception",
+      "persuasion",
+      "sleightOfHand",
+      "stealth"
+    ]
+  },
+  "weaponProficiencies": ["simple", "martialFinesseOrLight"],
+  "armorTraining": ["light"],
+  "toolProficiencies": ["thievesTools"],
+  "startingEquipment": {
+    "options": [
+      {
+        "id": "A",
+        "items": "Armure de cuir, 2 dagues, épée courte, arc court, 20 flèches, carquois, outils de voleur, sac de cambrioleur, 8 po"
+      },
+      {
+        "id": "B",
+        "items": "100 po"
+      }
+    ]
+  },
+  "multiclass": {
+    "prerequisites": [
+      { "ability": "dexterity", "min": 13 }
+    ],
+    "gains": {
+      "hitDie": "d8",
+      "weaponProficiencies": [],
+      "armorTraining": ["light"],
+      "skillProficiencies": { "count": 1, "fromClassList": true },
+      "toolProficiencies": ["thievesTools"],
+      "spellSlotContribution": null
+    }
+  },
+  "spellcasting": null,
+  "sneakAttackDice": {
+    "1": "1d6",
+    "2": "1d6",
+    "3": "2d6",
+    "4": "2d6",
+    "5": "3d6",
+    "6": "3d6",
+    "7": "4d6",
+    "8": "4d6",
+    "9": "5d6",
+    "10": "5d6",
+    "11": "6d6",
+    "12": "6d6",
+    "13": "7d6",
+    "14": "7d6",
+    "15": "8d6",
+    "16": "8d6",
+    "17": "9d6",
+    "18": "9d6",
+    "19": "10d6",
+    "20": "10d6"
+  },
+  "progression": [
+    { "level": 1, "proficiencyBonus": 2, "features": ["expertise", "sneakAttack", "thievesCant", "weaponMastery"], "sneakAttackDice": "1d6" },
+    { "level": 2, "proficiencyBonus": 2, "features": ["cunningAction"], "sneakAttackDice": "1d6" },
+    { "level": 3, "proficiencyBonus": 2, "features": ["rogueSubclass", "steadyAim"], "sneakAttackDice": "2d6" },
+    { "level": 4, "proficiencyBonus": 2, "features": ["abilityScoreImprovement"], "sneakAttackDice": "2d6" },
+    { "level": 5, "proficiencyBonus": 3, "features": ["cunningStrike", "uncannyDodge"], "sneakAttackDice": "3d6" },
+    { "level": 6, "proficiencyBonus": 3, "features": ["expertise2"], "sneakAttackDice": "3d6" },
+    { "level": 7, "proficiencyBonus": 3, "features": ["evasion", "reliableTalent"], "sneakAttackDice": "4d6" },
+    { "level": 8, "proficiencyBonus": 3, "features": ["abilityScoreImprovement"], "sneakAttackDice": "4d6" },
+    { "level": 9, "proficiencyBonus": 4, "features": ["subclassFeature"], "sneakAttackDice": "5d6" },
+    { "level": 10, "proficiencyBonus": 4, "features": ["abilityScoreImprovement"], "sneakAttackDice": "5d6" },
+    { "level": 11, "proficiencyBonus": 4, "features": ["improvedCunningStrike"], "sneakAttackDice": "6d6" },
+    { "level": 12, "proficiencyBonus": 4, "features": ["abilityScoreImprovement"], "sneakAttackDice": "6d6" },
+    { "level": 13, "proficiencyBonus": 5, "features": ["subclassFeature"], "sneakAttackDice": "7d6" },
+    { "level": 14, "proficiencyBonus": 5, "features": ["deviousStrikes"], "sneakAttackDice": "7d6" },
+    { "level": 15, "proficiencyBonus": 5, "features": ["slipperyMind"], "sneakAttackDice": "8d6" },
+    { "level": 16, "proficiencyBonus": 5, "features": ["abilityScoreImprovement"], "sneakAttackDice": "8d6" },
+    { "level": 17, "proficiencyBonus": 6, "features": ["subclassFeature"], "sneakAttackDice": "9d6" },
+    { "level": 18, "proficiencyBonus": 6, "features": ["elusive"], "sneakAttackDice": "9d6" },
+    { "level": 19, "proficiencyBonus": 6, "features": ["epicBoon"], "sneakAttackDice": "10d6" },
+    { "level": 20, "proficiencyBonus": 6, "features": ["strokeOfLuck"], "sneakAttackDice": "10d6" }
+  ],
+  "features": {
+    "expertise": {
+      "name": "Expertise",
+      "level": 1,
+      "description": "Vous gagnez l'Expertise dans deux de vos maîtrises de compétences de votre choix. Escamotage et Discrétion sont recommandées si vous les maîtrisez.",
+      "application": "passive",
+      "grants": { "expertise": 2 }
+    },
+    "sneakAttack": {
+      "name": "Attaque sournoise",
+      "level": 1,
+      "description": "Une fois par tour, vous pouvez infliger 1d6 points de dégâts supplémentaires à une créature touchée avec un jet d'attaque si vous avez un Avantage au jet et que l'attaque utilise une arme avec la propriété Finesse ou À distance. Le type des dégâts supplémentaires est identique à celui de l'arme. Vous n'avez pas besoin d'un Avantage au jet d'attaque si au moins un de vos alliés se trouve dans un rayon de 1,50 mètre de la cible et que cet allié ne subit pas l'état Incapable d'agir, et si vous n'avez pas un Désavantage au jet d'attaque. Les dégâts supplémentaires augmentent à mesure que vous gagnez des niveaux de roublard.",
+      "application": "passive",
+      "grants": { "sneakAttack": "1d6" },
+      "scaling": { "formula": "sneakAttackDice" }
+    },
+    "thievesCant": {
+      "name": "Argot des voleurs",
+      "level": 1,
+      "description": "Vous avez appris plusieurs langues dans les communautés où vous avez exercé vos talents de roublard. Vous connaissez l'argot des voleurs et une autre langue de votre choix, que vous choisissez dans les tables de langues.",
+      "application": "passive",
+      "grants": { "languages": ["thievesCant", "anyOne"] }
+    },
+    "weaponMastery": {
+      "name": "Bottes d'arme",
+      "level": 1,
+      "description": "Votre entraînement aux armes vous permet d'utiliser la propriété Botte de deux types d'armes de votre choix que vous maîtrisez, comme la dague et l'arc court. Lorsque vous terminez un Repos long, vous pouvez changer de type d'armes.",
+      "application": "passive",
+      "grants": { "weaponMasteries": 2 }
+    },
+    "cunningAction": {
+      "name": "Ruse",
+      "level": 2,
+      "description": "Votre vivacité d'esprit et votre agilité vous permettent de vous déplacer et d'agir rapidement. À votre tour, vous pouvez prendre l'une des actions suivantes en tant qu'action Bonus : Pointe, Désengagement ou Furtivité.",
+      "application": "active",
+      "action": "bonusAction",
+      "grants": { "cunningActionOptions": ["dash", "disengage", "hide"] }
+    },
+    "rogueSubclass": {
+      "name": "Sous-classe de roublard",
+      "level": 3,
+      "description": "Vous obtenez la sous-classe de roublard de votre choix. Les sous-classes Arnaqueur arcanique, Assassin, Voleur et Âme acérée sont disponibles.",
+      "application": "grant",
+      "grants": { "subclassChoice": ["arcaneTrickster", "assassin", "thief", "soulknife"] }
+    },
+    "steadyAim": {
+      "name": "Visée appliquée",
+      "level": 3,
+      "description": "Par une action Bonus, vous obtenez un Avantage pour votre prochain jet d'attaque du tour en cours. Vous ne pouvez utiliser cette capacité que si vous ne vous êtes pas déplacé pendant ce tour, et après l'avoir utilisée votre Vitesse est de 0 jusqu'à la fin du tour en cours.",
+      "application": "active",
+      "action": "bonusAction",
+      "grants": { "advantageOnNextAttack": true },
+      "restriction": "hasNotMovedThisTurn"
+    },
+    "abilityScoreImprovement": {
+      "name": "Amélioration de caractéristique",
+      "level": 4,
+      "description": "Vous obtenez le don Amélioration de caractéristiques ou un autre don de votre choix pour lequel vous êtes qualifié.",
+      "application": "grant",
+      "grants": { "feat": true },
+      "levels": [4, 8, 10, 12, 16]
+    },
+    "cunningStrike": {
+      "name": "Frappe malicieuse",
+      "level": 5,
+      "description": "Vous avez développé des astuces pour utiliser votre Attaque sournoise. Lorsque vous infligez des dégâts avec votre Attaque sournoise, vous pouvez ajouter l'un des effets de Frappe malicieuse suivants. Chaque effet a un coût en dé, qui correspond au nombre de dés de dégâts d'Attaque sournoise que vous devez sacrifier pour obtenir l'effet. Retirez-le ou les dés avant de lancer les dégâts, et l'effet se produit immédiatement après avoir appliqué les dégâts de l'attaque. Le DD est égal à 8 + modificateur de Dextérité + bonus de maîtrise.",
+      "application": "active",
+      "options": {
+        "poison": { "name": "Poison", "cost": "1d6", "requires": "poisonersKit", "effect": "La cible doit réussir un JS de Constitution ou subir l'état Empoisonné pendant 1 minute. Nouveau JS à la fin de chaque tour pour mettre fin à l'effet." },
+        "trip": { "name": "Croc-en-jambe", "cost": "1d6", "effect": "Si la cible est de taille G ou inférieure, elle doit réussir un JS de Dextérité ou subir l'état À terre." },
+        "withdraw": { "name": "Repli", "cost": "1d6", "effect": "Immédiatement après l'attaque, vous pouvez vous déplacer jusqu'à la moitié de votre Vitesse sans provoquer d'attaques d'Opportunité." }
+      }
+    },
+    "uncannyDodge": {
+      "name": "Esquive instinctive",
+      "level": 5,
+      "description": "Lorsqu'un attaquant que vous pouvez voir vous touche avec un jet d'attaque, vous pouvez utiliser votre Réaction pour réduire de moitié les dégâts de l'attaque contre vous (arrondir à l'inférieur).",
+      "application": "reactive",
+      "trigger": { "event": "onHit", "timing": "after" },
+      "effect": { "damageReduction": "half" }
+    },
+    "expertise2": {
+      "name": "Expertise (niveau 6)",
+      "level": 6,
+      "description": "Vous gagnez l'Expertise dans deux autres de vos maîtrises de compétences de votre choix.",
+      "application": "passive",
+      "grants": { "expertise": 2 }
+    },
+    "evasion": {
+      "name": "Esquive totale",
+      "level": 7,
+      "description": "Lorsque vous êtes soumis à un effet qui vous permet d'effectuer un jet de sauvegarde de Dextérité pour ne subir que la moitié des dégâts, vous ne subissez aucun dégât en cas de réussite et seulement la moitié des dégâts en cas d'échec. Vous ne pouvez pas utiliser cette capacité si vous subissez l'état Incapable d'agir.",
+      "application": "passive"
+    },
+    "reliableTalent": {
+      "name": "Savoir-faire",
+      "level": 7,
+      "description": "Chaque fois que vous effectuez un jet de caractéristique qui utilise une compétence ou un outil que vous maîtrisez, vous pouvez traiter un jet de d20 de 9 ou moins comme un 10.",
+      "application": "passive",
+      "effect": { "minimumD20Roll": 10, "condition": "proficientSkillOrTool" }
+    },
+    "improvedCunningStrike": {
+      "name": "Frappe malicieuse améliorée",
+      "level": 11,
+      "description": "Vous pouvez utiliser jusqu'à deux effets de Frappe malicieuse lorsque vous infligez des dégâts d'Attaque sournoise, en acquittant le coût en dés pour chaque effet.",
+      "application": "passive",
+      "grants": { "cunningStrikeMaxEffects": 2 }
+    },
+    "deviousStrikes": {
+      "name": "Coups vicieux",
+      "level": 14,
+      "description": "Vous avez appris de nouveaux coups bas pour agrémenter votre Attaque sournoise. Les effets ci-après figurent désormais dans vos options de Frappe malicieuse : Assommer (coût 6d6, JS Constitution → Inconscient 1 min), Aveugler (coût 3d6, JS Dextérité → Aveuglé jusqu'à fin du prochain tour), Hébéter (coût 2d6, JS Constitution → une seule action au prochain tour).",
+      "application": "passive",
+      "grants": {
+        "cunningStrikeOptions": [
+          { "name": "Assommer", "cost": "6d6", "savingThrow": "constitution", "effect": "Inconscient 1 minute ou jusqu'à dégâts, nouveau JS par tour" },
+          { "name": "Aveugler", "cost": "3d6", "savingThrow": "dexterity", "effect": "Aveuglé jusqu'à la fin de son tour suivant" },
+          { "name": "Hébéter", "cost": "2d6", "savingThrow": "constitution", "effect": "Au prochain tour : déplacement OU action OU action Bonus" }
+        ]
+      }
+    },
+    "slipperyMind": {
+      "name": "Esprit fuyant",
+      "level": 15,
+      "description": "Votre esprit retors est particulièrement difficile à contrôler. Vous recevez la maîtrise des jets de sauvegarde de Sagesse et de Charisme.",
+      "application": "passive",
+      "grants": { "savingThrowProficiencies": ["wisdom", "charisma"] }
+    },
+    "elusive": {
+      "name": "Insaisissable",
+      "level": 18,
+      "description": "Vous êtes tellement agile que vos assaillants ont rarement le dessus sur vous. Aucun jet d'attaque ne peut avoir l'Avantage contre vous si vous ne subissez pas l'état Incapable d'agir.",
+      "application": "passive",
+      "effect": { "negateAdvantageAgainstSelf": true, "condition": "notIncapacitated" }
+    },
+    "epicBoon": {
+      "name": "Faveur épique",
+      "level": 19,
+      "description": "Vous recevez un don de Faveur épique ou un autre don de votre choix pour lequel vous remplissez les conditions. Faveur de l'esprit nocturne est recommandé.",
+      "application": "grant",
+      "grants": { "epicBoon": true }
+    },
+    "strokeOfLuck": {
+      "name": "Coup de chance",
+      "level": 20,
+      "description": "Vous avez le chic pour réussir quand l'enjeu est de taille. Si vous ratez un jet de d20, vous pouvez transformer le résultat du jet en 20. Une fois que vous avez utilisé cette capacité, vous devez terminer un Repos court ou long pour pouvoir y recourir de nouveau.",
+      "application": "reactive",
+      "trigger": { "event": "onD20Miss" },
+      "resource": { "key": "strokeOfLuck", "max": 1, "recovery": "shortRest" },
+      "effect": { "replaceRoll": 20 }
+    }
+  },
+  "subclasses": {
+    "arcaneTrickster": {
+      "key": "arcaneTrickster",
+      "name": "Arnaqueur arcanique",
+      "description": "Certains roublards perfectionnent leurs compétences exceptionnelles en discrétion et en agilité grâce à la magie, apprenant des tours de passe-passe qui les aideront dans leur métier. Certains arnaqueurs arcaniques utilisent leurs talents comme pickpockets et cambrioleurs, tandis que d'autres sont des farceurs.",
+      "spellcasting": {
+        "ability": "intelligence",
+        "type": "third",
+        "spellList": "wizard",
+        "multiclassSlotContribution": 0.33,
+        "mandatoryCantrip": "mageHand",
+        "cantripsKnown": { "3": 3, "10": 4 },
+        "spellsPreparedByLevel": {
+          "3": 3, "4": 4, "5": 4, "6": 4, "7": 5, "8": 6, "9": 6,
+          "10": 7, "11": 8, "12": 8, "13": 9, "14": 10, "15": 10,
+          "16": 11, "17": 11, "18": 11, "19": 12, "20": 13
+        },
+        "slotsByLevel": {
+          "3":  { "1": 2, "2": 0, "3": 0, "4": 0 },
+          "4":  { "1": 3, "2": 0, "3": 0, "4": 0 },
+          "5":  { "1": 3, "2": 0, "3": 0, "4": 0 },
+          "6":  { "1": 3, "2": 0, "3": 0, "4": 0 },
+          "7":  { "1": 4, "2": 2, "3": 0, "4": 0 },
+          "8":  { "1": 4, "2": 2, "3": 0, "4": 0 },
+          "9":  { "1": 4, "2": 2, "3": 0, "4": 0 },
+          "10": { "1": 4, "2": 3, "3": 0, "4": 0 },
+          "11": { "1": 4, "2": 3, "3": 0, "4": 0 },
+          "12": { "1": 4, "2": 3, "3": 0, "4": 0 },
+          "13": { "1": 4, "2": 3, "3": 2, "4": 0 },
+          "14": { "1": 4, "2": 3, "3": 2, "4": 0 },
+          "15": { "1": 4, "2": 3, "3": 2, "4": 0 },
+          "16": { "1": 4, "2": 3, "3": 3, "4": 0 },
+          "17": { "1": 4, "2": 3, "3": 3, "4": 0 },
+          "18": { "1": 4, "2": 3, "3": 3, "4": 0 },
+          "19": { "1": 4, "2": 3, "3": 3, "4": 1 },
+          "20": { "1": 4, "2": 3, "3": 3, "4": 1 }
+        }
+      },
+      "features": {
+        "spellcasting": {
+          "name": "Sorts",
+          "level": 3,
+          "description": "Vous avez appris à lancer des sorts. Vous connaissez main de mage et deux autres sorts mineurs de magicien. L'Intelligence est votre caractéristique d'incantation. Vous pouvez utiliser un focaliseur arcanique. Vous préparez des sorts de magicien selon la table de progression de l'Arnaqueur arcanique.",
+          "application": "grant",
+          "grants": { "spellcasting": true }
+        },
+        "mageHandLegerdemain": {
+          "name": "Passe-passe à distance",
+          "level": 3,
+          "description": "Lorsque vous lancez main de mage, vous pouvez le faire par une action Bonus et rendre la main spectrale invisible. Vous pouvez contrôler cette main par une action Bonus et, par son biais, effectuer des jets de Dextérité (Escamotage).",
+          "application": "passive",
+          "grants": { "improvedMageHand": true }
+        },
+        "magicalAmbush": {
+          "name": "Embuscade magique",
+          "level": 9,
+          "description": "Si vous avez l'état Invisible lorsque vous lancez un sort sur une créature, celle-ci subit un Désavantage à tous ses jets de sauvegarde contre ce sort durant le même tour.",
+          "application": "passive"
+        }
+      }
+    },
+    "assassin": {
+      "key": "assassin",
+      "name": "Assassin",
+      "description": "L'entraînement d'un assassin se concentre sur la discrétion, le poison et le déguisement pour éliminer ses ennemis avec une redoutable efficacité.",
+      "features": {
+        "assassinate": {
+          "name": "Assassinat",
+          "level": 3,
+          "description": "Vous maîtrisez les embuscades. Avantage aux jets d'Initiative. Lors du premier round de chaque combat, Avantage aux jets d'attaque contre toute créature qui n'a pas encore joué. Si votre Attaque sournoise touche une cible pendant ce round, celle-ci subit des dégâts supplémentaires égaux à votre niveau de roublard.",
+          "application": "passive",
+          "grants": {
+            "advantageOnInitiative": true,
+            "firstRoundAdvantage": true,
+            "firstRoundSneakAttackBonus": { "formula": "rogueLevel" }
+          }
+        },
+        "assassinTools": {
+          "name": "Outils d'assassin",
+          "level": 3,
+          "description": "Vous obtenez un kit de déguisement et un kit d'empoisonneur, et vous les maîtrisez.",
+          "application": "grant",
+          "grants": { "toolProficiencies": ["disguiseKit", "poisonersKit"] }
+        },
+        "infiltrationExpertise": {
+          "name": "Expertise en infiltration",
+          "level": 9,
+          "description": "Mimétisme magistral : vous pouvez parfaitement imiter la voix et l'écriture d'une personne si vous avez passé au moins une heure à l'étudier. Visée mobile : votre Vitesse n'est pas réduite à 0 par Visée appliquée.",
+          "application": "passive",
+          "grants": {
+            "voiceAndWritingMimicry": true,
+            "steadyAimNoSpeedPenalty": true
+          }
+        }
+      }
+    },
+    "thief": {
+      "key": "thief",
+      "name": "Voleur",
+      "description": "À la fois cambrioleur, chasseur de trésors et explorateur, vous êtes l'aventurier par excellence. En plus d'améliorer votre agilité et votre furtivité, vous gagnez des compétences utiles pour fouiller les ruines et tirer le meilleur parti des objets magiques que vous y trouvez.",
+      "features": {
+        "fastHands": {
+          "name": "Mains lestes",
+          "level": 3,
+          "description": "Par une action Bonus, vous pouvez effectuer un jet de Dextérité (Escamotage) pour crocheter une serrure, désamorcer un piège ou faire les poches. Vous pouvez aussi prendre l'action Utilisation ou l'action Magie pour utiliser un objet magique qui nécessite cette action.",
+          "application": "active",
+          "action": "bonusAction",
+          "grants": { "fastHandsOptions": ["sleightOfHand", "useObject", "magicItemUse"] }
+        },
+        "secondStoryWork": {
+          "name": "Monte-en-l'air",
+          "level": 3,
+          "description": "Escaladeur : vous gagnez une Vitesse d'escalade égale à votre Vitesse. Sauteur : vous pouvez déterminer votre distance de saut en utilisant votre Dextérité plutôt que votre Force.",
+          "application": "passive",
+          "grants": {
+            "climbSpeed": "equalsWalkSpeed",
+            "jumpUsesDexterity": true
+          }
+        },
+        "supremeSneak": {
+          "name": "Furtivité suprême",
+          "level": 9,
+          "description": "Vous obtenez l'option de Frappe malicieuse Attaque furtive (coût 1d6). Si vous avez l'état Invisible en conséquence de l'action Furtivité, cette attaque ne met pas fin à cet état si vous terminez le tour derrière un Abri important (3/4) ou un Abri total.",
+          "application": "passive",
+          "grants": {
+            "cunningStrikeOption": {
+              "name": "Attaque furtive",
+              "cost": "1d6",
+              "effect": "L'état Invisible de Furtivité n'est pas rompu si vous terminez derrière un Abri 3/4 ou total"
+            }
+          }
+        },
+        "useMagicDevice": {
+          "name": "Utilisation d'objets magiques",
+          "level": 13,
+          "description": "Charges : sur 1d6 = 6, utilisez une propriété à charges sans dépenser. Lien : maximum 4 objets liés. Parchemins : vous pouvez utiliser n'importe quel parchemin de sort avec l'Intelligence. Sorts mineurs/niveau 1 : automatique. Niveau supérieur : jet d'Intelligence (Arcanes) DD 10 + niveau du sort.",
+          "application": "passive",
+          "grants": {
+            "chargeConservation": "1d6On6",
+            "maxAttunementSlots": 4,
+            "scrollUse": { "ability": "intelligence", "autoSuccessUpTo": 1 }
+          }
+        },
+        "thiefsReflexes": {
+          "name": "Réflexes de voleur",
+          "level": 17,
+          "description": "Vous pouvez jouer deux tours lors du premier round de chaque combat : votre premier tour à votre rang d'Initiative normal et votre deuxième tour à ce même rang moins 10.",
+          "application": "passive",
+          "grants": { "twoTurnsFirstRound": true, "secondTurnInitiativeOffset": -10 }
+        }
+      }
+    },
+    "soulknife": {
+      "key": "soulknife",
+      "name": "Âme acérée",
+      "description": "Voir le Manuel des Joueurs.",
+      "note": "Détails non disponibles sur AideDD — voir le PHB 2024 / Tasha's Cauldron of Everything",
+      "features": {}
+    }
+  }
+}
