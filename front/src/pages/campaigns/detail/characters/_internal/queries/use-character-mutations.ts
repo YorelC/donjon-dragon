@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import type { StartCharacterDto } from "@donjon-dragon/shared";
 import { api } from "@/shared/api/api";
 import { API_ROUTES } from "@/shared/constants/api-routes";
-import { campaignCharactersKey } from "./use-campaign-characters";
+import { campaignCharactersKey } from "@/shared/queries/use-campaign-characters";
 
 function refreshCharacters(queryClient: QueryClient, campaignId: string) {
   queryClient.invalidateQueries({ queryKey: campaignCharactersKey(campaignId) });

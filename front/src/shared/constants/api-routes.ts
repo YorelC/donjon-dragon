@@ -51,6 +51,10 @@ export const API_ROUTES = {
     selfDemote: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/owner/demote`,
   },
+  dnd: {
+    catalog: () => `/api/dnd/catalog`,
+    spells: (classKey: string) => `/api/dnd/spells/${encodeURIComponent(classKey)}`,
+  },
   characters: {
     list: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,

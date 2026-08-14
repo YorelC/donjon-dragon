@@ -4,6 +4,8 @@ export const ROUTES = {
   campaignDetail: "/campaigns/:campaignId",
   campaignDetailUsers: "/campaigns/:campaignId/users",
   campaignDetailCharacters: "/campaigns/:campaignId/characters",
+  campaignCharacterCreate: "/campaigns/:campaignId/characters/:characterId/create",
+  campaignCharacterSheet: "/campaigns/:campaignId/characters/:characterId/sheet",
   profile: "/profile",
   profileFriends: "/profile/friends",
   profileSettings: "/profile/parametres",
@@ -25,3 +27,9 @@ export const toCampaignDetailUsers = (campaignId: string): string =>
 
 export const toCampaignDetailCharacters = (campaignId: string): string =>
   `${toCampaignDetail(campaignId)}/characters`;
+
+export const toCharacterCreate = (campaignId: string, characterId: string): string =>
+  `${toCampaignDetailCharacters(campaignId)}/${encodeURIComponent(characterId)}/create`;
+
+export const toCharacterSheet = (campaignId: string, characterId: string): string =>
+  `${toCampaignDetailCharacters(campaignId)}/${encodeURIComponent(characterId)}/sheet`;

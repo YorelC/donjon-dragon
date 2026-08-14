@@ -1,6 +1,8 @@
+import { Link } from "react-router-dom";
 import type { Character } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
+import { toCharacterCreate, toCharacterSheet } from "@/shared/constants/routes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
 import { CharacterAssignContainer } from "../containers/character-assign.container";
 import type { CharacterFormState } from "../hooks/use-character-form";
@@ -90,8 +92,9 @@ function RowActions(props: CharacterRowProps) {
 
   return (
     <div className="flex gap-2">
+      <CreationLink character={character} campaignId={campaignId} />
       <Button variant="outline" size="sm" onClick={() => form.onOpen(character)}>
-        Modifier
+        Renommer
       </Button>
       <Button variant="destructive" size="sm" onClick={() => onDelete(character.id)}>
         Supprimer
@@ -104,6 +107,26 @@ function RowActions(props: CharacterRowProps) {
         />
       ) : null}
     </div>
+  );
+}
+
+/** Un brouillon se termine, un personnage prêt se consulte. */
+function CreationLink({
+  character,
+  campaignId,
+}: {
+  character: Character;
+  campaignId: string;
+}) {
+  const draft = character.status === "draft";
+  const target = draft
+    ? toCharacterCreate(campaignId, character.id)
+    : toCharacterSheet(campaignId, character.id);
+
+  return (
+    <Button asChild size="sm" variant={draft ? "default" : "outline"}>
+      <Link to={target}>{draft ? "Terminer la création" : "Voir la fiche"}</Link>
+    </Button>
   );
 }
 

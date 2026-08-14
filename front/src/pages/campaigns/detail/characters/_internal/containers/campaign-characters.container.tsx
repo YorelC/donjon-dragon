@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useCampaignDetail } from "@/shared/queries/use-campaign-detail";
-import { useCampaignCharacters } from "../queries/use-campaign-characters";
+import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
 import { useCharacterActions } from "../hooks/use-character-actions";
 import { useCharacterForm } from "../hooks/use-character-form";
 import { useCharacterViewer } from "../hooks/use-character-viewer";

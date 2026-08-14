@@ -6,6 +6,8 @@ import { CampaignsPage } from "./pages/campaigns/campaigns.page";
 import { CampaignDetailPage } from "./pages/campaigns/detail/detail.page";
 import { CampaignUsersPage } from "./pages/campaigns/detail/users/users.page";
 import { CampaignCharactersPage } from "./pages/campaigns/detail/characters/characters.page";
+import { CharacterCreatePage } from "./pages/campaigns/detail/characters/create/create.page";
+import { CharacterSheetPage } from "./pages/campaigns/detail/characters/sheet/sheet.page";
 import { FriendsPage } from "./pages/profile/friends/friends.page";
 import { RegisterPage } from "./pages/register/register.page";
 import { LoginPage } from "./pages/login/login.page";
@@ -67,6 +69,8 @@ function CampaignDetailRoutes() {
         path={ROUTES.campaignDetailCharacters}
         element={<CampaignCharactersPage />}
       />
+      <Route path={ROUTES.campaignCharacterCreate} element={<CharacterCreatePage />} />
+      <Route path={ROUTES.campaignCharacterSheet} element={<CharacterSheetPage />} />
     </Route>
   );
 }
