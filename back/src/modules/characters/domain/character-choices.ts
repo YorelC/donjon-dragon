@@ -81,6 +81,7 @@ export class CharacterChoices {
   }
 }
 
+/** Les champs de type tableau sont recopiés ; les scalaires suivent par le spread. */
 function copyChoice(choice: CharacterChoice): CharacterChoice {
   return {
     ...choice,

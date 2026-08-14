@@ -1,9 +1,10 @@
-import type { AbilityMethod, AbilityRoll } from "@donjon-dragon/shared";
+import type { AbilityMethod, AbilityRoll, CatalogBackground } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
 import { Separator } from "@/shared/components/atoms/separator";
 import { availableScores, type WizardDraft } from "../types/wizard-draft";
 import { AbilityAssignmentView } from "./ability-assignment.view";
+import { BackgroundBonusView } from "./background-bonus.view";
 import { PointBuyView } from "./point-buy.view";
 
 const METHODS: { key: AbilityMethod; label: string; hint: string }[] = [
@@ -28,6 +29,8 @@ export interface AbilitiesStep {
   roll: AbilityRoll | null;
   isRolling: boolean;
   onRoll: () => void;
+  /** L'historique choisi : ses trois caractéristiques reçoivent les bonus. */
+  background: CatalogBackground | null;
 }
 
 interface AbilitiesStepViewProps {
@@ -36,12 +39,27 @@ interface AbilitiesStepViewProps {
   onChange: (patch: Partial<WizardDraft>) => void;
 }
 
+/**
+ * Les caractéristiques, puis les bonus de l'historique posés par-dessus. Les
+ * deux vont ensemble : séparer la valeur de base de son bonus obligeait à
+ * naviguer pour voir le résultat.
+ */
 export function AbilitiesStepView(props: AbilitiesStepViewProps) {
   return (
     <div className="grid gap-4">
       <MethodPicker {...props} />
       <Separator />
       <MethodContent {...props} />
+      {props.step.background ? (
+        <>
+          <Separator />
+          <BackgroundBonusView
+            background={props.step.background}
+            draft={props.draft}
+            onChange={props.onChange}
+          />
+        </>
+      ) : null}
     </div>
   );
 }

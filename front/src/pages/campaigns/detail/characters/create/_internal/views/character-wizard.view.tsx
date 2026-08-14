@@ -2,21 +2,21 @@ import type { ReactElement } from "react";
 import type { ComputedCharacter, DndCatalog } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Card, CardContent } from "@/shared/components/atoms/card";
-import { CharacterSheetView } from "@/shared/components/character/character-sheet.view";
-import {
-  STEP_LABELS,
-  type WizardState,
-  type WizardStep,
-} from "../hooks/use-character-wizard";
+import type { WizardState } from "../hooks/use-character-wizard";
+import { stepLabel, type WizardStep } from "../types/wizard-steps";
 import type { AbilitiesStep } from "./abilities-step.view";
 import { AbilitiesStepView } from "./abilities-step.view";
 import { BackgroundStepView } from "./background-step.view";
+import { ChoiceStepView } from "./choice-step.view";
 import { ClassStepView } from "./class-step.view";
 import { EquipmentStepView } from "./equipment-step.view";
 import { FeatsStepView } from "./feats-step.view";
+import { ClassSkillsStepView, ExpertiseStepView } from "./skill-choice-step.view";
 import { SpeciesStepView } from "./species-step.view";
 import type { SpellsStep } from "./spells-step.view";
-import { SpellsStepView } from "./spells-step.view";
+import { CantripsStepView, SpellsStepView } from "./spells-step.view";
+import { WizardSummaryView } from "./wizard-summary.view";
+import { WizardTrailView } from "./wizard-trail.view";
 
 export interface WizardScreen {
   catalog: DndCatalog;
@@ -30,42 +30,35 @@ export interface WizardScreen {
   onFinish: () => void;
 }
 
+/**
+ * Trois colonnes : le fil conducteur, les choix, le résumé. Sous `lg` elles
+ * s'empilent — le résumé passe en dernier, il accompagne sans commander.
+ */
 export function CharacterWizardView({ screen }: { screen: WizardScreen }) {
   return (
-    <div className="grid gap-4">
-      <StepTabs wizard={screen.wizard} />
-      <Card>
-        <CardContent className="pt-6">
-          <StepContent screen={screen} />
-        </CardContent>
-      </Card>
-      <WizardFooter screen={screen} />
+    <div className="grid gap-4 lg:grid-cols-[15rem_1fr_18rem] lg:items-start">
+      <WizardTrailView wizard={screen.wizard} />
+      <div className="grid gap-4">
+        <Card>
+          <CardContent className="pt-6">
+            <StepHeading step={screen.wizard.step} />
+            <StepContent screen={screen} />
+          </CardContent>
+        </Card>
+        <WizardFooter screen={screen} />
+      </div>
+      <WizardSummaryView
+        catalog={screen.catalog}
+        draft={screen.wizard.draft}
+        preview={screen.preview}
+        characterName={screen.characterName}
+      />
     </div>
   );
 }
 
-/**
- * Un fil d'Ariane, pas des onglets : on ne saute pas une étape non validée, mais
- * on revient librement sur celles qu'on a déjà passées.
- */
-function StepTabs({ wizard }: { wizard: WizardState }) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      {wizard.steps.map((step, index) => (
-        <Button
-          key={step}
-          type="button"
-          size="sm"
-          disabled={!wizard.isReachable(step)}
-          variant={step === wizard.step ? "default" : "outline"}
-          onClick={() => wizard.goTo(step)}
-        >
-          {index + 1}. {STEP_LABELS[step]}
-          {wizard.validity[step] && step !== wizard.step ? " ✓" : ""}
-        </Button>
-      ))}
-    </div>
-  );
+function StepHeading({ step }: { step: WizardStep }) {
+  return <h2 className="section-title mb-4 text-lg">{stepLabel(step)}</h2>;
 }
 
 /**
@@ -75,39 +68,78 @@ function StepTabs({ wizard }: { wizard: WizardState }) {
 function StepContent({ screen }: { screen: WizardScreen }) {
   const { catalog, wizard } = screen;
   const shared = { catalog, draft: wizard.draft, onChange: wizard.update };
+  const spells = { step: screen.spells, draft: wizard.draft, onChange: wizard.update };
 
-  const screens: Record<WizardStep, () => ReactElement> = {
+  const screens: Record<WizardStep, () => ReactElement | null> = {
     species: () => <SpeciesStepView {...shared} />,
+    lineage: () => <LineageStep screen={screen} />,
     class: () => <ClassStepView {...shared} />,
+    classSkills: () => <ClassSkillsStepView {...shared} />,
+    expertise: () => <ExpertiseStepView {...shared} />,
+    fightingStyle: () => <ClassChoiceStep screen={screen} choiceKey="fightingStyle" />,
+    classOrder: () => <ClassChoiceStep screen={screen} choiceKey="order" />,
     background: () => <BackgroundStepView {...shared} />,
     feats: () => <FeatsStepView {...shared} />,
-    equipment: () => <EquipmentStepView {...shared} />,
     abilities: () => (
       <AbilitiesStepView step={screen.abilities} draft={shared.draft} onChange={shared.onChange} />
     ),
-    spells: () => (
-      <SpellsStepView step={screen.spells} draft={shared.draft} onChange={shared.onChange} />
-    ),
-    summary: () => <SummaryStep screen={screen} />,
+    cantrips: () => <CantripsStepView {...spells} />,
+    spells: () => <SpellsStepView {...spells} />,
+    equipment: () => <EquipmentStepView {...shared} />,
   };
 
   return screens[wizard.step]();
 }
 
-function SummaryStep({ screen }: { screen: WizardScreen }) {
-  if (!screen.preview) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Choisissez une espèce, une classe et un historique pour voir la fiche.
-      </p>
-    );
-  }
+function LineageStep({ screen }: { screen: WizardScreen }) {
+  const { catalog, wizard } = screen;
+  const lineage = catalog.species.find(
+    (entry) => entry.key === wizard.draft.speciesKey,
+  )?.lineage;
+  if (!lineage) return null;
 
   return (
-    <CharacterSheetView
-      name={screen.characterName}
-      sheet={screen.preview}
-      skillLabels={screen.catalog.skillLabels}
+    <ChoiceStepView
+      title={lineage.label}
+      description="Ce choix vous confère des pouvoirs surnaturels propres à votre lignée."
+      options={lineage.options}
+      selectedKey={wizard.draft.lineageKey}
+      onSelect={(lineageKey) => wizard.update({ lineageKey })}
+    />
+  );
+}
+
+interface ClassChoiceStepProps {
+  screen: WizardScreen;
+  choiceKey: "fightingStyle" | "order";
+}
+
+/** Style de combat et Ordre partagent la même forme : un choix parmi une liste. */
+function ClassChoiceStep({ screen, choiceKey }: ClassChoiceStepProps) {
+  const { catalog, wizard } = screen;
+  const choices = catalog.classes.find((entry) => entry.key === wizard.draft.classKey)
+    ?.level1Choices;
+  const choice = choices?.find((entry) =>
+    choiceKey === "fightingStyle"
+      ? entry.key === "fightingStyle"
+      : entry.key !== "fightingStyle",
+  );
+  if (!choice) return null;
+
+  const selected =
+    choiceKey === "fightingStyle" ? wizard.draft.fightingStyle : wizard.draft.classOrder;
+
+  return (
+    <ChoiceStepView
+      title={choice.name}
+      description={choice.description}
+      options={choice.options}
+      selectedKey={selected}
+      onSelect={(key) =>
+        wizard.update(
+          choiceKey === "fightingStyle" ? { fightingStyle: key } : { classOrder: key },
+        )
+      }
     />
   );
 }
@@ -120,9 +152,13 @@ function WizardFooter({ screen }: { screen: WizardScreen }) {
       <Button type="button" variant="outline" onClick={wizard.previous}>
         Précédent
       </Button>
-      {wizard.step === "summary" ? (
-        <Button type="button" disabled={!screen.canFinish || screen.isFinishing} onClick={screen.onFinish}>
-          {screen.isFinishing ? "Enregistrement..." : "Terminer le personnage"}
+      {wizard.isLastStep ? (
+        <Button
+          type="button"
+          disabled={!screen.canFinish || screen.isFinishing}
+          onClick={screen.onFinish}
+        >
+          {screen.isFinishing ? "Enregistrement..." : "Créer le personnage"}
         </Button>
       ) : (
         <Button type="button" disabled={!wizard.canGoNext} onClick={wizard.next}>

@@ -1,7 +1,6 @@
 import type { CatalogSpecies, DndCatalog, SkillName } from "@donjon-dragon/shared";
 import { Separator } from "@/shared/components/atoms/separator";
-import { allSkillsOf } from "../types/wizard-draft";
-import type { WizardDraft } from "../types/wizard-draft";
+import { allSkillsOf, type WizardDraft } from "../types/wizard-draft";
 import { OptionListView } from "./option-list.view";
 import { SkillPickerView } from "./skill-picker.view";
 
@@ -11,6 +10,7 @@ interface SpeciesStepViewProps {
   onChange: (patch: Partial<WizardDraft>) => void;
 }
 
+/** Le lignage a son propre écran : il n'apparaît que pour cinq espèces sur neuf. */
 export function SpeciesStepView(props: SpeciesStepViewProps) {
   const { catalog, draft, onChange } = props;
   const species = catalog.species.find((entry) => entry.key === draft.speciesKey);
@@ -42,7 +42,6 @@ function SpeciesDetails(props: SpeciesDetailsProps) {
     <div className="grid gap-4">
       <Separator />
       <TraitList species={props.species} />
-      <LineageChoice {...props} />
       <SpeciesSkillChoice {...props} />
     </div>
   );
@@ -58,21 +57,6 @@ function TraitList({ species }: { species: CatalogSpecies }) {
           {trait.description}
         </p>
       ))}
-    </div>
-  );
-}
-
-function LineageChoice({ species, draft, onChange }: SpeciesDetailsProps) {
-  if (!species.lineage) return null;
-
-  return (
-    <div className="grid gap-2">
-      <h3 className="section-title text-sm">{species.lineage.label}</h3>
-      <OptionListView
-        options={species.lineage.options}
-        selectedKey={draft.lineageKey}
-        onSelect={(key) => onChange({ lineageKey: key })}
-      />
     </div>
   );
 }

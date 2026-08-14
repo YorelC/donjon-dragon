@@ -1,39 +1,24 @@
 import { useState } from "react";
 import type { DndCatalog } from "@donjon-dragon/shared";
 import { EMPTY_DRAFT, type WizardDraft } from "../types/wizard-draft";
-import { featQuotaOf, stepValidity, type StepValidity } from "./use-step-validity";
-
-export const WIZARD_STEPS = [
-  "species",
-  "class",
-  "background",
-  "feats",
-  "abilities",
-  "spells",
-  "equipment",
-  "summary",
-] as const;
-
-export type WizardStep = (typeof WIZARD_STEPS)[number];
-
-export const STEP_LABELS: Record<WizardStep, string> = {
-  species: "Espèce",
-  class: "Classe",
-  background: "Historique",
-  feats: "Dons",
-  abilities: "Caractéristiques",
-  spells: "Sorts",
-  equipment: "Équipement",
-  summary: "Récapitulatif",
-};
+import type { StepContext } from "../types/wizard-lookups";
+import {
+  isStepValid,
+  stepProgress,
+  visibleSteps,
+  type StepProgress,
+  type WizardStep,
+} from "../types/wizard-steps";
 
 export interface WizardState {
   step: WizardStep;
   steps: readonly WizardStep[];
   draft: WizardDraft;
-  validity: StepValidity;
-  canGoNext: boolean;
+  isValid: (step: WizardStep) => boolean;
   isReachable: (step: WizardStep) => boolean;
+  progressOf: (step: WizardStep) => StepProgress | null;
+  canGoNext: boolean;
+  isLastStep: boolean;
   update: (patch: Partial<WizardDraft>) => void;
   goTo: (step: WizardStep) => void;
   next: () => void;
@@ -41,70 +26,85 @@ export interface WizardState {
 }
 
 /**
- * L'état du wizard : le brouillon en cours, l'étape affichée, et ce qui autorise
- * à avancer.
+ * L'état du wizard : le brouillon, l'étape affichée, et ce qui autorise à
+ * avancer.
  *
- * Le parcours est imposé — on n'atteint une étape qu'après avoir validé les
- * précédentes — mais le retour en arrière reste libre : un joueur qui s'est
- * trompé d'espèce ne recommence pas son personnage.
+ * La liste des étapes est dérivée du brouillon à chaque rendu — un elfe fait
+ * apparaître son lignage, un guerrier son Style de combat. Le parcours est
+ * imposé vers l'avant et libre vers l'arrière : on n'atteint une étape qu'après
+ * avoir validé les précédentes, mais on revient corriger quand on veut.
  */
 export function useCharacterWizard(catalog: DndCatalog | undefined): WizardState {
   const [draft, setDraft] = useState<WizardDraft>(() => EMPTY_DRAFT);
   const [step, setStep] = useState<WizardStep>("species");
-  const steps = visibleSteps(catalog, draft);
-  const validity = catalog ? stepValidity(catalog, draft) : NOTHING_VALID;
-  const isReachable = (target: WizardStep) => reaches(steps, validity, target);
+
+  const update = (patch: Partial<WizardDraft>) =>
+    setDraft((current) => ({ ...current, ...patch }));
+
+  if (!catalog) return idleState(draft, update);
+
+  return activeState({ context: { catalog, draft }, step, setStep, update });
+}
+
+interface ActiveStateInput {
+  context: StepContext;
+  step: WizardStep;
+  setStep: (step: WizardStep) => void;
+  update: (patch: Partial<WizardDraft>) => void;
+}
+
+function activeState({ context, step, setStep, update }: ActiveStateInput): WizardState {
+  const steps = visibleSteps(context);
+  const isValid = (target: WizardStep) => isStepValid(target, context);
+  const isReachable = (target: WizardStep) => reaches(steps, isValid, target);
 
   return {
     step,
     steps,
-    draft,
-    validity,
-    canGoNext: validity[step],
+    draft: context.draft,
+    isValid,
     isReachable,
-    update: (patch) => setDraft((current) => ({ ...current, ...patch })),
+    progressOf: (target) => stepProgress(target, context),
+    canGoNext: isValid(step),
+    isLastStep: steps.at(-1) === step,
+    update,
     goTo: (target) => isReachable(target) && setStep(target),
-    next: () => validity[step] && setStep(neighbour(steps, step, 1)),
+    next: () => isValid(step) && setStep(neighbour(steps, step, 1)),
     previous: () => setStep(neighbour(steps, step, -1)),
   };
 }
 
-const NOTHING_VALID = Object.fromEntries(
-  WIZARD_STEPS.map((step) => [step, false]),
-) as StepValidity;
-
-/**
- * L'étape des sorts disparaît pour une classe qui n'en lance pas — sauf si un
- * don en accorde : un barbare acolyte porte Initié à la magie, et doit bien
- * choisir ses deux sorts mineurs quelque part.
- */
-function visibleSteps(
-  catalog: DndCatalog | undefined,
+/** Tant que le catalogue n'est pas là, rien n'est franchissable ni mesurable. */
+function idleState(
   draft: WizardDraft,
-): readonly WizardStep[] {
-  if (needsSpellStep(catalog, draft)) return WIZARD_STEPS;
-
-  return WIZARD_STEPS.filter((step) => step !== "spells");
-}
-
-function needsSpellStep(catalog: DndCatalog | undefined, draft: WizardDraft): boolean {
-  if (!catalog) return false;
-  const chosen = catalog.classes.find((entry) => entry.key === draft.classKey);
-  if (chosen?.spellcasting) return true;
-
-  return featQuotaOf(catalog, draft) > 0;
+  update: (patch: Partial<WizardDraft>) => void,
+): WizardState {
+  return {
+    step: "species",
+    steps: ["species"],
+    draft,
+    isValid: () => false,
+    isReachable: () => false,
+    progressOf: () => null,
+    canGoNext: false,
+    isLastStep: false,
+    update,
+    goTo: () => undefined,
+    next: () => undefined,
+    previous: () => undefined,
+  };
 }
 
 /** Une étape est atteignable si toutes celles qui la précèdent sont valides. */
 function reaches(
   steps: readonly WizardStep[],
-  validity: StepValidity,
+  isValid: (step: WizardStep) => boolean,
   target: WizardStep,
 ): boolean {
   const index = steps.indexOf(target);
   if (index <= 0) return true;
 
-  return steps.slice(0, index).every((step) => validity[step]);
+  return steps.slice(0, index).every(isValid);
 }
 
 function neighbour(

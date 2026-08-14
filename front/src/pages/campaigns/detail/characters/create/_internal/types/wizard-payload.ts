@@ -68,7 +68,9 @@ function classChoices(draft: WizardDraft): CharacterChoice[] {
       source: { type: "class", key: draft.classKey },
       skills: draft.classSkills,
       expertise: draft.expertise,
-      spells: draft.classSpells,
+      spells: [...draft.classCantrips, ...draft.classSpells],
+      ...(draft.fightingStyle ? { fightingStyle: draft.fightingStyle } : {}),
+      ...(draft.classOrder ? { classOrder: draft.classOrder } : {}),
     },
   ];
 }
@@ -82,7 +84,7 @@ function magicInitiateChoice(draft: WizardDraft): CharacterChoice[] {
       source: { type: "feat", key: "magic-initiate" },
       spellcastingAbility: draft.spellcastingAbility,
       spellList: draft.spellList as ClassKey,
-      spells: draft.featSpells,
+      spells: [...draft.featCantrips, ...draft.featSpells],
     },
   ];
 }

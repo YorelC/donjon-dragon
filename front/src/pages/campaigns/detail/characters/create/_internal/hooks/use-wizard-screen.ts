@@ -11,9 +11,14 @@ import {
   useFinalizeCharacter,
   useRollAbilities,
 } from "../queries/use-character-creation";
-import { featsOf } from "./use-step-validity";
 import { isFullyAssigned } from "../types/wizard-draft";
 import { toFinalizePayload } from "../types/wizard-payload";
+import {
+  backgroundOf,
+  classOf,
+  featSpellcastingOf,
+  type StepContext,
+} from "../types/wizard-lookups";
 
 export interface WizardTarget {
   campaignId: string;
@@ -63,10 +68,18 @@ function useWizardContext(target: WizardTarget): WizardContext {
     character,
     wizard,
     preview: useWizardPreview(target.campaignId, wizard.draft, totals),
-    abilities: useAbilitiesStep(target, character),
-    spells: useSpellsStep(catalog, wizard),
+    abilities: useAbilitiesStep(target, character, stepContext(catalog, wizard)),
+    spells: useSpellsStep(stepContext(catalog, wizard)),
     finish: useFinishAction(target, wizard, character),
   };
+}
+
+/** `null` tant que le catalogue n'est pas là : rien n'est dérivable sans lui. */
+function stepContext(
+  catalog: DndCatalog | undefined,
+  wizard: WizardState,
+): StepContext | null {
+  return catalog ? { catalog, draft: wizard.draft } : null;
 }
 
 function useDraftCharacter(target: WizardTarget): Character | undefined {
@@ -78,6 +91,7 @@ function useDraftCharacter(target: WizardTarget): Character | undefined {
 function useAbilitiesStep(
   target: WizardTarget,
   character: Character | undefined,
+  context: StepContext | null,
 ): WizardScreen["abilities"] {
   const roll = useRollAbilities(target.campaignId, target.characterId);
 
@@ -85,6 +99,7 @@ function useAbilitiesStep(
     roll: character?.abilityRoll ?? null,
     isRolling: roll.isPending,
     onRoll: () => roll.mutate(),
+    background: context ? backgroundOf(context) ?? null : null,
   };
 }
 
@@ -92,33 +107,21 @@ function useAbilitiesStep(
  * Deux listes de sorts peuvent coexister : celle de la classe, et celle
  * qu'Initié à la magie fait choisir — chez le clerc, le druide ou le magicien.
  */
-function useSpellsStep(
-  catalog: DndCatalog | undefined,
-  wizard: WizardState,
-): WizardScreen["spells"] {
-  const spells = useClassSpells(wizard.draft.classKey);
-  const featSpells = useClassSpells(wizard.draft.spellList);
-  const spellcasting = catalog?.classes.find(
-    (entry) => entry.key === wizard.draft.classKey,
-  )?.spellcasting;
-  const featChoice = featSpellcastingOf(catalog, wizard);
+function useSpellsStep(context: StepContext | null): WizardScreen["spells"] {
+  const classSpells = useClassSpells(context?.draft.classKey ?? null);
+  const featSpells = useClassSpells(context?.draft.spellList ?? null);
+  const spellcasting = context ? classOf(context)?.spellcasting : undefined;
+  const featChoice = context ? featSpellcastingOf(context) : undefined;
 
   return {
-    spells: spells.data ?? null,
-    cantripsKnown: spellcasting?.cantripsKnown ?? 0,
-    spellsPrepared: spellcasting?.spellsPrepared ?? 0,
+    classSpells: classSpells.data ?? null,
+    classCantripsKnown: spellcasting?.cantripsKnown ?? 0,
+    classSpellsPrepared: spellcasting?.spellsPrepared ?? 0,
     featSpells: featSpells.data ?? null,
     featCantripsKnown: featChoice?.cantripsKnown ?? 0,
     featSpellsPrepared: featChoice?.spellsPrepared ?? 0,
-    isLoading: spells.isLoading || featSpells.isLoading,
+    isLoading: classSpells.isLoading || featSpells.isLoading,
   };
-}
-
-function featSpellcastingOf(catalog: DndCatalog | undefined, wizard: WizardState) {
-  if (!catalog) return null;
-
-  return featsOf(catalog, wizard.draft).find((feat) => feat.spellcastingChoice)
-    ?.spellcastingChoice;
 }
 
 function useFinishAction(

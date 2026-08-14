@@ -133,6 +133,10 @@ export const CharacterChoiceSchema = z.object({
   originFeat: OriginFeatKeySchema.optional(),
   spellcastingAbility: AbilitySchema.optional(),
   spellList: ClassKeySchema.optional(),
+  /** Le don de Style de combat du guerrier. */
+  fightingStyle: z.string().optional(),
+  /** L'option d'Ordre divin (clerc) ou d'Ordre primitif (druide). */
+  classOrder: z.string().optional(),
   feature: z.string().optional(),
 });
 

@@ -41,7 +41,13 @@ export interface WizardDraft {
   classKey: ClassKey | null;
   classSkills: SkillName[];
   expertise: SkillName[];
+  /** Sorts mineurs et sorts de niveau 1 se choisissent à deux étapes distinctes. */
+  classCantrips: string[];
   classSpells: string[];
+  /** Le don de Style de combat du guerrier. */
+  fightingStyle: string | null;
+  /** L'option d'Ordre divin (clerc) ou d'Ordre primitif (druide). */
+  classOrder: string | null;
 
   backgroundKey: BackgroundKey | null;
   backgroundBonuses: BackgroundAbilityBonuses;
@@ -52,6 +58,7 @@ export interface WizardDraft {
   featTools: string[];
   spellcastingAbility: Ability | null;
   spellList: ClassKey | null;
+  featCantrips: string[];
   featSpells: string[];
 
   abilityMethod: AbilityMethod;
@@ -77,7 +84,10 @@ export const EMPTY_DRAFT: WizardDraft = {
   classKey: null,
   classSkills: [],
   expertise: [],
+  classCantrips: [],
   classSpells: [],
+  fightingStyle: null,
+  classOrder: null,
   backgroundKey: null,
   backgroundBonuses: {},
   speciesFeat: null,
@@ -85,6 +95,7 @@ export const EMPTY_DRAFT: WizardDraft = {
   featTools: [],
   spellcastingAbility: null,
   spellList: null,
+  featCantrips: [],
   featSpells: [],
   abilityMethod: "standardArray",
   assignment: {},

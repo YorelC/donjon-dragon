@@ -4,9 +4,9 @@ import { Button } from "@/shared/components/atoms/button";
 import type { WizardDraft } from "../types/wizard-draft";
 
 export interface SpellsStep {
-  spells: CatalogSpellList | null;
-  cantripsKnown: number;
-  spellsPrepared: number;
+  classSpells: CatalogSpellList | null;
+  classCantripsKnown: number;
+  classSpellsPrepared: number;
   /** La liste d'Initié à la magie, quand un don en accorde une. */
   featSpells: CatalogSpellList | null;
   featCantripsKnown: number;
@@ -20,54 +20,56 @@ interface SpellsStepViewProps {
   onChange: (patch: Partial<WizardDraft>) => void;
 }
 
-export function SpellsStepView({ step, draft, onChange }: SpellsStepViewProps) {
-  if (step.isLoading || !step.spells) {
-    return <p className="text-sm text-muted-foreground">Chargement des sorts...</p>;
-  }
+/** Les sorts mineurs, de la classe et du don, sur le même écran. */
+export function CantripsStepView({ step, draft, onChange }: SpellsStepViewProps) {
+  if (step.isLoading) return <Loading />;
 
   return (
     <div className="grid gap-6">
       <SpellGroup
-        title="Sorts mineurs"
-        spells={step.spells.cantrips}
-        limit={step.cantripsKnown}
-        selected={draft.classSpells}
-        onChange={(classSpells) => onChange({ classSpells })}
+        title="Sorts mineurs de classe"
+        spells={step.classSpells?.cantrips ?? []}
+        limit={step.classCantripsKnown}
+        selected={draft.classCantrips}
+        onChange={(classCantrips) => onChange({ classCantrips })}
       />
       <SpellGroup
-        title="Sorts de niveau 1"
-        spells={step.spells.level1}
-        limit={step.spellsPrepared}
-        selected={draft.classSpells}
-        onChange={(classSpells) => onChange({ classSpells })}
+        title="Sorts mineurs — Initié à la magie"
+        spells={step.featSpells?.cantrips ?? []}
+        limit={step.featCantripsKnown}
+        selected={draft.featCantrips}
+        onChange={(featCantrips) => onChange({ featCantrips })}
       />
-      <FeatSpells step={step} draft={draft} onChange={onChange} />
     </div>
   );
 }
 
-/** Initié à la magie puise dans sa propre liste, avec son propre compte. */
-function FeatSpells({ step, draft, onChange }: SpellsStepViewProps) {
-  if (!step.featSpells || step.featCantripsKnown + step.featSpellsPrepared === 0) return null;
+/** Les sorts de niveau 1, de la classe et du don. */
+export function SpellsStepView({ step, draft, onChange }: SpellsStepViewProps) {
+  if (step.isLoading) return <Loading />;
 
   return (
-    <>
+    <div className="grid gap-6">
       <SpellGroup
-        title="Sorts mineurs — Initié à la magie"
-        spells={step.featSpells.cantrips}
-        limit={step.featCantripsKnown}
-        selected={draft.featSpells}
-        onChange={(featSpells) => onChange({ featSpells })}
+        title="Sorts préparés"
+        spells={step.classSpells?.level1 ?? []}
+        limit={step.classSpellsPrepared}
+        selected={draft.classSpells}
+        onChange={(classSpells) => onChange({ classSpells })}
       />
       <SpellGroup
         title="Sort de niveau 1 — Initié à la magie"
-        spells={step.featSpells.level1}
+        spells={step.featSpells?.level1 ?? []}
         limit={step.featSpellsPrepared}
         selected={draft.featSpells}
         onChange={(featSpells) => onChange({ featSpells })}
       />
-    </>
+    </div>
   );
+}
+
+function Loading() {
+  return <p className="text-sm text-muted-foreground">Chargement des sorts...</p>;
 }
 
 interface SpellGroupProps {
@@ -79,7 +81,7 @@ interface SpellGroupProps {
 }
 
 function SpellGroup({ title, spells, limit, selected, onChange }: SpellGroupProps) {
-  if (limit === 0) return null;
+  if (limit === 0 || spells.length === 0) return null;
   const chosen = spells.filter((spell) => selected.includes(spell.key));
 
   return (
