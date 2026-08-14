@@ -1,0 +1,18 @@
+{
+  "featureName": "Ordre primitif",
+  "class": "druid",
+  "level": 1,
+  "description": "Vous vous êtes consacré à l'un des rôles sacrés suivants de votre choix.",
+  "options": [
+    {
+      "key": "mage",
+      "name": "Mage",
+      "description": "Vous connaissez un sort mineur de druide supplémentaire. De plus, votre lien mystique avec la nature vous confère un bonus à vos jets d'Intelligence (Arcanes ou Nature). Ce bonus est égal à votre modificateur de Sagesse (minimum +1)."
+    },
+    {
+      "key": "gardien",
+      "name": "Gardien",
+      "description": "Entraîné au combat, vous gagnez la maîtrise des armes de guerre et la formation aux armures intermédiaires."
+    }
+  ]
+}
