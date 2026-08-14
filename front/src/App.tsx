@@ -6,7 +6,7 @@ import { CampaignsPage } from "./pages/campaigns/campaigns.page";
 import { CampaignDetailPage } from "./pages/campaigns/detail/detail.page";
 import { CampaignUsersPage } from "./pages/campaigns/detail/users/users.page";
 import { CampaignCharactersPage } from "./pages/campaigns/detail/characters/characters.page";
-import { CharacterCreatePage } from "./pages/campaigns/detail/characters/create/create.page";
+import { CharacterBuilderPage } from "./pages/campaigns/detail/characters/builder/character-builder.page";
 import { CharacterSheetPage } from "./pages/campaigns/detail/characters/sheet/sheet.page";
 import { FriendsPage } from "./pages/profile/friends/friends.page";
 import { RegisterPage } from "./pages/register/register.page";
@@ -47,6 +47,7 @@ function AppRoutes() {
       <Route element={<PrivateRoute />}>
         <Route path={ROUTES.campaigns} element={<CampaignsPage />} />
         {CampaignDetailRoutes()}
+        {CharacterRoutes()}
         <Route path={ROUTES.profile} element={<ProfilePage />}>
           <Route index element={<Navigate to={ROUTES.profileFriends} />} />
           <Route path={ROUTES.profileFriends} element={<FriendsPage />} />
@@ -60,6 +61,16 @@ function AppRoutes() {
   );
 }
 
+/** Hors du layout de campagne : ces deux pages prennent toute la largeur. */
+function CharacterRoutes() {
+  return (
+    <>
+      <Route path={ROUTES.campaignCharacterBuilder} element={<CharacterBuilderPage />} />
+      <Route path={ROUTES.campaignCharacterSheet} element={<CharacterSheetPage />} />
+    </>
+  );
+}
+
 function CampaignDetailRoutes() {
   return (
     <Route path={ROUTES.campaignDetail} element={<CampaignDetailPage />}>
@@ -69,8 +80,6 @@ function CampaignDetailRoutes() {
         path={ROUTES.campaignDetailCharacters}
         element={<CampaignCharactersPage />}
       />
-      <Route path={ROUTES.campaignCharacterCreate} element={<CharacterCreatePage />} />
-      <Route path={ROUTES.campaignCharacterSheet} element={<CharacterSheetPage />} />
     </Route>
   );
 }

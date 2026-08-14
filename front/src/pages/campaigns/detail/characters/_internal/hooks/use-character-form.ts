@@ -19,7 +19,7 @@ export interface CharacterFormState {
 /**
  * Le formulaire ne porte plus que le nom : créer un personnage ouvre un
  * brouillon, et les choix d'espèce, de classe et d'historique appartiennent au
- * wizard. Rouvrir ce formulaire sur un personnage existant le renomme.
+ * builder. Rouvrir ce formulaire sur un personnage existant le renomme.
  */
 export function useCharacterForm(campaignId: string): CharacterFormState {
   const [open, setOpen] = useState(false);

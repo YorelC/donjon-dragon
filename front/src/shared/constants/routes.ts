@@ -4,7 +4,7 @@ export const ROUTES = {
   campaignDetail: "/campaigns/:campaignId",
   campaignDetailUsers: "/campaigns/:campaignId/users",
   campaignDetailCharacters: "/campaigns/:campaignId/characters",
-  campaignCharacterCreate: "/campaigns/:campaignId/characters/:characterId/create",
+  campaignCharacterBuilder: "/campaigns/:campaignId/characters/:characterId/builder",
   campaignCharacterSheet: "/campaigns/:campaignId/characters/:characterId/sheet",
   profile: "/profile",
   profileFriends: "/profile/friends",
@@ -28,8 +28,12 @@ export const toCampaignDetailUsers = (campaignId: string): string =>
 export const toCampaignDetailCharacters = (campaignId: string): string =>
   `${toCampaignDetail(campaignId)}/characters`;
 
-export const toCharacterCreate = (campaignId: string, characterId: string): string =>
-  `${toCampaignDetailCharacters(campaignId)}/${encodeURIComponent(characterId)}/create`;
+/**
+ * Le builder sert la création, et servira la montée de niveau et l'édition : son
+ * URL dit ce qu'on fait, pas à quel moment on le fait.
+ */
+export const toCharacterBuilder = (campaignId: string, characterId: string): string =>
+  `${toCampaignDetailCharacters(campaignId)}/${encodeURIComponent(characterId)}/builder`;
 
 export const toCharacterSheet = (campaignId: string, characterId: string): string =>
   `${toCampaignDetailCharacters(campaignId)}/${encodeURIComponent(characterId)}/sheet`;

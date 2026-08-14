@@ -15,7 +15,7 @@ function refreshCharacters(queryClient: QueryClient, campaignId: string) {
 
 /**
  * Créer un personnage ouvre un brouillon : un nom, et rien d'autre. Le tirage
- * des dés et les choix viennent ensuite, par le wizard.
+ * des dés et les choix viennent ensuite, par le builder.
  */
 export function useStartCharacter(campaignId: string) {
   const queryClient = useQueryClient();

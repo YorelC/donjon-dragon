@@ -5,7 +5,7 @@ import { API_ROUTES } from "@/shared/constants/api-routes";
 
 /**
  * Remonté de `pages/campaigns/detail/characters/_internal/` : la liste sert
- * maintenant à deux pages — celle de la table, et le wizard, qui y lit le nom et
+ * maintenant à deux pages — celle de la table, et le builder, qui y lit le nom et
  * le tirage du brouillon qu'il est en train de remplir.
  */
 export const campaignCharactersKey = (campaignId: string) =>

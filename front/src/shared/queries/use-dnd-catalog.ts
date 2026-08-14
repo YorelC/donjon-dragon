@@ -6,7 +6,7 @@ import { API_ROUTES } from "@/shared/constants/api-routes";
 /**
  * Le catalogue ne change qu'à une errata du PHB : une fois chargé, il n'a aucune
  * raison d'être redemandé pendant la session. D'où `staleTime: Infinity` — sans
- * lui, chaque étape du wizard qui remonte rejouerait la requête.
+ * lui, chaque étape du builder qui remonte rejouerait la requête.
  */
 export const dndCatalogKey = ["dnd", "catalog"] as const;
 

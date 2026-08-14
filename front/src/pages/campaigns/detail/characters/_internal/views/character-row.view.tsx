@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import type { Character } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
-import { toCharacterCreate, toCharacterSheet } from "@/shared/constants/routes";
+import { toCharacterBuilder, toCharacterSheet } from "@/shared/constants/routes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
 import { CharacterAssignContainer } from "../containers/character-assign.container";
 import type { CharacterFormState } from "../hooks/use-character-form";
@@ -47,7 +47,7 @@ function AssignmentBadge({ character }: { character: Character }) {
   return <Badge>{character.assignedTo.displayName}</Badge>;
 }
 
-/** Espèce, classe et historique n'existent qu'une fois le wizard terminé. */
+/** Espèce, classe et historique n'existent qu'une fois le builder terminé. */
 function BuildSummary({ character }: { character: Character }) {
   const { build } = character;
   if (!build) return <Badge className="ml-2" variant="secondary">Brouillon</Badge>;
@@ -120,7 +120,7 @@ function CreationLink({
 }) {
   const draft = character.status === "draft";
   const target = draft
-    ? toCharacterCreate(campaignId, character.id)
+    ? toCharacterBuilder(campaignId, character.id)
     : toCharacterSheet(campaignId, character.id);
 
   return (

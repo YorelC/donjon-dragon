@@ -14,7 +14,7 @@ interface CharacterSheetViewProps {
 
 /**
  * La fiche calculée. Elle vit dans `shared/` parce que deux pages l'affichent :
- * le récapitulatif du wizard et la fiche d'un personnage terminé. Aucune règle
+ * le récapitulatif du builder et la fiche d'un personnage terminé. Aucune règle
  * n'est rejouée ici — tout arrive déjà résolu du serveur.
  */
 export function CharacterSheetView({ name, sheet, skillLabels }: CharacterSheetViewProps) {
