@@ -1,4 +1,4 @@
-import { Body, Query } from '@nestjs/common';
+import { Body, Param, Query } from '@nestjs/common';
 import type { ZodType } from 'zod';
 
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe';
@@ -12,3 +12,11 @@ export const ZodBody = <T>(schema: ZodType<T>) => Body(new ZodValidationPipe(sch
 
 /** Idem pour la query string, qui est tout autant une entrée externe. */
 export const ZodQuery = <T>(schema: ZodType<T>) => Query(new ZodValidationPipe(schema));
+
+/**
+ * Idem pour un segment d'URL dont le vocabulaire est fermé — une clé de classe,
+ * pas un identifiant. Sans schéma, `@Param('classKey')` livre au use-case une
+ * chaîne quelconque qui n'ira chercher aucune donnée de référence.
+ */
+export const ZodParam = <T>(property: string, schema: ZodType<T>) =>
+  Param(property, new ZodValidationPipe(schema));

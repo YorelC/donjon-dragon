@@ -11,6 +11,8 @@ import { AssignCharacterUseCase } from './application/use-cases/assign-character
 import { DeleteCharacterUseCase } from './application/use-cases/delete-character.use-case';
 import { FinalizeCharacterUseCase } from './application/use-cases/finalize-character.use-case';
 import { GetCharacterSheetUseCase } from './application/use-cases/get-character-sheet.use-case';
+import { GetClassSpellListUseCase } from './application/use-cases/get-class-spell-list.use-case';
+import { GetDndCatalogUseCase } from './application/use-cases/get-dnd-catalog.use-case';
 import { ListCampaignCharactersUseCase } from './application/use-cases/list-campaign-characters.use-case';
 import { PreviewCharacterSheetUseCase } from './application/use-cases/preview-character-sheet.use-case';
 import { RenameCharacterUseCase } from './application/use-cases/rename-character.use-case';
@@ -24,6 +26,7 @@ import {
 } from './infrastructure/persistence/character.schema';
 import { MongoCharacterRepository } from './infrastructure/persistence/mongo-character.repository';
 import { CharacterController } from './presentation/character.controller';
+import { DndCatalogController } from './presentation/dnd-catalog.controller';
 
 @Module({
   imports: [
@@ -33,7 +36,7 @@ import { CharacterController } from './presentation/character.controller';
     ClockModule,
     DiceModule,
   ],
-  controllers: [CharacterController],
+  controllers: [CharacterController, DndCatalogController],
   providers: [
     { provide: CHARACTER_REPOSITORY, useClass: MongoCharacterRepository },
     { provide: CHARACTER_DIRECTORY, useClass: UserCharacterDirectory },
@@ -44,6 +47,8 @@ import { CharacterController } from './presentation/character.controller';
     RenameCharacterUseCase,
     PreviewCharacterSheetUseCase,
     GetCharacterSheetUseCase,
+    GetDndCatalogUseCase,
+    GetClassSpellListUseCase,
     DeleteCharacterUseCase,
     AssignCharacterUseCase,
     UnassignCharacterUseCase,
