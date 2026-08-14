@@ -1,91 +1,70 @@
 import { useState } from "react";
-import type { Character, CreateCharacterDto } from "@donjon-dragon/shared";
+import type { Character } from "@donjon-dragon/shared";
 import {
-  useCreateCharacter,
-  useUpdateCharacter,
+  useRenameCharacter,
+  useStartCharacter,
 } from "../queries/use-character-mutations";
-
-const BLANK_SHEET: CreateCharacterDto = {
-  name: "",
-  race: "",
-  characterClass: "",
-  abilityScores: {
-    strength: 10,
-    dexterity: 10,
-    constitution: 10,
-    intelligence: 10,
-    wisdom: 10,
-    charisma: 10,
-  },
-};
 
 export interface CharacterFormState {
   open: boolean;
   editing: Character | null;
-  sheet: CreateCharacterDto;
+  name: string;
   onOpen: (character: Character | null) => void;
   onOpenChange: (open: boolean) => void;
-  onChange: (sheet: CreateCharacterDto) => void;
+  onChange: (name: string) => void;
   onSubmit: () => void;
   isSubmitting: boolean;
 }
 
+/**
+ * Le formulaire ne porte plus que le nom : créer un personnage ouvre un
+ * brouillon, et les choix d'espèce, de classe et d'historique appartiennent au
+ * wizard. Rouvrir ce formulaire sur un personnage existant le renomme.
+ */
 export function useCharacterForm(campaignId: string): CharacterFormState {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Character | null>(null);
-  const [sheet, setSheet] = useState<CreateCharacterDto>(BLANK_SHEET);
-  const create = useCreateCharacter(campaignId);
-  const update = useUpdateCharacter(campaignId);
+  const [name, setName] = useState("");
+  const start = useStartCharacter(campaignId);
+  const rename = useRenameCharacter(campaignId);
 
   return {
     open,
     editing,
-    sheet,
-    onOpen: (character) => openWith({ character, setEditing, setSheet, setOpen }),
+    name,
+    onOpen: (character) => openWith({ character, setEditing, setName, setOpen }),
     onOpenChange: setOpen,
-    onChange: setSheet,
+    onChange: setName,
     onSubmit: () =>
-      submitSheet({ editing, sheet, create, update, onDone: () => setOpen(false) }),
-    isSubmitting: create.isPending || update.isPending,
+      submitName({ editing, name, start, rename, onDone: () => setOpen(false) }),
+    isSubmitting: start.isPending || rename.isPending,
   };
 }
 
 function openWith(params: {
   character: Character | null;
   setEditing: (character: Character | null) => void;
-  setSheet: (sheet: CreateCharacterDto) => void;
+  setName: (name: string) => void;
   setOpen: (open: boolean) => void;
 }): void {
   params.setEditing(params.character);
-  params.setSheet(params.character ? toSheet(params.character) : BLANK_SHEET);
+  params.setName(params.character?.name ?? "");
   params.setOpen(true);
 }
 
 type Mutator<T> = { mutate: (variables: T, options: { onSuccess: () => void }) => void };
 
-function submitSheet(params: {
+function submitName(params: {
   editing: Character | null;
-  sheet: CreateCharacterDto;
-  create: Mutator<CreateCharacterDto>;
-  update: Mutator<{ characterId: string; sheet: CreateCharacterDto }>;
+  name: string;
+  start: Mutator<{ name: string }>;
+  rename: Mutator<{ characterId: string; name: string }>;
   onDone: () => void;
 }): void {
   const onSuccess = { onSuccess: params.onDone };
   if (params.editing) {
-    params.update.mutate(
-      { characterId: params.editing.id, sheet: params.sheet },
-      onSuccess,
-    );
+    params.rename.mutate({ characterId: params.editing.id, name: params.name }, onSuccess);
   } else {
-    params.create.mutate(params.sheet, onSuccess);
+    params.start.mutate({ name: params.name }, onSuccess);
   }
-}
-
-function toSheet(character: Character): CreateCharacterDto {
-  return {
-    name: character.name,
-    race: character.race,
-    characterClass: character.characterClass,
-    abilityScores: character.abilityScores,
-  };
 }

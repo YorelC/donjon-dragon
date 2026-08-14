@@ -9,18 +9,13 @@ import { FixedClock } from '@kernel/testing/fixed-clock';
 import { PlayerAlreadyHasCharacterError } from '../../domain/character.errors';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
-import {
-  A_CHARACTER_CLASS,
-  A_CHARACTER_NAME,
-  A_CHARACTER_RACE,
-  SOME_ABILITY_SCORES,
-} from '../../testing/character.fixture';
-import { CreateCharacterUseCase } from './create-character.use-case';
+import { A_CHARACTER_NAME } from '../../testing/character.fixture';
+import { StartCharacterUseCase } from './start-character.use-case';
 
-describe('CreateCharacterUseCase', () => {
+describe('StartCharacterUseCase', () => {
   let campaignRepo: InMemoryCampaignRepository;
   let characterRepo: InMemoryCharacterRepository;
-  let useCase: CreateCharacterUseCase;
+  let useCase: StartCharacterUseCase;
   let gandalfId: string;
   let frodoId: string;
   let campaignId: string;
@@ -38,7 +33,7 @@ describe('CreateCharacterUseCase', () => {
 
     directory = new InMemoryCharacterDirectory();
     directory.register({ id: frodoId, displayName: 'Frodo' });
-    useCase = new CreateCharacterUseCase(
+    useCase = new StartCharacterUseCase(
       characterRepo,
       directory,
       new GetCampaignMembershipUseCase(campaignRepo),
@@ -50,9 +45,14 @@ describe('CreateCharacterUseCase', () => {
     campaignId,
     actorId: anActor(actorId),
     name: A_CHARACTER_NAME,
-    race: A_CHARACTER_RACE,
-    characterClass: A_CHARACTER_CLASS,
-    abilityScores: SOME_ABILITY_SCORES,
+  });
+
+  it('ouvre un brouillon sans tirage ni fiche', async () => {
+    const character = await useCase.execute(dtoFor(frodoId));
+
+    expect(character.status).toBe('draft');
+    expect(character.abilityRoll).toBeNull();
+    expect(character.build).toBeNull();
   });
 
   it('assigne automatiquement au joueur la fiche qu il crée', async () => {

@@ -1,36 +1,99 @@
 import { randomUUID } from 'crypto';
 import { UserId } from '@kernel/domain/user-id';
 
-import { AbilityScores, type AbilityScoresSnapshot } from './ability-scores';
+import {
+  AbilityAssignment,
+  type AbilityAssignmentSnapshot,
+  type AbilityBonuses,
+} from './ability-assignment';
+import { AbilityRoll, type AbilityRollSnapshot } from './ability-roll';
+import {
+  CharacterChoices,
+  type CharacterChoice,
+  type CharacterChoicesSnapshot,
+} from './character-choices';
+import {
+  CharacterEquipment,
+  type CharacterEquipmentSnapshot,
+} from './character-equipment';
 import { CharacterId } from './character-id';
 import { CharacterName } from './character-name';
-import { CharacterTrait } from './character-trait';
 import {
+  AbilitiesNotRolledError,
   AlreadyAssignedToThisPlayerError,
+  CharacterAlreadyReadyError,
+  CharacterNotReadyError,
   NotAssignedError,
   NotEditableByActorError,
   OnlyGameMasterCanAssignError,
 } from './character.errors';
 import { OwningCampaignId } from './owning-campaign-id';
+import type { AbilityRecord } from './reference/abilities';
+import { BACKGROUNDS } from './reference/backgrounds';
+import type { BackgroundKey, ClassKey, LineageKey, SpeciesKey } from './reference/keys';
+import { LEVEL_ONE, type CharacterBuild } from './resolution/character-build';
+import { validateChoices } from './resolution/validate-choices';
+
+export type CharacterStatus = 'draft' | 'ready';
+
+export interface CharacterBuildSnapshot {
+  speciesKey: SpeciesKey;
+  lineageKey: LineageKey | null;
+  classKey: ClassKey;
+  backgroundKey: BackgroundKey;
+  abilities: AbilityAssignmentSnapshot;
+  choices: CharacterChoicesSnapshot;
+  equipment: CharacterEquipmentSnapshot;
+}
 
 export interface CharacterSnapshot {
   id: string;
   campaignId: string;
   name: string;
-  race: string;
-  characterClass: string;
-  abilityScores: AbilityScoresSnapshot;
+  status: CharacterStatus;
+  abilityRoll: AbilityRollSnapshot | null;
+  build: CharacterBuildSnapshot | null;
   createdBy: string;
   assignedTo: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface CharacterSheet {
+/** Les choix bruts que le joueur soumet à la fin du wizard. */
+export interface CharacterBuildDraft {
+  speciesKey: SpeciesKey;
+  lineageKey: LineageKey | null;
+  classKey: ClassKey;
+  backgroundKey: BackgroundKey;
+  base: AbilityRecord;
+  backgroundBonuses: AbilityBonuses;
+  choices: readonly CharacterChoice[];
+  equipment: CharacterEquipmentSnapshot;
+}
+
+interface CharacterBuildState {
+  speciesKey: SpeciesKey;
+  lineageKey: LineageKey | null;
+  classKey: ClassKey;
+  backgroundKey: BackgroundKey;
+  abilities: AbilityAssignment;
+  choices: CharacterChoices;
+  equipment: CharacterEquipment;
+}
+
+interface CharacterOrigin {
+  campaignId: OwningCampaignId;
+  createdBy: UserId;
+  createdAt: string;
+}
+
+interface CharacterState {
   name: CharacterName;
-  race: CharacterTrait;
-  characterClass: CharacterTrait;
-  abilityScores: AbilityScores;
+  status: CharacterStatus;
+  roll: AbilityRoll | null;
+  build: CharacterBuildState | null;
+  assignedTo: UserId | null;
+  updatedAt: string;
 }
 
 /**
@@ -47,67 +110,133 @@ export interface CharacterAccessContext {
 }
 
 /**
- * Une fiche de personnage D&D classique, rattachée à une campagne. `assignedTo`
- * est `null` tant qu'elle vit dans le pool du maître du jeu ; un personnage
- * n'est jamais attribué à un autre MJ, seulement à un joueur.
+ * Une fiche de personnage D&D 2024, rattachée à une campagne.
+ *
+ * Elle naît en `draft` : un nom, et rien d'autre. Le tirage des caractéristiques
+ * s'y pose ensuite, puis les choix du joueur la font passer en `ready`. Cet
+ * ordre est ce qui rend le tirage infalsifiable — la répartition se vérifie
+ * contre un tirage déjà persisté.
+ *
+ * Aucune valeur dérivée n'est stockée ici : ni PV, ni CA, ni initiative. Elles
+ * sortent du moteur à chaque lecture.
  */
 export class Character {
   private constructor(
     readonly id: CharacterId,
-    readonly campaignId: OwningCampaignId,
-    private currentSheet: CharacterSheet,
-    readonly createdBy: UserId,
-    private currentAssignedTo: UserId | null,
-    readonly createdAt: string,
-    private currentUpdatedAt: string,
+    private readonly origin: CharacterOrigin,
+    private state: CharacterState,
   ) {}
 
-  static create(
+  static start(
     campaignId: OwningCampaignId,
-    sheet: CharacterSheet,
+    name: CharacterName,
     createdBy: UserId,
     now: Date,
   ): Character {
     const createdAt = now.toISOString();
+
     return new Character(
       CharacterId.create(randomUUID()),
-      campaignId,
-      sheet,
-      createdBy,
-      null,
-      createdAt,
-      createdAt,
+      { campaignId, createdBy, createdAt },
+      {
+        name,
+        status: 'draft',
+        roll: null,
+        build: null,
+        assignedTo: null,
+        updatedAt: createdAt,
+      },
     );
   }
 
   static restore(snapshot: CharacterSnapshot): Character {
     return new Character(
       CharacterId.create(snapshot.id),
-      OwningCampaignId.create(snapshot.campaignId),
-      sheetFrom(snapshot),
-      UserId.create(snapshot.createdBy),
-      snapshot.assignedTo ? UserId.create(snapshot.assignedTo) : null,
-      snapshot.createdAt,
-      snapshot.updatedAt,
+      {
+        campaignId: OwningCampaignId.create(snapshot.campaignId),
+        createdBy: UserId.create(snapshot.createdBy),
+        createdAt: snapshot.createdAt,
+      },
+      restoreState(snapshot),
     );
   }
 
-  get sheet(): CharacterSheet {
-    return this.currentSheet;
+  get campaignId(): OwningCampaignId {
+    return this.origin.campaignId;
+  }
+
+  get createdBy(): UserId {
+    return this.origin.createdBy;
+  }
+
+  get createdAt(): string {
+    return this.origin.createdAt;
+  }
+
+  get name(): CharacterName {
+    return this.state.name;
+  }
+
+  get status(): CharacterStatus {
+    return this.state.status;
+  }
+
+  get isReady(): boolean {
+    return this.state.status === 'ready';
+  }
+
+  get abilityRoll(): AbilityRoll | null {
+    return this.state.roll;
   }
 
   get assignedTo(): UserId | null {
-    return this.currentAssignedTo;
+    return this.state.assignedTo;
   }
 
   get updatedAt(): string {
-    return this.currentUpdatedAt;
+    return this.state.updatedAt;
   }
 
-  update(sheet: CharacterSheet, context: CharacterAccessContext, now: Date): void {
+  /** Ce que le moteur consomme. `null` tant que le personnage est un brouillon. */
+  get build(): CharacterBuild | null {
+    if (!this.state.build) return null;
+
+    return { ...this.state.build, level: LEVEL_ONE };
+  }
+
+  /**
+   * Relancer les dés reste libre tant que le personnage n'est pas terminé, et
+   * devient impossible ensuite : sinon un joueur retirerait jusqu'à obtenir six 18
+   * en gardant sa fiche.
+   */
+  rollAbilities(roll: AbilityRoll, context: CharacterAccessContext, now: Date): void {
     this.assertEditableBy(context);
-    this.currentSheet = sheet;
+    if (this.isReady) throw new CharacterAlreadyReadyError();
+
+    this.state.roll = roll;
     this.touch(now);
+  }
+
+  /** Le wizard rend sa copie : on vérifie tout, puis le personnage devient jouable. */
+  finalize(draft: CharacterBuildDraft, context: CharacterAccessContext, now: Date): void {
+    this.assertEditableBy(context);
+    const roll = this.state.roll;
+    if (!roll) throw new AbilitiesNotRolledError();
+
+    this.state.build = buildFrom(draft, roll);
+    this.state.status = 'ready';
+    this.touch(now);
+  }
+
+  rename(name: CharacterName, context: CharacterAccessContext, now: Date): void {
+    this.assertEditableBy(context);
+    this.state.name = name;
+    this.touch(now);
+  }
+
+  /** Le moteur refuse un brouillon : il n'y a pas de fiche à calculer. */
+  assertIsReady(): void {
+    if (!this.isReady) throw new CharacterNotReadyError();
   }
 
   /**
@@ -115,25 +244,25 @@ export class Character {
    * de passage par `assignTo`, réservé à l'attribution PAR un maître du jeu.
    */
   selfAssignToCreator(now: Date): void {
-    this.currentAssignedTo = this.createdBy;
+    this.state.assignedTo = this.origin.createdBy;
     this.touch(now);
   }
 
   assignTo(actorIsGameMaster: boolean, playerId: UserId, now: Date): void {
     if (!actorIsGameMaster) throw new OnlyGameMasterCanAssignError();
-    if (this.currentAssignedTo?.equals(playerId)) {
+    if (this.state.assignedTo?.equals(playerId)) {
       throw new AlreadyAssignedToThisPlayerError();
     }
 
-    this.currentAssignedTo = playerId;
+    this.state.assignedTo = playerId;
     this.touch(now);
   }
 
   unassign(actorIsGameMaster: boolean, now: Date): void {
     if (!actorIsGameMaster) throw new OnlyGameMasterCanAssignError();
-    if (!this.currentAssignedTo) throw new NotAssignedError();
+    if (!this.state.assignedTo) throw new NotAssignedError();
 
-    this.currentAssignedTo = null;
+    this.state.assignedTo = null;
     this.touch(now);
   }
 
@@ -145,15 +274,15 @@ export class Character {
    */
   assertEditableBy(context: CharacterAccessContext): void {
     if (!context.actorIsGameMaster) {
-      if (!this.currentAssignedTo?.equals(context.actorId)) {
+      if (!this.state.assignedTo?.equals(context.actorId)) {
         throw new NotEditableByActorError();
       }
       return;
     }
 
     const editable =
-      this.createdBy.equals(context.actorId) ||
-      this.currentAssignedTo !== null ||
+      this.origin.createdBy.equals(context.actorId) ||
+      this.state.assignedTo !== null ||
       !context.creatorIsGameMaster ||
       context.actorIsCampaignOwner;
 
@@ -163,28 +292,85 @@ export class Character {
   snapshot(): CharacterSnapshot {
     return {
       id: this.id.value,
-      campaignId: this.campaignId.value,
-      name: this.currentSheet.name.value,
-      race: this.currentSheet.race.value,
-      characterClass: this.currentSheet.characterClass.value,
-      abilityScores: this.currentSheet.abilityScores.snapshot(),
-      createdBy: this.createdBy.value,
-      assignedTo: this.currentAssignedTo?.value ?? null,
-      createdAt: this.createdAt,
-      updatedAt: this.currentUpdatedAt,
+      campaignId: this.origin.campaignId.value,
+      name: this.state.name.value,
+      status: this.state.status,
+      abilityRoll: this.state.roll?.snapshot() ?? null,
+      build: buildSnapshotOf(this.state.build),
+      createdBy: this.origin.createdBy.value,
+      assignedTo: this.state.assignedTo?.value ?? null,
+      createdAt: this.origin.createdAt,
+      updatedAt: this.state.updatedAt,
     };
   }
 
   private touch(now: Date): void {
-    this.currentUpdatedAt = now.toISOString();
+    this.state.updatedAt = now.toISOString();
   }
 }
 
-function sheetFrom(snapshot: CharacterSnapshot): CharacterSheet {
+/**
+ * Les trois vérifications qui rendent un personnage valide : la répartition sort
+ * bien du tirage, les bonus de caractéristique appartiennent à l'historique, et
+ * les choix couvrent ce que l'espèce et la classe demandaient.
+ */
+function buildFrom(draft: CharacterBuildDraft, roll: AbilityRoll): CharacterBuildState {
+  const abilities = AbilityAssignment.create({
+    roll,
+    base: draft.base,
+    backgroundBonuses: draft.backgroundBonuses,
+  });
+  abilities.assertBonusesFit(BACKGROUNDS[draft.backgroundKey].abilityBonuses);
+
+  const choices = CharacterChoices.create(draft.choices);
+  validateChoices({ ...draft, choices });
+
+  return {
+    speciesKey: draft.speciesKey,
+    lineageKey: draft.lineageKey,
+    classKey: draft.classKey,
+    backgroundKey: draft.backgroundKey,
+    abilities,
+    choices,
+    equipment: CharacterEquipment.create(draft.equipment),
+  };
+}
+
+function restoreState(snapshot: CharacterSnapshot): CharacterState {
   return {
     name: CharacterName.create(snapshot.name),
-    race: CharacterTrait.create(snapshot.race, 'la race'),
-    characterClass: CharacterTrait.create(snapshot.characterClass, 'la classe'),
-    abilityScores: AbilityScores.create(snapshot.abilityScores),
+    status: snapshot.status,
+    roll: snapshot.abilityRoll ? AbilityRoll.restore(snapshot.abilityRoll) : null,
+    build: restoreBuild(snapshot.build),
+    assignedTo: snapshot.assignedTo ? UserId.create(snapshot.assignedTo) : null,
+    updatedAt: snapshot.updatedAt,
+  };
+}
+
+function restoreBuild(snapshot: CharacterBuildSnapshot | null): CharacterBuildState | null {
+  if (!snapshot) return null;
+
+  return {
+    speciesKey: snapshot.speciesKey,
+    lineageKey: snapshot.lineageKey,
+    classKey: snapshot.classKey,
+    backgroundKey: snapshot.backgroundKey,
+    abilities: AbilityAssignment.restore(snapshot.abilities),
+    choices: CharacterChoices.restore(snapshot.choices),
+    equipment: CharacterEquipment.restore(snapshot.equipment),
+  };
+}
+
+function buildSnapshotOf(build: CharacterBuildState | null): CharacterBuildSnapshot | null {
+  if (!build) return null;
+
+  return {
+    speciesKey: build.speciesKey,
+    lineageKey: build.lineageKey,
+    classKey: build.classKey,
+    backgroundKey: build.backgroundKey,
+    abilities: build.abilities.snapshot(),
+    choices: build.choices.snapshot(),
+    equipment: build.equipment.snapshot(),
   };
 }

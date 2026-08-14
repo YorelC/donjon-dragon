@@ -204,6 +204,18 @@ module.exports = {
       to: { path: '^src/modules/campaigns/' },
     },
     {
+      name: 'characters-is-downstream',
+      comment:
+        'Le dernier cran : characters connait campaigns et user (il verifie une ' +
+        "appartenance, il resout un pseudo d'assignation), aucun des trois ne " +
+        'connait characters. La regle manquait alors que la dependance existait ' +
+        "deja : rien n'empechait campaigns d'aller chercher les personnages d'une " +
+        "campagne, et le cycle ne se serait vu qu'au forwardRef.",
+      severity: 'error',
+      from: { path: '^src/modules/(user|auth|friendship|campaigns)/' },
+      to: { path: '^src/modules/characters/' },
+    },
+    {
       name: 'no-testing-doubles-in-production-code',
       comment:
         'Les doubles de <module>/testing/ et de kernel/testing/ ne sont importables ' +

@@ -4,7 +4,7 @@ import {
   type QueryClient,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { CreateCharacterDto } from "@donjon-dragon/shared";
+import type { StartCharacterDto } from "@donjon-dragon/shared";
 import { api } from "@/shared/api/api";
 import { API_ROUTES } from "@/shared/constants/api-routes";
 import { campaignCharactersKey } from "./use-campaign-characters";
@@ -13,12 +13,16 @@ function refreshCharacters(queryClient: QueryClient, campaignId: string) {
   queryClient.invalidateQueries({ queryKey: campaignCharactersKey(campaignId) });
 }
 
-export function useCreateCharacter(campaignId: string) {
+/**
+ * Créer un personnage ouvre un brouillon : un nom, et rien d'autre. Le tirage
+ * des dés et les choix viennent ensuite, par le wizard.
+ */
+export function useStartCharacter(campaignId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (sheet: CreateCharacterDto) =>
-      api.post(API_ROUTES.characters.create(campaignId), sheet),
+    mutationFn: (draft: StartCharacterDto) =>
+      api.post(API_ROUTES.characters.start(campaignId), draft),
     onSuccess: () => {
       refreshCharacters(queryClient, campaignId);
       toast.success("Personnage créé");
@@ -27,22 +31,22 @@ export function useCreateCharacter(campaignId: string) {
   });
 }
 
-export interface UpdateCharacterVariables {
+export interface RenameCharacterVariables {
   characterId: string;
-  sheet: CreateCharacterDto;
+  name: string;
 }
 
-export function useUpdateCharacter(campaignId: string) {
+export function useRenameCharacter(campaignId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ characterId, sheet }: UpdateCharacterVariables) =>
-      api.put(API_ROUTES.characters.update(campaignId, characterId), sheet),
+    mutationFn: ({ characterId, name }: RenameCharacterVariables) =>
+      api.patch(API_ROUTES.characters.rename(campaignId, characterId), { name }),
     onSuccess: () => {
       refreshCharacters(queryClient, campaignId);
-      toast.success("Personnage mis à jour");
+      toast.success("Personnage renommé");
     },
-    onError: () => toast.error("Impossible de modifier ce personnage"),
+    onError: () => toast.error("Impossible de renommer ce personnage"),
   });
 }
 

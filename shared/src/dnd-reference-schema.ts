@@ -110,6 +110,26 @@ export const WeaponProficiencySchema = z.enum([
 
 export const CreatureSizeSchema = z.enum(['Small', 'Medium']);
 
+export const LanguageSchema = z.enum([
+  'common',
+  'commonSignLanguage',
+  'draconic',
+  'dwarvish',
+  'elvish',
+  'giant',
+  'gnomish',
+  'goblin',
+  'halfling',
+  'orc',
+  'abyssal',
+  'celestial',
+  'deepSpeech',
+  'infernal',
+  'primordial',
+  'sylvan',
+  'undercommon',
+]);
+
 export const EffectApplicationSchema = z.enum([
   'passive',
   'grant',
@@ -136,5 +156,6 @@ export type OriginFeatKey = z.infer<typeof OriginFeatKeySchema>;
 export type ArmorTraining = z.infer<typeof ArmorTrainingSchema>;
 export type WeaponProficiency = z.infer<typeof WeaponProficiencySchema>;
 export type CreatureSize = z.infer<typeof CreatureSizeSchema>;
+export type Language = z.infer<typeof LanguageSchema>;
 export type EffectApplication = z.infer<typeof EffectApplicationSchema>;
 export type EffectSourceType = z.infer<typeof EffectSourceTypeSchema>;

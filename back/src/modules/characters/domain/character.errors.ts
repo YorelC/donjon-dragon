@@ -59,3 +59,27 @@ export class NotAssignedError extends ConflictDomainError {
     super('This character is not assigned to anyone');
   }
 }
+
+/** Le wizard rend sa copie avant d'avoir lancé les dés. */
+export class AbilitiesNotRolledError extends ConflictDomainError {
+  constructor() {
+    super('Abilities have not been rolled yet');
+  }
+}
+
+/**
+ * Relancer les dés d'un personnage terminé reviendrait à retirer jusqu'à obtenir
+ * six 18 tout en gardant sa fiche.
+ */
+export class CharacterAlreadyReadyError extends ConflictDomainError {
+  constructor() {
+    super('This character is already finalized');
+  }
+}
+
+/** Un brouillon n'a pas de fiche : il manque encore les choix du joueur. */
+export class CharacterNotReadyError extends ConflictDomainError {
+  constructor() {
+    super('This character is still a draft');
+  }
+}

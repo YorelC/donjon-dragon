@@ -27,14 +27,12 @@ export function CharacterRowView(props: CharacterRowProps) {
       <CardHeader className="flex-row items-center justify-between gap-2">
         <CardTitle className="text-base">
           {character.name}
-          <span className="ml-2 font-normal text-muted-foreground">
-            {character.race} · {character.characterClass}
-          </span>
+          <BuildSummary character={character} />
         </CardTitle>
         <AssignmentBadge character={character} />
       </CardHeader>
       <CardContent className="flex flex-wrap items-center gap-2">
-        <AbilityScoresSummary character={character} />
+        <CreationProgress character={character} />
         <RowActions {...props} />
       </CardContent>
     </Card>
@@ -47,14 +45,33 @@ function AssignmentBadge({ character }: { character: Character }) {
   return <Badge>{character.assignedTo.displayName}</Badge>;
 }
 
-function AbilityScoresSummary({ character }: { character: Character }) {
-  const { strength, dexterity, constitution, intelligence, wisdom, charisma } =
-    character.abilityScores;
+/** Espèce, classe et historique n'existent qu'une fois le wizard terminé. */
+function BuildSummary({ character }: { character: Character }) {
+  const { build } = character;
+  if (!build) return <Badge className="ml-2" variant="secondary">Brouillon</Badge>;
+
+  return (
+    <span className="ml-2 font-normal text-muted-foreground">
+      {build.speciesName} · {build.className} · {build.backgroundName}
+    </span>
+  );
+}
+
+/** Un brouillon annonce ce qu'il lui reste à faire, pas des scores qu'il n'a pas. */
+function CreationProgress({ character }: { character: Character }) {
+  if (character.status === "ready") {
+    return (
+      <p className="w-full text-sm text-muted-foreground">
+        Tirage : {character.abilityRoll?.totals.join(" · ")}
+      </p>
+    );
+  }
 
   return (
     <p className="w-full text-sm text-muted-foreground">
-      FOR {strength} · DEX {dexterity} · CON {constitution} · INT {intelligence} · SAG{" "}
-      {wisdom} · CHA {charisma}
+      {character.abilityRoll
+        ? "Dés lancés, choix à terminer."
+        : "Création à commencer : les dés n'ont pas encore été lancés."}
     </p>
   );
 }
