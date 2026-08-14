@@ -1,5 +1,7 @@
 import { BACKGROUNDS, type Background } from '../reference/backgrounds';
 import { CLASSES } from '../reference/classes';
+import { CLASS_ORDERS } from '../reference/class-orders';
+import { FIGHTING_STYLES } from '../reference/fighting-styles';
 import type { CollectedEffect, EffectSource, Feature } from '../reference/effect';
 import { ORIGIN_FEATS } from '../reference/origin-feats';
 import { SPECIES } from '../reference/species';
@@ -50,10 +52,46 @@ function findLineage(build: CharacterBuild) {
 
 function collectClassEffects(build: CharacterBuild): CollectedEffect[] {
   const characterClass = CLASSES[build.classKey];
-  return flatten(characterClass.level1Features, {
+
+  return [
+    ...flatten(characterClass.level1Features, {
+      type: 'class',
+      key: characterClass.key,
+      label: characterClass.name,
+    }),
+    ...collectFightingStyle(build),
+    ...collectClassOrder(build),
+  ];
+}
+
+/** Le don de Style de combat que le guerrier choisit au niveau 1. */
+function collectFightingStyle(build: CharacterBuild): CollectedEffect[] {
+  const chosen = build.choices.all.flatMap((choice) =>
+    choice.fightingStyle ? [choice.fightingStyle] : [],
+  )[0];
+  const style = chosen ? FIGHTING_STYLES[chosen] : undefined;
+  if (!style) return [];
+
+  return flatten([{ ...style, description: style.description }], {
     type: 'class',
-    key: characterClass.key,
-    label: characterClass.name,
+    key: style.key,
+    label: 'Style de combat',
+  });
+}
+
+/** L'Ordre divin du clerc, l'Ordre primitif du druide. */
+function collectClassOrder(build: CharacterBuild): CollectedEffect[] {
+  const order = CLASS_ORDERS[build.classKey];
+  const chosen = build.choices.all.flatMap((choice) =>
+    choice.classOrder ? [choice.classOrder] : [],
+  )[0];
+  const option = order?.options.find((entry) => entry.key === chosen);
+  if (!order || !option) return [];
+
+  return flatten([{ ...option, description: option.description }], {
+    type: 'class',
+    key: option.key,
+    label: order.name,
   });
 }
 

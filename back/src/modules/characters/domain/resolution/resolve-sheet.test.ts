@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { aBuild } from '../../testing/character-build.fixture';
+import { aBuild, type BuildDraft } from '../../testing/character-build.fixture';
 import { resolveSheet } from './resolve-sheet';
 
 const CHAIN_MAIL = 'chain-mail';
@@ -329,6 +329,123 @@ describe('noble magicien humain', () => {
     const resilience = sheet.features.find((feature) => feature.name === 'Polyvalent');
 
     expect(resilience?.applications).toEqual(['grant']);
+  });
+});
+
+describe('guerrier au Style de combat Défense', () => {
+  const draft: BuildDraft = {
+    speciesKey: 'halfling',
+    classKey: 'fighter',
+    backgroundKey: 'soldier',
+    base: {
+      strength: 15,
+      dexterity: 14,
+      constitution: 13,
+      intelligence: 12,
+      wisdom: 10,
+      charisma: 8,
+    },
+    backgroundBonuses: { strength: 2, constitution: 1 },
+    choices: [
+      {
+        source: { type: 'class', key: 'fighter' },
+        skills: ['perception', 'survival'],
+        fightingStyle: 'defense',
+      },
+    ],
+  };
+
+  it('ajoute son point de CA quand une armure est portée', () => {
+    const sheet = resolveSheet(aBuild({ ...draft, armorKey: CHAIN_MAIL }));
+
+    expect(sheet.armorClass.value).toBe(17);
+    expect(sheet.armorClass.sources).toEqual(['Cotte de mailles', 'Défense']);
+  });
+
+  // Sans ce filtre, un magicien qui prendrait Défense gagnerait un point de CA
+  // qu'aucune règle ne lui accorde.
+  it('ne donne rien à un personnage sans armure', () => {
+    const sheet = resolveSheet(aBuild({ ...draft }));
+
+    expect(sheet.armorClass.value).toBe(12);
+    expect(sheet.armorClass.sources).toEqual(['Sans armure']);
+  });
+});
+
+describe('clerc Protecteur', () => {
+  const sheet = resolveSheet(
+    aBuild({
+      speciesKey: 'halfling',
+      classKey: 'cleric',
+      backgroundKey: 'acolyte',
+      base: {
+        strength: 8,
+        dexterity: 10,
+        constitution: 12,
+        intelligence: 14,
+        wisdom: 15,
+        charisma: 13,
+      },
+      backgroundBonuses: { wisdom: 2, intelligence: 1 },
+      choices: [
+        {
+          source: { type: 'class', key: 'cleric' },
+          skills: ['insight', 'religion'],
+          classOrder: 'protector',
+        },
+      ],
+    }),
+  );
+
+  it('gagne les armures lourdes et les armes de guerre', () => {
+    expect(sheet.proficiencies.armorTraining).toContain('heavy');
+    expect(sheet.proficiencies.weapons).toContain('martial');
+  });
+
+  it('affiche son Ordre divin comme une capacité', () => {
+    const order = sheet.features.find((feature) => feature.source === 'Ordre divin');
+
+    expect(order?.name).toBe('Protecteur');
+  });
+});
+
+describe('druide Mage', () => {
+  // Sagesse laissée à 10 : son modificateur vaut 0, et le plancher du « minimum
+  // +1 » est justement ce qui se vérifie ici.
+  const sheet = resolveSheet(
+    aBuild({
+      speciesKey: 'halfling',
+      classKey: 'druid',
+      backgroundKey: 'artisan',
+      base: {
+        strength: 8,
+        dexterity: 14,
+        constitution: 13,
+        intelligence: 12,
+        wisdom: 10,
+        charisma: 15,
+      },
+      backgroundBonuses: { dexterity: 2, intelligence: 1 },
+      choices: [
+        {
+          source: { type: 'class', key: 'druid' },
+          skills: ['arcana', 'nature'],
+          classOrder: 'magician',
+        },
+      ],
+    }),
+  );
+
+  const skillOf = (name: string) => sheet.skills.find((skill) => skill.skill === name);
+
+  it('applique le plancher de +1 quand la Sagesse ne donne rien', () => {
+    expect(sheet.abilities.wisdom.modifier).toBe(0);
+    expect(skillOf('arcana')?.modifier).toBe(4);
+    expect(skillOf('nature')?.modifier).toBe(4);
+  });
+
+  it('ne touche pas aux compétences que l’Ordre ne vise pas', () => {
+    expect(skillOf('history')?.modifier).toBe(1);
   });
 });
 

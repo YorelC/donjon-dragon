@@ -31,7 +31,11 @@ export interface CharacterChoice {
   originFeat?: OriginFeatKey;
   spellcastingAbility?: Ability;
   spellList?: ClassKey;
-  /** Style de combat, Ordre divin, Ordre primitif : une capacité nommée. */
+  /** Le don de Style de combat du guerrier. */
+  fightingStyle?: string;
+  /** L'option d'Ordre divin (clerc) ou d'Ordre primitif (druide). */
+  classOrder?: string;
+  /** Une capacité nommée qui ne rentre dans aucun des champs ci-dessus. */
   feature?: string;
 }
 

@@ -32,6 +32,7 @@ import {
   resolveSkills,
   type ResolvedSavingThrow,
   type ResolvedSkill,
+  type SkillsInput,
 } from './resolve-skills';
 import {
   resolveSpellcasting,
@@ -80,7 +81,7 @@ export function resolveSheet(build: CharacterBuild): ComputedCharacter {
   return {
     ...identityOf(build),
     ...derivedValuesOf(derived),
-    ...skillsOf(context, proficiencies),
+    ...skillsOf({ ...context, effects, proficiencies }),
     level: build.level,
     proficiencyBonus: context.proficiencyBonus,
     abilityMethod: build.abilities.method,
@@ -128,10 +129,8 @@ function proficienciesFor(
 }
 
 function skillsOf(
-  context: FormulaContext,
-  proficiencies: ResolvedProficiencies,
+  input: SkillsInput,
 ): Pick<ComputedCharacter, 'skills' | 'savingThrows' | 'passivePerception'> {
-  const input = { ...context, proficiencies };
   const skills = resolveSkills(input);
 
   return {

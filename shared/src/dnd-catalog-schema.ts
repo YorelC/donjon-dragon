@@ -72,6 +72,18 @@ export const CatalogSpellcastingSchema = z.object({
   focus: z.string(),
 });
 
+/**
+ * Un choix que la classe impose au niveau 1 : le Style de combat du guerrier,
+ * l'Ordre divin du clerc, l'Ordre primitif du druide. Le wizard en fait une
+ * étape à part entière.
+ */
+export const CatalogClassChoiceSchema = z.object({
+  key: z.string(),
+  name: z.string(),
+  description: z.string(),
+  options: z.array(CatalogFeatureSchema),
+});
+
 export const CatalogClassSchema = z.object({
   key: ClassKeySchema,
   name: z.string(),
@@ -90,6 +102,8 @@ export const CatalogClassSchema = z.object({
   level1Features: z.array(CatalogFeatureSchema),
   /** Combien de compétences voient leur bonus de maîtrise doublé. Roublard : 2. */
   expertiseCount: z.number().int().nonnegative(),
+  /** Style de combat, Ordre divin, Ordre primitif — vide pour la plupart. */
+  level1Choices: z.array(CatalogClassChoiceSchema),
 });
 
 /** Initié à la magie laisse choisir sa liste et sa caractéristique d'incantation. */
@@ -173,6 +187,7 @@ export type CatalogFeature = z.infer<typeof CatalogFeatureSchema>;
 export type CatalogLineage = z.infer<typeof CatalogLineageSchema>;
 export type CatalogLineageChoice = z.infer<typeof CatalogLineageChoiceSchema>;
 export type CatalogSpecies = z.infer<typeof CatalogSpeciesSchema>;
+export type CatalogClassChoice = z.infer<typeof CatalogClassChoiceSchema>;
 export type CatalogClass = z.infer<typeof CatalogClassSchema>;
 export type CatalogSpellcastingChoice = z.infer<typeof CatalogSpellcastingChoiceSchema>;
 export type CatalogOriginFeat = z.infer<typeof CatalogOriginFeatSchema>;

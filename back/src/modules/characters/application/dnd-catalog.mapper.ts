@@ -2,6 +2,7 @@ import type {
   CatalogArmor,
   CatalogBackground,
   CatalogClass,
+  CatalogClassChoice,
   CatalogFeature,
   CatalogLineageChoice,
   CatalogOriginFeat,
@@ -14,6 +15,8 @@ import type {
 import { ARMORS, SHIELD } from '../domain/reference/armors';
 import { BACKGROUNDS, type Background } from '../domain/reference/backgrounds';
 import { CLASSES, type CharacterClass } from '../domain/reference/classes';
+import { CLASS_ORDERS } from '../domain/reference/class-orders';
+import { FIGHTING_STYLES } from '../domain/reference/fighting-styles';
 import type { Feature, GrantPayload, SkillChoice } from '../domain/reference/effect';
 import { ORIGIN_FEATS, type OriginFeat } from '../domain/reference/origin-feats';
 import { SKILL_LABELS } from '../domain/reference/skills';
@@ -86,7 +89,47 @@ function toCatalogClass(characterClass: CharacterClass): CatalogClass {
     spellcasting: toCatalogSpellcasting(characterClass),
     level1Features: characterClass.level1Features.map(toCatalogFeature),
     expertiseCount: expertiseCountOf(characterClass.level1Features),
+    level1Choices: level1ChoicesOf(characterClass),
   };
+}
+
+/**
+ * Ce que la classe fait choisir au niveau 1, en plus de ses compétences : le
+ * Style de combat du guerrier, l'Ordre du clerc et du druide. Le wizard en fait
+ * une étape à part.
+ */
+function level1ChoicesOf(characterClass: CharacterClass): CatalogClassChoice[] {
+  return [...fightingStyleChoice(characterClass), ...orderChoice(characterClass)];
+}
+
+function fightingStyleChoice(characterClass: CharacterClass): CatalogClassChoice[] {
+  const grantsStyle = characterClass.level1Features
+    .flatMap((feature) => feature.effects)
+    .some((effect) => effect.grants?.feature === 'fightingStyle');
+  if (!grantsStyle) return [];
+
+  return [
+    {
+      key: 'fightingStyle',
+      name: 'Style de combat',
+      description: 'Vous obtenez un don de Style de combat de votre choix.',
+      options: Object.values(FIGHTING_STYLES).map(toCatalogFeature),
+    },
+  ];
+}
+
+function orderChoice(characterClass: CharacterClass): CatalogClassChoice[] {
+  const order = CLASS_ORDERS[characterClass.key];
+  if (!order) return [];
+
+  return [
+    {
+      key: order.key,
+      name: order.name,
+      description: order.description,
+      options: order.options.map(toCatalogFeature),
+    },
+  ];
 }
 
 /** Le type de lanceur ne sort pas : au niveau 1 seul le pacte s'en distingue. */

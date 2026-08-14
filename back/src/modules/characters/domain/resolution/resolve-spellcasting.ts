@@ -1,6 +1,7 @@
 import type { CharacterChoice, CharacterChoices } from '../character-choices';
 import type { Ability } from '../reference/abilities';
 import { CLASSES } from '../reference/classes';
+import type { CollectedEffect } from '../reference/effect';
 import type { ClassKey, SpellKey } from '../reference/keys';
 import { SPELLS } from '../reference/spells';
 import type { CharacterBuild } from './character-build';
@@ -55,6 +56,18 @@ function classSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
       slotsRecoverOnShortRest: spellcasting.kind === 'pact',
     },
   ];
+}
+
+/**
+ * Les sorts mineurs qu'une capacité ajoute à ceux de la classe — Thaumaturge et
+ * Mage en donnent un chacun. C'est un compte, pas un sort : c'est l'étape des
+ * sorts du wizard qui s'en sert pour en proposer un de plus.
+ */
+export function extraCantripsOf(effects: readonly CollectedEffect[]): number {
+  return effects.reduce(
+    (total, collected) => total + (collected.effect.grants?.extraCantrips ?? 0),
+    0,
+  );
 }
 
 function featSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {

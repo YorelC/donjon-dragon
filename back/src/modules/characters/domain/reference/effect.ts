@@ -49,7 +49,8 @@ export type Formula =
   | { kind: 'abilityModifier'; ability: Ability }
   | { kind: 'proficiencyBonus' }
   | { kind: 'perLevel'; value: number }
-  | { kind: 'sum'; parts: readonly Formula[] };
+  | { kind: 'sum'; parts: readonly Formula[] }
+  | { kind: 'atLeast'; value: number; of: Formula };
 
 export const constant = (value: number): Formula => ({ kind: 'constant', value });
 
@@ -63,6 +64,16 @@ export const proficiencyBonus = (): Formula => ({ kind: 'proficiencyBonus' });
 export const perLevel = (value: number): Formula => ({ kind: 'perLevel', value });
 
 export const sum = (...parts: readonly Formula[]): Formula => ({ kind: 'sum', parts });
+
+/**
+ * Un plancher. Les Ordres de niveau 1 accordent « votre modificateur de Sagesse
+ * (minimum +1) » : sans ce plancher, un druide à Sagesse 10 recevrait +0.
+ */
+export const atLeast = (value: number, of: Formula): Formula => ({
+  kind: 'atLeast',
+  value,
+  of,
+});
 
 // ---------------------------------------------------------------------------
 // Effets passifs
@@ -94,7 +105,7 @@ export type PassiveKind =
  * plus le bouclier. Sans ce champ, un barbare en cotte de mailles cumulerait deux
  * formules de CA.
  */
-export type ArmorRequirement = 'unarmored' | 'unarmoredWithoutShield';
+export type ArmorRequirement = 'unarmored' | 'unarmoredWithoutShield' | 'armored';
 
 export interface PassiveEffect {
   kind: PassiveKind;
@@ -181,6 +192,8 @@ export interface GrantPayload {
   spellcastingChoice?: SpellcastingChoice;
   /** Bottes d'arme : nombre d'armes dont on maîtrise la botte. */
   weaponMasteryCount?: number;
+  /** Sorts mineurs en plus de ceux de la classe — Thaumaturge et Mage en donnent un. */
+  extraCantrips?: number;
   /** Expertise du roublard : compétences dont le bonus de maîtrise est doublé. */
   expertiseChoiceCount?: number;
   /** Défense sans armure, Style de combat : capacités nommées, sans effet chiffré. */

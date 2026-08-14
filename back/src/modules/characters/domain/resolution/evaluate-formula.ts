@@ -21,6 +21,8 @@ const EVALUATORS: FormulaEvaluators = {
   perLevel: (formula, context) => formula.value * context.level,
   sum: (formula, context) =>
     formula.parts.reduce((total, part) => total + evaluateFormula(part, context), 0),
+  atLeast: (formula, context) =>
+    Math.max(formula.value, evaluateFormula(formula.of, context)),
 };
 
 /**

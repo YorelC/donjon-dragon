@@ -104,10 +104,25 @@ function isApplicableSet(
 ): passive is ApplicableSet {
   if (!passive?.formula) return false;
   if (passive.kind !== 'set' || passive.target !== 'armorClass') return false;
+
+  return meetsArmorRequirement(passive, equipment);
+}
+
+/**
+ * La condition d'armure d'un effet. Elle vaut pour les remplacements comme pour
+ * les bonus : le Style de combat Défense n'ajoute son point de CA que si une
+ * armure est portée, et un magicien qui le prendrait ne gagnerait rien.
+ */
+function meetsArmorRequirement(
+  passive: PassiveEffect,
+  equipment: CharacterEquipment,
+): boolean {
   if (passive.requires === 'unarmored') return equipment.isUnarmored;
   if (passive.requires === 'unarmoredWithoutShield') {
     return equipment.isUnarmored && !equipment.shield;
   }
+  if (passive.requires === 'armored') return !equipment.isUnarmored;
+
   return true;
 }
 
@@ -116,6 +131,7 @@ function additiveBonus(input: ArmorClassInput): ResolvedValue {
     const passive = collected.effect.passive;
     if (passive?.kind !== 'bonus' || passive.target !== 'armorClass') return [];
     if (!passive.formula) return [];
+    if (!meetsArmorRequirement(passive, input.equipment)) return [];
 
     return [{ value: evaluateFormula(passive.formula, input.context), source: collected.feature }];
   });
