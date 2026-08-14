@@ -70,6 +70,29 @@ export const BackgroundAbilityBonusesSchema = z.object({
   charisma: backgroundBonusField(),
 });
 
+/**
+ * Les trois façons de fixer ses caractéristiques. Le serveur vérifie chacune à
+ * sa manière : permutation du tirage persisté, permutation du tableau standard,
+ * ou bornes et budget pour l'achat de points.
+ */
+export const AbilityMethodSchema = z.enum(['roll', 'standardArray', 'pointBuy']);
+
+export const STANDARD_ARRAY = [15, 14, 13, 12, 10, 8] as const;
+
+export const POINT_BUY_COSTS: Readonly<Record<number, number>> = {
+  8: 0,
+  9: 1,
+  10: 2,
+  11: 3,
+  12: 4,
+  13: 5,
+  14: 7,
+  15: 9,
+};
+
+export const POINT_BUY_BUDGET = 27;
+export const POINT_BUY_BOUNDS = { min: 8, max: 15 } as const;
+
 export const DICE_PER_ABILITY_ROLL = 4;
 export const ABILITY_ROLL_COUNT = 6;
 
@@ -148,6 +171,7 @@ export const FinalizeCharacterSchema = z.object({
   lineageKey: z.string().nullable(),
   classKey: ClassKeySchema,
   backgroundKey: BackgroundKeySchema,
+  abilityMethod: AbilityMethodSchema,
   base: AbilityScoresSchema,
   backgroundBonuses: BackgroundAbilityBonusesSchema,
   choices: z.array(CharacterChoiceSchema),
@@ -197,6 +221,7 @@ export const CharacterSchema = z.object({
 
 export type AbilityScores = z.infer<typeof AbilityScoresSchema>;
 export type BackgroundAbilityBonuses = z.infer<typeof BackgroundAbilityBonusesSchema>;
+export type AbilityMethod = z.infer<typeof AbilityMethodSchema>;
 export type AbilityRoll = z.infer<typeof AbilityRollSchema>;
 export type ChoiceSource = z.infer<typeof ChoiceSourceSchema>;
 export type CharacterChoice = z.infer<typeof CharacterChoiceSchema>;

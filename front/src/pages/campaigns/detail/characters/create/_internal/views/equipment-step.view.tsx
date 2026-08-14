@@ -30,8 +30,13 @@ export function EquipmentStepView({ catalog, draft, onChange }: EquipmentStepVie
 /**
  * Seules l'armure et le bouclier entrent dans une formule au niveau 1 : c'est
  * pour ça qu'ils se choisissent ici, et que le reste du paquetage reste du texte.
+ *
+ * On ne propose que ce que la classe sait porter — un magicien n'a aucune
+ * maîtrise d'armure et ne voit donc que « Sans armure ».
  */
 function ArmorChoice({ catalog, draft, onChange }: EquipmentStepViewProps) {
+  const wearable = wearableArmors(catalog, draft);
+
   return (
     <div className="grid gap-2">
       <h3 className="section-title text-sm">Armure portée</h3>
@@ -44,7 +49,7 @@ function ArmorChoice({ catalog, draft, onChange }: EquipmentStepViewProps) {
         >
           Sans armure
         </Button>
-        {catalog.armors.map((armor) => (
+        {wearable.map((armor) => (
           <ArmorButton
             key={armor.key}
             armor={armor}
@@ -53,8 +58,21 @@ function ArmorChoice({ catalog, draft, onChange }: EquipmentStepViewProps) {
           />
         ))}
       </div>
+      {wearable.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Cette classe ne maîtrise aucune armure.
+        </p>
+      ) : null}
     </div>
   );
+}
+
+function wearableArmors(catalog: DndCatalog, draft: WizardDraft): CatalogArmor[] {
+  const training = catalog.classes.find((entry) => entry.key === draft.classKey)
+    ?.armorTraining;
+  if (!training) return [];
+
+  return catalog.armors.filter((armor) => training.includes(armor.training));
 }
 
 interface ArmorButtonProps {
@@ -79,7 +97,12 @@ function ArmorButton({ armor, selected, onSelect }: ArmorButtonProps) {
   );
 }
 
+/** Le bouclier est une maîtrise à part : sans elle, on ne le propose pas. */
 function ShieldToggle({ catalog, draft, onChange }: EquipmentStepViewProps) {
+  const training = catalog.classes.find((entry) => entry.key === draft.classKey)
+    ?.armorTraining;
+  if (!training?.includes("shields")) return null;
+
   return (
     <div className="flex items-center gap-3">
       <Switch

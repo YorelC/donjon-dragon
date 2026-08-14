@@ -1,21 +1,24 @@
 import type {
   Ability,
+  AbilityMethod,
   BackgroundAbilityBonuses,
   BackgroundKey,
-  CharacterChoice,
   ClassKey,
   DndCatalog,
-  FinalizeCharacterDto,
   OriginFeatKey,
-  PreviewCharacterSheetDto,
   SkillName,
   SpeciesKey,
 } from "@donjon-dragon/shared";
+import { POINT_BUY_COSTS, STANDARD_ARRAY } from "@donjon-dragon/shared";
 
-/** Les 18 compétences, lues du catalogue plutôt que redites côté front. */
-export function allSkillsOf(catalog: DndCatalog): SkillName[] {
-  return Object.keys(catalog.skillLabels) as SkillName[];
-}
+export const ABILITIES: Ability[] = [
+  "strength",
+  "dexterity",
+  "constitution",
+  "intelligence",
+  "wisdom",
+  "charisma",
+];
 
 export const ABILITY_LABELS: Record<Ability, string> = {
   strength: "Force",
@@ -34,146 +37,87 @@ export interface WizardDraft {
   speciesKey: SpeciesKey | null;
   lineageKey: string | null;
   speciesSkills: SkillName[];
-  originFeat: OriginFeatKey | null;
+
   classKey: ClassKey | null;
   classSkills: SkillName[];
   expertise: SkillName[];
+  classSpells: string[];
+
   backgroundKey: BackgroundKey | null;
   backgroundBonuses: BackgroundAbilityBonuses;
+
+  /** Le don que l'espèce laisse choisir — l'humain, et lui seul au niveau 1. */
+  speciesFeat: OriginFeatKey | null;
+  featSkills: SkillName[];
+  featTools: string[];
+  spellcastingAbility: Ability | null;
+  spellList: ClassKey | null;
+  featSpells: string[];
+
+  abilityMethod: AbilityMethod;
   /**
-   * Le RANG du tirage posé sur chaque caractéristique, pas sa valeur : deux 14
-   * dans un même tirage sont deux emplacements distincts, et chacun ne sert
-   * qu'une fois.
+   * Le RANG de la valeur posée sur chaque caractéristique, pas sa valeur : deux
+   * 14 dans un même tirage sont deux emplacements distincts. Sert au tirage et
+   * au tableau standard.
    */
   assignment: Partial<Record<Ability, number>>;
-  spells: string[];
-  spellcastingAbility: Ability | null;
+  /** L'achat de points fixe des scores directement, il n'y a rien à répartir. */
+  pointBuyScores: Record<Ability, number>;
+
   armorKey: string | null;
   shield: boolean;
 }
+
+export const POINT_BUY_FLOOR = 8;
 
 export const EMPTY_DRAFT: WizardDraft = {
   speciesKey: null,
   lineageKey: null,
   speciesSkills: [],
-  originFeat: null,
   classKey: null,
   classSkills: [],
   expertise: [],
+  classSpells: [],
   backgroundKey: null,
   backgroundBonuses: {},
-  assignment: {},
-  spells: [],
+  speciesFeat: null,
+  featSkills: [],
+  featTools: [],
   spellcastingAbility: null,
+  spellList: null,
+  featSpells: [],
+  abilityMethod: "standardArray",
+  assignment: {},
+  pointBuyScores: Object.fromEntries(
+    ABILITIES.map((ability) => [ability, POINT_BUY_FLOOR]),
+  ) as Record<Ability, number>,
   armorKey: null,
   shield: false,
 };
 
-const ABILITIES: Ability[] = [
-  "strength",
-  "dexterity",
-  "constitution",
-  "intelligence",
-  "wisdom",
-  "charisma",
-];
-
-/** Un score neutre tant que le joueur n'a pas réparti son tirage : l'aperçu doit répondre. */
-const UNASSIGNED_SCORE = 10;
-
-function baseScoresOf(
-  draft: WizardDraft,
-  rollTotals: readonly number[],
-): Record<Ability, number> {
-  return Object.fromEntries(
-    ABILITIES.map((ability) => {
-      const slot = draft.assignment[ability];
-
-      return [ability, slot === undefined ? UNASSIGNED_SCORE : rollTotals[slot] ?? UNASSIGNED_SCORE];
-    }),
-  ) as Record<Ability, number>;
+/** Les 18 compétences, lues du catalogue plutôt que redites côté front. */
+export function allSkillsOf(catalog: DndCatalog): SkillName[] {
+  return Object.keys(catalog.skillLabels) as SkillName[];
 }
 
-/** Les six caractéristiques ont-elles chacune reçu un rang du tirage ? */
+/** Les six valeurs à répartir : celles du tirage, ou celles du tableau standard. */
+export function availableScores(
+  draft: WizardDraft,
+  rollTotals: readonly number[],
+): readonly number[] {
+  return draft.abilityMethod === "roll" ? rollTotals : STANDARD_ARRAY;
+}
+
+export function pointBuySpent(draft: WizardDraft): number {
+  return ABILITIES.reduce(
+    (total, ability) => total + (POINT_BUY_COSTS[draft.pointBuyScores[ability]] ?? 0),
+    0,
+  );
+}
+
+/** Les six caractéristiques ont-elles chacune reçu une valeur ? */
 export function isFullyAssigned(draft: WizardDraft): boolean {
+  if (draft.abilityMethod === "pointBuy") return true;
+
   return ABILITIES.every((ability) => draft.assignment[ability] !== undefined);
-}
-
-/**
- * Les choix, regroupés par provenance. Le back en a besoin pour savoir quoi
- * retirer si la source disparaît, et pour vérifier que chaque source a bien
- * fait choisir ce qu'elle devait.
- */
-function choicesOf(draft: WizardDraft): CharacterChoice[] {
-  return [
-    ...speciesChoices(draft),
-    ...classChoices(draft),
-    ...featChoices(draft),
-  ];
-}
-
-function speciesChoices(draft: WizardDraft): CharacterChoice[] {
-  if (!draft.speciesKey) return [];
-
-  return [
-    {
-      source: { type: "species", key: draft.speciesKey },
-      skills: draft.speciesSkills,
-      ...(draft.originFeat ? { originFeat: draft.originFeat } : {}),
-    },
-  ];
-}
-
-function classChoices(draft: WizardDraft): CharacterChoice[] {
-  if (!draft.classKey) return [];
-
-  return [
-    {
-      source: { type: "class", key: draft.classKey },
-      skills: draft.classSkills,
-      expertise: draft.expertise,
-      spells: draft.spells,
-    },
-  ];
-}
-
-/** Initié à la magie porte sa liste et sa caractéristique, choisies par le joueur. */
-function featChoices(draft: WizardDraft): CharacterChoice[] {
-  if (!draft.spellcastingAbility) return [];
-
-  return [
-    {
-      source: { type: "feat", key: "magic-initiate" },
-      spellcastingAbility: draft.spellcastingAbility,
-    },
-  ];
-}
-
-export function toPreviewPayload(
-  draft: WizardDraft,
-  rollTotals: readonly number[],
-): PreviewCharacterSheetDto | null {
-  if (!draft.speciesKey || !draft.classKey || !draft.backgroundKey) return null;
-
-  return {
-    speciesKey: draft.speciesKey,
-    lineageKey: draft.lineageKey,
-    classKey: draft.classKey,
-    backgroundKey: draft.backgroundKey,
-    base: baseScoresOf(draft, rollTotals),
-    backgroundBonuses: draft.backgroundBonuses,
-    choices: choicesOf(draft),
-    equipment: { armorKey: draft.armorKey, shield: draft.shield, items: [], gold: 0 },
-  };
-}
-
-export function toFinalizePayload(
-  draft: WizardDraft,
-  rollTotals: readonly number[],
-  name: string,
-): FinalizeCharacterDto | null {
-  const preview = toPreviewPayload(draft, rollTotals);
-  if (!preview || !isFullyAssigned(draft)) return null;
-
-  return { ...preview, name };
 }

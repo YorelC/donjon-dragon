@@ -71,8 +71,9 @@ export const ResolvedFeatureSchema = z.object({
   name: z.string(),
   source: z.string(),
   sourceType: EffectSourceTypeSchema,
-  application: EffectApplicationSchema,
-  note: z.string().nullable(),
+  /** Une capacité porte souvent plusieurs modes : Vigilant est passif ET informatif. */
+  applications: z.array(EffectApplicationSchema),
+  notes: z.array(z.string()),
 });
 
 export const ResolvedResourceSchema = z.object({
@@ -102,6 +103,7 @@ export const ComputedCharacterSchema = z.object({
   size: CreatureSizeSchema,
   darkvision: z.number().nonnegative(),
 
+  abilityMethod: z.enum(['roll', 'standardArray', 'pointBuy']),
   abilities: abilityRecord(ResolvedAbilitySchema),
   maxHitPoints: ResolvedValueSchema,
   armorClass: ResolvedValueSchema,

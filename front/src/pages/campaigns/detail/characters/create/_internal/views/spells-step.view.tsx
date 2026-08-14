@@ -7,6 +7,10 @@ export interface SpellsStep {
   spells: CatalogSpellList | null;
   cantripsKnown: number;
   spellsPrepared: number;
+  /** La liste d'Initié à la magie, quand un don en accorde une. */
+  featSpells: CatalogSpellList | null;
+  featCantripsKnown: number;
+  featSpellsPrepared: number;
   isLoading: boolean;
 }
 
@@ -27,17 +31,42 @@ export function SpellsStepView({ step, draft, onChange }: SpellsStepViewProps) {
         title="Sorts mineurs"
         spells={step.spells.cantrips}
         limit={step.cantripsKnown}
-        draft={draft}
-        onChange={onChange}
+        selected={draft.classSpells}
+        onChange={(classSpells) => onChange({ classSpells })}
       />
       <SpellGroup
         title="Sorts de niveau 1"
         spells={step.spells.level1}
         limit={step.spellsPrepared}
-        draft={draft}
-        onChange={onChange}
+        selected={draft.classSpells}
+        onChange={(classSpells) => onChange({ classSpells })}
       />
+      <FeatSpells step={step} draft={draft} onChange={onChange} />
     </div>
+  );
+}
+
+/** Initié à la magie puise dans sa propre liste, avec son propre compte. */
+function FeatSpells({ step, draft, onChange }: SpellsStepViewProps) {
+  if (!step.featSpells || step.featCantripsKnown + step.featSpellsPrepared === 0) return null;
+
+  return (
+    <>
+      <SpellGroup
+        title="Sorts mineurs — Initié à la magie"
+        spells={step.featSpells.cantrips}
+        limit={step.featCantripsKnown}
+        selected={draft.featSpells}
+        onChange={(featSpells) => onChange({ featSpells })}
+      />
+      <SpellGroup
+        title="Sort de niveau 1 — Initié à la magie"
+        spells={step.featSpells.level1}
+        limit={step.featSpellsPrepared}
+        selected={draft.featSpells}
+        onChange={(featSpells) => onChange({ featSpells })}
+      />
+    </>
   );
 }
 
@@ -45,13 +74,13 @@ interface SpellGroupProps {
   title: string;
   spells: readonly CatalogSpell[];
   limit: number;
-  draft: WizardDraft;
-  onChange: (patch: Partial<WizardDraft>) => void;
+  selected: readonly string[];
+  onChange: (keys: string[]) => void;
 }
 
-function SpellGroup({ title, spells, limit, draft, onChange }: SpellGroupProps) {
+function SpellGroup({ title, spells, limit, selected, onChange }: SpellGroupProps) {
   if (limit === 0) return null;
-  const chosen = spells.filter((spell) => draft.spells.includes(spell.key));
+  const chosen = spells.filter((spell) => selected.includes(spell.key));
 
   return (
     <div className="grid gap-2">
@@ -64,7 +93,7 @@ function SpellGroup({ title, spells, limit, draft, onChange }: SpellGroupProps) 
             key={spell.key}
             spell={spell}
             full={chosen.length >= limit}
-            draft={draft}
+            selected={selected}
             onChange={onChange}
           />
         ))}
@@ -76,12 +105,12 @@ function SpellGroup({ title, spells, limit, draft, onChange }: SpellGroupProps) 
 interface SpellToggleProps {
   spell: CatalogSpell;
   full: boolean;
-  draft: WizardDraft;
-  onChange: (patch: Partial<WizardDraft>) => void;
+  selected: readonly string[];
+  onChange: (keys: string[]) => void;
 }
 
-function SpellToggle({ spell, full, draft, onChange }: SpellToggleProps) {
-  const chosen = draft.spells.includes(spell.key);
+function SpellToggle({ spell, full, selected, onChange }: SpellToggleProps) {
+  const chosen = selected.includes(spell.key);
 
   return (
     <Button
@@ -90,7 +119,7 @@ function SpellToggle({ spell, full, draft, onChange }: SpellToggleProps) {
       variant={chosen ? "default" : "outline"}
       disabled={full && !chosen}
       title={spell.description}
-      onClick={() => onChange({ spells: toggle(draft.spells, spell.key) })}
+      onClick={() => onChange(toggle(selected, spell.key))}
     >
       {spell.name}
     </Button>

@@ -1,3 +1,4 @@
+import type { AbilityMethod } from '../ability-generation';
 import { proficiencyBonusAt, type Ability } from '../reference/abilities';
 import { BACKGROUNDS } from '../reference/backgrounds';
 import { CLASSES } from '../reference/classes';
@@ -45,6 +46,7 @@ import {
 export interface ComputedCharacter {
   level: number;
   proficiencyBonus: number;
+  abilityMethod: AbilityMethod;
   speciesName: string;
   lineageName: string | null;
   className: string;
@@ -81,6 +83,7 @@ export function resolveSheet(build: CharacterBuild): ComputedCharacter {
     ...skillsOf(context, proficiencies),
     level: build.level,
     proficiencyBonus: context.proficiencyBonus,
+    abilityMethod: build.abilities.method,
     abilities,
     proficiencies,
     spellcasting: resolveSpellcasting({ ...context, build }),

@@ -13,6 +13,7 @@ export function toBuildDraft(body: PreviewCharacterSheetDto): CharacterBuildDraf
     lineageKey: body.lineageKey,
     classKey: body.classKey,
     backgroundKey: body.backgroundKey,
+    abilityMethod: body.abilityMethod,
     base: body.base,
     backgroundBonuses: body.backgroundBonuses,
     choices: body.choices,

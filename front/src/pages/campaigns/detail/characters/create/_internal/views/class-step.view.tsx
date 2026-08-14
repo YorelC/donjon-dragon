@@ -25,7 +25,7 @@ export function ClassStepView(props: ClassStepViewProps) {
             classKey: key as ClassKey,
             classSkills: [],
             expertise: [],
-            spells: [],
+            classSpells: [],
           })
         }
       />

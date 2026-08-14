@@ -1,4 +1,5 @@
 import { AbilityAssignment, type AbilityBonuses } from '../domain/ability-assignment';
+import type { AbilityMethod } from '../domain/ability-generation';
 import { AbilityRoll } from '../domain/ability-roll';
 import { CharacterChoices, type CharacterChoice } from '../domain/character-choices';
 import { CharacterEquipment } from '../domain/character-equipment';
@@ -34,6 +35,7 @@ export interface BuildDraft {
   base: AbilityRecord;
   backgroundBonuses: AbilityBonuses;
   lineageKey?: LineageKey | null;
+  abilityMethod?: AbilityMethod;
   choices?: readonly CharacterChoice[];
   armorKey?: string | null;
   shield?: boolean;
@@ -54,6 +56,7 @@ export function aBuild(draft: BuildDraft): CharacterBuild {
 
 function abilitiesOf(draft: BuildDraft): AbilityAssignment {
   return AbilityAssignment.create({
+    method: draft.abilityMethod ?? 'roll',
     roll: STANDARD_ARRAY_ROLL,
     base: draft.base,
     backgroundBonuses: draft.backgroundBonuses,

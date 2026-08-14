@@ -48,6 +48,23 @@ describe('DndCatalogController', () => {
     expect(human?.grantsOriginFeatChoice).toBe(true);
   });
 
+  it('annonce le paramétrage qu’attend chaque don', () => {
+    const feats = controller.getCatalog().originFeats;
+    const magicInitiate = feats.find((feat) => feat.key === 'magic-initiate');
+    const skilled = feats.find((feat) => feat.key === 'skilled');
+    const tough = feats.find((feat) => feat.key === 'tough');
+
+    expect(magicInitiate?.spellcastingChoice).toEqual({
+      abilityOptions: ['intelligence', 'wisdom', 'charisma'],
+      spellListOptions: ['cleric', 'druid', 'wizard'],
+      cantripsKnown: 2,
+      spellsPrepared: 1,
+    });
+    expect(skilled?.skillOrToolChoiceCount).toBe(3);
+    expect(tough?.spellcastingChoice).toBeNull();
+    expect(tough?.skillOrToolChoiceCount).toBe(0);
+  });
+
   it('annonce les deux expertises du roublard', () => {
     const rogue = controller.getCatalog().classes.find((entry) => entry.key === 'rogue');
 

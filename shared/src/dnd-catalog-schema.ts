@@ -92,11 +92,25 @@ export const CatalogClassSchema = z.object({
   expertiseCount: z.number().int().nonnegative(),
 });
 
+/** Initié à la magie laisse choisir sa liste et sa caractéristique d'incantation. */
+export const CatalogSpellcastingChoiceSchema = z.object({
+  abilityOptions: z.array(AbilitySchema),
+  spellListOptions: z.array(ClassKeySchema),
+  cantripsKnown: z.number().int().nonnegative(),
+  spellsPrepared: z.number().int().nonnegative(),
+});
+
 export const CatalogOriginFeatSchema = z.object({
   key: OriginFeatKeySchema,
   name: z.string(),
   description: z.string(),
   repeatable: z.boolean(),
+  /** Non nul quand le don demande une liste de sorts et une caractéristique. */
+  spellcastingChoice: CatalogSpellcastingChoiceSchema.nullable(),
+  /** Doué en demande trois, entre compétences et outils. */
+  skillOrToolChoiceCount: z.number().int().nonnegative(),
+  /** Façonneur et Musicien font choisir des outils ou des instruments. */
+  toolChoiceCount: z.number().int().nonnegative(),
 });
 
 export const CatalogBackgroundSchema = z.object({
@@ -160,6 +174,7 @@ export type CatalogLineage = z.infer<typeof CatalogLineageSchema>;
 export type CatalogLineageChoice = z.infer<typeof CatalogLineageChoiceSchema>;
 export type CatalogSpecies = z.infer<typeof CatalogSpeciesSchema>;
 export type CatalogClass = z.infer<typeof CatalogClassSchema>;
+export type CatalogSpellcastingChoice = z.infer<typeof CatalogSpellcastingChoiceSchema>;
 export type CatalogOriginFeat = z.infer<typeof CatalogOriginFeatSchema>;
 export type CatalogBackground = z.infer<typeof CatalogBackgroundSchema>;
 export type CatalogArmor = z.infer<typeof CatalogArmorSchema>;

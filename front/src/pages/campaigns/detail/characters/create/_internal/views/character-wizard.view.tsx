@@ -13,6 +13,7 @@ import { AbilitiesStepView } from "./abilities-step.view";
 import { BackgroundStepView } from "./background-step.view";
 import { ClassStepView } from "./class-step.view";
 import { EquipmentStepView } from "./equipment-step.view";
+import { FeatsStepView } from "./feats-step.view";
 import { SpeciesStepView } from "./species-step.view";
 import type { SpellsStep } from "./spells-step.view";
 import { SpellsStepView } from "./spells-step.view";
@@ -43,18 +44,24 @@ export function CharacterWizardView({ screen }: { screen: WizardScreen }) {
   );
 }
 
+/**
+ * Un fil d'Ariane, pas des onglets : on ne saute pas une étape non validée, mais
+ * on revient librement sur celles qu'on a déjà passées.
+ */
 function StepTabs({ wizard }: { wizard: WizardState }) {
   return (
     <div className="flex flex-wrap gap-2">
-      {wizard.steps.map((step) => (
+      {wizard.steps.map((step, index) => (
         <Button
           key={step}
           type="button"
           size="sm"
+          disabled={!wizard.isReachable(step)}
           variant={step === wizard.step ? "default" : "outline"}
           onClick={() => wizard.goTo(step)}
         >
-          {STEP_LABELS[step]}
+          {index + 1}. {STEP_LABELS[step]}
+          {wizard.validity[step] && step !== wizard.step ? " ✓" : ""}
         </Button>
       ))}
     </div>
@@ -73,6 +80,7 @@ function StepContent({ screen }: { screen: WizardScreen }) {
     species: () => <SpeciesStepView {...shared} />,
     class: () => <ClassStepView {...shared} />,
     background: () => <BackgroundStepView {...shared} />,
+    feats: () => <FeatsStepView {...shared} />,
     equipment: () => <EquipmentStepView {...shared} />,
     abilities: () => (
       <AbilitiesStepView step={screen.abilities} draft={shared.draft} onChange={shared.onChange} />
@@ -117,7 +125,7 @@ function WizardFooter({ screen }: { screen: WizardScreen }) {
           {screen.isFinishing ? "Enregistrement..." : "Terminer le personnage"}
         </Button>
       ) : (
-        <Button type="button" onClick={wizard.next}>
+        <Button type="button" disabled={!wizard.canGoNext} onClick={wizard.next}>
           Suivant
         </Button>
       )}

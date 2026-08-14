@@ -55,6 +55,7 @@ function buildFrom(dto: PreviewCharacterSheetDto): CharacterBuild {
     abilities: AbilityAssignment.restore({
       base: draft.base,
       backgroundBonuses: draft.backgroundBonuses,
+      method: draft.abilityMethod,
     }),
     choices: CharacterChoices.create(draft.choices),
     equipment: CharacterEquipment.create(draft.equipment),

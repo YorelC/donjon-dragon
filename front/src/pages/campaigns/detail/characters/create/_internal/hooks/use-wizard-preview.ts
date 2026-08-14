@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { ComputedCharacter } from "@donjon-dragon/shared";
 import { usePreviewSheet } from "../queries/use-character-creation";
-import { toPreviewPayload, type WizardDraft } from "../types/wizard-draft";
+import type { WizardDraft } from "../types/wizard-draft";
+import { toPreviewPayload } from "../types/wizard-payload";
 
 /** Le temps qu'un joueur met à finir de cliquer avant qu'un appel parte. */
 const DEBOUNCE_MS = 350;

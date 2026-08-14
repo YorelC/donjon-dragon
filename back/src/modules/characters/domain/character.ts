@@ -6,6 +6,7 @@ import {
   type AbilityAssignmentSnapshot,
   type AbilityBonuses,
 } from './ability-assignment';
+import type { AbilityMethod } from './ability-generation';
 import { AbilityRoll, type AbilityRollSnapshot } from './ability-roll';
 import {
   CharacterChoices,
@@ -19,7 +20,6 @@ import {
 import { CharacterId } from './character-id';
 import { CharacterName } from './character-name';
 import {
-  AbilitiesNotRolledError,
   AlreadyAssignedToThisPlayerError,
   CharacterAlreadyReadyError,
   CharacterNotReadyError,
@@ -65,6 +65,7 @@ export interface CharacterBuildDraft {
   lineageKey: LineageKey | null;
   classKey: ClassKey;
   backgroundKey: BackgroundKey;
+  abilityMethod: AbilityMethod;
   base: AbilityRecord;
   backgroundBonuses: AbilityBonuses;
   choices: readonly CharacterChoice[];
@@ -217,13 +218,17 @@ export class Character {
     this.touch(now);
   }
 
-  /** Le wizard rend sa copie : on vérifie tout, puis le personnage devient jouable. */
+  /**
+   * Le wizard rend sa copie : on vérifie tout, puis le personnage devient jouable.
+   *
+   * Le tirage n'est plus exigé ici : seule la méthode `roll` en a besoin, et
+   * c'est `AbilityAssignment` qui le réclame — un joueur au tableau standard ou
+   * à l'achat de points n'a jamais lancé de dé.
+   */
   finalize(draft: CharacterBuildDraft, context: CharacterAccessContext, now: Date): void {
     this.assertEditableBy(context);
-    const roll = this.state.roll;
-    if (!roll) throw new AbilitiesNotRolledError();
 
-    this.state.build = buildFrom(draft, roll);
+    this.state.build = buildFrom(draft, this.state.roll);
     this.state.status = 'ready';
     this.touch(now);
   }
@@ -314,14 +319,11 @@ export class Character {
  * bien du tirage, les bonus de caractéristique appartiennent à l'historique, et
  * les choix couvrent ce que l'espèce et la classe demandaient.
  */
-function buildFrom(draft: CharacterBuildDraft, roll: AbilityRoll): CharacterBuildState {
-  const abilities = AbilityAssignment.create({
-    roll,
-    base: draft.base,
-    backgroundBonuses: draft.backgroundBonuses,
-  });
-  abilities.assertBonusesFit(BACKGROUNDS[draft.backgroundKey].abilityBonuses);
-
+function buildFrom(
+  draft: CharacterBuildDraft,
+  roll: AbilityRoll | null,
+): CharacterBuildState {
+  const abilities = assignmentFrom(draft, roll);
   const choices = CharacterChoices.create(draft.choices);
   validateChoices({ ...draft, choices });
 
@@ -334,6 +336,21 @@ function buildFrom(draft: CharacterBuildDraft, roll: AbilityRoll): CharacterBuil
     choices,
     equipment: CharacterEquipment.create(draft.equipment),
   };
+}
+
+function assignmentFrom(
+  draft: CharacterBuildDraft,
+  roll: AbilityRoll | null,
+): AbilityAssignment {
+  const abilities = AbilityAssignment.create({
+    method: draft.abilityMethod,
+    roll,
+    base: draft.base,
+    backgroundBonuses: draft.backgroundBonuses,
+  });
+  abilities.assertBonusesFit(BACKGROUNDS[draft.backgroundKey].abilityBonuses);
+
+  return abilities;
 }
 
 function restoreState(snapshot: CharacterSnapshot): CharacterState {

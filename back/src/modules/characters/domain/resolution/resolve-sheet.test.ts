@@ -283,6 +283,55 @@ describe('clerc acolyte', () => {
   });
 });
 
+// Doué n'a que des effets `grant`. Tant que resolveFeatures les jetait, le don
+// du noble n'apparaissait nulle part sur sa fiche.
+describe('noble magicien humain', () => {
+  const sheet = resolveSheet(
+    aBuild({
+      speciesKey: 'human',
+      classKey: 'wizard',
+      backgroundKey: 'noble',
+      base: {
+        strength: 8,
+        dexterity: 14,
+        constitution: 13,
+        intelligence: 15,
+        wisdom: 12,
+        charisma: 10,
+      },
+      backgroundBonuses: { intelligence: 2, charisma: 1 },
+      choices: [
+        { source: { type: 'species', key: 'human' }, skills: ['medicine'] },
+        { source: { type: 'class', key: 'wizard' }, skills: ['arcana', 'history'] },
+        {
+          source: { type: 'feat', key: 'skilled' },
+          skills: ['investigation', 'nature', 'religion'],
+        },
+      ],
+    }),
+  );
+
+  it('affiche le don de son historique', () => {
+    const skilled = sheet.features.find((feature) => feature.name === 'Doué');
+
+    expect(skilled).toBeDefined();
+    expect(skilled?.source).toBe('Doué');
+    expect(skilled?.applications).toEqual(['grant']);
+  });
+
+  it('ne montre chaque capacité qu’une fois, quel que soit son nombre d’effets', () => {
+    const names = sheet.features.map((feature) => `${feature.source}/${feature.name}`);
+
+    expect(new Set(names).size).toBe(names.length);
+  });
+
+  it('regroupe les modes d’une capacité qui en porte plusieurs', () => {
+    const resilience = sheet.features.find((feature) => feature.name === 'Polyvalent');
+
+    expect(resilience?.applications).toEqual(['grant']);
+  });
+});
+
 describe('occultiste', () => {
   it('récupère ses emplacements de pacte au Repos court', () => {
     const sheet = resolveSheet(

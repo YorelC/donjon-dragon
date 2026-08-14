@@ -1,21 +1,49 @@
 import { InvalidDomainError } from '@kernel/domain/domain.error';
 
+import {
+  POINT_BUY_BUDGET,
+  STANDARD_ARRAY,
+  isWithinPointBuyRange,
+  pointBuyCostOf,
+  type AbilityMethod,
+} from './ability-generation';
 import type { AbilityRoll } from './ability-roll';
+import { AbilitiesNotRolledError } from './character.errors';
 import { ABILITIES, type Ability, type AbilityRecord } from './reference/abilities';
 import { BACKGROUND_ABILITY_BONUS_PLANS } from './reference/backgrounds';
 
 export type AbilityBonuses = Partial<Record<Ability, number>>;
 
 export interface AbilityAssignmentSnapshot {
-  /** La valeur du tirage posée sur chaque caractéristique, avant bonus. */
+  /** La valeur posée sur chaque caractéristique, avant bonus. */
   base: AbilityRecord;
   /** Les +2/+1 ou +1/+1/+1 de l'historique. */
   backgroundBonuses: AbilityBonuses;
+  /** D'où viennent ces scores : la fiche doit pouvoir le dire. */
+  method: AbilityMethod;
 }
 
 export class AbilityAssignmentMismatchError extends InvalidDomainError {
   constructor() {
     super('Assigned scores are not a permutation of the roll');
+  }
+}
+
+export class NotAStandardArrayError extends InvalidDomainError {
+  constructor() {
+    super('Assigned scores are not the standard array');
+  }
+}
+
+export class ScoreOutsidePointBuyRangeError extends InvalidDomainError {
+  constructor() {
+    super('Point buy scores must be between 8 and 15');
+  }
+}
+
+export class PointBuyBudgetExceededError extends InvalidDomainError {
+  constructor() {
+    super(`Point buy costs more than ${POINT_BUY_BUDGET} points`);
   }
 }
 
@@ -26,18 +54,40 @@ export class InvalidBackgroundBonusesError extends InvalidDomainError {
 }
 
 export interface AbilityAssignmentInput {
-  roll: AbilityRoll;
+  method: AbilityMethod;
+  /** Nécessaire pour la méthode `roll`, ignoré par les deux autres. */
+  roll: AbilityRoll | null;
   base: AbilityRecord;
   backgroundBonuses: AbilityBonuses;
 }
 
+type MethodValidator = (base: readonly number[], roll: AbilityRoll | null) => void;
+
 /**
- * La répartition du tirage sur les six caractéristiques, plus les bonus de
- * l'historique.
+ * Chaque méthode porte sa propre vérification. C'est ce qui fait qu'aucune ne
+ * peut servir de porte dérobée : un joueur qui annonce « tableau standard » doit
+ * fournir exactement les six valeurs du tableau, et un joueur qui annonce
+ * « achat de points » ne peut pas dépenser 28 points.
+ */
+const VALIDATORS: Record<AbilityMethod, MethodValidator> = {
+  roll: (base, roll) => {
+    if (!roll) throw new AbilitiesNotRolledError();
+    if (!isPermutationOf(roll.totals, base)) throw new AbilityAssignmentMismatchError();
+  },
+  standardArray: (base) => {
+    if (!isPermutationOf(STANDARD_ARRAY, base)) throw new NotAStandardArrayError();
+  },
+  pointBuy: (base) => {
+    if (!base.every(isWithinPointBuyRange)) throw new ScoreOutsidePointBuyRangeError();
+    if (pointBuyCostOf(base) > POINT_BUY_BUDGET) throw new PointBuyBudgetExceededError();
+  },
+};
+
+/**
+ * La répartition des six caractéristiques, plus les bonus de l'historique.
  *
- * L'invariant qui compte est celui de la permutation : les six valeurs posées
- * doivent être exactement les six totaux tirés, ni plus ni moins. Sans lui, le
- * tirage côté serveur ne servirait à rien — un client enverrait six 18.
+ * L'invariant qui compte dépend de la méthode annoncée, mais il existe dans les
+ * trois cas — sans lui, rien n'empêcherait un client d'envoyer six 18.
  */
 export class AbilityAssignment {
   declare private readonly brand: 'AbilityAssignment';
@@ -45,19 +95,24 @@ export class AbilityAssignment {
   private constructor(
     private readonly base: AbilityRecord,
     private readonly bonuses: AbilityBonuses,
+    readonly method: AbilityMethod,
   ) {}
 
   static create(input: AbilityAssignmentInput): AbilityAssignment {
-    if (!isPermutationOf(input.roll.totals, Object.values(input.base))) {
-      throw new AbilityAssignmentMismatchError();
-    }
-    return new AbilityAssignment({ ...input.base }, { ...input.backgroundBonuses });
+    VALIDATORS[input.method](Object.values(input.base), input.roll);
+
+    return new AbilityAssignment(
+      { ...input.base },
+      { ...input.backgroundBonuses },
+      input.method,
+    );
   }
 
   static restore(snapshot: AbilityAssignmentSnapshot): AbilityAssignment {
     return new AbilityAssignment(
       { ...snapshot.base },
       { ...snapshot.backgroundBonuses },
+      snapshot.method,
     );
   }
 
@@ -76,7 +131,11 @@ export class AbilityAssignment {
   }
 
   snapshot(): AbilityAssignmentSnapshot {
-    return { base: { ...this.base }, backgroundBonuses: { ...this.bonuses } };
+    return {
+      base: { ...this.base },
+      backgroundBonuses: { ...this.bonuses },
+      method: this.method,
+    };
   }
 }
 
@@ -84,6 +143,7 @@ function isPermutationOf(expected: readonly number[], actual: readonly number[])
   if (expected.length !== actual.length) return false;
   const sortedExpected = [...expected].sort(ascending);
   const sortedActual = [...actual].sort(ascending);
+
   return sortedExpected.every((value, index) => value === sortedActual[index]);
 }
 

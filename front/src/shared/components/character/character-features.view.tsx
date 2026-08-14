@@ -71,14 +71,16 @@ function ResourceBlock({ sheet }: CharacterFeaturesViewProps) {
   );
 }
 
+/**
+ * Toutes les capacités, y compris celles qui n'accordent qu'une maîtrise : les
+ * filtrer rendait Doué — le don du noble — totalement invisible.
+ */
 function FeatureBlock({ sheet }: CharacterFeaturesViewProps) {
-  const displayed = sheet.features.filter((feature) => feature.application !== "grant");
-
   return (
     <div className="grid gap-2">
       <h3 className="section-title text-sm">Capacités</h3>
-      {displayed.map((feature, index) => (
-        <FeatureRow key={`${feature.name}-${index}`} feature={feature} />
+      {sheet.features.map((feature, index) => (
+        <FeatureRow key={`${feature.source}-${feature.name}-${index}`} feature={feature} />
       ))}
     </div>
   );
@@ -87,14 +89,22 @@ function FeatureBlock({ sheet }: CharacterFeaturesViewProps) {
 function FeatureRow({ feature }: { feature: ResolvedFeature }) {
   return (
     <p className="text-sm">
-      <Badge variant="secondary" className="mr-2">
-        {APPLICATION_LABELS[feature.application] ?? feature.application}
-      </Badge>
+      {uniqueApplications(feature).map((application) => (
+        <Badge key={application} variant="secondary" className="mr-2">
+          {APPLICATION_LABELS[application] ?? application}
+        </Badge>
+      ))}
       <span className="font-medium">{feature.name}</span>
       <span className="text-muted-foreground"> ({feature.source})</span>
-      {feature.note ? (
-        <span className="block text-muted-foreground">{feature.note}</span>
-      ) : null}
+      {feature.notes.map((note) => (
+        <span key={note} className="block text-muted-foreground">
+          {note}
+        </span>
+      ))}
     </p>
   );
+}
+
+function uniqueApplications(feature: ResolvedFeature): string[] {
+  return [...new Set(feature.applications)];
 }

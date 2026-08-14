@@ -22,6 +22,7 @@ export const A_CHARACTER_BUILD: CharacterBuildDraft = {
   lineageKey: null,
   classKey: 'rogue',
   backgroundKey: 'charlatan',
+  abilityMethod: 'roll',
   base: { ...A_VALID_ASSIGNMENT },
   backgroundBonuses: { dexterity: 2, charisma: 1 },
   choices: [

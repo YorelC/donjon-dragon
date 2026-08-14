@@ -11,7 +11,9 @@ import {
   useFinalizeCharacter,
   useRollAbilities,
 } from "../queries/use-character-creation";
-import { isFullyAssigned, toFinalizePayload } from "../types/wizard-draft";
+import { featsOf } from "./use-step-validity";
+import { isFullyAssigned } from "../types/wizard-draft";
+import { toFinalizePayload } from "../types/wizard-payload";
 
 export interface WizardTarget {
   campaignId: string;
@@ -86,21 +88,37 @@ function useAbilitiesStep(
   };
 }
 
+/**
+ * Deux listes de sorts peuvent coexister : celle de la classe, et celle
+ * qu'Initié à la magie fait choisir — chez le clerc, le druide ou le magicien.
+ */
 function useSpellsStep(
   catalog: DndCatalog | undefined,
   wizard: WizardState,
 ): WizardScreen["spells"] {
   const spells = useClassSpells(wizard.draft.classKey);
+  const featSpells = useClassSpells(wizard.draft.spellList);
   const spellcasting = catalog?.classes.find(
     (entry) => entry.key === wizard.draft.classKey,
   )?.spellcasting;
+  const featChoice = featSpellcastingOf(catalog, wizard);
 
   return {
     spells: spells.data ?? null,
     cantripsKnown: spellcasting?.cantripsKnown ?? 0,
     spellsPrepared: spellcasting?.spellsPrepared ?? 0,
-    isLoading: spells.isLoading,
+    featSpells: featSpells.data ?? null,
+    featCantripsKnown: featChoice?.cantripsKnown ?? 0,
+    featSpellsPrepared: featChoice?.spellsPrepared ?? 0,
+    isLoading: spells.isLoading || featSpells.isLoading,
   };
+}
+
+function featSpellcastingOf(catalog: DndCatalog | undefined, wizard: WizardState) {
+  if (!catalog) return null;
+
+  return featsOf(catalog, wizard.draft).find((feat) => feat.spellcastingChoice)
+    ?.spellcastingChoice;
 }
 
 function useFinishAction(

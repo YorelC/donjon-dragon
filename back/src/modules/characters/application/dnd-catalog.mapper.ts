@@ -14,7 +14,7 @@ import type {
 import { ARMORS, SHIELD } from '../domain/reference/armors';
 import { BACKGROUNDS, type Background } from '../domain/reference/backgrounds';
 import { CLASSES, type CharacterClass } from '../domain/reference/classes';
-import type { Feature, SkillChoice } from '../domain/reference/effect';
+import type { Feature, GrantPayload, SkillChoice } from '../domain/reference/effect';
 import { ORIGIN_FEATS, type OriginFeat } from '../domain/reference/origin-feats';
 import { SKILL_LABELS } from '../domain/reference/skills';
 import { SPECIES, type Species } from '../domain/reference/species';
@@ -117,13 +117,47 @@ function toCatalogBackground(background: Background): CatalogBackground {
   };
 }
 
+/**
+ * Le wizard a besoin de savoir qu'un don attend un paramétrage — sinon Initié à
+ * la magie arrive sans liste ni caractéristique, et Doué sans ses trois
+ * maîtrises. Tout se lit dans les effets déjà écrits, il n'y a pas de donnée à
+ * ajouter au catalogue du domaine.
+ */
 function toCatalogOriginFeat(feat: OriginFeat): CatalogOriginFeat {
+  const grants = feat.effects.flatMap((effect) => (effect.grants ? [effect.grants] : []));
+
   return {
     key: feat.key,
     name: feat.name,
     description: feat.description,
     repeatable: feat.repeatable,
+    spellcastingChoice: spellcastingChoiceOf(grants),
+    skillOrToolChoiceCount: sumOf(grants, (grant) => grant.skillOrToolChoiceCount),
+    toolChoiceCount: sumOf(grants, (grant) => grant.toolChoice?.count),
   };
+}
+
+function spellcastingChoiceOf(
+  grants: readonly GrantPayload[],
+): CatalogOriginFeat['spellcastingChoice'] {
+  const choice = grants.flatMap((grant) =>
+    grant.spellcastingChoice ? [grant.spellcastingChoice] : [],
+  )[0];
+  if (!choice) return null;
+
+  return {
+    abilityOptions: [...choice.abilityOptions],
+    spellListOptions: [...choice.spellListOptions],
+    cantripsKnown: choice.cantripsKnown,
+    spellsPrepared: choice.spellsPrepared,
+  };
+}
+
+function sumOf(
+  grants: readonly GrantPayload[],
+  read: (grant: GrantPayload) => number | undefined,
+): number {
+  return grants.reduce((total, grant) => total + (read(grant) ?? 0), 0);
 }
 
 function toCatalogArmor(armor: (typeof ARMORS)[string]): CatalogArmor {

@@ -22,6 +22,7 @@ const A_FINALIZED_CHARACTER = {
   lineageKey: null,
   classKey: 'rogue',
   backgroundKey: 'charlatan',
+  abilityMethod: 'roll',
   base: VALID_SCORES,
   backgroundBonuses: { dexterity: 2, charisma: 1 },
   choices: [
@@ -74,6 +75,24 @@ describe('FinalizeCharacterSchema', () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it('n’accepte que les trois méthodes de génération connues', () => {
+    ['roll', 'standardArray', 'pointBuy'].forEach((abilityMethod) => {
+      const result = FinalizeCharacterSchema.safeParse({
+        ...A_FINALIZED_CHARACTER,
+        abilityMethod,
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    const invented = FinalizeCharacterSchema.safeParse({
+      ...A_FINALIZED_CHARACTER,
+      abilityMethod: 'freeform',
+    });
+
+    expect(invented.success).toBe(false);
   });
 });
 

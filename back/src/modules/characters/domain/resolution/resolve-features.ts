@@ -9,8 +9,9 @@ export interface ResolvedFeature {
   name: string;
   source: string;
   sourceType: EffectSourceType;
-  application: EffectApplication;
-  note: string | null;
+  /** Une capacité porte souvent plusieurs modes : Vigilant est passif ET informatif. */
+  applications: EffectApplication[];
+  notes: string[];
 }
 
 export interface ResolvedResource {
@@ -25,17 +26,35 @@ export interface ResolvedResource {
  *
  * Au niveau 1 le moteur ne déclenche rien — `reactive` et `active` restent
  * latents. Mais ils doivent apparaître sur la fiche, sinon un joueur ne sait pas
- * qu'il a une Rage à dépenser. On les liste avec leur mode, leur origine, et
- * leur compteur quand ils en ont un.
+ * qu'il a une Rage à dépenser.
+ *
+ * On regroupe par capacité et non par effet : une capacité à deux effets est
+ * une ligne, pas deux. Et on garde les `grant` — les jeter rendait Doué, qui
+ * n'a que des effets d'octroi, totalement invisible sur la fiche d'un noble.
  */
 export function resolveFeatures(effects: readonly CollectedEffect[]): ResolvedFeature[] {
-  return effects.map((collected) => ({
+  const byFeature = new Map<string, ResolvedFeature>();
+
+  effects.forEach((collected) => {
+    const key = `${collected.source.type}:${collected.source.key}:${collected.feature}`;
+    const existing = byFeature.get(key) ?? emptyFeature(collected);
+
+    existing.applications.push(collected.effect.application);
+    if (collected.effect.note) existing.notes.push(collected.effect.note);
+    byFeature.set(key, existing);
+  });
+
+  return [...byFeature.values()];
+}
+
+function emptyFeature(collected: CollectedEffect): ResolvedFeature {
+  return {
     name: collected.feature,
     source: collected.source.label,
     sourceType: collected.source.type,
-    application: collected.effect.application,
-    note: collected.effect.note ?? null,
-  }));
+    applications: [],
+    notes: [],
+  };
 }
 
 /**
