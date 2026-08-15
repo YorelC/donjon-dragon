@@ -11,8 +11,6 @@ import { CharacterName } from './character-name';
 import {
   AbilitiesNotRolledError,
   AlreadyAssignedToThisPlayerError,
-  CharacterAlreadyReadyError,
-  CharacterNotReadyError,
   NotAssignedError,
   NotEditableByActorError,
   OnlyGameMasterCanAssignError,
@@ -29,7 +27,14 @@ const NOW = TEST_INSTANT;
 const NAME = CharacterName.create(A_CHARACTER_NAME);
 
 function aCharacter(createdBy: UserId = gandalf): Character {
-  return Character.start(campaignId, NAME, createdBy, NOW);
+  return Character.create({
+    campaignId,
+    name: NAME,
+    createdBy,
+    build: A_CHARACTER_BUILD,
+    roll: STANDARD_ARRAY_ROLL,
+    now: NOW,
+  });
 }
 
 function contextFor(overrides: Partial<CharacterAccessContext>): CharacterAccessContext {
@@ -45,76 +50,31 @@ function contextFor(overrides: Partial<CharacterAccessContext>): CharacterAccess
 /** Le MJ créateur, qui a tous les droits sur ce qu'il vient d'ouvrir. */
 const asCreator = contextFor({ actorId: gandalf, actorIsGameMaster: true });
 
-function aRolledCharacter(): Character {
-  const character = aCharacter();
-  character.rollAbilities(STANDARD_ARRAY_ROLL, asCreator, NOW);
-
-  return character;
-}
-
-function aReadyCharacter(): Character {
-  const character = aRolledCharacter();
-  character.finalize(A_CHARACTER_BUILD, asCreator, NOW);
-
-  return character;
-}
-
-describe('Character.start', () => {
-  it('naît en brouillon, non assigné, sans tirage ni fiche', () => {
+describe('Character.create', () => {
+  it('naît complet, non assigné, avec son tirage et sa fiche', () => {
     const character = aCharacter();
 
-    expect(character.status).toBe('draft');
+    expect(character.status).toBe('waiting_adventure');
     expect(character.assignedTo).toBeNull();
-    expect(character.abilityRoll).toBeNull();
-    expect(character.build).toBeNull();
+    expect(character.abilityRoll?.totals).toEqual([15, 14, 13, 12, 10, 8]);
+    expect(character.build.classKey).toBe('rogue');
   });
 
-  it('refuse de livrer une fiche tant qu il est un brouillon', () => {
-    expect(() => aCharacter().assertIsReady()).toThrow(CharacterNotReadyError);
-  });
-});
-
-describe('Character.rollAbilities', () => {
-  it('pose le tirage sur le brouillon', () => {
-    expect(aRolledCharacter().abilityRoll?.totals).toEqual([15, 14, 13, 12, 10, 8]);
-  });
-
-  it('laisse relancer tant que le personnage n est pas terminé', () => {
-    const character = aRolledCharacter();
-
+  it('refuse une copie en méthode « roll » sans tirage fourni', () => {
     expect(() =>
-      character.rollAbilities(STANDARD_ARRAY_ROLL, asCreator, NOW),
-    ).not.toThrow();
+      Character.create({
+        campaignId,
+        name: NAME,
+        createdBy: gandalf,
+        build: A_CHARACTER_BUILD,
+        roll: null,
+        now: NOW,
+      }),
+    ).toThrow(AbilitiesNotRolledError);
   });
 
-  // Sinon un joueur retirerait jusqu'à obtenir six 18 en gardant sa fiche.
-  it('refuse de relancer une fois le personnage terminé', () => {
-    const character = aReadyCharacter();
-
-    expect(() => character.rollAbilities(STANDARD_ARRAY_ROLL, asCreator, NOW)).toThrow(
-      CharacterAlreadyReadyError,
-    );
-  });
-});
-
-describe('Character.finalize', () => {
-  it('rend le personnage jouable et lui donne son build', () => {
-    const character = aReadyCharacter();
-
-    expect(character.status).toBe('ready');
-    expect(character.build?.classKey).toBe('rogue');
-    expect(() => character.assertIsReady()).not.toThrow();
-  });
-
-  it('refuse une copie rendue avant le lancer de dés', () => {
-    expect(() => aCharacter().finalize(A_CHARACTER_BUILD, asCreator, NOW)).toThrow(
-      AbilitiesNotRolledError,
-    );
-  });
-
-  // L'invariant qui rend le tirage serveur utile.
-  it('refuse des caractéristiques qui ne sortent pas du tirage', () => {
-    const character = aRolledCharacter();
+  // L'invariant qui rend le tirage utile même sans vérification serveur.
+  it('refuse des caractéristiques qui ne sortent pas du tirage fourni', () => {
     const cheated = {
       ...A_CHARACTER_BUILD,
       base: {
@@ -127,13 +87,61 @@ describe('Character.finalize', () => {
       },
     };
 
-    expect(() => character.finalize(cheated, asCreator, NOW)).toThrow(
-      AbilityAssignmentMismatchError,
-    );
+    expect(() =>
+      Character.create({
+        campaignId,
+        name: NAME,
+        createdBy: gandalf,
+        build: cheated,
+        roll: STANDARD_ARRAY_ROLL,
+        now: NOW,
+      }),
+    ).toThrow(AbilityAssignmentMismatchError);
+  });
+
+  it('refuse une espèce à lignage sans lignage choisi', () => {
+    const missingLineage = { ...A_CHARACTER_BUILD, speciesKey: 'elf' as const };
+
+    expect(() =>
+      Character.create({
+        campaignId,
+        name: NAME,
+        createdBy: gandalf,
+        build: missingLineage,
+        roll: STANDARD_ARRAY_ROLL,
+        now: NOW,
+      }),
+    ).toThrow(LineageRequiredError);
+  });
+});
+
+describe('Character.rollAbilities', () => {
+  it('remplace le tirage d un personnage déjà créé', () => {
+    const character = aCharacter();
+    character.rollAbilities(STANDARD_ARRAY_ROLL, asCreator, NOW);
+
+    expect(character.abilityRoll?.totals).toEqual([15, 14, 13, 12, 10, 8]);
+  });
+
+  it('refuse un acteur qui n a pas le droit d éditer', () => {
+    const character = aCharacter();
+
+    expect(() =>
+      character.rollAbilities(STANDARD_ARRAY_ROLL, contextFor({ actorId: sam }), NOW),
+    ).toThrow(NotEditableByActorError);
+  });
+});
+
+describe('Character.finalize', () => {
+  it('remplace le build du personnage', () => {
+    const character = aCharacter();
+    character.finalize(A_CHARACTER_BUILD, asCreator, NOW);
+
+    expect(character.build.classKey).toBe('rogue');
   });
 
   it('refuse un nombre de compétences de classe qui ne colle pas', () => {
-    const character = aRolledCharacter();
+    const character = aCharacter();
     const tooFewSkills = {
       ...A_CHARACTER_BUILD,
       choices: [{ source: { type: 'class' as const, key: 'rogue' }, skills: ['stealth' as const] }],
@@ -144,17 +152,8 @@ describe('Character.finalize', () => {
     );
   });
 
-  it('refuse une espèce à lignage sans lignage choisi', () => {
-    const character = aRolledCharacter();
-    const missingLineage = { ...A_CHARACTER_BUILD, speciesKey: 'elf' as const };
-
-    expect(() => character.finalize(missingLineage, asCreator, NOW)).toThrow(
-      LineageRequiredError,
-    );
-  });
-
   it('refuse un acteur qui n a pas le droit d éditer', () => {
-    const character = aRolledCharacter();
+    const character = aCharacter();
 
     expect(() =>
       character.finalize(A_CHARACTER_BUILD, contextFor({ actorId: sam }), NOW),
@@ -164,7 +163,7 @@ describe('Character.finalize', () => {
 
 describe('Character.restore', () => {
   it('rend exactement ce qu il a reçu', () => {
-    const snapshot = aReadyCharacter().snapshot();
+    const snapshot = aCharacter().snapshot();
 
     expect(Character.restore(snapshot).snapshot()).toEqual(snapshot);
   });
@@ -172,7 +171,7 @@ describe('Character.restore', () => {
 
 describe('Character.selfAssignToCreator', () => {
   it('assigne le personnage à son créateur', () => {
-    const character = Character.start(campaignId, NAME, frodo, NOW);
+    const character = aCharacter(frodo);
     character.selfAssignToCreator(NOW);
 
     expect(character.assignedTo?.equals(frodo)).toBe(true);

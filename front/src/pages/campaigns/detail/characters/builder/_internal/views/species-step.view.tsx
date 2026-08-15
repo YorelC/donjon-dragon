@@ -1,26 +1,26 @@
 import type { CatalogSpecies, DndCatalog, SkillName } from "@donjon-dragon/shared";
 import { Separator } from "@/shared/components/atoms/separator";
-import { allSkillsOf, type CharacterDraft } from "../types/character-draft";
+import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
 import { knownSkillsExcept } from "../types/builder-lookups";
 import { OptionListView } from "./option-list.view";
 import { SkillPickerView } from "./skill-picker.view";
 
 interface SpeciesStepViewProps {
   catalog: DndCatalog;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 /** Le lignage a son propre écran : il n'apparaît que pour cinq espèces sur neuf. */
 export function SpeciesStepView(props: SpeciesStepViewProps) {
-  const { catalog, draft, onChange } = props;
-  const species = catalog.species.find((entry) => entry.key === draft.speciesKey);
+  const { catalog, composition, onChange } = props;
+  const species = catalog.species.find((entry) => entry.key === composition.speciesKey);
 
   return (
     <div className="grid gap-4">
       <OptionListView
         options={catalog.species}
-        selectedKey={draft.speciesKey}
+        selectedKey={composition.speciesKey}
         onSelect={(key) =>
           onChange({
             speciesKey: key as CatalogSpecies["key"],
@@ -62,7 +62,7 @@ function TraitList({ species }: { species: CatalogSpecies }) {
   );
 }
 
-function SpeciesSkillChoice({ catalog, species, draft, onChange }: SpeciesDetailsProps) {
+function SpeciesSkillChoice({ catalog, species, composition, onChange }: SpeciesDetailsProps) {
   if (!species.skillChoice) return null;
   const { count, options } = species.skillChoice;
 
@@ -71,9 +71,9 @@ function SpeciesSkillChoice({ catalog, species, draft, onChange }: SpeciesDetail
       picker={{
         count,
         options: options === "any" ? allSkillsOf(catalog) : options,
-        selected: draft.speciesSkills,
+        selected: composition.speciesSkills,
         labels: catalog.skillLabels,
-        alreadyKnown: knownSkillsExcept({ catalog, draft }, "species"),
+        alreadyKnown: knownSkillsExcept({ catalog, composition }, "species"),
         onChange: (speciesSkills: SkillName[]) => onChange({ speciesSkills }),
       }}
     />

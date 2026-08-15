@@ -4,6 +4,7 @@ export const ROUTES = {
   campaignDetail: "/campaigns/:campaignId",
   campaignDetailUsers: "/campaigns/:campaignId/users",
   campaignDetailCharacters: "/campaigns/:campaignId/characters",
+  campaignCharacterNew: "/campaigns/:campaignId/characters/new",
   campaignCharacterBuilder: "/campaigns/:campaignId/characters/:characterId/builder",
   campaignCharacterSheet: "/campaigns/:campaignId/characters/:characterId/sheet",
   profile: "/profile",
@@ -28,10 +29,10 @@ export const toCampaignDetailUsers = (campaignId: string): string =>
 export const toCampaignDetailCharacters = (campaignId: string): string =>
   `${toCampaignDetail(campaignId)}/characters`;
 
-/**
- * Le builder sert la création, et servira la montée de niveau et l'édition : son
- * URL dit ce qu'on fait, pas à quel moment on le fait.
- */
+export const toCharacterNew = (campaignId: string): string =>
+  `${toCampaignDetailCharacters(campaignId)}/new`;
+
+/** Le builder d'un personnage déjà créé : montée de niveau, correction. */
 export const toCharacterBuilder = (campaignId: string, characterId: string): string =>
   `${toCampaignDetailCharacters(campaignId)}/${encodeURIComponent(characterId)}/builder`;
 

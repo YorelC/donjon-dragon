@@ -58,16 +58,14 @@ export const API_ROUTES = {
   characters: {
     list: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,
-    start: (campaignId: string) =>
+    create: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,
-    rename: (campaignId: string, characterId: string) =>
-      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}`,
     finalize: (campaignId: string, characterId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}`,
-    abilityRoll: (campaignId: string, characterId: string) =>
-      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/ability-roll`,
     sheet: (campaignId: string, characterId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/sheet`,
+    build: (campaignId: string, characterId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/build`,
     sheetPreview: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/sheet-preview`,
     remove: (campaignId: string, characterId: string) =>

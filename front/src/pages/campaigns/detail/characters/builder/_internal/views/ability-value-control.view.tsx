@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/atoms/select";
-import { ABILITIES, type CharacterDraft } from "../types/character-draft";
+import { ABILITIES, type CharacterComposition } from "../types/character-composition";
 
 /** Radix refuse une valeur vide : il faut une sentinelle pour « aucune ». */
 const NO_SCORE = "none";
@@ -17,8 +17,8 @@ export interface ValueControl {
   method: AbilityMethod;
   available: readonly number[];
   spent: number;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 interface AbilityValueControlProps {
@@ -42,14 +42,14 @@ export function AbilityValueControlView({ ability, control }: AbilityValueContro
  * et l'option vide la libère — la version précédente ne savait rien annuler.
  */
 function ScoreSelect({ ability, control }: AbilityValueControlProps) {
-  const { draft, available } = control;
-  const slot = draft.assignment[ability];
+  const { composition, available } = control;
+  const slot = composition.assignment[ability];
 
   return (
     <Select
       value={slot === undefined ? NO_SCORE : String(slot)}
       onValueChange={(value) =>
-        control.onChange({ assignment: place(draft, ability, value) })
+        control.onChange({ assignment: place(composition, ability, value) })
       }
     >
       <SelectTrigger className="w-24">
@@ -68,8 +68,8 @@ function ScoreSelect({ ability, control }: AbilityValueControlProps) {
 }
 
 function PointBuyStepper({ ability, control }: AbilityValueControlProps) {
-  const { draft } = control;
-  const score = draft.pointBuyScores[ability];
+  const { composition } = control;
+  const score = composition.pointBuyScores[ability];
 
   return (
     <div className="flex items-center gap-2">
@@ -78,7 +78,7 @@ function PointBuyStepper({ ability, control }: AbilityValueControlProps) {
         size="sm"
         variant="outline"
         disabled={score <= POINT_BUY_BOUNDS.min}
-        onClick={() => control.onChange({ pointBuyScores: shift(draft, ability, -1) })}
+        onClick={() => control.onChange({ pointBuyScores: shift(composition, ability, -1) })}
       >
         −
       </Button>
@@ -88,7 +88,7 @@ function PointBuyStepper({ ability, control }: AbilityValueControlProps) {
         size="sm"
         variant="outline"
         disabled={!canIncrease(score, control.spent)}
-        onClick={() => control.onChange({ pointBuyScores: shift(draft, ability, 1) })}
+        onClick={() => control.onChange({ pointBuyScores: shift(composition, ability, 1) })}
       >
         +
       </Button>
@@ -105,34 +105,37 @@ function canIncrease(score: number, spent: number): boolean {
 }
 
 function shift(
-  draft: CharacterDraft,
+  composition: CharacterComposition,
   ability: Ability,
   offset: number,
-): CharacterDraft["pointBuyScores"] {
-  return { ...draft.pointBuyScores, [ability]: draft.pointBuyScores[ability] + offset };
+): CharacterComposition["pointBuyScores"] {
+  return {
+    ...composition.pointBuyScores,
+    [ability]: composition.pointBuyScores[ability] + offset,
+  };
 }
 
 function place(
-  draft: CharacterDraft,
+  composition: CharacterComposition,
   ability: Ability,
   value: string,
-): CharacterDraft["assignment"] {
-  if (value === NO_SCORE) return without(draft.assignment, ability);
+): CharacterComposition["assignment"] {
+  if (value === NO_SCORE) return without(composition.assignment, ability);
   const slot = Number(value);
-  const holder = ABILITIES.find((other) => draft.assignment[other] === slot);
-  const freed = holder ? without(draft.assignment, holder) : draft.assignment;
+  const holder = ABILITIES.find((other) => composition.assignment[other] === slot);
+  const freed = holder ? without(composition.assignment, holder) : composition.assignment;
   const swapped =
-    holder && draft.assignment[ability] !== undefined
-      ? { ...freed, [holder]: draft.assignment[ability] }
+    holder && composition.assignment[ability] !== undefined
+      ? { ...freed, [holder]: composition.assignment[ability] }
       : freed;
 
   return { ...swapped, [ability]: slot };
 }
 
 function without(
-  assignment: CharacterDraft["assignment"],
+  assignment: CharacterComposition["assignment"],
   ability: Ability,
-): CharacterDraft["assignment"] {
+): CharacterComposition["assignment"] {
   const { [ability]: _removed, ...rest } = assignment;
 
   return rest;

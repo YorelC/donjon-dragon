@@ -1,21 +1,21 @@
 import type { DndCatalog, SkillName } from "@donjon-dragon/shared";
-import { allSkillsOf, type CharacterDraft } from "../types/character-draft";
+import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
 import { classOf, knownSkillsExcept } from "../types/builder-lookups";
 import { SkillPickerView } from "./skill-picker.view";
 
 interface SkillChoiceStepViewProps {
   catalog: DndCatalog;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 /** Les compétences que la classe fait choisir. */
 export function ClassSkillsStepView({
   catalog,
-  draft,
+  composition,
   onChange,
 }: SkillChoiceStepViewProps) {
-  const characterClass = classOf({ catalog, draft });
+  const characterClass = classOf({ catalog, composition });
   if (!characterClass) return null;
   const { count, options } = characterClass.skillChoice;
 
@@ -24,9 +24,9 @@ export function ClassSkillsStepView({
       picker={{
         count,
         options: options === "any" ? allSkillsOf(catalog) : options,
-        selected: draft.classSkills,
+        selected: composition.classSkills,
         labels: catalog.skillLabels,
-        alreadyKnown: knownSkillsExcept({ catalog, draft }, "class"),
+        alreadyKnown: knownSkillsExcept({ catalog, composition }, "class"),
         onChange: (classSkills: SkillName[]) => onChange({ classSkills, expertise: [] }),
       }}
     />
@@ -37,8 +37,8 @@ export function ClassSkillsStepView({
  * L'expertise ne s'applique qu'à une compétence déjà maîtrisée : les options
  * sont donc celles que la classe vient de faire choisir.
  */
-export function ExpertiseStepView({ catalog, draft, onChange }: SkillChoiceStepViewProps) {
-  const characterClass = classOf({ catalog, draft });
+export function ExpertiseStepView({ catalog, composition, onChange }: SkillChoiceStepViewProps) {
+  const characterClass = classOf({ catalog, composition });
   if (!characterClass) return null;
 
   return (
@@ -49,8 +49,8 @@ export function ExpertiseStepView({ catalog, draft, onChange }: SkillChoiceStepV
       <SkillPickerView
         picker={{
           count: characterClass.expertiseCount,
-          options: draft.classSkills,
-          selected: draft.expertise,
+          options: composition.classSkills,
+          selected: composition.expertise,
           labels: catalog.skillLabels,
           alreadyKnown: [],
           onChange: (expertise: SkillName[]) => onChange({ expertise }),

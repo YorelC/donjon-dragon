@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { aBuild, type BuildDraft } from '../../testing/character-build.fixture';
+import { aBuild, type BuildInput } from '../../testing/character-build.fixture';
 import { resolveSheet } from './resolve-sheet';
 
 const CHAIN_MAIL = 'chain-mail';
@@ -78,7 +78,7 @@ describe('guerrier nain en cotte de mailles', () => {
 });
 
 describe('barbare torse nu', () => {
-  const draft = {
+  const build = {
     speciesKey: 'halfling',
     classKey: 'barbarian',
     backgroundKey: 'farmer',
@@ -94,7 +94,7 @@ describe('barbare torse nu', () => {
   } as const;
 
   it('remplace la CA de base par sa Défense sans armure', () => {
-    const sheet = resolveSheet(aBuild({ ...draft }));
+    const sheet = resolveSheet(aBuild({ ...build }));
 
     expect(sheet.abilities.constitution.modifier).toBe(2);
     expect(sheet.armorClass.value).toBe(14);
@@ -102,21 +102,21 @@ describe('barbare torse nu', () => {
   });
 
   it('cumule le bouclier avec sa Défense sans armure', () => {
-    const sheet = resolveSheet(aBuild({ ...draft, shield: true }));
+    const sheet = resolveSheet(aBuild({ ...build, shield: true }));
 
     expect(sheet.armorClass.value).toBe(16);
     expect(sheet.armorClass.sources).toEqual(['Défense sans armure', 'Bouclier']);
   });
 
   it('perd sa Défense sans armure dès qu’il enfile une armure', () => {
-    const sheet = resolveSheet(aBuild({ ...draft, armorKey: CHAIN_MAIL }));
+    const sheet = resolveSheet(aBuild({ ...build, armorKey: CHAIN_MAIL }));
 
     expect(sheet.armorClass.value).toBe(16);
     expect(sheet.armorClass.sources).toEqual(['Cotte de mailles']);
   });
 
   it('expose la Rage comme ressource, sans la déclencher', () => {
-    const sheet = resolveSheet(aBuild({ ...draft }));
+    const sheet = resolveSheet(aBuild({ ...build }));
     const rage = sheet.resources.find((resource) => resource.key === 'rageUses');
 
     expect(rage).toEqual({
@@ -129,7 +129,7 @@ describe('barbare torse nu', () => {
 });
 
 describe('moine, dont la Défense sans armure exclut le bouclier', () => {
-  const draft = {
+  const build = {
     speciesKey: 'human',
     classKey: 'monk',
     backgroundKey: 'guard',
@@ -146,7 +146,7 @@ describe('moine, dont la Défense sans armure exclut le bouclier', () => {
   } as const;
 
   it('additionne Dextérité et Sagesse quand il ne porte rien', () => {
-    const sheet = resolveSheet(aBuild({ ...draft, choices: [...draft.choices] }));
+    const sheet = resolveSheet(aBuild({ ...build, choices: [...build.choices] }));
 
     expect(sheet.armorClass.value).toBe(15);
     expect(sheet.armorClass.sources).toEqual(['Défense sans armure']);
@@ -154,7 +154,7 @@ describe('moine, dont la Défense sans armure exclut le bouclier', () => {
 
   it('retombe sur 10 plus Dextérité s’il prend un bouclier', () => {
     const sheet = resolveSheet(
-      aBuild({ ...draft, choices: [...draft.choices], shield: true }),
+      aBuild({ ...build, choices: [...build.choices], shield: true }),
     );
 
     expect(sheet.armorClass.value).toBe(14);
@@ -162,7 +162,7 @@ describe('moine, dont la Défense sans armure exclut le bouclier', () => {
   });
 
   it('remplace les dégâts de la Frappe à mains nues', () => {
-    const sheet = resolveSheet(aBuild({ ...draft, choices: [...draft.choices] }));
+    const sheet = resolveSheet(aBuild({ ...build, choices: [...build.choices] }));
 
     expect(sheet.unarmedDamage).toBe('1d6');
   });
@@ -333,7 +333,7 @@ describe('noble magicien humain', () => {
 });
 
 describe('guerrier au Style de combat Défense', () => {
-  const draft: BuildDraft = {
+  const build: BuildInput = {
     speciesKey: 'halfling',
     classKey: 'fighter',
     backgroundKey: 'soldier',
@@ -356,7 +356,7 @@ describe('guerrier au Style de combat Défense', () => {
   };
 
   it('ajoute son point de CA quand une armure est portée', () => {
-    const sheet = resolveSheet(aBuild({ ...draft, armorKey: CHAIN_MAIL }));
+    const sheet = resolveSheet(aBuild({ ...build, armorKey: CHAIN_MAIL }));
 
     expect(sheet.armorClass.value).toBe(17);
     expect(sheet.armorClass.sources).toEqual(['Cotte de mailles', 'Défense']);
@@ -365,7 +365,7 @@ describe('guerrier au Style de combat Défense', () => {
   // Sans ce filtre, un magicien qui prendrait Défense gagnerait un point de CA
   // qu'aucune règle ne lui accorde.
   it('ne donne rien à un personnage sans armure', () => {
-    const sheet = resolveSheet(aBuild({ ...draft }));
+    const sheet = resolveSheet(aBuild({ ...build }));
 
     expect(sheet.armorClass.value).toBe(12);
     expect(sheet.armorClass.sources).toEqual(['Sans armure']);

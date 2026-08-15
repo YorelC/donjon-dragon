@@ -1,13 +1,13 @@
 import type { PreviewCharacterSheetDto } from '@donjon-dragon/shared/character-schema';
 
-import type { CharacterBuildDraft } from '../domain/character';
+import type { CharacterBuildInput } from '../domain/character';
 
 /**
  * Contrat HTTP → domaine. Les deux formes se ressemblent, mais elles ne sont pas
  * la même chose : Zod a garanti que les clés existent dans le vocabulaire, pas
  * que les choix tiennent la route. C'est l'agrégat qui tranche ensuite.
  */
-export function toBuildDraft(body: PreviewCharacterSheetDto): CharacterBuildDraft {
+export function toBuildInput(body: PreviewCharacterSheetDto): CharacterBuildInput {
   return {
     speciesKey: body.speciesKey,
     lineageKey: body.lineageKey,

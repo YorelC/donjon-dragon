@@ -9,27 +9,26 @@ import type {
 import { api } from "@/shared/api/api";
 import { API_ROUTES } from "@/shared/constants/api-routes";
 
-/**
- * Le tirage vit au back : le front demande, attend, et affiche ce qui revient.
- * C'est ce qui rend la répartition vérifiable — et c'est sur cette attente que
- * viendra se brancher l'animation de dés.
- */
-export function useRollAbilities(campaignId: string, characterId: string) {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: () =>
-      api.post<Character>(API_ROUTES.characters.abilityRoll(campaignId, characterId)),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["campaigns"] }),
-    onError: () => toast.error("Impossible de lancer les dés"),
-  });
-}
-
 /** L'aperçu ne persiste rien : c'est la fiche qu'on obtiendrait avec ces choix. */
 export function usePreviewSheet(campaignId: string) {
   return useMutation({
     mutationFn: (payload: PreviewCharacterSheetDto) =>
       api.post<ComputedCharacter>(API_ROUTES.characters.sheetPreview(campaignId), payload),
+  });
+}
+
+/** Le wizard rend sa copie complète : le personnage naît déjà fini. */
+export function useCreateCharacter(campaignId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: FinalizeCharacterDto) =>
+      api.post<Character>(API_ROUTES.characters.create(campaignId), payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["campaigns"] });
+      toast.success("Personnage créé");
+    },
+    onError: () => toast.error("Impossible de créer ce personnage"),
   });
 }
 

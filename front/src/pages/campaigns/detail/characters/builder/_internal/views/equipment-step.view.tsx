@@ -3,16 +3,16 @@ import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
 import { Switch } from "@/shared/components/atoms/switch";
 import { Label } from "@/shared/components/atoms/label";
-import type { CharacterDraft } from "../types/character-draft";
+import type { CharacterComposition } from "../types/character-composition";
 
 interface EquipmentStepViewProps {
   catalog: DndCatalog;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
-export function EquipmentStepView({ catalog, draft, onChange }: EquipmentStepViewProps) {
-  const characterClass = catalog.classes.find((entry) => entry.key === draft.classKey);
+export function EquipmentStepView({ catalog, composition, onChange }: EquipmentStepViewProps) {
+  const characterClass = catalog.classes.find((entry) => entry.key === composition.classKey);
 
   return (
     <div className="grid gap-4">
@@ -21,8 +21,8 @@ export function EquipmentStepView({ catalog, draft, onChange }: EquipmentStepVie
           Paquetage de départ : {characterClass.startingEquipment.description}
         </p>
       ) : null}
-      <ArmorChoice catalog={catalog} draft={draft} onChange={onChange} />
-      <ShieldToggle catalog={catalog} draft={draft} onChange={onChange} />
+      <ArmorChoice catalog={catalog} composition={composition} onChange={onChange} />
+      <ShieldToggle catalog={catalog} composition={composition} onChange={onChange} />
     </div>
   );
 }
@@ -34,8 +34,8 @@ export function EquipmentStepView({ catalog, draft, onChange }: EquipmentStepVie
  * On ne propose que ce que la classe sait porter — un magicien n'a aucune
  * maîtrise d'armure et ne voit donc que « Sans armure ».
  */
-function ArmorChoice({ catalog, draft, onChange }: EquipmentStepViewProps) {
-  const wearable = wearableArmors(catalog, draft);
+function ArmorChoice({ catalog, composition, onChange }: EquipmentStepViewProps) {
+  const wearable = wearableArmors(catalog, composition);
 
   return (
     <div className="grid gap-2">
@@ -44,7 +44,7 @@ function ArmorChoice({ catalog, draft, onChange }: EquipmentStepViewProps) {
         <Button
           type="button"
           size="sm"
-          variant={draft.armorKey === null ? "default" : "outline"}
+          variant={composition.armorKey === null ? "default" : "outline"}
           onClick={() => onChange({ armorKey: null })}
         >
           Sans armure
@@ -53,7 +53,7 @@ function ArmorChoice({ catalog, draft, onChange }: EquipmentStepViewProps) {
           <ArmorButton
             key={armor.key}
             armor={armor}
-            selected={draft.armorKey === armor.key}
+            selected={composition.armorKey === armor.key}
             onSelect={() => onChange({ armorKey: armor.key })}
           />
         ))}
@@ -67,8 +67,8 @@ function ArmorChoice({ catalog, draft, onChange }: EquipmentStepViewProps) {
   );
 }
 
-function wearableArmors(catalog: DndCatalog, draft: CharacterDraft): CatalogArmor[] {
-  const training = catalog.classes.find((entry) => entry.key === draft.classKey)
+function wearableArmors(catalog: DndCatalog, composition: CharacterComposition): CatalogArmor[] {
+  const training = catalog.classes.find((entry) => entry.key === composition.classKey)
     ?.armorTraining;
   if (!training) return [];
 
@@ -98,8 +98,8 @@ function ArmorButton({ armor, selected, onSelect }: ArmorButtonProps) {
 }
 
 /** Le bouclier est une maîtrise à part : sans elle, on ne le propose pas. */
-function ShieldToggle({ catalog, draft, onChange }: EquipmentStepViewProps) {
-  const training = catalog.classes.find((entry) => entry.key === draft.classKey)
+function ShieldToggle({ catalog, composition, onChange }: EquipmentStepViewProps) {
+  const training = catalog.classes.find((entry) => entry.key === composition.classKey)
     ?.armorTraining;
   if (!training?.includes("shields")) return null;
 
@@ -107,7 +107,7 @@ function ShieldToggle({ catalog, draft, onChange }: EquipmentStepViewProps) {
     <div className="flex items-center gap-3">
       <Switch
         id="shield"
-        checked={draft.shield}
+        checked={composition.shield}
         onCheckedChange={(shield) => onChange({ shield })}
       />
       <Label htmlFor="shield">

@@ -1,18 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { useMemo } from "react";
 import type { Character, ComputedCharacter, DndCatalog } from "@donjon-dragon/shared";
 import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
 import { useClassSpells, useDndCatalog } from "@/shared/queries/use-dnd-catalog";
-import { toCampaignDetailCharacters } from "@/shared/constants/routes";
 import type { BuilderScreen } from "../views/character-builder.view";
 import type { BuilderState } from "./use-character-builder";
 import { useCharacterBuilder } from "./use-character-builder";
 import { useCharacterPreview } from "./use-character-preview";
-import {
-  useFinalizeCharacter,
-  useRollAbilities,
-} from "../queries/use-character-creation";
-import { isFullyAssigned } from "../types/character-draft";
-import { toFinalizePayload } from "../types/character-payload";
+import { useCharacterBuild } from "../queries/use-character-build";
+import { useFinishAction } from "./use-finish-action";
+import { isFullyAssigned, type CharacterComposition } from "../types/character-composition";
+import { toComposition } from "../types/character-build-detail";
+import { rollAbilities } from "../types/roll-abilities";
 import {
   backgroundOf,
   classOf,
@@ -22,7 +20,8 @@ import {
 
 export interface BuilderTarget {
   campaignId: string;
-  characterId: string;
+  /** `null` : le builder crée un personnage, il n'y a pas encore d'id. */
+  characterId: string | null;
 }
 
 /**
@@ -31,8 +30,10 @@ export interface BuilderTarget {
  */
 export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
   const context = useBuilderContext(target);
-  const { catalog, character, builder, preview } = context;
-  if (!catalog || !character) return null;
+  const { catalog, builder, preview } = context;
+  if (!catalog) return null;
+  if (target.characterId && !context.character) return null;
+  if (target.characterId && context.buildDetail.isLoading) return null;
 
   return {
     catalog,
@@ -40,38 +41,60 @@ export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
     preview,
     abilities: context.abilities,
     spells: context.spells,
-    characterName: character.name,
-    canFinish: isFullyAssigned(builder.draft) && preview !== null,
+    characterName: characterNameOf(target, context.character, builder),
+    canFinish:
+      isFullyAssigned(builder.composition) && preview !== null && builder.isValid("name"),
     ...context.finish,
   };
+}
+
+const NEW_CHARACTER_TITLE = "Nouveau personnage";
+
+function characterNameOf(
+  target: BuilderTarget,
+  character: Character | undefined,
+  builder: BuilderState,
+): string {
+  if (target.characterId) return character?.name ?? "";
+
+  return builder.composition.name || NEW_CHARACTER_TITLE;
 }
 
 interface BuilderContext {
   catalog: DndCatalog | undefined;
   character: Character | undefined;
+  buildDetail: ReturnType<typeof useCharacterBuild>;
   builder: BuilderState;
   preview: ComputedCharacter | null;
   abilities: BuilderScreen["abilities"];
   spells: BuilderScreen["spells"];
-  finish: Pick<BuilderScreen, "isFinishing" | "onFinish">;
+  finish: Pick<BuilderScreen, "isFinishing" | "finishLabel" | "onFinish">;
 }
 
 /** Tous les appels de hooks, au même endroit et dans un ordre stable. */
 function useBuilderContext(target: BuilderTarget): BuilderContext {
   const { data: catalog } = useDndCatalog();
-  const character = useDraftCharacter(target);
-  const builder = useCharacterBuilder(catalog);
-  const totals = character?.abilityRoll?.totals ?? [];
+  const character = useExistingCharacter(target);
+  const buildDetail = useCharacterBuild(target.campaignId, target.characterId);
+  const initial = useInitialComposition(buildDetail.data);
+  const builder = useCharacterBuilder(catalog, initial);
 
   return {
     catalog,
     character,
+    buildDetail,
     builder,
-    preview: useCharacterPreview(target.campaignId, builder.draft, totals),
-    abilities: useAbilitiesStep(target, character, stepContext(catalog, builder)),
+    preview: useCharacterPreview(target.campaignId, builder.composition),
+    abilities: useAbilitiesStep(builder, stepContext(catalog, builder)),
     spells: useSpellsStep(stepContext(catalog, builder)),
-    finish: useFinishAction(target, builder, character),
+    finish: useFinishAction(target, builder),
   };
+}
+
+function useInitialComposition(
+  buildDetail: ReturnType<typeof useCharacterBuild>["data"],
+): CharacterComposition | null {
+  return useMemo(() => (buildDetail ? toComposition(buildDetail) : null), [buildDetail]);
 }
 
 /** `null` tant que le catalogue n'est pas là : rien n'est dérivable sans lui. */
@@ -79,26 +102,23 @@ function stepContext(
   catalog: DndCatalog | undefined,
   builder: BuilderState,
 ): StepContext | null {
-  return catalog ? { catalog, draft: builder.draft } : null;
+  return catalog ? { catalog, composition: builder.composition } : null;
 }
 
-function useDraftCharacter(target: BuilderTarget): Character | undefined {
+function useExistingCharacter(target: BuilderTarget): Character | undefined {
   const { data: characters } = useCampaignCharacters(target.campaignId);
+  if (!target.characterId) return undefined;
 
   return characters?.find((entry) => entry.id === target.characterId);
 }
 
 function useAbilitiesStep(
-  target: BuilderTarget,
-  character: Character | undefined,
+  builder: BuilderState,
   context: StepContext | null,
 ): BuilderScreen["abilities"] {
-  const roll = useRollAbilities(target.campaignId, target.characterId);
-
   return {
-    roll: character?.abilityRoll ?? null,
-    isRolling: roll.isPending,
-    onRoll: () => roll.mutate(),
+    roll: builder.composition.abilityRoll,
+    onRoll: () => builder.update({ abilityRoll: rollAbilities() }),
     background: context ? backgroundOf(context) ?? null : null,
   };
 }
@@ -108,8 +128,8 @@ function useAbilitiesStep(
  * qu'Initié à la magie fait choisir — chez le clerc, le druide ou le magicien.
  */
 function useSpellsStep(context: StepContext | null): BuilderScreen["spells"] {
-  const classSpells = useClassSpells(context?.draft.classKey ?? null);
-  const featSpells = useClassSpells(context?.draft.spellList ?? null);
+  const classSpells = useClassSpells(context?.composition.classKey ?? null);
+  const featSpells = useClassSpells(context?.composition.spellList ?? null);
   const spellcasting = context ? classOf(context)?.spellcasting : undefined;
   const featChoice = context ? featSpellcastingOf(context) : undefined;
 
@@ -121,27 +141,5 @@ function useSpellsStep(context: StepContext | null): BuilderScreen["spells"] {
     featCantripsKnown: featChoice?.cantripsKnown ?? 0,
     featSpellsPrepared: featChoice?.spellsPrepared ?? 0,
     isLoading: classSpells.isLoading || featSpells.isLoading,
-  };
-}
-
-function useFinishAction(
-  target: BuilderTarget,
-  builder: BuilderState,
-  character: Character | undefined,
-): Pick<BuilderScreen, "isFinishing" | "onFinish"> {
-  const finalize = useFinalizeCharacter(target.campaignId, target.characterId);
-  const navigate = useNavigate();
-  const totals = character?.abilityRoll?.totals ?? [];
-
-  return {
-    isFinishing: finalize.isPending,
-    onFinish: () => {
-      const payload = toFinalizePayload(builder.draft, totals, character?.name ?? "");
-      if (!payload) return;
-
-      finalize.mutate(payload, {
-        onSuccess: () => navigate(toCampaignDetailCharacters(target.campaignId)),
-      });
-    },
   };
 }

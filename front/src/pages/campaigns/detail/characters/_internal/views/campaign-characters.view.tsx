@@ -1,7 +1,7 @@
+import { Link } from "react-router-dom";
 import type { Character } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
-import type { CharacterFormState } from "../hooks/use-character-form";
-import { CharacterFormView } from "./character-form.view";
+import { toCharacterNew } from "@/shared/constants/routes";
 import { CharacterRowView, type CharacterRowViewer } from "./character-row.view";
 import { OwnerRoleToggleView } from "./owner-role-toggle.view";
 
@@ -16,31 +16,29 @@ interface CampaignCharactersViewProps {
   characters: Character[];
   viewer: CharacterRowViewer;
   campaignId: string;
-  form: CharacterFormState;
   ownerToggle: OwnerToggle;
   onDelete: (characterId: string) => void;
   onUnassign: (characterId: string) => void;
 }
 
 export function CampaignCharactersView(props: CampaignCharactersViewProps) {
-  const { characters, form, ownerToggle } = props;
+  const { characters, ownerToggle } = props;
 
   return (
     <div className="space-y-4">
-      <Header form={form} ownerToggle={ownerToggle} viewer={props.viewer} />
-      <CharacterFormView form={form} />
+      <Header campaignId={props.campaignId} ownerToggle={ownerToggle} viewer={props.viewer} />
       <CharacterList characters={characters} rest={props} />
     </div>
   );
 }
 
 interface HeaderProps {
-  form: CharacterFormState;
+  campaignId: string;
   ownerToggle: OwnerToggle;
   viewer: CharacterRowViewer;
 }
 
-function Header({ form, ownerToggle, viewer }: HeaderProps) {
+function Header({ campaignId, ownerToggle, viewer }: HeaderProps) {
   return (
     <div className="flex items-center justify-between gap-2">
       <h2 className="section-title text-base">Personnages</h2>
@@ -53,8 +51,8 @@ function Header({ form, ownerToggle, viewer }: HeaderProps) {
             isPending={ownerToggle.isPending}
           />
         ) : null}
-        <Button size="sm" onClick={() => form.onOpen(null)}>
-          Nouveau personnage
+        <Button asChild size="sm">
+          <Link to={toCharacterNew(campaignId)}>Nouveau personnage</Link>
         </Button>
       </div>
     </div>
@@ -79,7 +77,6 @@ function CharacterList({ characters, rest }: CharacterListProps) {
           character={character}
           viewer={rest.viewer}
           campaignId={rest.campaignId}
-          form={rest.form}
           onDelete={rest.onDelete}
           onUnassign={rest.onUnassign}
         />

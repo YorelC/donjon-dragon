@@ -20,6 +20,7 @@ const AbilityAssignmentSubSchema = new Schema<AbilityAssignmentSnapshot>(
   {
     base: { type: Object, required: true },
     backgroundBonuses: { type: Object, required: true },
+    method: { type: String, required: true },
   },
   subSchema,
 );
@@ -62,11 +63,11 @@ export const CharacterSchema = new Schema<CharacterSnapshot>(
     id: { type: String, required: true, unique: true },
     campaignId: { type: String, required: true },
     name: { type: String, required: true },
+    /** Participation à l'aventure de la campagne, pas avancement de la création. */
     status: { type: String, required: true },
-    /** `null` tant que le joueur n'a pas lancé les dés. */
+    /** `null` pour les méthodes standardArray/pointBuy, qui n'ont pas de tirage. */
     abilityRoll: { type: AbilityRollSubSchema, default: null },
-    /** `null` tant que le personnage est un brouillon. */
-    build: { type: CharacterBuildSubSchema, default: null },
+    build: { type: CharacterBuildSubSchema, required: true },
     createdBy: { type: String, required: true },
     assignedTo: { type: String, default: null },
     createdAt: { type: String, required: true },

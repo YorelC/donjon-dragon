@@ -5,14 +5,13 @@ import type { AuthenticatedActor } from '@kernel/domain/actor-id';
 import { anActor } from '@kernel/testing/actor.fixture';
 
 import { AssignCharacterUseCase } from '../application/use-cases/assign-character.use-case';
+import { CreateCharacterUseCase } from '../application/use-cases/create-character.use-case';
 import { DeleteCharacterUseCase } from '../application/use-cases/delete-character.use-case';
 import { FinalizeCharacterUseCase } from '../application/use-cases/finalize-character.use-case';
+import { GetCharacterBuildUseCase } from '../application/use-cases/get-character-build.use-case';
 import { GetCharacterSheetUseCase } from '../application/use-cases/get-character-sheet.use-case';
 import { ListCampaignCharactersUseCase } from '../application/use-cases/list-campaign-characters.use-case';
 import { PreviewCharacterSheetUseCase } from '../application/use-cases/preview-character-sheet.use-case';
-import { RenameCharacterUseCase } from '../application/use-cases/rename-character.use-case';
-import { RollCharacterAbilitiesUseCase } from '../application/use-cases/roll-character-abilities.use-case';
-import { StartCharacterUseCase } from '../application/use-cases/start-character.use-case';
 import { UnassignCharacterUseCase } from '../application/use-cases/unassign-character.use-case';
 import { CharacterController } from './character.controller';
 
@@ -26,23 +25,22 @@ const ACTOR_ID = '770e8400-e29b-41d4-a716-446655440002';
 
 describe('CharacterController', () => {
   let controller: CharacterController;
-  let start: StartCharacterUseCase;
-  let roll: RollCharacterAbilitiesUseCase;
+  let create: CreateCharacterUseCase;
   let finalize: FinalizeCharacterUseCase;
   let preview: PreviewCharacterSheetUseCase;
   let sheet: GetCharacterSheetUseCase;
+  let buildDetail: GetCharacterBuildUseCase;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CharacterController],
       providers: [
         { provide: ListCampaignCharactersUseCase, useValue: mockUseCase() },
-        { provide: StartCharacterUseCase, useValue: mockUseCase() },
-        { provide: RollCharacterAbilitiesUseCase, useValue: mockUseCase() },
+        { provide: CreateCharacterUseCase, useValue: mockUseCase() },
         { provide: FinalizeCharacterUseCase, useValue: mockUseCase() },
-        { provide: RenameCharacterUseCase, useValue: mockUseCase() },
         { provide: PreviewCharacterSheetUseCase, useValue: mockUseCase() },
         { provide: GetCharacterSheetUseCase, useValue: mockUseCase() },
+        { provide: GetCharacterBuildUseCase, useValue: mockUseCase() },
         { provide: DeleteCharacterUseCase, useValue: mockUseCase() },
         { provide: AssignCharacterUseCase, useValue: mockUseCase() },
         { provide: UnassignCharacterUseCase, useValue: mockUseCase() },
@@ -50,37 +48,26 @@ describe('CharacterController', () => {
     }).compile();
 
     controller = module.get(CharacterController);
-    start = module.get(StartCharacterUseCase);
-    roll = module.get(RollCharacterAbilitiesUseCase);
+    create = module.get(CreateCharacterUseCase);
     finalize = module.get(FinalizeCharacterUseCase);
     preview = module.get(PreviewCharacterSheetUseCase);
     sheet = module.get(GetCharacterSheetUseCase);
+    buildDetail = module.get(GetCharacterBuildUseCase);
   });
 
   // L'identité vient exclusivement de @CurrentUser. Un actorId lu dans le corps
   // ou dans un param serait une IDOR : chaque route doit prouver qu'elle prend
   // bien celui du jeton.
-  it('ouvre un brouillon avec l identité du jeton, jamais celle du corps', async () => {
+  it('crée le personnage avec l identité du jeton, jamais celle du corps', async () => {
     const actor = user(ACTOR_ID);
+    const body = { name: 'Frodo Sacquet' } as Parameters<typeof controller.createCharacter>[2];
 
-    await controller.startCharacter(actor, CAMPAIGN_ID, { name: 'Frodo Sacquet' });
+    await controller.createCharacter(actor, CAMPAIGN_ID, body);
 
-    expect(start.execute).toHaveBeenCalledWith({
+    expect(create.execute).toHaveBeenCalledWith({
       campaignId: CAMPAIGN_ID,
       actorId: actor.userId,
       name: 'Frodo Sacquet',
-    });
-  });
-
-  it('lance les dés sur le personnage visé par l URL', async () => {
-    const actor = user(ACTOR_ID);
-
-    await controller.rollAbilities(actor, CAMPAIGN_ID, CHARACTER_ID);
-
-    expect(roll.execute).toHaveBeenCalledWith({
-      campaignId: CAMPAIGN_ID,
-      characterId: CHARACTER_ID,
-      actorId: actor.userId,
     });
   });
 
@@ -124,6 +111,18 @@ describe('CharacterController', () => {
       actorId: actor.userId,
     });
   });
+
+  it('renvoie le build du personnage visé, pour le pré-remplissage du wizard', async () => {
+    const actor = user(ACTOR_ID);
+
+    await controller.getCharacterBuild(actor, CAMPAIGN_ID, CHARACTER_ID);
+
+    expect(buildDetail.execute).toHaveBeenCalledWith({
+      campaignId: CAMPAIGN_ID,
+      characterId: CHARACTER_ID,
+      actorId: actor.userId,
+    });
+  });
 });
 
 // Le JwtAuthGuard est monté en APP_GUARD : la protection ne s'assert plus par
@@ -133,12 +132,11 @@ describe('CharacterController', () => {
 describe('CharacterController — protection des routes', () => {
   const ROUTES = [
     'listCampaignCharacters',
-    'startCharacter',
-    'rollAbilities',
+    'createCharacter',
     'finalizeCharacter',
-    'renameCharacter',
     'previewSheet',
     'getCharacterSheet',
+    'getCharacterBuild',
     'deleteCharacter',
     'assignCharacter',
     'unassignCharacter',

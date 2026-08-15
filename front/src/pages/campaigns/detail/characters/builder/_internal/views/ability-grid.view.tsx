@@ -1,7 +1,7 @@
 import type { Ability, CatalogBackground } from "@donjon-dragon/shared";
 import { Checkbox } from "@/shared/components/atoms/checkbox";
 import { Label } from "@/shared/components/atoms/label";
-import { ABILITIES, ABILITY_LABELS, type CharacterDraft } from "../types/character-draft";
+import { ABILITIES, ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
 import { AbilityValueControlView, type ValueControl } from "./ability-value-control.view";
 
 export type BonusPlan = "focused" | "spread";
@@ -75,11 +75,11 @@ function BonusCell({ ability, grid, bonus }: BonusCellProps) {
   return (
     <div className="flex justify-center">
       <Checkbox
-        checked={(grid.control.draft.backgroundBonuses[ability] ?? 0) === bonus}
+        checked={(grid.control.composition.backgroundBonuses[ability] ?? 0) === bonus}
         disabled={!allowed || grid.plan === "spread"}
         onCheckedChange={() =>
           grid.control.onChange({
-            backgroundBonuses: setBonus(grid.control.draft, ability, bonus),
+            backgroundBonuses: setBonus(grid.control.composition, ability, bonus),
           })
         }
       />
@@ -92,10 +92,10 @@ function BonusCell({ ability, grid, bonus }: BonusCellProps) {
  * celle qui les portait. Un clic suffit, là où le cycle à trois états de la
  * version précédente en demandait quatre dans le bon ordre.
  */
-function setBonus(draft: CharacterDraft, ability: Ability, bonus: 1 | 2) {
-  const current = draft.backgroundBonuses[ability];
+function setBonus(composition: CharacterComposition, ability: Ability, bonus: 1 | 2) {
+  const current = composition.backgroundBonuses[ability];
   const cleared = Object.fromEntries(
-    Object.entries(draft.backgroundBonuses).filter(
+    Object.entries(composition.backgroundBonuses).filter(
       ([key, value]) => key !== ability && value !== bonus,
     ),
   );

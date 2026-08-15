@@ -21,8 +21,6 @@ import { CharacterId } from './character-id';
 import { CharacterName } from './character-name';
 import {
   AlreadyAssignedToThisPlayerError,
-  CharacterAlreadyReadyError,
-  CharacterNotReadyError,
   NotAssignedError,
   NotEditableByActorError,
   OnlyGameMasterCanAssignError,
@@ -34,7 +32,14 @@ import type { BackgroundKey, ClassKey, LineageKey, SpeciesKey } from './referenc
 import { LEVEL_ONE, type CharacterBuild } from './resolution/character-build';
 import { validateChoices } from './resolution/validate-choices';
 
-export type CharacterStatus = 'draft' | 'ready';
+/**
+ * Ne décrit pas l'avancement de la création — un personnage n'existe en base
+ * que déjà complet — mais sa participation à l'aventure de la campagne.
+ * `'waiting_adventure'` est la seule valeur possible pour l'instant ; un futur
+ * statut `'in_adventure'` viendra restreindre l'édition au MJ une fois la
+ * partie commencée.
+ */
+export type CharacterStatus = 'waiting_adventure';
 
 export interface CharacterBuildSnapshot {
   speciesKey: SpeciesKey;
@@ -52,7 +57,7 @@ export interface CharacterSnapshot {
   name: string;
   status: CharacterStatus;
   abilityRoll: AbilityRollSnapshot | null;
-  build: CharacterBuildSnapshot | null;
+  build: CharacterBuildSnapshot;
   createdBy: string;
   assignedTo: string | null;
   createdAt: string;
@@ -60,7 +65,7 @@ export interface CharacterSnapshot {
 }
 
 /** Les choix bruts que le joueur soumet à la fin du wizard. */
-export interface CharacterBuildDraft {
+export interface CharacterBuildInput {
   speciesKey: SpeciesKey;
   lineageKey: LineageKey | null;
   classKey: ClassKey;
@@ -92,9 +97,19 @@ interface CharacterState {
   name: CharacterName;
   status: CharacterStatus;
   roll: AbilityRoll | null;
-  build: CharacterBuildState | null;
+  build: CharacterBuildState;
   assignedTo: UserId | null;
   updatedAt: string;
+}
+
+/** Ce qu'il faut pour faire naître un personnage : déjà complet, jamais à moitié. */
+export interface CharacterCreationInput {
+  campaignId: OwningCampaignId;
+  name: CharacterName;
+  createdBy: UserId;
+  build: CharacterBuildInput;
+  roll: AbilityRoll | null;
+  now: Date;
 }
 
 /**
@@ -113,10 +128,13 @@ export interface CharacterAccessContext {
 /**
  * Une fiche de personnage D&D 2024, rattachée à une campagne.
  *
- * Elle naît en `draft` : un nom, et rien d'autre. Le tirage des caractéristiques
- * s'y pose ensuite, puis les choix du joueur la font passer en `ready`. Cet
- * ordre est ce qui rend le tirage infalsifiable — la répartition se vérifie
- * contre un tirage déjà persisté.
+ * Elle n'existe qu'une fois complète : le wizard rend sa copie d'un coup — nom,
+ * caractéristiques, choix — et c'est cette copie-là qui devient le personnage.
+ * Il n'y a pas d'entre-deux persisté.
+ *
+ * Le tirage de caractéristiques est fait côté client et n'est plus vérifié ici
+ * contre quoi que ce soit de déjà enregistré : un joueur qui triche sur sa
+ * propre fiche n'abîme que la sienne.
  *
  * Aucune valeur dérivée n'est stockée ici : ni PV, ni CA, ni initiative. Elles
  * sortent du moteur à chaque lecture.
@@ -128,22 +146,17 @@ export class Character {
     private state: CharacterState,
   ) {}
 
-  static start(
-    campaignId: OwningCampaignId,
-    name: CharacterName,
-    createdBy: UserId,
-    now: Date,
-  ): Character {
-    const createdAt = now.toISOString();
+  static create(input: CharacterCreationInput): Character {
+    const createdAt = input.now.toISOString();
 
     return new Character(
       CharacterId.create(randomUUID()),
-      { campaignId, createdBy, createdAt },
+      { campaignId: input.campaignId, createdBy: input.createdBy, createdAt },
       {
-        name,
-        status: 'draft',
-        roll: null,
-        build: null,
+        name: input.name,
+        status: 'waiting_adventure',
+        roll: input.roll,
+        build: buildFrom(input.build, input.roll),
         assignedTo: null,
         updatedAt: createdAt,
       },
@@ -182,10 +195,6 @@ export class Character {
     return this.state.status;
   }
 
-  get isReady(): boolean {
-    return this.state.status === 'ready';
-  }
-
   get abilityRoll(): AbilityRoll | null {
     return this.state.roll;
   }
@@ -198,38 +207,32 @@ export class Character {
     return this.state.updatedAt;
   }
 
-  /** Ce que le moteur consomme. `null` tant que le personnage est un brouillon. */
-  get build(): CharacterBuild | null {
-    if (!this.state.build) return null;
-
+  /** Ce que le moteur consomme. Toujours présent, un personnage n'existe que complet. */
+  get build(): CharacterBuild {
     return { ...this.state.build, level: LEVEL_ONE };
   }
 
   /**
-   * Relancer les dés reste libre tant que le personnage n'est pas terminé, et
-   * devient impossible ensuite : sinon un joueur retirerait jusqu'à obtenir six 18
-   * en gardant sa fiche.
+   * Relance les dés sur un personnage déjà persisté — montée de niveau ou
+   * correction. Rien ne vérifie plus ce tirage contre quoi que ce soit :
+   * seule l'autorisation d'édition compte.
    */
   rollAbilities(roll: AbilityRoll, context: CharacterAccessContext, now: Date): void {
     this.assertEditableBy(context);
-    if (this.isReady) throw new CharacterAlreadyReadyError();
 
     this.state.roll = roll;
     this.touch(now);
   }
 
   /**
-   * Le wizard rend sa copie : on vérifie tout, puis le personnage devient jouable.
-   *
-   * Le tirage n'est plus exigé ici : seule la méthode `roll` en a besoin, et
-   * c'est `AbilityAssignment` qui le réclame — un joueur au tableau standard ou
-   * à l'achat de points n'a jamais lancé de dé.
+   * Le wizard rend sa copie : on vérifie que les bonus appartiennent à
+   * l'historique et que les choix couvrent ce que l'espèce et la classe
+   * demandaient, puis le personnage porte son nouveau build.
    */
-  finalize(draft: CharacterBuildDraft, context: CharacterAccessContext, now: Date): void {
+  finalize(build: CharacterBuildInput, context: CharacterAccessContext, now: Date): void {
     this.assertEditableBy(context);
 
-    this.state.build = buildFrom(draft, this.state.roll);
-    this.state.status = 'ready';
+    this.state.build = buildFrom(build, this.state.roll);
     this.touch(now);
   }
 
@@ -237,11 +240,6 @@ export class Character {
     this.assertEditableBy(context);
     this.state.name = name;
     this.touch(now);
-  }
-
-  /** Le moteur refuse un brouillon : il n'y a pas de fiche à calculer. */
-  assertIsReady(): void {
-    if (!this.isReady) throw new CharacterNotReadyError();
   }
 
   /**
@@ -319,36 +317,30 @@ export class Character {
  * bien du tirage, les bonus de caractéristique appartiennent à l'historique, et
  * les choix couvrent ce que l'espèce et la classe demandaient.
  */
-function buildFrom(
-  draft: CharacterBuildDraft,
-  roll: AbilityRoll | null,
-): CharacterBuildState {
-  const abilities = assignmentFrom(draft, roll);
-  const choices = CharacterChoices.create(draft.choices);
-  validateChoices({ ...draft, choices });
+function buildFrom(input: CharacterBuildInput, roll: AbilityRoll | null): CharacterBuildState {
+  const abilities = assignmentFrom(input, roll);
+  const choices = CharacterChoices.create(input.choices);
+  validateChoices({ ...input, choices });
 
   return {
-    speciesKey: draft.speciesKey,
-    lineageKey: draft.lineageKey,
-    classKey: draft.classKey,
-    backgroundKey: draft.backgroundKey,
+    speciesKey: input.speciesKey,
+    lineageKey: input.lineageKey,
+    classKey: input.classKey,
+    backgroundKey: input.backgroundKey,
     abilities,
     choices,
-    equipment: CharacterEquipment.create(draft.equipment),
+    equipment: CharacterEquipment.create(input.equipment),
   };
 }
 
-function assignmentFrom(
-  draft: CharacterBuildDraft,
-  roll: AbilityRoll | null,
-): AbilityAssignment {
+function assignmentFrom(input: CharacterBuildInput, roll: AbilityRoll | null): AbilityAssignment {
   const abilities = AbilityAssignment.create({
-    method: draft.abilityMethod,
+    method: input.abilityMethod,
     roll,
-    base: draft.base,
-    backgroundBonuses: draft.backgroundBonuses,
+    base: input.base,
+    backgroundBonuses: input.backgroundBonuses,
   });
-  abilities.assertBonusesFit(BACKGROUNDS[draft.backgroundKey].abilityBonuses);
+  abilities.assertBonusesFit(BACKGROUNDS[input.backgroundKey].abilityBonuses);
 
   return abilities;
 }
@@ -364,9 +356,7 @@ function restoreState(snapshot: CharacterSnapshot): CharacterState {
   };
 }
 
-function restoreBuild(snapshot: CharacterBuildSnapshot | null): CharacterBuildState | null {
-  if (!snapshot) return null;
-
+function restoreBuild(snapshot: CharacterBuildSnapshot): CharacterBuildState {
   return {
     speciesKey: snapshot.speciesKey,
     lineageKey: snapshot.lineageKey,
@@ -378,9 +368,7 @@ function restoreBuild(snapshot: CharacterBuildSnapshot | null): CharacterBuildSt
   };
 }
 
-function buildSnapshotOf(build: CharacterBuildState | null): CharacterBuildSnapshot | null {
-  if (!build) return null;
-
+function buildSnapshotOf(build: CharacterBuildState): CharacterBuildSnapshot {
   return {
     speciesKey: build.speciesKey,
     lineageKey: build.lineageKey,

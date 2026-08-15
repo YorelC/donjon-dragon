@@ -1,6 +1,7 @@
 import type {
   Ability,
   AbilityMethod,
+  AbilityRoll,
   BackgroundAbilityBonuses,
   BackgroundKey,
   ClassKey,
@@ -31,9 +32,12 @@ export const ABILITY_LABELS: Record<Ability, string> = {
 
 /**
  * Ce que le joueur a choisi jusqu'ici. Tout est nullable : le builder doit
- * pouvoir calculer un aperçu à mi-parcours, avec ce qu'il a.
+ * pouvoir calculer un aperçu à mi-parcours, avec ce qu'il a. Le nom est la
+ * dernière étape du parcours, le tirage se fait côté client.
  */
-export interface CharacterDraft {
+export interface CharacterComposition {
+  name: string;
+
   speciesKey: SpeciesKey | null;
   lineageKey: string | null;
   speciesSkills: SkillName[];
@@ -62,6 +66,8 @@ export interface CharacterDraft {
   featSpells: string[];
 
   abilityMethod: AbilityMethod;
+  /** Le tirage fait côté client pour la méthode « roll » ; `null` sinon. */
+  abilityRoll: AbilityRoll | null;
   /**
    * Le RANG de la valeur posée sur chaque caractéristique, pas sa valeur : deux
    * 14 dans un même tirage sont deux emplacements distincts. Sert au tirage et
@@ -77,7 +83,8 @@ export interface CharacterDraft {
 
 export const POINT_BUY_FLOOR = 8;
 
-export const EMPTY_DRAFT: CharacterDraft = {
+export const EMPTY_COMPOSITION: CharacterComposition = {
+  name: "",
   speciesKey: null,
   lineageKey: null,
   speciesSkills: [],
@@ -98,6 +105,7 @@ export const EMPTY_DRAFT: CharacterDraft = {
   featCantrips: [],
   featSpells: [],
   abilityMethod: "standardArray",
+  abilityRoll: null,
   assignment: {},
   pointBuyScores: Object.fromEntries(
     ABILITIES.map((ability) => [ability, POINT_BUY_FLOOR]),
@@ -112,23 +120,22 @@ export function allSkillsOf(catalog: DndCatalog): SkillName[] {
 }
 
 /** Les six valeurs à répartir : celles du tirage, ou celles du tableau standard. */
-export function availableScores(
-  draft: CharacterDraft,
-  rollTotals: readonly number[],
-): readonly number[] {
-  return draft.abilityMethod === "roll" ? rollTotals : STANDARD_ARRAY;
+export function availableScores(composition: CharacterComposition): readonly number[] {
+  return composition.abilityMethod === "roll"
+    ? composition.abilityRoll?.totals ?? []
+    : STANDARD_ARRAY;
 }
 
-export function pointBuySpent(draft: CharacterDraft): number {
+export function pointBuySpent(composition: CharacterComposition): number {
   return ABILITIES.reduce(
-    (total, ability) => total + (POINT_BUY_COSTS[draft.pointBuyScores[ability]] ?? 0),
+    (total, ability) => total + (POINT_BUY_COSTS[composition.pointBuyScores[ability]] ?? 0),
     0,
   );
 }
 
 /** Les six caractéristiques ont-elles chacune reçu une valeur ? */
-export function isFullyAssigned(draft: CharacterDraft): boolean {
-  if (draft.abilityMethod === "pointBuy") return true;
+export function isFullyAssigned(composition: CharacterComposition): boolean {
+  if (composition.abilityMethod === "pointBuy") return true;
 
-  return ABILITIES.every((ability) => draft.assignment[ability] !== undefined);
+  return ABILITIES.every((ability) => composition.assignment[ability] !== undefined);
 }

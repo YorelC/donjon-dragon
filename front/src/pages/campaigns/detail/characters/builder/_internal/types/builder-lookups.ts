@@ -5,23 +5,23 @@ import type {
   SkillName,
 } from "@donjon-dragon/shared";
 import type { KnownSkill } from "../views/skill-picker.view";
-import type { CharacterDraft } from "./character-draft";
+import type { CharacterComposition } from "./character-composition";
 
 export interface StepContext {
   catalog: DndCatalog;
-  draft: CharacterDraft;
+  composition: CharacterComposition;
 }
 
-export function speciesOf({ catalog, draft }: StepContext) {
-  return catalog.species.find((entry) => entry.key === draft.speciesKey);
+export function speciesOf({ catalog, composition }: StepContext) {
+  return catalog.species.find((entry) => entry.key === composition.speciesKey);
 }
 
-export function classOf({ catalog, draft }: StepContext): CatalogClass | undefined {
-  return catalog.classes.find((entry) => entry.key === draft.classKey);
+export function classOf({ catalog, composition }: StepContext): CatalogClass | undefined {
+  return catalog.classes.find((entry) => entry.key === composition.classKey);
 }
 
-export function backgroundOf({ catalog, draft }: StepContext) {
-  return catalog.backgrounds.find((entry) => entry.key === draft.backgroundKey);
+export function backgroundOf({ catalog, composition }: StepContext) {
+  return catalog.backgrounds.find((entry) => entry.key === composition.backgroundKey);
 }
 
 const FIGHTING_STYLE_KEY = "fightingStyle";
@@ -37,7 +37,9 @@ export function orderChoiceOf(context: StepContext) {
 
 /** Les dons du personnage : celui de l'historique, et celui que l'espèce accorde. */
 export function featsOf(context: StepContext): CatalogOriginFeat[] {
-  const keys = [backgroundOf(context)?.originFeat, context.draft.speciesFeat].filter(Boolean);
+  const keys = [backgroundOf(context)?.originFeat, context.composition.speciesFeat].filter(
+    Boolean,
+  );
 
   return context.catalog.originFeats.filter((feat) => keys.includes(feat.key));
 }
@@ -53,8 +55,8 @@ export function featSpellcastingOf(context: StepContext) {
  */
 const MYSTIC_ORDER_OPTIONS = ["thaumaturge", "magician"];
 
-function extraCantripsOf({ draft }: StepContext): number {
-  return draft.classOrder && MYSTIC_ORDER_OPTIONS.includes(draft.classOrder) ? 1 : 0;
+function extraCantripsOf({ composition }: StepContext): number {
+  return composition.classOrder && MYSTIC_ORDER_OPTIONS.includes(composition.classOrder) ? 1 : 0;
 }
 
 /** Les sorts de la classe et ceux d'un don s'additionnent, sans se confondre. */
@@ -97,25 +99,25 @@ interface SkillSource {
 }
 
 function skillSourcesOf(context: StepContext): SkillSource[] {
-  const { catalog, draft } = context;
+  const { catalog, composition } = context;
   const background = backgroundOf(context);
 
   return [
-    {
-      kind: "background",
-      origin: background?.name ?? "Historique",
-      skills: background?.skillProficiencies ?? [],
-    },
-    { kind: "class", origin: classOf(context)?.name ?? "Classe", skills: draft.classSkills },
-    {
-      kind: "species",
-      origin: speciesOf(context)?.name ?? "Espèce",
-      skills: draft.speciesSkills,
-    },
-    { kind: "feat", origin: featOriginLabel(catalog, draft), skills: draft.featSkills },
+    source("background", background?.name ?? "Historique", background?.skillProficiencies ?? []),
+    source("class", classOf(context)?.name ?? "Classe", composition.classSkills),
+    source("species", speciesOf(context)?.name ?? "Espèce", composition.speciesSkills),
+    source("feat", featOriginLabel(catalog, composition), composition.featSkills),
   ];
 }
 
-function featOriginLabel(catalog: DndCatalog, draft: CharacterDraft): string {
-  return catalog.originFeats.find((feat) => feat.key === draft.speciesFeat)?.name ?? "Don";
+function source(
+  kind: SkillSourceKind,
+  origin: string,
+  skills: readonly SkillName[],
+): SkillSource {
+  return { kind, origin, skills };
+}
+
+function featOriginLabel(catalog: DndCatalog, composition: CharacterComposition): string {
+  return catalog.originFeats.find((feat) => feat.key === composition.speciesFeat)?.name ?? "Don";
 }

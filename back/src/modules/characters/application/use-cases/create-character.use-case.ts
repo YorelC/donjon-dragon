@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Character as CharacterDto } from '@donjon-dragon/shared/character-schema';
+import type {
+  Character as CharacterDto,
+  FinalizeCharacterDto as FinalizeCharacterBody,
+} from '@donjon-dragon/shared/character-schema';
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import { CLOCK, type Clock } from '@kernel/application/clock.port';
 import type { ActorId } from '@kernel/domain/actor-id';
@@ -14,7 +17,9 @@ import {
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
 import { toCharacterDtoResolved } from '../character.mapper';
-import { Character } from '../../domain/character';
+import { toBuildInput } from '../character-build.mapper';
+import { AbilityRoll } from '../../domain/ability-roll';
+import { Character, type CharacterCreationInput } from '../../domain/character';
 import { CharacterName } from '../../domain/character-name';
 import {
   NotActiveCampaignMemberError,
@@ -22,19 +27,19 @@ import {
 } from '../../domain/character.errors';
 import { OwningCampaignId } from '../../domain/owning-campaign-id';
 
-export interface StartCharacterDto {
+export type CreateCharacterDto = FinalizeCharacterBody & {
   campaignId: string;
   actorId: ActorId;
-  name: string;
-}
+};
 
 /**
- * Ouvre un brouillon : un nom, et rien d'autre. Les dés se lancent ensuite, les
- * choix viennent en dernier. Le brouillon n'apparaît qu'à son créateur tant
- * qu'il n'est pas terminé.
+ * Le wizard rend sa copie complète : le personnage naît déjà fini, en un seul
+ * geste, jamais à moitié construit en base. Le tirage de caractéristiques
+ * vient du client et n'est plus vérifié ici — voir le commentaire de classe
+ * de `Character`.
  */
 @Injectable()
-export class StartCharacterUseCase {
+export class CreateCharacterUseCase {
   constructor(
     @Inject(CHARACTER_REPOSITORY)
     private readonly characterRepo: CharacterRepositoryPort,
@@ -44,7 +49,7 @@ export class StartCharacterUseCase {
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
-  async execute(dto: StartCharacterDto): Promise<CharacterDto> {
+  async execute(dto: CreateCharacterDto): Promise<CharacterDto> {
     const campaignId = OwningCampaignId.create(dto.campaignId);
     const actorId = UserId.create(dto.actorId);
     const role = await this.membership.execute({
@@ -52,16 +57,30 @@ export class StartCharacterUseCase {
       userId: dto.actorId,
     });
     if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
+    if (!role.isGameMaster) await this.assertNoExistingCharacter(campaignId, actorId);
 
     const now = this.clock.now();
-    const character = Character.start(campaignId, CharacterName.create(dto.name), actorId, now);
-    if (!role.isGameMaster) {
-      await this.assertNoExistingCharacter(campaignId, actorId);
-      character.selfAssignToCreator(now);
-    }
+    const character = Character.create(this.creationInputFor(dto, campaignId, actorId, now));
+    if (!role.isGameMaster) character.selfAssignToCreator(now);
 
     await this.characterRepo.save(character);
     return toCharacterDtoResolved(this.directory, character, actorId);
+  }
+
+  private creationInputFor(
+    dto: CreateCharacterDto,
+    campaignId: OwningCampaignId,
+    createdBy: UserId,
+    now: Date,
+  ): CharacterCreationInput {
+    return {
+      campaignId,
+      name: CharacterName.create(dto.name),
+      createdBy,
+      build: toBuildInput(dto),
+      roll: dto.abilityRoll ? AbilityRoll.restore(dto.abilityRoll) : null,
+      now,
+    };
   }
 
   private async assertNoExistingCharacter(

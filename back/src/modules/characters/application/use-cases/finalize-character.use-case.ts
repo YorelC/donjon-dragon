@@ -18,8 +18,9 @@ import {
 } from '../ports/character.repository.port';
 import { loadCharacter, resolveAccessContext } from '../character.lookup';
 import { toCharacterDtoResolved } from '../character.mapper';
+import { AbilityRoll } from '../../domain/ability-roll';
 import { CharacterName } from '../../domain/character-name';
-import { toBuildDraft } from '../character-build.mapper';
+import { toBuildInput } from '../character-build.mapper';
 
 export type FinalizeCharacterDto = FinalizeCharacterBody & {
   characterId: string;
@@ -28,13 +29,13 @@ export type FinalizeCharacterDto = FinalizeCharacterBody & {
 };
 
 /**
- * Le wizard rend sa copie. L'agrégat vérifie tout — que la répartition sort bien
- * du tirage persisté, que les bonus appartiennent à l'historique, que les choix
- * couvrent ce que l'espèce et la classe demandaient — puis le personnage devient
- * jouable.
+ * Le wizard rend sa copie. L'agrégat vérifie que les bonus appartiennent à
+ * l'historique et que les choix couvrent ce que l'espèce et la classe
+ * demandaient, puis le personnage porte son nouveau build.
  *
- * Le même use-case sert à l'édition : rejouer les choix d'un personnage terminé
- * repasse par les mêmes vérifications.
+ * Le même use-case sert à l'édition d'un personnage déjà créé : montée de
+ * niveau ou correction, rejouer les choix repasse par les mêmes vérifications.
+ * Le tirage, s'il y en a un, vient du client comme à la création.
  */
 @Injectable()
 export class FinalizeCharacterUseCase {
@@ -58,7 +59,8 @@ export class FinalizeCharacterUseCase {
 
     const now = this.clock.now();
     character.rename(CharacterName.create(dto.name), context, now);
-    character.finalize(toBuildDraft(dto), context, now);
+    if (dto.abilityRoll) character.rollAbilities(AbilityRoll.restore(dto.abilityRoll), context, now);
+    character.finalize(toBuildInput(dto), context, now);
 
     await this.characterRepo.save(character);
     return toCharacterDtoResolved(this.directory, character, UserId.create(dto.actorId));

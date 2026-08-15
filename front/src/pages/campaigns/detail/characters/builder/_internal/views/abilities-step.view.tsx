@@ -6,8 +6,8 @@ import { Separator } from "@/shared/components/atoms/separator";
 import {
   availableScores,
   pointBuySpent,
-  type CharacterDraft,
-} from "../types/character-draft";
+  type CharacterComposition,
+} from "../types/character-composition";
 import { AbilityGridView, type BonusPlan } from "./ability-grid.view";
 
 const METHODS: { key: AbilityMethod; label: string; hint: string }[] = [
@@ -24,7 +24,7 @@ const METHODS: { key: AbilityMethod; label: string; hint: string }[] = [
   {
     key: "roll",
     label: "Lancer les dés",
-    hint: "Quatre d6, on garde les trois meilleurs, six fois. Le tirage se fait sur le serveur.",
+    hint: "Quatre d6, on garde les trois meilleurs, six fois.",
   },
 ];
 
@@ -35,20 +35,19 @@ const PLANS: { key: BonusPlan; label: string }[] = [
 
 export interface AbilitiesStep {
   roll: AbilityRoll | null;
-  isRolling: boolean;
   onRoll: () => void;
   background: CatalogBackground | null;
 }
 
 interface AbilitiesStepViewProps {
   step: AbilitiesStep;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 export function AbilitiesStepView(props: AbilitiesStepViewProps) {
-  const { step, draft, onChange } = props;
-  const plan = currentPlan(draft);
+  const { step, composition, onChange } = props;
+  const plan = currentPlan(composition);
 
   return (
     <div className="grid gap-4">
@@ -59,10 +58,10 @@ export function AbilitiesStepView(props: AbilitiesStepViewProps) {
       <AbilityGridView
         grid={{
           control: {
-            method: draft.abilityMethod,
-            available: availableScores(draft, step.roll?.totals ?? []),
-            spent: pointBuySpent(draft),
-            draft,
+            method: composition.abilityMethod,
+            available: availableScores(composition),
+            spent: pointBuySpent(composition),
+            composition,
             onChange,
           },
           background: step.background,
@@ -73,8 +72,8 @@ export function AbilitiesStepView(props: AbilitiesStepViewProps) {
   );
 }
 
-function MethodPicker({ draft, onChange }: AbilitiesStepViewProps) {
-  const current = METHODS.find((method) => method.key === draft.abilityMethod);
+function MethodPicker({ composition, onChange }: AbilitiesStepViewProps) {
+  const current = METHODS.find((method) => method.key === composition.abilityMethod);
 
   return (
     <div className="grid gap-2">
@@ -84,7 +83,7 @@ function MethodPicker({ draft, onChange }: AbilitiesStepViewProps) {
             key={method.key}
             type="button"
             size="sm"
-            variant={draft.abilityMethod === method.key ? "default" : "outline"}
+            variant={composition.abilityMethod === method.key ? "default" : "outline"}
             onClick={() => onChange({ abilityMethod: method.key, assignment: {} })}
           >
             {method.label}
@@ -97,9 +96,9 @@ function MethodPicker({ draft, onChange }: AbilitiesStepViewProps) {
 }
 
 /** Le compteur seul, comme dans les jeux : ce qui reste, pas la comptabilité. */
-function RollBanner({ step, draft }: AbilitiesStepViewProps) {
-  if (draft.abilityMethod === "pointBuy") {
-    const remaining = POINT_BUY_BUDGET - pointBuySpent(draft);
+function RollBanner({ step, composition }: AbilitiesStepViewProps) {
+  if (composition.abilityMethod === "pointBuy") {
+    const remaining = POINT_BUY_BUDGET - pointBuySpent(composition);
 
     return (
       <p className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -110,12 +109,12 @@ function RollBanner({ step, draft }: AbilitiesStepViewProps) {
       </p>
     );
   }
-  if (draft.abilityMethod !== "roll") return null;
+  if (composition.abilityMethod !== "roll") return null;
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Button type="button" onClick={step.onRoll} disabled={step.isRolling}>
-        {step.isRolling ? "Les dés roulent..." : step.roll ? "Relancer" : "Lancer les dés"}
+      <Button type="button" onClick={step.onRoll}>
+        {step.roll ? "Relancer" : "Lancer les dés"}
       </Button>
       {step.roll ? (
         <span className="text-sm text-muted-foreground">
@@ -153,8 +152,8 @@ function BonusPlanPicker({ step, plan, onChange }: BonusPlanPickerProps) {
   );
 }
 
-function currentPlan(draft: CharacterDraft): BonusPlan {
-  const bonuses = Object.values(draft.backgroundBonuses).filter(Boolean);
+function currentPlan(composition: CharacterComposition): BonusPlan {
+  const bonuses = Object.values(composition.backgroundBonuses).filter(Boolean);
 
   return bonuses.length === 3 && bonuses.every((bonus) => bonus === 1)
     ? "spread"

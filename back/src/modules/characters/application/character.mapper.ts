@@ -40,10 +40,8 @@ export function toCharacterDto(
   };
 }
 
-function buildSummaryOf(character: Character): CharacterBuildSummary | null {
+function buildSummaryOf(character: Character): CharacterBuildSummary {
   const build = character.build;
-  if (!build) return null;
-
   const species = SPECIES[build.speciesKey];
   const lineage = species.lineage?.options.find((option) => option.key === build.lineageKey);
 

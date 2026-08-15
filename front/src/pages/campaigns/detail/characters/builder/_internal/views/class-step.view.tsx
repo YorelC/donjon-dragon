@@ -1,13 +1,13 @@
 import type { CatalogClass, ClassKey, DndCatalog } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Separator } from "@/shared/components/atoms/separator";
-import type { CharacterDraft } from "../types/character-draft";
+import type { CharacterComposition } from "../types/character-composition";
 import { OptionListView } from "./option-list.view";
 
 interface ClassStepViewProps {
   catalog: DndCatalog;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 /**
@@ -15,14 +15,14 @@ interface ClassStepViewProps {
  * combat et son Ordre ont chacun leur écran : ce sont des décisions distinctes,
  * et le fil conducteur doit les montrer comme telles.
  */
-export function ClassStepView({ catalog, draft, onChange }: ClassStepViewProps) {
-  const characterClass = catalog.classes.find((entry) => entry.key === draft.classKey);
+export function ClassStepView({ catalog, composition, onChange }: ClassStepViewProps) {
+  const characterClass = catalog.classes.find((entry) => entry.key === composition.classKey);
 
   return (
     <div className="grid gap-4">
       <OptionListView
         options={catalog.classes.map((entry) => ({ key: entry.key, name: entry.name }))}
-        selectedKey={draft.classKey}
+        selectedKey={composition.classKey}
         onSelect={(key) =>
           onChange({
             classKey: key as ClassKey,

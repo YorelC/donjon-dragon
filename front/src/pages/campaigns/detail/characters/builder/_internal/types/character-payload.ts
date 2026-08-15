@@ -3,28 +3,24 @@ import type {
   CharacterChoice,
   ClassKey,
   FinalizeCharacterDto,
-  PreviewCharacterSheetDto,
 } from "@donjon-dragon/shared";
 import {
   ABILITIES,
   availableScores,
   isFullyAssigned,
-  type CharacterDraft,
-} from "./character-draft";
+  type CharacterComposition,
+} from "./character-composition";
 
 /** Un score neutre tant que rien n'est réparti : l'aperçu doit répondre. */
 const UNASSIGNED_SCORE = 10;
 
-function baseScoresOf(
-  draft: CharacterDraft,
-  rollTotals: readonly number[],
-): Record<Ability, number> {
-  if (draft.abilityMethod === "pointBuy") return { ...draft.pointBuyScores };
-  const available = availableScores(draft, rollTotals);
+function baseScoresOf(composition: CharacterComposition): Record<Ability, number> {
+  if (composition.abilityMethod === "pointBuy") return { ...composition.pointBuyScores };
+  const available = availableScores(composition);
 
   return Object.fromEntries(
     ABILITIES.map((ability) => {
-      const slot = draft.assignment[ability];
+      const slot = composition.assignment[ability];
 
       return [
         ability,
@@ -39,94 +35,91 @@ function baseScoresOf(
  * retirer si la source disparaît, et pour vérifier que chaque source a bien fait
  * choisir ce qu'elle devait.
  */
-function choicesOf(draft: CharacterDraft): CharacterChoice[] {
+function choicesOf(composition: CharacterComposition): CharacterChoice[] {
   return [
-    ...speciesChoices(draft),
-    ...classChoices(draft),
-    ...magicInitiateChoice(draft),
-    ...skilledChoice(draft),
+    ...speciesChoices(composition),
+    ...classChoices(composition),
+    ...magicInitiateChoice(composition),
+    ...skilledChoice(composition),
   ];
 }
 
-function speciesChoices(draft: CharacterDraft): CharacterChoice[] {
-  if (!draft.speciesKey) return [];
+function speciesChoices(composition: CharacterComposition): CharacterChoice[] {
+  if (!composition.speciesKey) return [];
 
   return [
     {
-      source: { type: "species", key: draft.speciesKey },
-      skills: draft.speciesSkills,
-      ...(draft.speciesFeat ? { originFeat: draft.speciesFeat } : {}),
+      source: { type: "species", key: composition.speciesKey },
+      skills: composition.speciesSkills,
+      ...(composition.speciesFeat ? { originFeat: composition.speciesFeat } : {}),
     },
   ];
 }
 
-function classChoices(draft: CharacterDraft): CharacterChoice[] {
-  if (!draft.classKey) return [];
+function classChoices(composition: CharacterComposition): CharacterChoice[] {
+  if (!composition.classKey) return [];
 
   return [
     {
-      source: { type: "class", key: draft.classKey },
-      skills: draft.classSkills,
-      expertise: draft.expertise,
-      spells: [...draft.classCantrips, ...draft.classSpells],
-      ...(draft.fightingStyle ? { fightingStyle: draft.fightingStyle } : {}),
-      ...(draft.classOrder ? { classOrder: draft.classOrder } : {}),
+      source: { type: "class", key: composition.classKey },
+      skills: composition.classSkills,
+      expertise: composition.expertise,
+      spells: [...composition.classCantrips, ...composition.classSpells],
+      ...(composition.fightingStyle ? { fightingStyle: composition.fightingStyle } : {}),
+      ...(composition.classOrder ? { classOrder: composition.classOrder } : {}),
     },
   ];
 }
 
 /** Initié à la magie porte sa liste, sa caractéristique et ses sorts. */
-function magicInitiateChoice(draft: CharacterDraft): CharacterChoice[] {
-  if (!draft.spellcastingAbility || !draft.spellList) return [];
+function magicInitiateChoice(composition: CharacterComposition): CharacterChoice[] {
+  if (!composition.spellcastingAbility || !composition.spellList) return [];
 
   return [
     {
       source: { type: "feat", key: "magic-initiate" },
-      spellcastingAbility: draft.spellcastingAbility,
-      spellList: draft.spellList as ClassKey,
-      spells: [...draft.featCantrips, ...draft.featSpells],
+      spellcastingAbility: composition.spellcastingAbility,
+      spellList: composition.spellList as ClassKey,
+      spells: [...composition.featCantrips, ...composition.featSpells],
     },
   ];
 }
 
-function skilledChoice(draft: CharacterDraft): CharacterChoice[] {
-  if (draft.featSkills.length === 0 && draft.featTools.length === 0) return [];
+function skilledChoice(composition: CharacterComposition): CharacterChoice[] {
+  if (composition.featSkills.length === 0 && composition.featTools.length === 0) return [];
 
   return [
     {
       source: { type: "feat", key: "skilled" },
-      skills: draft.featSkills,
-      tools: draft.featTools,
+      skills: composition.featSkills,
+      tools: composition.featTools,
     },
   ];
 }
 
 export function toPreviewPayload(
-  draft: CharacterDraft,
-  rollTotals: readonly number[],
-): PreviewCharacterSheetDto | null {
-  if (!draft.speciesKey || !draft.classKey || !draft.backgroundKey) return null;
+  composition: CharacterComposition,
+): Omit<FinalizeCharacterDto, "name" | "abilityRoll"> | null {
+  if (!composition.speciesKey || !composition.classKey || !composition.backgroundKey) {
+    return null;
+  }
 
   return {
-    speciesKey: draft.speciesKey,
-    lineageKey: draft.lineageKey,
-    classKey: draft.classKey,
-    backgroundKey: draft.backgroundKey,
-    abilityMethod: draft.abilityMethod,
-    base: baseScoresOf(draft, rollTotals),
-    backgroundBonuses: draft.backgroundBonuses,
-    choices: choicesOf(draft),
-    equipment: { armorKey: draft.armorKey, shield: draft.shield, items: [], gold: 0 },
+    speciesKey: composition.speciesKey,
+    lineageKey: composition.lineageKey,
+    classKey: composition.classKey,
+    backgroundKey: composition.backgroundKey,
+    abilityMethod: composition.abilityMethod,
+    base: baseScoresOf(composition),
+    backgroundBonuses: composition.backgroundBonuses,
+    choices: choicesOf(composition),
+    equipment: { armorKey: composition.armorKey, shield: composition.shield, items: [], gold: 0 },
   };
 }
 
-export function toFinalizePayload(
-  draft: CharacterDraft,
-  rollTotals: readonly number[],
-  name: string,
-): FinalizeCharacterDto | null {
-  const preview = toPreviewPayload(draft, rollTotals);
-  if (!preview || !isFullyAssigned(draft)) return null;
+export function toFinalizePayload(composition: CharacterComposition): FinalizeCharacterDto | null {
+  const preview = toPreviewPayload(composition);
+  if (!preview || !isFullyAssigned(composition)) return null;
 
-  return { ...preview, name };
+  return { ...preview, name: composition.name, abilityRoll: composition.abilityRoll };
 }

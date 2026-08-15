@@ -28,7 +28,7 @@ export const STANDARD_ARRAY_DICE: readonly (readonly number[])[] = [
 
 export const STANDARD_ARRAY_ROLL = AbilityRoll.create(STANDARD_ARRAY_DICE);
 
-export interface BuildDraft {
+export interface BuildInput {
   speciesKey: SpeciesKey;
   classKey: ClassKey;
   backgroundKey: BackgroundKey;
@@ -41,32 +41,32 @@ export interface BuildDraft {
   shield?: boolean;
 }
 
-export function aBuild(draft: BuildDraft): CharacterBuild {
+export function aBuild(input: BuildInput): CharacterBuild {
   return {
-    speciesKey: draft.speciesKey,
-    lineageKey: draft.lineageKey ?? null,
-    classKey: draft.classKey,
-    backgroundKey: draft.backgroundKey,
+    speciesKey: input.speciesKey,
+    lineageKey: input.lineageKey ?? null,
+    classKey: input.classKey,
+    backgroundKey: input.backgroundKey,
     level: LEVEL_ONE,
-    abilities: abilitiesOf(draft),
-    choices: CharacterChoices.create(draft.choices ?? []),
-    equipment: equipmentOf(draft),
+    abilities: abilitiesOf(input),
+    choices: CharacterChoices.create(input.choices ?? []),
+    equipment: equipmentOf(input),
   };
 }
 
-function abilitiesOf(draft: BuildDraft): AbilityAssignment {
+function abilitiesOf(input: BuildInput): AbilityAssignment {
   return AbilityAssignment.create({
-    method: draft.abilityMethod ?? 'roll',
+    method: input.abilityMethod ?? 'roll',
     roll: STANDARD_ARRAY_ROLL,
-    base: draft.base,
-    backgroundBonuses: draft.backgroundBonuses,
+    base: input.base,
+    backgroundBonuses: input.backgroundBonuses,
   });
 }
 
-function equipmentOf(draft: BuildDraft): CharacterEquipment {
+function equipmentOf(input: BuildInput): CharacterEquipment {
   return CharacterEquipment.create({
-    armorKey: draft.armorKey ?? null,
-    shield: draft.shield ?? false,
+    armorKey: input.armorKey ?? null,
+    shield: input.shield ?? false,
     items: [],
     gold: 0,
   });

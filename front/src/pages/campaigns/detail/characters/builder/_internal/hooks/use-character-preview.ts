@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ComputedCharacter } from "@donjon-dragon/shared";
 import { usePreviewSheet } from "../queries/use-character-creation";
-import type { CharacterDraft } from "../types/character-draft";
+import type { CharacterComposition } from "../types/character-composition";
 import { toPreviewPayload } from "../types/character-payload";
 
 /** Le temps qu'un joueur met à finir de cliquer avant qu'un appel parte. */
@@ -12,17 +12,17 @@ const DEBOUNCE_MS = 350;
  * qu'un seul endroit connaît les règles. Débouncé, parce qu'un clic sur une
  * compétence n'a pas à déclencher un aller-retour immédiat.
  *
- * Le payload sérialisé sert de dépendance : deux brouillons identiques ne
- * doivent pas relancer la requête, et `draft` est un objet neuf à chaque frappe.
+ * Le payload sérialisé sert de dépendance : deux compositions identiques ne
+ * doivent pas relancer la requête, et `composition` est un objet neuf à chaque
+ * frappe.
  */
 export function useCharacterPreview(
   campaignId: string,
-  draft: CharacterDraft,
-  rollTotals: readonly number[],
+  composition: CharacterComposition,
 ): ComputedCharacter | null {
   const [sheet, setSheet] = useState<ComputedCharacter | null>(null);
   const request = useLatestPreview(campaignId);
-  const payload = JSON.stringify(toPreviewPayload(draft, rollTotals));
+  const payload = JSON.stringify(toPreviewPayload(composition));
 
   useEffect(() => schedulePreview(payload, request, setSheet), [payload, request]);
 

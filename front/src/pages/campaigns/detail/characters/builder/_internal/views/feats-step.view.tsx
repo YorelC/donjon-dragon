@@ -10,14 +10,14 @@ import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
 import { Separator } from "@/shared/components/atoms/separator";
-import { ABILITY_LABELS, allSkillsOf, type CharacterDraft } from "../types/character-draft";
+import { ABILITY_LABELS, allSkillsOf, type CharacterComposition } from "../types/character-composition";
 import { knownSkillsExcept } from "../types/builder-lookups";
 import { SkillPickerView } from "./skill-picker.view";
 
 interface FeatsStepViewProps {
   catalog: DndCatalog;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 /**
@@ -26,10 +26,10 @@ interface FeatsStepViewProps {
  * quand même — le joueur doit savoir ce qu'il a.
  */
 export function FeatsStepView(props: FeatsStepViewProps) {
-  const { catalog, draft } = props;
-  const background = catalog.backgrounds.find((entry) => entry.key === draft.backgroundKey);
+  const { catalog, composition } = props;
+  const background = catalog.backgrounds.find((entry) => entry.key === composition.backgroundKey);
   const granted = catalog.originFeats.find((feat) => feat.key === background?.originFeat);
-  const chosen = catalog.originFeats.find((feat) => feat.key === draft.speciesFeat);
+  const chosen = catalog.originFeats.find((feat) => feat.key === composition.speciesFeat);
 
   return (
     <div className="grid gap-4">
@@ -41,8 +41,8 @@ export function FeatsStepView(props: FeatsStepViewProps) {
 }
 
 /** Seul l'humain accorde un don au choix au niveau 1, par son trait Polyvalent. */
-function SpeciesFeatChoice({ catalog, draft, onChange }: FeatsStepViewProps) {
-  const species = catalog.species.find((entry) => entry.key === draft.speciesKey);
+function SpeciesFeatChoice({ catalog, composition, onChange }: FeatsStepViewProps) {
+  const species = catalog.species.find((entry) => entry.key === composition.speciesKey);
   if (!species?.grantsOriginFeatChoice) return null;
 
   return (
@@ -54,7 +54,7 @@ function SpeciesFeatChoice({ catalog, draft, onChange }: FeatsStepViewProps) {
             key={feat.key}
             type="button"
             size="sm"
-            variant={draft.speciesFeat === feat.key ? "default" : "outline"}
+            variant={composition.speciesFeat === feat.key ? "default" : "outline"}
             onClick={() => onChange({ speciesFeat: feat.key as OriginFeatKey })}
           >
             {feat.name}
@@ -102,7 +102,7 @@ function FeatConfiguration(props: FeatCardProps) {
 }
 
 /** Initié à la magie : la liste où puiser, et la caractéristique qui l'anime. */
-function SpellListChoice({ catalog, feat, draft, onChange }: FeatCardProps) {
+function SpellListChoice({ catalog, feat, composition, onChange }: FeatCardProps) {
   const choice = feat.spellcastingChoice;
   if (!choice) return null;
 
@@ -114,7 +114,7 @@ function SpellListChoice({ catalog, feat, draft, onChange }: FeatCardProps) {
             key={classKey}
             type="button"
             size="sm"
-            variant={draft.spellList === classKey ? "default" : "outline"}
+            variant={composition.spellList === classKey ? "default" : "outline"}
             onClick={() => onChange({ spellList: classKey as ClassKey, featSpells: [] })}
           >
             {catalog.classes.find((entry) => entry.key === classKey)?.name ?? classKey}
@@ -127,7 +127,7 @@ function SpellListChoice({ catalog, feat, draft, onChange }: FeatCardProps) {
             key={ability}
             type="button"
             size="sm"
-            variant={draft.spellcastingAbility === ability ? "default" : "outline"}
+            variant={composition.spellcastingAbility === ability ? "default" : "outline"}
             onClick={() => onChange({ spellcastingAbility: ability as Ability })}
           >
             {ABILITY_LABELS[ability as Ability]}
@@ -139,15 +139,15 @@ function SpellListChoice({ catalog, feat, draft, onChange }: FeatCardProps) {
 }
 
 /** Doué accorde trois maîtrises ; on ne propose ici que les compétences. */
-function ProficiencyChoice({ catalog, feat, draft, onChange }: FeatCardProps) {
+function ProficiencyChoice({ catalog, feat, composition, onChange }: FeatCardProps) {
   return (
     <SkillPickerView
       picker={{
         count: feat.skillOrToolChoiceCount,
         options: allSkillsOf(catalog),
-        selected: draft.featSkills,
+        selected: composition.featSkills,
         labels: catalog.skillLabels,
-        alreadyKnown: knownSkillsExcept({ catalog, draft }, "feat"),
+        alreadyKnown: knownSkillsExcept({ catalog, composition }, "feat"),
         onChange: (featSkills: SkillName[]) => onChange({ featSkills }),
       }}
     />

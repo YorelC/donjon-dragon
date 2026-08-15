@@ -5,7 +5,6 @@ import { Button } from "@/shared/components/atoms/button";
 import { toCharacterBuilder, toCharacterSheet } from "@/shared/constants/routes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
 import { CharacterAssignContainer } from "../containers/character-assign.container";
-import type { CharacterFormState } from "../hooks/use-character-form";
 
 export interface CharacterRowViewer {
   isGameMaster: boolean;
@@ -16,7 +15,6 @@ interface CharacterRowProps {
   character: Character;
   viewer: CharacterRowViewer;
   campaignId: string;
-  form: CharacterFormState;
   onDelete: (characterId: string) => void;
   onUnassign: (characterId: string) => void;
 }
@@ -47,10 +45,8 @@ function AssignmentBadge({ character }: { character: Character }) {
   return <Badge>{character.assignedTo.displayName}</Badge>;
 }
 
-/** Espèce, classe et historique n'existent qu'une fois le builder terminé. */
 function BuildSummary({ character }: { character: Character }) {
   const { build } = character;
-  if (!build) return <Badge className="ml-2" variant="secondary">Brouillon</Badge>;
 
   return (
     <span className="ml-2 font-normal text-muted-foreground">
@@ -59,21 +55,10 @@ function BuildSummary({ character }: { character: Character }) {
   );
 }
 
-/** Un brouillon annonce ce qu'il lui reste à faire, pas des scores qu'il n'a pas. */
 function CreationProgress({ character }: { character: Character }) {
-  if (character.status === "ready") {
-    return (
-      <p className="w-full text-sm text-muted-foreground">
-        Tirage : {character.abilityRoll?.totals.join(" · ")}
-      </p>
-    );
-  }
-
   return (
     <p className="w-full text-sm text-muted-foreground">
-      {character.abilityRoll
-        ? "Dés lancés, choix à terminer."
-        : "Création à commencer : les dés n'ont pas encore été lancés."}
+      Tirage : {character.abilityRoll?.totals.join(" · ") ?? "—"}
     </p>
   );
 }
@@ -87,14 +72,16 @@ function canManage(character: Character, viewer: CharacterRowViewer): boolean {
 }
 
 function RowActions(props: CharacterRowProps) {
-  const { character, viewer, campaignId, form, onDelete, onUnassign } = props;
+  const { character, viewer, campaignId, onDelete, onUnassign } = props;
   if (!canManage(character, viewer)) return null;
 
   return (
     <div className="flex gap-2">
-      <CreationLink character={character} campaignId={campaignId} />
-      <Button variant="outline" size="sm" onClick={() => form.onOpen(character)}>
-        Renommer
+      <Button asChild size="sm" variant="outline">
+        <Link to={toCharacterSheet(campaignId, character.id)}>Voir la fiche</Link>
+      </Button>
+      <Button asChild size="sm" variant="outline">
+        <Link to={toCharacterBuilder(campaignId, character.id)}>Éditer</Link>
       </Button>
       <Button variant="destructive" size="sm" onClick={() => onDelete(character.id)}>
         Supprimer
@@ -107,26 +94,6 @@ function RowActions(props: CharacterRowProps) {
         />
       ) : null}
     </div>
-  );
-}
-
-/** Un brouillon se termine, un personnage prêt se consulte. */
-function CreationLink({
-  character,
-  campaignId,
-}: {
-  character: Character;
-  campaignId: string;
-}) {
-  const draft = character.status === "draft";
-  const target = draft
-    ? toCharacterBuilder(campaignId, character.id)
-    : toCharacterSheet(campaignId, character.id);
-
-  return (
-    <Button asChild size="sm" variant={draft ? "default" : "outline"}>
-      <Link to={target}>{draft ? "Terminer la création" : "Voir la fiche"}</Link>
-    </Button>
   );
 }
 

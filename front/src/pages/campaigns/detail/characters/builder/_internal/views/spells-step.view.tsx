@@ -1,7 +1,7 @@
 import type { CatalogSpell, CatalogSpellList } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
-import type { CharacterDraft } from "../types/character-draft";
+import type { CharacterComposition } from "../types/character-composition";
 
 export interface SpellsStep {
   classSpells: CatalogSpellList | null;
@@ -16,12 +16,12 @@ export interface SpellsStep {
 
 interface SpellsStepViewProps {
   step: SpellsStep;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 /** Les sorts mineurs, de la classe et du don, sur le même écran. */
-export function CantripsStepView({ step, draft, onChange }: SpellsStepViewProps) {
+export function CantripsStepView({ step, composition, onChange }: SpellsStepViewProps) {
   if (step.isLoading) return <Loading />;
 
   return (
@@ -30,14 +30,14 @@ export function CantripsStepView({ step, draft, onChange }: SpellsStepViewProps)
         title="Sorts mineurs de classe"
         spells={step.classSpells?.cantrips ?? []}
         limit={step.classCantripsKnown}
-        selected={draft.classCantrips}
+        selected={composition.classCantrips}
         onChange={(classCantrips) => onChange({ classCantrips })}
       />
       <SpellGroup
         title="Sorts mineurs — Initié à la magie"
         spells={step.featSpells?.cantrips ?? []}
         limit={step.featCantripsKnown}
-        selected={draft.featCantrips}
+        selected={composition.featCantrips}
         onChange={(featCantrips) => onChange({ featCantrips })}
       />
     </div>
@@ -45,7 +45,7 @@ export function CantripsStepView({ step, draft, onChange }: SpellsStepViewProps)
 }
 
 /** Les sorts de niveau 1, de la classe et du don. */
-export function SpellsStepView({ step, draft, onChange }: SpellsStepViewProps) {
+export function SpellsStepView({ step, composition, onChange }: SpellsStepViewProps) {
   if (step.isLoading) return <Loading />;
 
   return (
@@ -54,14 +54,14 @@ export function SpellsStepView({ step, draft, onChange }: SpellsStepViewProps) {
         title="Sorts préparés"
         spells={step.classSpells?.level1 ?? []}
         limit={step.classSpellsPrepared}
-        selected={draft.classSpells}
+        selected={composition.classSpells}
         onChange={(classSpells) => onChange({ classSpells })}
       />
       <SpellGroup
         title="Sort de niveau 1 — Initié à la magie"
         spells={step.featSpells?.level1 ?? []}
         limit={step.featSpellsPrepared}
-        selected={draft.featSpells}
+        selected={composition.featSpells}
         onChange={(featSpells) => onChange({ featSpells })}
       />
     </div>

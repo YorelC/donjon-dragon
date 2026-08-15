@@ -1,14 +1,13 @@
 import type { ComputedCharacter, DndCatalog } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Separator } from "@/shared/components/atoms/separator";
-import { ABILITIES, ABILITY_LABELS, type CharacterDraft } from "../types/character-draft";
+import { ABILITIES, ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
 import { backgroundOf, classOf, speciesOf } from "../types/builder-lookups";
 
 interface CharacterPreviewViewProps {
   catalog: DndCatalog;
-  draft: CharacterDraft;
+  composition: CharacterComposition;
   preview: ComputedCharacter | null;
-  characterName: string;
 }
 
 /**
@@ -31,14 +30,14 @@ export function CharacterPreviewView(props: CharacterPreviewViewProps) {
   );
 }
 
-function Identity({ catalog, draft, characterName }: CharacterPreviewViewProps) {
-  const context = { catalog, draft };
+function Identity({ catalog, composition }: CharacterPreviewViewProps) {
+  const context = { catalog, composition };
   const species = speciesOf(context);
-  const lineage = species?.lineage?.options.find((entry) => entry.key === draft.lineageKey);
+  const lineage = species?.lineage?.options.find((entry) => entry.key === composition.lineageKey);
 
   return (
     <div className="grid gap-1">
-      <p className="section-title text-base">{characterName}</p>
+      <p className="section-title text-base">{composition.name || "Personnage à créer"}</p>
       <p className="text-sm text-muted-foreground">
         {[lineage?.name ?? species?.name, classOf(context)?.name].filter(Boolean).join(" · ") ||
           "Personnage à créer"}
@@ -50,7 +49,7 @@ function Identity({ catalog, draft, characterName }: CharacterPreviewViewProps) 
   );
 }
 
-function Abilities({ preview, draft }: CharacterPreviewViewProps) {
+function Abilities({ preview, composition }: CharacterPreviewViewProps) {
   return (
     <div className="grid grid-cols-6 gap-1 text-center">
       {ABILITIES.map((ability) => (
@@ -59,7 +58,7 @@ function Abilities({ preview, draft }: CharacterPreviewViewProps) {
             {ABILITY_LABELS[ability].slice(0, 3)}
           </p>
           <p className="text-lg font-semibold tabular-nums">
-            {preview?.abilities[ability].score ?? draft.pointBuyScores[ability]}
+            {preview?.abilities[ability].score ?? composition.pointBuyScores[ability]}
           </p>
         </div>
       ))}
@@ -78,11 +77,11 @@ function Vitals({ preview }: { preview: ComputedCharacter }) {
   );
 }
 
-function Proficiencies({ catalog, draft, preview }: CharacterPreviewViewProps) {
+function Proficiencies({ catalog, composition, preview }: CharacterPreviewViewProps) {
   const skills = preview?.proficiencies.skills ?? [
-    ...draft.classSkills,
-    ...draft.speciesSkills,
-    ...draft.featSkills,
+    ...composition.classSkills,
+    ...composition.speciesSkills,
+    ...composition.featSkills,
   ];
   if (skills.length === 0) return null;
 

@@ -61,10 +61,11 @@ function AppRoutes() {
   );
 }
 
-/** Hors du layout de campagne : ces deux pages prennent toute la largeur. */
+/** Hors du layout de campagne : ces pages prennent toute la largeur. */
 function CharacterRoutes() {
   return (
     <>
+      <Route path={ROUTES.campaignCharacterNew} element={<CharacterBuilderPage />} />
       <Route path={ROUTES.campaignCharacterBuilder} element={<CharacterBuilderPage />} />
       <Route path={ROUTES.campaignCharacterSheet} element={<CharacterSheetPage />} />
     </>

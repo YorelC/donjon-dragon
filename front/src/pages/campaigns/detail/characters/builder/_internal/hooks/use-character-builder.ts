@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { DndCatalog } from "@donjon-dragon/shared";
-import { EMPTY_DRAFT, type CharacterDraft } from "../types/character-draft";
+import { EMPTY_COMPOSITION, type CharacterComposition } from "../types/character-composition";
 import type { StepContext } from "../types/builder-lookups";
 import {
   isStepValid,
@@ -13,44 +13,58 @@ import {
 export interface BuilderState {
   step: BuilderStep;
   steps: readonly BuilderStep[];
-  draft: CharacterDraft;
+  composition: CharacterComposition;
   isValid: (step: BuilderStep) => boolean;
   isReachable: (step: BuilderStep) => boolean;
   progressOf: (step: BuilderStep) => StepProgress | null;
   canGoNext: boolean;
   isLastStep: boolean;
-  update: (patch: Partial<CharacterDraft>) => void;
+  update: (patch: Partial<CharacterComposition>) => void;
   goTo: (step: BuilderStep) => void;
   next: () => void;
   previous: () => void;
 }
 
 /**
- * L'état du builder : le brouillon, l'étape affichée, et ce qui autorise à
- * avancer.
+ * L'état du builder : la composition en cours, l'étape affichée, et ce qui
+ * autorise à avancer.
  *
- * La liste des étapes est dérivée du brouillon à chaque rendu — un elfe fait
- * apparaître son lignage, un guerrier son Style de combat. Le parcours est
+ * La liste des étapes est dérivée de la composition à chaque rendu — un elfe
+ * fait apparaître son lignage, un guerrier son Style de combat. Le parcours est
  * imposé vers l'avant et libre vers l'arrière : on n'atteint une étape qu'après
  * avoir validé les précédentes, mais on revient corriger quand on veut.
+ *
+ * `initial` pré-remplit le wizard en édition, une seule fois : un refetch
+ * ultérieur (invalidation de cache) n'écrase jamais ce que l'utilisateur a
+ * déjà modifié depuis l'hydratation.
  */
-export function useCharacterBuilder(catalog: DndCatalog | undefined): BuilderState {
-  const [draft, setDraft] = useState<CharacterDraft>(() => EMPTY_DRAFT);
+export function useCharacterBuilder(
+  catalog: DndCatalog | undefined,
+  initial: CharacterComposition | null = null,
+): BuilderState {
+  const [composition, setComposition] = useState<CharacterComposition>(() => EMPTY_COMPOSITION);
   const [step, setStep] = useState<BuilderStep>("species");
+  const hydrated = useRef(false);
 
-  const update = (patch: Partial<CharacterDraft>) =>
-    setDraft((current) => ({ ...current, ...patch }));
+  useEffect(() => {
+    if (!initial || hydrated.current) return;
+    hydrated.current = true;
+    setComposition(initial);
+  }, [initial]);
 
-  if (!catalog) return idleState(draft, update);
+  const update = (patch: Partial<CharacterComposition>) =>
+    setComposition((current) => ({ ...current, ...patch }));
 
-  return activeState({ context: { catalog, draft }, step, setStep, update });
+  if (!catalog) return idleState(composition, update);
+
+  return activeState({ context: { catalog, composition }, step, setStep, update });
 }
 
 interface ActiveStateInput {
   context: StepContext;
   step: BuilderStep;
   setStep: (step: BuilderStep) => void;
-  update: (patch: Partial<CharacterDraft>) => void;
+  update: (patch: Partial<CharacterComposition>) => void;
 }
 
 function activeState({ context, step, setStep, update }: ActiveStateInput): BuilderState {
@@ -61,7 +75,7 @@ function activeState({ context, step, setStep, update }: ActiveStateInput): Buil
   return {
     step,
     steps,
-    draft: context.draft,
+    composition: context.composition,
     isValid,
     isReachable,
     progressOf: (target) => stepProgress(target, context),
@@ -76,13 +90,13 @@ function activeState({ context, step, setStep, update }: ActiveStateInput): Buil
 
 /** Tant que le catalogue n'est pas là, rien n'est franchissable ni mesurable. */
 function idleState(
-  draft: CharacterDraft,
-  update: (patch: Partial<CharacterDraft>) => void,
+  composition: CharacterComposition,
+  update: (patch: Partial<CharacterComposition>) => void,
 ): BuilderState {
   return {
     step: "species",
     steps: ["species"],
-    draft,
+    composition,
     isValid: () => false,
     isReachable: () => false,
     progressOf: () => null,

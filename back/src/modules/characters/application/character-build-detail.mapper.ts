@@ -1,0 +1,116 @@
+import type {
+  AbilityRoll as AbilityRollDto,
+  BackgroundAbilityBonuses,
+  CharacterBuildDetailDto,
+} from '@donjon-dragon/shared/character-schema';
+
+import type { Character } from '../domain/character';
+import type { CharacterChoice } from '../domain/character-choices';
+import type { SpellKey } from '../domain/reference/keys';
+import { SPELLS } from '../domain/reference/spells';
+
+const CANTRIP_LEVEL = 0;
+
+/**
+ * L'agrégat → le build éclaté qu'attend le wizard pour se pré-remplir en
+ * édition. Chaque source connue de `choices` retrouve sa place ; une source
+ * inconnue est silencieusement ignorée, comme le fait déjà `CharacterChoices`.
+ */
+export function toCharacterBuildDetailDto(character: Character): CharacterBuildDetailDto {
+  const build = character.build;
+  const choices = build.choices.all;
+
+  return {
+    name: character.name.value,
+    speciesKey: build.speciesKey,
+    lineageKey: build.lineageKey,
+    ...speciesFieldsOf(choices),
+    classKey: build.classKey,
+    ...classFieldsOf(choices),
+    backgroundKey: build.backgroundKey,
+    ...magicInitiateFieldsOf(choices),
+    ...skilledFieldsOf(choices),
+    ...abilityFieldsOf(character),
+    armorKey: build.equipment.armorKey,
+    shield: build.equipment.shield,
+  };
+}
+
+function abilityFieldsOf(character: Character) {
+  const abilities = character.build.abilities.snapshot();
+
+  return {
+    backgroundBonuses: abilities.backgroundBonuses as BackgroundAbilityBonuses,
+    abilityMethod: abilities.method,
+    base: abilities.base,
+    abilityRoll: rollOf(character),
+  };
+}
+
+function speciesFieldsOf(choices: readonly CharacterChoice[]) {
+  const choice = choices.find((entry) => entry.source.type === 'species');
+
+  return {
+    speciesSkills: [...(choice?.skills ?? [])],
+    speciesFeat: choice?.originFeat ?? null,
+  };
+}
+
+function classFieldsOf(choices: readonly CharacterChoice[]) {
+  const choice = choices.find((entry) => entry.source.type === 'class');
+  const spells = choice?.spells ?? [];
+
+  return {
+    classSkills: [...(choice?.skills ?? [])],
+    expertise: [...(choice?.expertise ?? [])],
+    classCantrips: cantripsOf(spells),
+    classSpells: levelOneOf(spells),
+    fightingStyle: choice?.fightingStyle ?? null,
+    classOrder: choice?.classOrder ?? null,
+  };
+}
+
+function magicInitiateFieldsOf(choices: readonly CharacterChoice[]) {
+  const choice = choices.find(
+    (entry) => entry.source.type === 'feat' && entry.source.key === 'magic-initiate',
+  );
+  const spells = choice?.spells ?? [];
+
+  return {
+    spellcastingAbility: choice?.spellcastingAbility ?? null,
+    spellList: choice?.spellList ?? null,
+    featCantrips: cantripsOf(spells),
+    featSpells: levelOneOf(spells),
+  };
+}
+
+function skilledFieldsOf(choices: readonly CharacterChoice[]) {
+  const choice = choices.find(
+    (entry) => entry.source.type === 'feat' && entry.source.key === 'skilled',
+  );
+
+  return {
+    featSkills: [...(choice?.skills ?? [])],
+    featTools: [...(choice?.tools ?? [])],
+  };
+}
+
+/** Le détail des dés accompagne les totaux : le joueur doit pouvoir refaire le calcul. */
+function rollOf(character: Character): AbilityRollDto | null {
+  const roll = character.abilityRoll;
+  if (!roll) return null;
+
+  return { dice: roll.snapshot().dice, totals: roll.totals };
+}
+
+function levelOf(key: SpellKey): number | undefined {
+  return SPELLS[key]?.level;
+}
+
+function cantripsOf(spells: readonly SpellKey[]): string[] {
+  return spells.filter((key) => levelOf(key) === CANTRIP_LEVEL);
+}
+
+function levelOneOf(spells: readonly SpellKey[]): string[] {
+  return spells.filter((key) => levelOf(key) === 1);
+}

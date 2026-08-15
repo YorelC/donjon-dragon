@@ -6,7 +6,7 @@ import type { ComputedCharacter } from '@donjon-dragon/shared/character-sheet-sc
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import type { ActorId } from '@kernel/domain/actor-id';
 
-import { toBuildDraft } from '../character-build.mapper';
+import { toBuildInput } from '../character-build.mapper';
 import { toCharacterSheetDto } from '../character-sheet.mapper';
 import { AbilityAssignment } from '../../domain/ability-assignment';
 import { CharacterChoices } from '../../domain/character-choices';
@@ -44,20 +44,20 @@ export class PreviewCharacterSheetUseCase {
 }
 
 function buildFrom(dto: PreviewCharacterSheetDto): CharacterBuild {
-  const draft = toBuildDraft(dto);
+  const input = toBuildInput(dto);
 
   return {
-    speciesKey: draft.speciesKey,
-    lineageKey: draft.lineageKey,
-    classKey: draft.classKey,
-    backgroundKey: draft.backgroundKey,
+    speciesKey: input.speciesKey,
+    lineageKey: input.lineageKey,
+    classKey: input.classKey,
+    backgroundKey: input.backgroundKey,
     level: LEVEL_ONE,
     abilities: AbilityAssignment.restore({
-      base: draft.base,
-      backgroundBonuses: draft.backgroundBonuses,
-      method: draft.abilityMethod,
+      base: input.base,
+      backgroundBonuses: input.backgroundBonuses,
+      method: input.abilityMethod,
     }),
-    choices: CharacterChoices.create(draft.choices),
-    equipment: CharacterEquipment.create(draft.equipment),
+    choices: CharacterChoices.create(input.choices),
+    equipment: CharacterEquipment.create(input.equipment),
   };
 }

@@ -1,4 +1,4 @@
-import type { CharacterBuildDraft } from '../domain/character';
+import type { CharacterBuildInput } from '../domain/character';
 
 export const A_CHARACTER_NAME = 'Frodo Sacquet';
 
@@ -17,7 +17,7 @@ export const A_VALID_ASSIGNMENT = {
  * le don n'exige rien de plus, et les quatre compétences de classe du roublard.
  * Le cas le plus simple qui passe toutes les vérifications de `finalize`.
  */
-export const A_CHARACTER_BUILD: CharacterBuildDraft = {
+export const A_CHARACTER_BUILD: CharacterBuildInput = {
   speciesKey: 'halfling',
   lineageKey: null,
   classKey: 'rogue',

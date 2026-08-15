@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { ComputedCharacter } from '@donjon-dragon/shared/character-sheet-schema';
+import type { CharacterBuildDetailDto } from '@donjon-dragon/shared/character-schema';
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import type { ActorId } from '@kernel/domain/actor-id';
 
@@ -8,31 +8,32 @@ import {
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
 import { loadCharacter } from '../character.lookup';
-import { toCharacterSheetDto } from '../character-sheet.mapper';
+import { toCharacterBuildDetailDto } from '../character-build-detail.mapper';
 import { NotActiveCampaignMemberError } from '../../domain/character.errors';
-import { resolveSheet } from '../../domain/resolution/resolve-sheet';
 
-export interface GetCharacterSheetDto {
+export interface GetCharacterBuildDto {
   characterId: string;
   campaignId: string;
   actorId: ActorId;
 }
 
 /**
- * La fiche d'un personnage existant, recalculée à chaque lecture.
+ * Le build d'un personnage déjà créé, dans la forme granulaire qu'attend le
+ * wizard pour se pré-remplir en édition.
  *
- * Tout membre actif de la campagne peut la lire : une fiche se montre à la
- * table. C'est l'édition qui est restreinte, pas la consultation.
+ * Même lecture que la fiche : tout membre actif de la campagne peut la lire,
+ * c'est l'édition — via `finalize` — qui reste restreinte, pas la
+ * consultation.
  */
 @Injectable()
-export class GetCharacterSheetUseCase {
+export class GetCharacterBuildUseCase {
   constructor(
     @Inject(CHARACTER_REPOSITORY)
     private readonly characterRepo: CharacterRepositoryPort,
     private readonly membership: GetCampaignMembershipUseCase,
   ) {}
 
-  async execute(dto: GetCharacterSheetDto): Promise<ComputedCharacter> {
+  async execute(dto: GetCharacterBuildDto): Promise<CharacterBuildDetailDto> {
     const role = await this.membership.execute({
       campaignId: dto.campaignId,
       userId: dto.actorId,
@@ -41,6 +42,6 @@ export class GetCharacterSheetUseCase {
 
     const character = await loadCharacter(this.characterRepo, dto.characterId);
 
-    return toCharacterSheetDto(resolveSheet(character.build));
+    return toCharacterBuildDetailDto(character);
   }
 }

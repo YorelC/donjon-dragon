@@ -1,13 +1,13 @@
 import type { BackgroundKey, CatalogBackground, DndCatalog } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Separator } from "@/shared/components/atoms/separator";
-import { ABILITY_LABELS, type CharacterDraft } from "../types/character-draft";
+import { ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
 import { OptionListView } from "./option-list.view";
 
 interface BackgroundStepViewProps {
   catalog: DndCatalog;
-  draft: CharacterDraft;
-  onChange: (patch: Partial<CharacterDraft>) => void;
+  composition: CharacterComposition;
+  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 /**
@@ -15,14 +15,14 @@ interface BackgroundStepViewProps {
  * l'étape des Caractéristiques, là où l'on voit leur effet sur les scores.
  */
 export function BackgroundStepView(props: BackgroundStepViewProps) {
-  const { catalog, draft, onChange } = props;
-  const background = catalog.backgrounds.find((entry) => entry.key === draft.backgroundKey);
+  const { catalog, composition, onChange } = props;
+  const background = catalog.backgrounds.find((entry) => entry.key === composition.backgroundKey);
 
   return (
     <div className="grid gap-4">
       <OptionListView
         options={catalog.backgrounds}
-        selectedKey={draft.backgroundKey}
+        selectedKey={composition.backgroundKey}
         onSelect={(key) =>
           onChange({ backgroundKey: key as BackgroundKey, backgroundBonuses: {} })
         }

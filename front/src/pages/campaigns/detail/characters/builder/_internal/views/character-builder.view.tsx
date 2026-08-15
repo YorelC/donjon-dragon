@@ -7,16 +7,17 @@ import { stepLabel, type BuilderStep } from "../types/builder-steps";
 import type { AbilitiesStep } from "./abilities-step.view";
 import { AbilitiesStepView } from "./abilities-step.view";
 import { BackgroundStepView } from "./background-step.view";
-import { ChoiceStepView } from "./choice-step.view";
 import { ClassStepView } from "./class-step.view";
 import { EquipmentStepView } from "./equipment-step.view";
 import { FeatsStepView } from "./feats-step.view";
+import { NameStepView } from "./name-step.view";
 import { ClassSkillsStepView, ExpertiseStepView } from "./skill-choice-step.view";
 import { SpeciesStepView } from "./species-step.view";
 import type { SpellsStep } from "./spells-step.view";
 import { CantripsStepView, SpellsStepView } from "./spells-step.view";
 import { CharacterPreviewView } from "./character-preview.view";
 import { BuilderStepsView } from "./builder-steps.view";
+import { ClassChoiceStep, LineageStep } from "./builder-choice-steps.view";
 
 export interface BuilderScreen {
   catalog: DndCatalog;
@@ -24,9 +25,11 @@ export interface BuilderScreen {
   abilities: AbilitiesStep;
   spells: SpellsStep;
   preview: ComputedCharacter | null;
+  /** Sert le titre de la page ; la vue elle-même le lit sur la composition. */
   characterName: string;
   canFinish: boolean;
   isFinishing: boolean;
+  finishLabel: string;
   onFinish: () => void;
 }
 
@@ -49,9 +52,8 @@ export function CharacterBuilderView({ screen }: { screen: BuilderScreen }) {
       </div>
       <CharacterPreviewView
         catalog={screen.catalog}
-        draft={screen.builder.draft}
+        composition={screen.builder.composition}
         preview={screen.preview}
-        characterName={screen.characterName}
       />
     </div>
   );
@@ -67,8 +69,8 @@ function StepHeading({ step }: { step: BuilderStep }) {
  */
 function StepContent({ screen }: { screen: BuilderScreen }) {
   const { catalog, builder } = screen;
-  const shared = { catalog, draft: builder.draft, onChange: builder.update };
-  const spells = { step: screen.spells, draft: builder.draft, onChange: builder.update };
+  const shared = { catalog, composition: builder.composition, onChange: builder.update };
+  const spells = { step: screen.spells, composition: builder.composition, onChange: builder.update };
 
   const screens: Record<BuilderStep, () => ReactElement | null> = {
     species: () => <SpeciesStepView {...shared} />,
@@ -81,67 +83,19 @@ function StepContent({ screen }: { screen: BuilderScreen }) {
     background: () => <BackgroundStepView {...shared} />,
     feats: () => <FeatsStepView {...shared} />,
     abilities: () => (
-      <AbilitiesStepView step={screen.abilities} draft={shared.draft} onChange={shared.onChange} />
+      <AbilitiesStepView
+        step={screen.abilities}
+        composition={shared.composition}
+        onChange={shared.onChange}
+      />
     ),
     cantrips: () => <CantripsStepView {...spells} />,
     spells: () => <SpellsStepView {...spells} />,
     equipment: () => <EquipmentStepView {...shared} />,
+    name: () => <NameStepView {...shared} />,
   };
 
   return screens[builder.step]();
-}
-
-function LineageStep({ screen }: { screen: BuilderScreen }) {
-  const { catalog, builder } = screen;
-  const lineage = catalog.species.find(
-    (entry) => entry.key === builder.draft.speciesKey,
-  )?.lineage;
-  if (!lineage) return null;
-
-  return (
-    <ChoiceStepView
-      title={lineage.label}
-      description="Ce choix vous confère des pouvoirs surnaturels propres à votre lignée."
-      options={lineage.options}
-      selectedKey={builder.draft.lineageKey}
-      onSelect={(lineageKey) => builder.update({ lineageKey })}
-    />
-  );
-}
-
-interface ClassChoiceStepProps {
-  screen: BuilderScreen;
-  choiceKey: "fightingStyle" | "order";
-}
-
-/** Style de combat et Ordre partagent la même forme : un choix parmi une liste. */
-function ClassChoiceStep({ screen, choiceKey }: ClassChoiceStepProps) {
-  const { catalog, builder } = screen;
-  const choices = catalog.classes.find((entry) => entry.key === builder.draft.classKey)
-    ?.level1Choices;
-  const choice = choices?.find((entry) =>
-    choiceKey === "fightingStyle"
-      ? entry.key === "fightingStyle"
-      : entry.key !== "fightingStyle",
-  );
-  if (!choice) return null;
-
-  const selected =
-    choiceKey === "fightingStyle" ? builder.draft.fightingStyle : builder.draft.classOrder;
-
-  return (
-    <ChoiceStepView
-      title={choice.name}
-      description={choice.description}
-      options={choice.options}
-      selectedKey={selected}
-      onSelect={(key) =>
-        builder.update(
-          choiceKey === "fightingStyle" ? { fightingStyle: key } : { classOrder: key },
-        )
-      }
-    />
-  );
 }
 
 function BuilderFooter({ screen }: { screen: BuilderScreen }) {
@@ -158,7 +112,7 @@ function BuilderFooter({ screen }: { screen: BuilderScreen }) {
           disabled={!screen.canFinish || screen.isFinishing}
           onClick={screen.onFinish}
         >
-          {screen.isFinishing ? "Enregistrement..." : "Créer le personnage"}
+          {screen.isFinishing ? "Enregistrement..." : screen.finishLabel}
         </Button>
       ) : (
         <Button type="button" disabled={!builder.canGoNext} onClick={builder.next}>
