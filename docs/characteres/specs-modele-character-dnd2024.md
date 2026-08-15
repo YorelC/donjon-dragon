@@ -28,7 +28,7 @@
      ▼              ▼
 ┌──────────┐  ┌──────────┐
 │   Feat   │  │  Spell   │
-│ (75 doc) │  │(~500 doc)│
+│ (75 doc) │  │ (390 doc)│
 └──────────┘  └──────────┘
 ```
 
@@ -62,30 +62,88 @@ type EffectApplication =
 
 type FeatureSource =
   | 'species' | 'class' | 'subclass' | 'background'
-  | 'feat' | 'spell' | 'fightingStyle' | 'weaponMastery';
+  | 'feat' | 'spell' | 'invocation' | 'fightingStyle' | 'weaponMastery';
+
+type DamageType =
+  | 'acid' | 'bludgeoning' | 'cold' | 'fire' | 'force' | 'lightning'
+  | 'necrotic' | 'piercing' | 'poison' | 'psychic' | 'radiant'
+  | 'slashing' | 'thunder';
+
+type StateKey =
+  | 'blinded' | 'charmed' | 'deafened' | 'frightened' | 'grappled'
+  | 'incapacitated' | 'invisible' | 'paralyzed' | 'petrified' | 'poisoned'
+  | 'prone' | 'restrained' | 'stunned' | 'unconscious' | 'exhausted'
+  | 'raging' | 'concentrating' | 'hidden' | 'surprised';
+
+// Mini-langage de conditions : prédicats structurés, combinables
+type Condition =
+  | { state: StateKey; equals: boolean }
+  | { ability: Ability; op: 'gte' | 'lte' | 'eq'; value: number }
+  | { level: number; op: 'gte' | 'lte' | 'eq'; value: number }
+  | { hasFeature: string }
+  | { hasProficiency: SkillName | Ability }
+  | { weaponHasProperty: string }
+  | { targetType: 'creature' | 'ally' | 'self' | 'object' }
+  | { all: Condition[] }
+  | { any: Condition[] }
+  | { not: Condition };
 
 interface Effect {
   application: EffectApplication;
-  target?: EffectTarget;     // passive uniquement
-  formula?: string;          // passive : '2 * level', 'proficiencyBonus'
-  grants?: GrantPayload;     // grant uniquement
-  trigger?: TriggerPayload;  // reactive / active
-  resource?: ResourcePayload;// active uniquement
-  note?: string;             // informational + contexte
+  passive?: PassiveEffect;     // passive
+  damage?: DamagePayload;      // dégâts (sorts, attaques)
+  healing?: HealingPayload;    // soins
+  condition?: ConditionPayload;// état imposé
+  grants?: GrantPayload;       // grant
+  trigger?: TriggerPayload;    // reactive / active
+  resource?: ResourcePayload;  // active
+  note?: string;               // informational + contexte
+}
+
+interface PassiveEffect {
+  kind: 'bonus' | 'set' | 'advantage' | 'disadvantage'
+      | 'resistance' | 'immunity' | 'vulnerability' | 'spellModifier';
+  target?: EffectTarget;
+  value?: string;
+  damageType?: DamageType;
+  spellKey?: string;
+  spellAspect?: 'range' | 'damage' | 'duration' | 'targets' | 'castingTime';
+  condition?: Condition;
+}
+
+interface DamagePayload {
+  dice: string;                 // '8d6', '1d8'
+  type: DamageType;
+  attackRoll?: boolean;         // true si jet d'attaque
+  save?: { ability: Ability; onSuccess: 'half' | 'none' | 'full' };
+  perUpcastLevel?: string;      // dégâts ajoutés par niveau supérieur : '1d6'
+}
+
+interface HealingPayload {
+  dice: string;                 // '2d8'
+  abilityModifier?: Ability;
+}
+
+interface ConditionPayload {
+  state: StateKey;
+  duration?: string;            // 'jusqu'à la fin du sort', '1 minute'
+  save?: { ability: Ability; onSuccess: 'none' | 'end' };
+  endCondition?: Condition;
 }
 
 interface Feature {
-  key: string;               // identifiant stable
-  name: string;              // nom affiché
+  key: string;
+  name: string;
   source: FeatureSource;
-  description: string;       // texte de règle complet
-  effects: Effect[];         // 1+ effets classés
+  description: string;
+  effects: Effect[];
 }
 
 type EffectTarget =
   | 'maxHp' | 'armorClass' | 'initiative' | 'speed'
   | 'abilityScore' | 'attackBonus' | 'damage' | 'savingThrow'
-  | 'unarmedDamage' | 'spellSaveDC' | 'skillCheck';
+  | 'unarmedDamage' | 'spellSaveDC' | 'skillCheck'
+  | 'healing';
 
 interface GrantPayload {
   skillProficiencies?: SkillName[];
@@ -93,15 +151,20 @@ interface GrantPayload {
   languageProficiencies?: string[];
   armorTraining?: string;
   weaponProficiencies?: string;
-  spellcasting?: {           // Initié à la magie, sous-classes lanceuses
+  spellcasting?: {
     type: 'virtualFeat' | 'full' | 'half' | 'pact' | 'third';
     classKey?: ClassKey;
     cantrips?: number;
     level1Spells?: number;
     multiclassSlotContribution?: 1 | 0.5 | 0.33 | 0;
   };
-  feat?: FeatKey;            // un don qui en octroie un autre
-  feature?: Feature;         // une feature qui en octroie une autre
+  grantSpell?: {             // « lance X sans emplacement » (invocations, dons, traits)
+    spellKey: string;
+    frequency: 'atWill' | 'oncePerLongRest' | 'oncePerShortRest';
+    usesSlot: boolean;
+  };
+  feat?: string;             // key d'un don octroyé
+  feature?: string;          // key d'une autre feature octroyée
 }
 
 interface TriggerPayload {
@@ -110,7 +173,7 @@ interface TriggerPayload {
   action?: 'action' | 'bonusAction' | 'reaction' | 'free' | 'noAction';
   consumesReaction?: boolean;                 // true si l'effet consomme la réaction du tour
   frequency?: 'once' | 'oncePerTurn' | 'perShortRest' | 'perLongRest' | 'unlimited';
-  condition?: string;                         // garde-fou : 'quand vous tombez à 0 PV'
+  condition?: Condition;
 }
 
 type TriggerEvent =
@@ -204,6 +267,102 @@ interface ResourcePayload {
 - `action: 'reaction'` + `consumesReaction: true` : l'effet consomme la réaction du tour
 - `frequency` : borne l'effet dans le temps (ex : `oncePerTurn` pour Sauvagerie martiale)
 - Un effet `reactive` sans `action` se déclenche automatiquement ; avec `action`, il propose au joueur de réagir
+
+### 2.7 Résolution des effets sur Character
+
+**Trois réalités distinctes :**
+
+1. **Définition** (données de référence, immuable) : `Feat.effects[]`, `Class.progression[].features`, `Spell.effects[]`.
+2. **État** (Mongo, mutable) : `abilities`, `classLevels[]`, `featIds[]`, `spellSlotsUsed`, ressources consommées.
+3. **Résolu** (calculé à la volée, jamais stocké) : CA, PV max, attaques, sorts disponibles.
+
+Un moteur passe de (1) + (2) vers (3). C'est le seul mouvement qui existe.
+
+**Cycle de vie d'un effect :**
+
+| Application | Traitement |
+|---|---|
+| `grant` | Appliqué une fois à l'acquisition, résultat persisté |
+| `passive` | Recalculé à chaque résolution |
+| `reactive` | Abonné au bus d'événements |
+| `active` | Latent, état dans `features` |
+| `informational` | Jamais appliqué |
+
+**Provenance (non négociable) :** chaque effect collecté porte sa source, pour pouvoir le retirer quand elle disparaît (fin de Rage, sort dissipé).
+
+```typescript
+interface CollectedEffect {
+  effect: Effect;
+  source: {
+    type: 'species' | 'class' | 'subclass' | 'feat' | 'invocation' | 'spell' | 'condition';
+    key: string;
+    id?: ObjectId;
+  };
+}
+```
+
+**Les quatre pièces du moteur :**
+
+```
+Collector        rassemble les effects de toutes les sources, avec provenance
+GrantEngine      applique grant -> composition (maîtrises, sorts, compétences)
+Resolver         applique passive -> valeurs dérivées (CA, PV, initiative)
+ConflictResolver tranche les cumuls (set, max, non-cumul de statut)
+EventBus         reactive/active -> déclenchements en jeu
+```
+
+**ComputedCharacter** (produit du moteur, jamais stocké) :
+
+```typescript
+interface ComputedCharacter {
+  proficiencyBonus: number;
+  maxHp: number;
+  armorClass: number;
+  initiative: number;
+  speed: number;
+
+  skillProficiencies: SkillName[];
+  savingThrowProficiencies: Ability[];
+  languages: string[];
+  spellcasting: {
+    slots: { total: Record<number, number>; used: Record<number, number> };
+    cantripsKnown: string[];
+    spellsPrepared: string[];
+    atWillSpells: string[];          // grantSpell atWill
+  };
+
+  actions: ResolvedAction[];         // ex : Rage, avec coût et état branchés
+  reactions: ResolvedReaction[];
+  passives: ResolvedPassive[];       // pour l'affichage uniquement
+
+  resources: Record<string, { current: number; max: number }>;
+}
+```
+
+**Règles de cumul (ConflictResolver) :**
+
+| Règle | Exemple | Logique |
+|---|---|---|
+| Additif | +2 PV, +1 CA, +CHA dégâts | On somme |
+| Remplacement (`set`) | CA = 13 + DEX | Un seul `set` gagne ; priorité : armure > Défense sans armure > base |
+| Maximum | Attaque supplémentaire (2, pas 3) | On garde le plus haut |
+| Non-cumul de statut | Avantage + avantage | État booléen, pas additionnel |
+
+**Choix persistés avec provenance :** les grants déterministes sont recalculés au chargement. Les grants « au choix » (ex : 3 compétences) sont persistés avec leur source dans `Character.choices`.
+
+```typescript
+interface Character {
+  // ... autres champs ...
+  choices: {
+    source: { type: 'feat' | 'class' | 'background' | 'species'; key: string; id?: ObjectId };
+    skills?: SkillName[];
+    tools?: string[];
+    spells?: string[];
+  }[];
+}
+```
+
+Le GrantEngine lit `choices` au chargement et les intègre à la composition. Retirer la source retire les choix.
 
 ---
 

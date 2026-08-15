@@ -1,0 +1,170 @@
+[
+  {
+    "key": "yuan-ti-malfice-type-2",
+    "name": "Yuan-ti, malfice (type 2)",
+    "type": "Monstruosité",
+    "size": "M",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 12,
+    "hitPoints": 66,
+    "hitDice": "12d8 + 12",
+    "initiativeBonus": 2,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 16, "dex": 14, "con": 13, "int": 14, "wis": 16, "cha": 12,
+      "strMod": "+3", "dexMod": "+2", "conMod": "+1", "intMod": "+2", "wisMod": "+3", "chaMod": "+1",
+      "strSave": "+3", "dexSave": "+2", "conSave": "+1", "intSave": "+2", "wisSave": "+3", "chaSave": "+1"
+    },
+    "skills": "Discrétion +4 (+6 si sous forme de serpent)",
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 13",
+    "languages": "abyssal, commun, draconique",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": "Le yuan-ti a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le yuan-ti effectue deux attaques de Morsure, et peut utiliser Incantation pour lancer suggestion si disponible."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 3 m. Touché : 7 (1d8 + 3) dégâts perforants plus 7 (2d6) dégâts de poison."
+      },
+      {
+        "name": "Incantation (forme de yuan-ti uniquement)",
+        "description": "The yuan-ti lance l'un des sorts suivants sans composantes matérielles, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 13) : À volonté : amitié avec les animaux (serpents uniquement) 2/jour : suggestion"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Changement d'aspect",
+        "description": "Le yuan-ti se métamorphose en serpent de taille M ou reprend sa forme véritable. S'il meurt, il conserve sa forme actuelle. Son profil reste le même quelle que soit sa forme, sauf indication contraire. Rien de ce qu'il porte n'est transformé."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Yuan-ti Malison (Type 2)",
+    "nameES": "Yuan-ti corrupto (tipo 2)"
+  },
+  {
+    "key": "yuan-ti-malfice-type-3",
+    "name": "Yuan-ti, malfice (type 3)",
+    "type": "Monstruosité",
+    "size": "M",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 12,
+    "hitPoints": 66,
+    "hitDice": "12d8 + 12",
+    "initiativeBonus": 2,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 16, "dex": 14, "con": 13, "int": 14, "wis": 16, "cha": 12,
+      "strMod": "+3", "dexMod": "+2", "conMod": "+1", "intMod": "+2", "wisMod": "+3", "chaMod": "+1",
+      "strSave": "+3", "dexSave": "+2", "conSave": "+1", "intSave": "+2", "wisSave": "+3", "chaSave": "+1"
+    },
+    "skills": "Discrétion +4 (+6 si sous forme de serpent)",
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 13",
+    "languages": "abyssal, commun, draconique",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": "Le yuan-ti a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le yuan-ti effectue deux attaques de Décharge toxique, et peut utiliser Incantation pour lancer suggestion si disponible."
+      },
+      {
+        "name": "Décharge toxique (forme de yuan-ti uniquement)",
+        "description": "Corps à corps ou à distance : +5, allonge 1,50 m ou portée 36 m. Touché : 12 (2d8 + 3) dégâts de poison."
+      },
+      {
+        "name": "Constriction",
+        "description": "JdS Force : DD 13, une créature de taille M ou inférieure dans un rayon de 1,50 m. Échec : 21 (4d8 + 3) dégâts contondants. La cible subit l'état Agrippé (évasion DD 13) et l'état Entravé tant qu'elle est agrippée."
+      },
+      {
+        "name": "Incantation (forme de yuan-ti uniquement)",
+        "description": "The yuan-ti lance l'un des sorts suivants sans composantes matérielles, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 13) : À volonté : amitié avec les animaux (serpents uniquement) 2/jour : suggestion"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Changement d'aspect",
+        "description": "Le yuan-ti se métamorphose en serpent de taille M ou reprend sa forme véritable. S'il meurt, il conserve sa forme actuelle. Son profil reste le même quelle que soit sa forme, sauf indication contraire. Rien de ce qu'il porte n'est transformé."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Yuan-ti Malison (Type 3)",
+    "nameES": "Yuan-ti corrupto (tipo 3)"
+  },
+  {
+    "key": "zombi",
+    "name": "Zombi",
+    "type": "Mort-vivant",
+    "size": "M",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 8,
+    "hitPoints": 15,
+    "hitDice": "2d8 + 6",
+    "initiativeBonus": -2,
+    "speed": "6 m",
+    "abilities": {
+      "str": 13, "dex": 6, "con": 16, "int": 3, "wis": 6, "cha": 5,
+      "strMod": "+1", "dexMod": "-2", "conMod": "+3", "intMod": "-4", "wisMod": "-2", "chaMod": "-3",
+      "strSave": "+1", "dexSave": "-2", "conSave": "+3", "intSave": "-4", "wisSave": "+0", "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 8",
+    "languages": "comprend le commun plus une autre langue, mais ne parle pas",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Robustesse de la non-vie",
+        "description": "Si des dégâts font tomber le zombi à 0 point de vie, il effectue un jet de sauvegarde de Constitution (DD 5 + les dégâts subis), sauf en cas de dégâts radiants ou de Coup critique. En cas de réussite, le zombi se retrouve en fait à 1 point de vie."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +3, allonge 1,50 m. Touché : 5 (1d8 + 1) dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Zombie",
+    "nameES": "Zombi"
+  }
+]

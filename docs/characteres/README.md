@@ -12,7 +12,17 @@ docs/characteres/
 ├── specs-modele-character-dnd2024.md            ← SPEC PRINCIPALE : architecture, effets, multiclassage, modèles, Zod
 ├── competences.md                               ← 18 compétences + jets de sauvegarde
 ├── dons.md                                      ← 10 dons d'origines + catalogue complet
-└── sorts.md                                     ← Mécanique d'incantation + progression emplacements
+├── sorts.md                                     ← Mécanique d'incantation + progression emplacements
+├── bestiary/
+│   └── monsters.seed.json                       ← 513 monstres D&D 2024 extraits (1.2 MB)
+├── classes/                                     ← 12 classes JSON (progression 1-20)
+├── races/                                       ← 9 espèces JSON
+├── equipment/                                   ← armes + armures JSON
+├── backgrounds.json                             ← 16 historiques
+├── spells.seed.json + spells.effects.json       ← ~391 sorts
+├── feats.effects.json                           ← dons + effets
+├── invocations.seed.json + invocations.effects.json
+└── monsters-raw/                                ← 513 pages brutes téléchargées (intermédiaire)
 ```
 
 ## Les trois piliers de la spec
@@ -39,11 +49,11 @@ docs/characteres/
 - 18 compétences avec mapping caractéristique
 - 10 dons d'origines classés par mode (passive/grant/active/informational)
 - Table universelle des emplacements multiclassage (niveau lanceur 1-20)
+- **513 monstres** avec nom, type, taille, alignement, CA, PV, caractéristiques (x6), FP, traits, actions, actions légendaires
 - Règles de cumul/non-cumul (Attaque supplémentaire, Conduit divin, Défense sans armure)
 - 3 cas concrets modélisés (Paladin/Barde, Barbare+Initié, Occultiste/Barde)
 
 ## Ce qui reste optionnel
 
-- **Liste exhaustive des sorts** (~500) → fichier JSON de seed
 - **Effets détaillés** des dons → pages individuelles aidedd.org/feat/fr/
 - **Capacités de sous-classe** niveau par niveau → pages de classe

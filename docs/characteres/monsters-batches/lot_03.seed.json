@@ -1,0 +1,5802 @@
+[
+  {
+    "key": "dragon-vert-ancien",
+    "name": "Dragon vert, ancien",
+    "type": "Dragon (Chromatique)",
+    "size": "Gig",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 21,
+    "hitPoints": 402,
+    "hitDice": "23d20 + 161",
+    "initiativeBonus": 15,
+    "speed": "12 m, vol 24 m, nage 12 m",
+    "abilities": {
+      "str": 27,
+      "dex": 12,
+      "con": 25,
+      "int": 20,
+      "wis": 17,
+      "cha": 22,
+      "strMod": "+8",
+      "dexMod": "+1",
+      "conMod": "+7",
+      "intMod": "+5",
+      "wisMod": "+3",
+      "chaMod": "+6",
+      "strSave": "+8",
+      "dexSave": "+8",
+      "conSave": "+7",
+      "intSave": "+5",
+      "wisSave": "+10",
+      "chaSave": "+6"
+    },
+    "skills": "Tromperie +13, Perception +17, Persuasion +13, Discrétion +8",
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision aveugle 18 m, Vision dans le noir 36 m, Perception passive 27",
+    "languages": "commun, draconique",
+    "challengeRating": "22",
+    "xp": "41000 ou 50000 dans son antre",
+    "proficiencyBonus": "+7",
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "Le dragon peut respirer sous l'eau comme à l'air libre"
+      },
+      {
+        "name": "Résistance légendaire (4/jour, ou 5/jour dans son antre)",
+        "description": "Si le dragon rate un jet de sauvegarde, il peut décider de le réussir tout de même"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le dragon effectue trois attaques de Saignée. Il peut remplacer l'une de ces attaques par une utilisation d'Incantation pour lancer épine mentale (au niveau 5)"
+      },
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : +15, allonge 4,50 m. Touché : 17 (2d8 + 8) dégâts tranchants plus 10 (3d6) dégâts de poison"
+      },
+      {
+        "name": "Incantation",
+        "description": "Le dragon lance l'un des sorts suivants sans composantes matérielles, le Charisme étant sa caractéristique d'incantation (DD de sauvegarde 21) : À volonté : détection de la magie , épine mentale (au niveau 5) 1/jour chacun : modification de mémoire, quête"
+      },
+      {
+        "name": "Souffle empoisonné (recharge 5–6)",
+        "description": "JdS Constitution : DD 22, chaque créature dans un Cône de 27 m. Échec : 77 (22d6) dégâts de poison. Réussite : demi-dégâts"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [
+      {
+        "name": "Assaut incisif",
+        "description": "Le dragon se déplace à concurrence de la moitié de sa Vitesse et effectue une attaque de Saignée"
+      },
+      {
+        "name": "Invasion mentale",
+        "description": "Le dragon recourt à Incantation pour lancer épine mentale (au niveau 5)"
+      },
+      {
+        "name": "Miasmes nocifs",
+        "description": "JdS Constitution : DD 21, chaque créature dans une Sphère de 9 m de rayon centrée sur un point que le dragon voit dans un rayon de 27 m. Échec : 17 (5d6) dégâts de poison, et la cible subit un malus de −2 à la CA jusqu'à la fin de son tour suivant. Échec ou réussite : le dragon ne peut alors plus entreprendre cette action jusqu'au début de son tour suivant"
+      }
+    ],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Ancient Green Dragon",
+    "nameES": "Dragón verde anciano"
+  },
+  {
+    "key": "dragon-vert-dragonnet",
+    "name": "Dragon vert, dragonnet",
+    "type": "Dragon (Chromatique)",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 17,
+    "hitPoints": 38,
+    "hitDice": "7d8 + 7",
+    "initiativeBonus": 3,
+    "speed": "9 m, vol 18 m, nage 9 m",
+    "abilities": {
+      "str": 15,
+      "dex": 12,
+      "con": 13,
+      "int": 14,
+      "wis": 11,
+      "cha": 13,
+      "strMod": "+2",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "+2",
+      "wisMod": "+0",
+      "chaMod": "+1",
+      "strSave": "+2",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "+2",
+      "wisSave": "+2",
+      "chaSave": "+1"
+    },
+    "skills": "Perception +4, Discrétion +3",
+    "damageImmunities": "Poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision aveugle 3 m, Vision dans le noir 18 m, Perception passive 14",
+    "languages": "draconique",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "Le dragon peut respirer sous l'eau comme à l'air libre"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le dragon effectue deux attaques de Saignée"
+      },
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 7 (1d10 + 2) dégâts tranchants plus 3 (1d6) dégâts de poison"
+      },
+      {
+        "name": "Souffle empoisonné (recharge 5–6)",
+        "description": "JdS Constitution : DD 11, chaque créature dans un Cône de 4,50 m. Échec : 21 (6d6) dégâts de poison. Réussite : demi-dégâts"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Green Dragon Wyrmling",
+    "nameES": "Dragón verde cría"
+  },
+  {
+    "key": "dragon-vert-jeune",
+    "name": "Dragon vert, jeune",
+    "type": "Dragon (Chromatique)",
+    "size": "G",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 18,
+    "hitPoints": 136,
+    "hitDice": "16d10 + 48",
+    "initiativeBonus": 4,
+    "speed": "12 m, vol 24 m, nage 12 m",
+    "abilities": {
+      "str": 19,
+      "dex": 12,
+      "con": 17,
+      "int": 16,
+      "wis": 13,
+      "cha": 15,
+      "strMod": "+4",
+      "dexMod": "+1",
+      "conMod": "+3",
+      "intMod": "+3",
+      "wisMod": "+1",
+      "chaMod": "+2",
+      "strSave": "+4",
+      "dexSave": "+4",
+      "conSave": "+3",
+      "intSave": "+3",
+      "wisSave": "+4",
+      "chaSave": "+2"
+    },
+    "skills": "Tromperie +5, Perception +7, Discrétion +4",
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision aveugle 9 m, Vision dans le noir 36 m, Perception passive 17",
+    "languages": "commun, draconique",
+    "challengeRating": "8",
+    "xp": "3900",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "Le dragon peut respirer sous l'eau comme à l'air libre"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le dragon effectue trois attaques de Saignée"
+      },
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : +7, allonge 3 m. Touché : 11 (2d6 + 4) dégâts tranchants plus 7 (2d6) dégâts de poison"
+      },
+      {
+        "name": "Souffle empoisonné (recharge 5–6)",
+        "description": "JdS Constitution : DD 14, chaque créature dans un Cône de 9 m. Échec : 42 (12d6) dégâts de poison. Réussite : demi-dégâts"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Young Green Dragon",
+    "nameES": "Dragón verde joven"
+  },
+  {
+    "key": "dretch",
+    "name": "Dretch",
+    "type": "Fiélon (Démon)",
+    "size": "P",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 11,
+    "hitPoints": 18,
+    "hitDice": "4d6 + 4",
+    "initiativeBonus": 0,
+    "speed": "6 m",
+    "abilities": {
+      "str": 12,
+      "dex": 11,
+      "con": 12,
+      "int": 5,
+      "wis": 8,
+      "cha": 3,
+      "strMod": "+1",
+      "dexMod": "+0",
+      "conMod": "+1",
+      "intMod": "-3",
+      "wisMod": "-1",
+      "chaMod": "-4",
+      "strSave": "+1",
+      "dexSave": "+0",
+      "conSave": "+1",
+      "intSave": "-3",
+      "wisSave": "-1",
+      "chaSave": "-4"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": "froid, feu, foudre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "abyssal ; télépathie 18 m (ne fonctionne qu'avec des créatures qui comprennent l'abyssal)",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : +3, allonge 1,50 m. Touché : 4 (1d6 + 1) dégâts tranchants"
+      },
+      {
+        "name": "Nuage fétide (1/jour)",
+        "description": "JdS Constitution : DD 11, chaque créature dans une Émanation de 3 m centrée sur le dretch. Échec : la cible subit l'état Empoisonné jusqu'à la fin de son tour suivant. Tant qu'elle est ainsi Empoisonnée, la créature ne peut pas jouer de Réaction et n'a droit qu'à une action ou une action Bonus lors de son tour (pas les deux)"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Dretch",
+    "nameES": "Dretch"
+  },
+  {
+    "key": "drider",
+    "name": "Drider",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 19,
+    "hitPoints": 123,
+    "hitDice": "13d10 + 52",
+    "initiativeBonus": 4,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 19,
+      "con": 18,
+      "int": 13,
+      "wis": 16,
+      "cha": 12,
+      "strMod": "+3",
+      "dexMod": "+4",
+      "conMod": "+4",
+      "intMod": "+1",
+      "wisMod": "+3",
+      "chaMod": "+1",
+      "strSave": "+3",
+      "dexSave": "+4",
+      "conSave": "+4",
+      "intSave": "+1",
+      "wisSave": "+3",
+      "chaSave": "+1"
+    },
+    "skills": "Perception +6, Discrétion +10",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 16",
+    "languages": "elfe, commun des profondeurs",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Marche dans les toiles",
+        "description": "Le drider n'est pas soumis aux contraintes de déplacement imposées par les toiles et connaît la position de toute autre créature en contact avec la même toile que lui"
+      },
+      {
+        "name": "Pattes d'araignée",
+        "description": "Le drider peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique"
+      },
+      {
+        "name": "Sensibilité au soleil",
+        "description": "Tant qu'il est exposé à la lumière du soleil, le drider subit un Désavantage aux jets de caractéristique et aux jets d'attaque"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le drider effectue trois attaques, réparties à sa guise entre Patte avant et Décharge toxique"
+      },
+      {
+        "name": "Patte avant",
+        "description": "Corps à corps : +7, allonge 3 m. Touché : 13 (2d8 + 4) dégâts perforants"
+      },
+      {
+        "name": "Décharge toxique",
+        "description": "À distance : +6, portée 36 m. Touché : 13 (3d6 + 3) dégâts de poison"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Magie de la Reine Araignée (recharge 5–6)",
+        "description": "Le drider lance lueurs féeriques, ténèbres ou toile d'araignée , sans composantes matérielles, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 14)"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Drider",
+    "nameES": "Draña"
+  },
+  {
+    "key": "druide",
+    "name": "Druide",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": 44,
+    "hitDice": "8d8 + 8",
+    "initiativeBonus": 1,
+    "speed": "9 m",
+    "abilities": {
+      "str": 10,
+      "dex": 12,
+      "con": 13,
+      "int": 12,
+      "wis": 16,
+      "cha": 11,
+      "strMod": "+0",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "+1",
+      "wisMod": "+3",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+1",
+      "conSave": "+1",
+      "intSave": "+1",
+      "wisSave": "+3",
+      "chaSave": "+0"
+    },
+    "skills": "Médecine +5, Nature +3, Perception +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 15",
+    "languages": "commun, druidique, sylvestre",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le druide effectue deux attaques, réparties à sa guise entre Bâton-lierre et Éclat verdoyant"
+      },
+      {
+        "name": "Bâton-lierre",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 7 (1d8 + 3) dégâts contondants plus 2 (1d4) dégâts de poison"
+      },
+      {
+        "name": "Éclat verdoyant",
+        "description": "À distance : +5, portée 27 m. Touché : 10 (3d6) dégâts radiants"
+      },
+      {
+        "name": "Incantation",
+        "description": "Le druide lance l'un des sorts suivants, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 13) : À volonté : communication avec les animaux , druidisme 2/jour chacun : enchevêtrement , vague tonnante 1/jour chacun : grande foulée, messager animal, rayon de lune"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Druid",
+    "nameES": "Druida"
+  },
+  {
+    "key": "dryade",
+    "name": "Dryade",
+    "type": "Fée",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 22,
+    "hitDice": "5d8",
+    "initiativeBonus": 1,
+    "speed": "9 m",
+    "abilities": {
+      "str": 10,
+      "dex": 12,
+      "con": 11,
+      "int": 14,
+      "wis": 15,
+      "cha": 18,
+      "strMod": "+0",
+      "dexMod": "+1",
+      "conMod": "+0",
+      "intMod": "+2",
+      "wisMod": "+2",
+      "chaMod": "+4",
+      "strSave": "+0",
+      "dexSave": "+1",
+      "conSave": "+0",
+      "intSave": "+2",
+      "wisSave": "+2",
+      "chaSave": "+4"
+    },
+    "skills": "Perception +4, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 14",
+    "languages": "elfe, sylvestre",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Communication avec les bêtes et les plantes",
+        "description": "La dryade peut communiquer avec les Bêtes et les Plantes comme si elles parlaient la même langue"
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "La dryade a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "La dryade effectue une attaque de Vrille cinglante ou de"
+      },
+      {
+        "name": "Vrille cinglante",
+        "description": "Corps à corps : +6, allonge 3 m. Touché : 8 (1d8 + 4) dégâts tranchants"
+      },
+      {
+        "name": "Décharge d'épines",
+        "description": "À distance : +6, portée 18 m. Touché : 7 (1d6 + 4) dégâts perforants"
+      },
+      {
+        "name": "Incantation",
+        "description": "La dryade lance l'un des sorts suivants sans composantes matérielles, le Charisme étant sa caractéristique d'incantation (DD de sauvegarde 14) : À volonté : amitié avec les animaux, charme-monstre (dure 24 heures ; se termine prématurément si la dryade relance le sort), druidisme 1/jour chacun : enchevêtrement , passage sans trace"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Passage par les arbres",
+        "description": "Si elle est dans un rayon de 1,50 m d'un arbre de taille G ou supérieure, la dryade se téléporte en un espace inoccupé à 1,50 m ou moins d'un autre arbre de taille G ou supérieure, dans un rayon de 18 m du premier"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Dryad",
+    "nameES": "Dríade"
+  },
+  {
+    "key": "eclaireur-capitaine",
+    "name": "Éclaireur, capitaine",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 15,
+    "hitPoints": 66,
+    "hitDice": "12d8 + 12",
+    "initiativeBonus": 5,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 11,
+      "dex": 16,
+      "con": 12,
+      "int": 14,
+      "wis": 15,
+      "cha": 11,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "+2",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+5",
+      "conSave": "+1",
+      "intSave": "+4",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +6, Discrétion +7, Survie +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'éclaireur effectue deux attaques, réparties à sa guise entre Épée courte et Arc long"
+      },
+      {
+        "name": "Épée courte",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 6 (1d6 + 3) dégâts perforants, plus 10 (3d6) dégâts perforants si l'attaque est réalisée avec un Avantage"
+      },
+      {
+        "name": "Arc long",
+        "description": "À distance : +5, portée 45/180 m. Touché : 7 (1d8 + 3) dégâts perforants, plus 10 (3d6) dégâts perforants si l'attaque est réalisée avec un Avantage"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Visée",
+        "description": "L'éclaireur bénéficie d'un Avantage sur son prochain jet d'attaque durant le tour en cours"
+      }
+    ],
+    "reactions": [
+      {
+        "name": "Esquive instinctive",
+        "description": "Déclencheur : l'éclaireur est touché par un jet d'attaque. Conséquences : l'éclaireur réduit de moitié les dégâts (arrondis à l'inférieur) subis lors de cette attaque"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Scout Captain",
+    "nameES": "Batidor capitán"
+  },
+  {
+    "key": "eclaireur",
+    "name": "Éclaireur",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": 16,
+    "hitDice": "3d8 + 3",
+    "initiativeBonus": 2,
+    "speed": "9 m",
+    "abilities": {
+      "str": 11,
+      "dex": 14,
+      "con": 12,
+      "int": 11,
+      "wis": 13,
+      "cha": 11,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "+0",
+      "wisSave": "+1",
+      "chaSave": "+0"
+    },
+    "skills": "Nature +4, Perception +5, Discrétion +6, Survie +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 15",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'éclaireur effectue deux attaques, réparties à sa guise entre Épée courte et Arc long"
+      },
+      {
+        "name": "Épée courte",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 5 (1d6 + 2) dégâts perforants"
+      },
+      {
+        "name": "Arc long",
+        "description": "À distance : +4, portée 45/180 m. Touché : 6 (1d8 + 2) dégâts perforants"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Scout",
+    "nameES": "Batidor"
+  },
+  {
+    "key": "efrit",
+    "name": "Éfrit",
+    "type": "Élémentaire (Génie)",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 17,
+    "hitPoints": 212,
+    "hitDice": "17d10 + 119",
+    "initiativeBonus": 1,
+    "speed": "12 m, vol 18 m (stationnaire)",
+    "abilities": {
+      "str": 22,
+      "dex": 12,
+      "con": 24,
+      "int": 16,
+      "wis": 15,
+      "cha": 19,
+      "strMod": "+6",
+      "dexMod": "+1",
+      "conMod": "+7",
+      "intMod": "+3",
+      "wisMod": "+2",
+      "chaMod": "+4",
+      "strSave": "+6",
+      "dexSave": "+1",
+      "conSave": "+7",
+      "intSave": "+3",
+      "wisSave": "+6",
+      "chaSave": "+8"
+    },
+    "skills": null,
+    "damageImmunities": "feu",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 12",
+    "languages": "primordial (igné)",
+    "challengeRating": "11",
+    "xp": "7200",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": "L'éfrit a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      },
+      {
+        "name": "Restauration élémentaire",
+        "description": "Si l'éfrit meurt hors du Plan Élémentaire du Feu, son corps se réduit en cendres et il en acquiert un nouveau en 1d4 jours, pour revenir à la vie avec tous ses pv quelque part dans le Plan du Feu"
+      },
+      {
+        "name": "Souhaits",
+        "description": "L'éfrit a 30 % de chances de connaître le sort souhait . Si tel est le cas, il ne peut le lancer que pour une créature autre qu'un génie, qui doit communiquer son souhait d'une manière intelligible pour l'éfrit. Si l'éfrit lance le sort pour la créature, il ne subit pas les effets délétères normalement liés à cette épreuve. Après que l'éfrit a lancé trois fois ce sort, il doit attendre 365 jours pour pouvoir le relancer"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'éfrit effectue trois attaques, réparties à sa guise entre Lame incandescente et Jet de flammes"
+      },
+      {
+        "name": "Lame incandescente",
+        "description": "Corps à corps : +10, allonge 1,50 m. Touché : 13 (2d6 + 6) dégâts tranchants plus 13 (2d12) dégâts de feu"
+      },
+      {
+        "name": "Jet de flammes",
+        "description": "À distance : +8, portée 36 m. Touché : 24 (7d6) dégâts de feu"
+      },
+      {
+        "name": "Incantation",
+        "description": "L'éfrit lance l'un des sorts suivants sans composantes matérielles, le Charisme étant sa caractéristique d'incantation (DD de sauvegarde 16) : À volonté : détection de la magie , élémentalisme 1/jour chacun : changement de plan , don des langues, forme gazeuse, image majeure , invisibilité , mur de feu (au niveau 7)"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Efreeti",
+    "nameES": "Ifrit"
+  },
+  {
+    "key": "elan-geant-cervide-geant",
+    "name": "Élan géant|Cervidé géant",
+    "type": "Céleste",
+    "size": "TG",
+    "alignment": "Neutre Bon",
+    "armorClass": 14,
+    "hitPoints": 42,
+    "hitDice": "5d12 + 10",
+    "initiativeBonus": 6,
+    "speed": "18 m",
+    "abilities": {
+      "str": 19,
+      "dex": 18,
+      "con": 14,
+      "int": 7,
+      "wis": 14,
+      "cha": 10,
+      "strMod": "+4",
+      "dexMod": "+4",
+      "conMod": "+2",
+      "intMod": "-2",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+6",
+      "dexSave": "+6",
+      "conSave": "+2",
+      "intSave": "-2",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +4",
+    "damageImmunities": null,
+    "damageResistances": "nécrotique, radiant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 27 m, Perception passive 14",
+    "languages": "céleste ; comprend le commun, l'elfique et le sylvestre, mais ne peut pas les parler",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Ramure",
+        "description": "Corps à corps : +6, allonge 3 m. Touché : 11 (2d6 + 4) dégâts contondants plus 5 (2d4) dégâts radiants. Si la cible est une créature de taille TG ou inférieure et si l'élan s'est déplacé en ligne droite d'un minimum de 6 m juste avant de la toucher, la cible subit 5 (2d4) dégâts contondants supplémentaires, ainsi que l'état À terre"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Giant Elk",
+    "nameES": "Alce gigante"
+  },
+  {
+    "key": "elan-grand-cervide",
+    "name": "Élan|Grand cervidé",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 10,
+    "hitPoints": 11,
+    "hitDice": "2d10",
+    "initiativeBonus": 0,
+    "speed": "15 m",
+    "abilities": {
+      "str": 16,
+      "dex": 10,
+      "con": 11,
+      "int": null,
+      "wis": 10,
+      "cha": null,
+      "strMod": "+3",
+      "dexMod": "+0",
+      "conMod": "+0",
+      "intMod": null,
+      "wisMod": "+0",
+      "chaMod": null,
+      "strSave": "+3",
+      "dexSave": "+0",
+      "conSave": "+0",
+      "intSave": null,
+      "wisSave": "+0",
+      "chaSave": null
+    },
+    "skills": "Perception +2",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "aucune",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Coup de bélier",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 6 (1d6 + 3) dégâts contondants. Si l'élan s'est déplacé d'au moins 6 m en ligne droite vers la cible juste avant de la toucher, la cible subit 3 (1d6) dégâts contondants supplémentaires et, si elle est de taille TG ou inférieure, elle subit l'état À terre"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Elk",
+    "nameES": "Alce"
+  },
+  {
+    "key": "elementaire-de-l-air",
+    "name": "Élémentaire de l'air",
+    "type": "Élémentaire",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 15,
+    "hitPoints": 90,
+    "hitDice": "12d10 + 24",
+    "initiativeBonus": 5,
+    "speed": "3 m, vol 27 m (stationnaire)",
+    "abilities": {
+      "str": 14,
+      "dex": 20,
+      "con": 14,
+      "int": 6,
+      "wis": 10,
+      "cha": 6,
+      "strMod": "+2",
+      "dexMod": "+5",
+      "conMod": "+2",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+2",
+      "dexSave": "+5",
+      "conSave": "+2",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": "poison, tonnerre",
+    "damageResistances": "contondant, foudre, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé, Inconscient",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "primordial (aérien)",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Corps d'air",
+        "description": "L'élémentaire peut entrer dans l'espace d'une créature et s'y arrêter. Il peut se déplacer dans un espace étroit d'une largeur minimale de 2,50 cm sans dépense supplémentaire en déplacement"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'élémentaire effectue deux attaques de Coup tonitruant"
+      },
+      {
+        "name": "Coup tonitruant",
+        "description": "Corps à corps : +8, allonge 3 m. Touché : 14 (2d8 + 5) dégâts de tonnerre"
+      },
+      {
+        "name": "Tourbillon (recharge 4–6)",
+        "description": "JdS Force : DD 13, une créature de taille M ou inférieure dans l'espace de l'élémentaire. Échec : 24 (4d10 + 2) dégâts de tonnerre, et la cible est repoussée de l'élémentaire de 6 m en ligne droite et subit l'état À terre. Réussite : demi-dégâts uniquement"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Air Elemental",
+    "nameES": "Elemental de aire"
+  },
+  {
+    "key": "elementaire-de-l-eau",
+    "name": "Élémentaire de l'eau",
+    "type": "Élémentaire",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 14,
+    "hitPoints": 114,
+    "hitDice": "12d10 + 48",
+    "initiativeBonus": 2,
+    "speed": "9 m, nage 27 m",
+    "abilities": {
+      "str": 18,
+      "dex": 14,
+      "con": 18,
+      "int": 5,
+      "wis": 10,
+      "cha": 8,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+4",
+      "intMod": "-3",
+      "wisMod": "+0",
+      "chaMod": "-1",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+4",
+      "intSave": "-3",
+      "wisSave": "+0",
+      "chaSave": "-1"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": "acide, feu",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé, Inconscient",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "primordial (aquatique)",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Corps d'eau",
+        "description": "L'élémentaire peut pénétrer dans un espace occupé par un ennemi et s'y arrêter. Il peut se déplacer dans un espace étroit d'une largeur minimale de 2,50 cm sans dépense supplémentaire en déplacement"
+      },
+      {
+        "name": "Gel",
+        "description": "Si l'élémentaire subit des dégâts de froid, sa Vitesse est réduite de 6 m jusqu'à la fin de son tour suivant"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'élémentaire effectue deux attaques de Coup"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 13 (2d8 + 4) dégâts contondants. Si la cible est une créature de taille M ou inférieure, elle subit l'état À terre"
+      },
+      {
+        "name": "Déluge (recharge 4–6)",
+        "description": "JdS Force : DD 15, chaque créature dans l'espace de l'élémentaire. Échec : 22 (4d8 + 4) dégâts contondants. Si la cible est une créature de taille G ou inférieure, elle subit l'état Agrippé (évasion DD 14). Tant qu'elle est agrippée, la cible subit l'état Entravé, s'asphyxie à moins de pouvoir respirer dans l'eau, et subit 9 (2d8) dégâts contondants au début de chacun des tours de l'élémentaire. L'élémentaire peut ainsi maintenir une créature de taille G ou un maximum de deux créatures de taille M ou inférieure. Au prix d'une action, une créature dans un rayon de 1,50 m de l'élémentaire peut en extirper une créature en réussissant un jet de Force (Athlétisme) DD 14. Réussite : demi-dégâts uniquement"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Water Elemental",
+    "nameES": "Elemental de agua"
+  },
+  {
+    "key": "elementaire-de-la-terre",
+    "name": "Élémentaire de la terre",
+    "type": "Élémentaire",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 17,
+    "hitPoints": 147,
+    "hitDice": "14d10 + 70",
+    "initiativeBonus": -1,
+    "speed": "9 m, fouissement 9 m",
+    "abilities": {
+      "str": 20,
+      "dex": 8,
+      "con": 20,
+      "int": 5,
+      "wis": 10,
+      "cha": 5,
+      "strMod": "+5",
+      "dexMod": "-1",
+      "conMod": "+5",
+      "intMod": "-3",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+5",
+      "dexSave": "-1",
+      "conSave": "+5",
+      "intSave": "-3",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": "tonnerre",
+    "conditionImmunities": "Épuisement, Paralysé, Pétrifié, Empoisonné, Inconscient",
+    "senses": "Vision dans le noir 18 m, perception des vibrations 18 m, Perception passive 10",
+    "languages": "primordial (terreux)",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Déplacement tellurique",
+        "description": "L'élémentaire peut se déplacer par fouissement dans la pierre et la terre brutes et non magiques. Ce faisant, il laisse intacte la structure de ce qu'il traverse"
+      },
+      {
+        "name": "Monstre de siège",
+        "description": "L'élémentaire inflige des dégâts doublés aux objets et aux structures"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'élémentaire effectue deux attaques, réparties à sa guise entre Coup et Projection de rocher"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +8, allonge 3 m. Touché : 14 (2d8 + 5) dégâts contondants"
+      },
+      {
+        "name": "Projection de rocher",
+        "description": "À distance : +8, portée 18 m. Touché : 8 (1d6 + 5) dégâts contondants. Si la cible est une créature de taille G ou inférieure, elle subit l'état À terre"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Earth Elemental",
+    "nameES": "Elemental de tierra"
+  },
+  {
+    "key": "elementaire-du-feu",
+    "name": "Élémentaire du feu",
+    "type": "Élémentaire",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": 93,
+    "hitDice": "11d10 + 33",
+    "initiativeBonus": 3,
+    "speed": "15 m",
+    "abilities": {
+      "str": 10,
+      "dex": 17,
+      "con": 16,
+      "int": 6,
+      "wis": 10,
+      "cha": 7,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+3",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+0",
+      "dexSave": "+3",
+      "conSave": "+3",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": "feu, poison",
+    "damageResistances": "contondant, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé, Inconscient",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "primordial (igné)",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Aura de feu",
+        "description": "À la fin de chacun des tours de l'élémentaire, chaque créature dans une Émanation de 3 m centrée sur lui subit 5 (1d10) dégâts de feu. Les créatures et objets inflammables dans l'Émanation s'embrasent"
+      },
+      {
+        "name": "Corps de feu",
+        "description": "L'élémentaire peut se déplacer dans un espace étroit d'une largeur minimale de 2,50 cm sans dépense supplémentaire en déplacement, et il peut entrer dans l'espace d'une créature et s'y arrêter. La première fois d'un tour qu'il entre dans l'espace d'une créature donnée, celle-ci subit 5 (1d10) dégâts de feu"
+      },
+      {
+        "name": "Illumination",
+        "description": "L'élémentaire émet une Lumière vive sur un rayon de 9 m et une Lumière faible sur 9 m de plus"
+      },
+      {
+        "name": "Vulnérabilité à l'eau",
+        "description": "L'élémentaire subit 3 (1d6) dégâts de froid par tranche de 1,50 m qu'il parcourt dans l'eau, ainsi que par tranche de 4 litres d'eau dont on l'asperge"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'élémentaire effectue deux attaques de Brûlure"
+      },
+      {
+        "name": "Brûlure",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 10 (2d6 + 3) dégâts de feu. Si la cible est une créature ou un objet inflammable, elle s'embrase"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Fire Elemental",
+    "nameES": "Elemental de fuego"
+  },
+  {
+    "key": "elephant",
+    "name": "Éléphant",
+    "type": "Bête",
+    "size": "TG",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 76,
+    "hitDice": "8d12 + 24",
+    "initiativeBonus": null,
+    "speed": "12 m",
+    "abilities": {
+      "str": 22,
+      "dex": null,
+      "con": 17,
+      "int": null,
+      "wis": 11,
+      "cha": null,
+      "strMod": "+6",
+      "dexMod": null,
+      "conMod": "+3",
+      "intMod": null,
+      "wisMod": "+0",
+      "chaMod": null,
+      "strSave": "+6",
+      "dexSave": null,
+      "conSave": "+3",
+      "intSave": null,
+      "wisSave": "+0",
+      "chaSave": null
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "aucune",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'éléphant effectue deux attaques de Coup de défense"
+      },
+      {
+        "name": "Coup de défense",
+        "description": "Corps à corps : +8, allonge 1,50 m. Touché : 15 (2d8 + 6) dégâts perforants. Si la cible est une créature de taille TG ou inférieure et que l'éléphant s'est déplacé d'au moins 6 m en ligne droite vers elle juste avant de la toucher, la cible subit l'état À terre"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Piétinement",
+        "description": "JdS Dextérité : DD 16, une créature dans un rayon de 1,50 m qui subit l'état À terre. Échec : 17 (2d10 + 6) dégâts contondants. Réussite : demi-dégâts uniquement"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Elephant",
+    "nameES": "Elefante"
+  },
+  {
+    "key": "empyreen-iota",
+    "name": "Empyréen iota",
+    "type": "Céleste ou Fiélon (Titan)",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": 22,
+    "hitDice": "5d8",
+    "initiativeBonus": 2,
+    "speed": "1,50 m, vol 9 m (stationnaire)",
+    "abilities": {
+      "str": 1,
+      "dex": 14,
+      "con": 10,
+      "int": 15,
+      "wis": 16,
+      "cha": 16,
+      "strMod": "-5",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "+2",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "-5",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "+2",
+      "wisSave": "+3",
+      "chaSave": "+3"
+    },
+    "skills": "Histoire +4, Intuition +5, Perception +5",
+    "damageImmunities": "À terre",
+    "damageResistances": "contondant, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "vision véritable 9 m, Perception passive 15",
+    "languages": "toutes",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Empyrean Iota",
+    "nameES": "Empíreo ápice"
+  },
+  {
+    "key": "empyreen",
+    "name": "Empyréen",
+    "type": "Céleste ou Fiélon (Titan)",
+    "size": "TG",
+    "alignment": "Neutre",
+    "armorClass": 22,
+    "hitPoints": 346,
+    "hitDice": "21d12 + 210",
+    "initiativeBonus": 19,
+    "speed": "15 m, vol 15 m (stationnaire), nage 15 m",
+    "abilities": {
+      "str": 30,
+      "dex": 21,
+      "con": 30,
+      "int": 21,
+      "wis": 22,
+      "cha": 27,
+      "strMod": "+10",
+      "dexMod": "+5",
+      "conMod": "+10",
+      "intMod": "+5",
+      "wisMod": "+6",
+      "chaMod": "+8",
+      "strSave": "+17",
+      "dexSave": "+5",
+      "conSave": "+10",
+      "intSave": "+5",
+      "wisSave": "+13",
+      "chaSave": "+8"
+    },
+    "skills": "Intuition +13, Perception +13",
+    "damageImmunities": "nécrotique, radiant",
+    "damageResistances": "contondant, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "vision véritable 36 m, Perception passive 23",
+    "languages": "toutes",
+    "challengeRating": "23",
+    "xp": "50000",
+    "proficiencyBonus": "+7",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Empyrean",
+    "nameES": "Empíreo"
+  },
+  {
+    "key": "enlaceur",
+    "name": "Enlaceur",
+    "type": "Aberration",
+    "size": "G",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 20,
+    "hitPoints": 93,
+    "hitDice": "11d10 + 33",
+    "initiativeBonus": 5,
+    "speed": "3 m, escalade 6 m",
+    "abilities": {
+      "str": 18,
+      "dex": 8,
+      "con": 17,
+      "int": 7,
+      "wis": 16,
+      "cha": 6,
+      "strMod": "+4",
+      "dexMod": "-1",
+      "conMod": "+3",
+      "intMod": "-2",
+      "wisMod": "+3",
+      "chaMod": "-2",
+      "strSave": "+4",
+      "dexSave": "-1",
+      "conSave": "+3",
+      "intSave": "-2",
+      "wisSave": "+3",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +6, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 16",
+    "languages": "—",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Pattes d'araignée",
+        "description": "L'enlaceur peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'enlaceur effectue deux attaques de Tentacule, recourt à Traction et effectue deux attaques de Morsure"
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 17 (3d8 + 4) dégâts perforants"
+      },
+      {
+        "name": "Tentacule",
+        "description": "Corps à corps : +7, allonge 18 m. Touché : la cible subit l'état Agrippé (évasion DD 14) par l'un des six tentacules, ainsi que l'état Empoisonné tant qu'elle est agrippée. Le tentacule peut subir des dégâts et libère la créature agrippée s'il est détruit (CA 20, 10 pv, Immunité contre les dégâts psychiques et de poison). Infliger des dégâts à un tentacule n'en inflige aucun à l'enlaceur, et tout tentacule ainsi détruit repousse au début du tour suivant de l'enlaceur"
+      },
+      {
+        "name": "Traction",
+        "description": "L'enlaceur tire vers lui chaque créature qu'il a Agrippée jusqu'à 9 m"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Roper",
+    "nameES": "Lacero"
+  },
+  {
+    "key": "epaulard",
+    "name": "Épaulard",
+    "type": "Bête",
+    "size": "TG",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 90,
+    "hitDice": "12d12 + 12",
+    "initiativeBonus": 2,
+    "speed": "1,50 m, nage 18 m",
+    "abilities": {
+      "str": 19,
+      "dex": 14,
+      "con": 13,
+      "int": 3,
+      "wis": 12,
+      "cha": 7,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +3, Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision aveugle 36 m, Perception passive 13",
+    "languages": "aucune",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Apnée",
+        "description": "L'épaulard peut retenir son souffle pendant 30 minutes"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 21 (5d6 + 4) dégâts perforants"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Killer Whale",
+    "nameES": "Orca"
+  },
+  {
+    "key": "epee-volante-animee",
+    "name": "Épée volante animée",
+    "type": "Artificiel",
+    "size": "P",
+    "alignment": "Non-aligné",
+    "armorClass": 17,
+    "hitPoints": 14,
+    "hitDice": "4d6",
+    "initiativeBonus": 4,
+    "speed": "1,50 m, vol 15 m (stationnaire)",
+    "abilities": {
+      "str": 12,
+      "dex": 15,
+      "con": 11,
+      "int": 1,
+      "wis": 5,
+      "cha": 1,
+      "strMod": "+1",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "-5",
+      "wisMod": "-3",
+      "chaMod": "-5",
+      "strSave": "+1",
+      "dexSave": "+4",
+      "conSave": "+0",
+      "intSave": "-5",
+      "wisSave": "-3",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": "poison, psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Assourdi, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision aveugle 18 m, Perception passive 7",
+    "languages": "—",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Taillade",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 6 (1d8 + 2) dégâts tranchants"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Animated Flying Sword",
+    "nameES": "Espada voladora animada"
+  },
+  {
+    "key": "epouvantail",
+    "name": "Épouvantail",
+    "type": "Artificiel",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 11,
+    "hitPoints": 27,
+    "hitDice": "6d8",
+    "initiativeBonus": 3,
+    "speed": "9 m",
+    "abilities": {
+      "str": 11,
+      "dex": 13,
+      "con": 11,
+      "int": 10,
+      "wis": 10,
+      "cha": 13,
+      "strMod": "+0",
+      "dexMod": "+1",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "+1",
+      "strSave": "+0",
+      "dexSave": "+1",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "+0",
+      "chaSave": "+1"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": "feu",
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné, Inconscient",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Griffe effroyable",
+        "description": "Corps à corps : +3, allonge 1,50 m. Touché : 6 (2d4 + 1) dégâts tranchants, et la cible subit l'état Effrayé jusqu'à la fin du prochain tour de l'épouvantail"
+      },
+      {
+        "name": "Regard terrifiant",
+        "description": "JdS Sagesse : DD 11, une créature que l'épouvantail peut voir dans un rayon de 9 m. Échec : la cible subit l'état Effrayé jusqu'à la fin du prochain tour de l'épouvantail. Tant qu'elle est effrayée, la cible subit l'état Paralysé"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Scarecrow",
+    "nameES": "Espantapájaros"
+  },
+  {
+    "key": "erinye",
+    "name": "Érinye",
+    "type": "Fiélon (Diable)",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 18,
+    "hitPoints": 178,
+    "hitDice": "21d8 + 84",
+    "initiativeBonus": 7,
+    "speed": "9 m, vol 18 m",
+    "abilities": {
+      "str": 18,
+      "dex": 16,
+      "con": 18,
+      "int": 14,
+      "wis": 14,
+      "cha": 18,
+      "strMod": "+4",
+      "dexMod": "+3",
+      "conMod": "+4",
+      "intMod": "+2",
+      "wisMod": "+2",
+      "chaMod": "+4",
+      "strSave": "+4",
+      "dexSave": "+7",
+      "conSave": "+8",
+      "intSave": "+2",
+      "wisSave": "+2",
+      "chaSave": "+8"
+    },
+    "skills": "Perception +6, Persuasion +8",
+    "damageImmunities": "feu, poison",
+    "damageResistances": "froid",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "vision véritable 36 m, Perception passive 16",
+    "languages": "infernal ; télépathie 36 m",
+    "challengeRating": "12",
+    "xp": "8400",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Corde magique",
+        "description": "L'érinye possède une corde magique. Tant qu'elle la porte sur elle, elle peut recourir à l'action Rets implacables. La corde présente le profil suivant : CA 20, 90 pv, Immunité contre les dégâts psychiques et de poison. La corde est réduite en poussière si elle tombe à 0 point de vie, se trouve à 1,50 m ou plus de l'érinye pendant au moins 1 heure ou si l'érinye meurt. Si la corde subit des dégâts ou est détruite, l'érinye peut la restaurer entièrement en terminant un Repos court ou long"
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "L'érinye a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      },
+      {
+        "name": "Restauration diabolique",
+        "description": "Si l'érinye meurt hors des Neuf Enfers, son corps disparaît dans un nuage de fumée sulfureuse et elle en acquiert aussitôt un nouveau en revenant à la vie avec tous ses pv, quelque part dans les Neuf Enfers"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'érinye effectue trois attaques d'Épée flétrissante et peut recourir à Rets implacables"
+      },
+      {
+        "name": "Épée flétrissante",
+        "description": "Corps à corps : +8, allonge 1,50 m. Touché : 13 (2d8 + 4) dégâts tranchants plus 11 (2d10) dégâts nécrotiques"
+      },
+      {
+        "name": "Rets implacables (corde magique requise)",
+        "description": "JdS Force : DD 16, une créature que l'érinye voit dans un rayon de 36 m. Échec : 14 (4d6) dégâts de force, et la cible subit l'état Entravé jusqu'à ce que la corde soit détruite, que l'érinye la libère par une action Bonus ou que l'érinye recoure de nouveau à Rets implacables"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Parade",
+        "description": "Déclencheur : l'érinye est touchée par un jet d'attaque de corps à corps alors qu'elle tient une arme. Conséquences : l'érinye ajoute 4 à sa CA contre cette attaque, ce qui peut la faire rater"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Erinyes",
+    "nameES": "Erinia"
+  },
+  {
+    "key": "espion-maitre",
+    "name": "Espion, maître",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 19,
+    "hitPoints": 137,
+    "hitDice": "25d8 + 25",
+    "initiativeBonus": 9,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 10,
+      "dex": 20,
+      "con": 12,
+      "int": 18,
+      "wis": 16,
+      "cha": 16,
+      "strMod": "+0",
+      "dexMod": "+5",
+      "conMod": "+1",
+      "intMod": "+4",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "+0",
+      "dexSave": "+9",
+      "conSave": "+5",
+      "intSave": "+8",
+      "wisSave": "+7",
+      "chaSave": "+3"
+    },
+    "skills": "Tromperie +7, Intuition +7, Investigation +8, Perception +11, Escamotage +9, Discrétion +13",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 21",
+    "languages": "commun plus deux autres langues",
+    "challengeRating": "10",
+    "xp": "5900",
+    "proficiencyBonus": "+4",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'espion réalise trois attaques, réparties à sa guise entre Rapière et Arbalète de poing"
+      },
+      {
+        "name": "Rapière",
+        "description": "Corps à corps : +9, allonge 1,50 m. Touché : 14 (2d8 + 5) dégâts perforants plus 7 (2d6) dégâts de poison"
+      },
+      {
+        "name": "Arbalète de poing",
+        "description": "À distance : +9, portée 9/36 m. Touché : 12 (2d6 + 5) dégâts perforants plus 9 (2d8) dégâts de poison"
+      },
+      {
+        "name": "Bombe fumigène (1/jour)",
+        "description": "L'espion lance une bombe vers un point qu'il peut voir dans un rayon de 9 m. JdS Constitution : DD 16, chaque créature dans une Sphère de 6 m de rayon centrée sur ce point. Échec : 28 (8d6) dégâts de poison, et la cible subit l'état Aveuglé jusqu'à la fin du prochain tour de l'espion. Réussite : demi-dégâts uniquement"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Ruse",
+        "description": "L'espion prend l'action Se désengager, Se cacher ou Foncer"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Spy Master",
+    "nameES": "Espía maestro"
+  },
+  {
+    "key": "espion",
+    "name": "Espion",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 12,
+    "hitPoints": 27,
+    "hitDice": "6d8",
+    "initiativeBonus": 4,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 10,
+      "dex": 15,
+      "con": 10,
+      "int": 12,
+      "wis": 14,
+      "cha": 16,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "+1",
+      "wisMod": "+2",
+      "chaMod": "+3",
+      "strSave": "+0",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "+1",
+      "wisSave": "+2",
+      "chaSave": "+3"
+    },
+    "skills": "Tromperie +5, Intuition +4, Investigation +5, Perception +6, Escamotage +4, Discrétion +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Épée courte",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 5 (1d6 + 2) dégâts perforants plus 7 (2d6) dégâts de poison"
+      },
+      {
+        "name": "Arbalète de poing",
+        "description": "À distance : +4, portée 30/36 m. Touché : 5 (1d6 + 2) dégâts perforants plus 7 (2d6) dégâts de poison"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Ruse",
+        "description": "L'espion prend l'action Se désengager, Se cacher ou Foncer"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Spy",
+    "nameES": "Espía"
+  },
+  {
+    "key": "esprit-aberrant",
+    "name": "Esprit aberrant",
+    "type": "Aberration",
+    "size": "M",
+    "alignment": null,
+    "armorClass": 11,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m, vol 9 m (stationnaire ; tyrannoeillidé uniquement)",
+    "abilities": {
+      "str": 16,
+      "dex": 10,
+      "con": 15,
+      "int": 16,
+      "wis": 10,
+      "cha": 6,
+      "strMod": "+3",
+      "dexMod": "+0",
+      "conMod": "+2",
+      "intMod": "+3",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+3",
+      "dexSave": "+0",
+      "conSave": "+2",
+      "intSave": "+3",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": "psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "profond, comprend les langues que vous connaissez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Régénération (slaad uniquement)",
+        "description": "L'esprit récupère 5 points de vie au début de son tour s'il lui reste au moins 1 point de vie"
+      },
+      {
+        "name": "Aura des murmures (flagelleur mental uniquement)",
+        "description": "Au début de chaque tour de l'esprit, celui-ci émet des énergies psioniques s'il ne subit pas l'état Incapable d'agir. JdS Sagesse : DD égal à votre DD de sauvegarde des sorts, chaque créature (autre que vous) dans un rayon de 1,50 m autour de l'esprit. Échec : 2d6 dégâts psychiques"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Griffes (slaad uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d10 + 3 + le niveau du sort dégâts perforants, et la cible ne peut pas récupérer de points de vie avant le début du prochain tour de l'esprit"
+      },
+      {
+        "name": "Rayon oculaire (tyrannoeillidé uniquement)",
+        "description": "À distance : bonus égal à votre modificateur d'attaque des sorts, portée 45 m. Touché : 1d8 + 3 + le niveau du sort dégâts psychiques"
+      },
+      {
+        "name": "Choc psychique (flagelleur mental uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + 3 + le niveau du sort dégâts psychiques. Voir Convocation d'aberration"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "esprit-artificiel",
+    "name": "Esprit artificiel",
+    "type": "Artificiel",
+    "size": "M",
+    "alignment": null,
+    "armorClass": 13,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m",
+    "abilities": {
+      "str": 18,
+      "dex": 10,
+      "con": 18,
+      "int": 14,
+      "wis": 11,
+      "cha": 5,
+      "strMod": "+4",
+      "dexMod": "+0",
+      "conMod": "+4",
+      "intMod": "+2",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+4",
+      "dexSave": "+0",
+      "conSave": "+4",
+      "intSave": "+2",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Empoisonné",
+    "damageResistances": "poison",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "comprend les langues que vous connaissez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Corps brûlant (métal uniquement)",
+        "description": "Une créature qui frappe l'esprit avec une attaque au corps à corps ou qui commence son tour en lutte avec l'esprit subit 1d10 dégâts de feu"
+      },
+      {
+        "name": "Léthargie de la pierre (pierre uniquement)",
+        "description": "Lorsqu'une créature commence son tour dans un rayon de 3 m autour de l'esprit, ce dernier peut la cibler avec des énergies magiques s'il peut la voir. JdS Sagesse : DD égal à votre DD de sauvegarde des sorts, la cible. Échec : jusqu'au début de son prochain tour, la cible ne peut pas effectuer d'attaque d'Opportunité et sa Vitesse est réduite de moitié"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques de Coup égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + 4 + le niveau du sort dégâts contondants"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Riposte rageuse (argile uniquement)",
+        "description": "Déclencheur : l'esprit subit des dégâts d'une créature. Conséquences : l'esprit effectue une attaque de Coup contre cette créature s'il le peut, ou se déplace jusqu'à la moitié de sa Vitesse vers elle sans provoquer d'attaque d'Opportunité. Voir Convocation d'artificiel"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "esprit-bestial",
+    "name": "Esprit bestial",
+    "type": "Bête",
+    "size": "P",
+    "alignment": null,
+    "armorClass": 11,
+    "hitPoints": 20,
+    "hitDice": "air uniquement",
+    "initiativeBonus": null,
+    "speed": "9 m, escalade 9 m (terre uniquement) ; vol 18 m (air uniquement) ; nage 9 m (eau uniquement)",
+    "abilities": {
+      "str": 18,
+      "dex": 11,
+      "con": 16,
+      "int": 4,
+      "wis": 14,
+      "cha": 5,
+      "strMod": "+4",
+      "dexMod": "+0",
+      "conMod": "+3",
+      "intMod": "-3",
+      "wisMod": "+2",
+      "chaMod": "-3",
+      "strSave": "+4",
+      "dexSave": "+0",
+      "conSave": "+3",
+      "intSave": "-3",
+      "wisSave": "+2",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "comprend les langues que vous connaissez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Repli aérien (air uniquement)",
+        "description": "L'esprit ne provoque pas d'attaque d'Opportunité lorsqu'il quitte l'allonge d'un ennemi en volant"
+      },
+      {
+        "name": "Tactique de meute (terre et eau uniquement)",
+        "description": "L'esprit a un Avantage au jet d'attaque contre une créature si au moins un de ses alliés se trouve dans un rayon de 1,50 m autour de la créature et si cet allié ne subit pas l'état Incapable d'agir"
+      },
+      {
+        "name": "Respiration aquatique (eau uniquement)",
+        "description": "L'esprit ne peut respirer que sous l'eau"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques de Saignée égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + 4 + le niveau du sort dégâts perforants. Voir Convocation de bête"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "esprit-celeste",
+    "name": "Esprit céleste",
+    "type": "Céleste",
+    "size": "G",
+    "alignment": null,
+    "armorClass": 11,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m, vol 12 m",
+    "abilities": {
+      "str": 16,
+      "dex": 14,
+      "con": 16,
+      "int": 10,
+      "wis": 14,
+      "cha": 16,
+      "strMod": "+3",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "+3",
+      "strSave": "+3",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": "Charmé, Effrayé",
+    "damageResistances": "radiant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "céleste, comprend les langues que vous connaissez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Arc radiant (vengeur uniquement)",
+        "description": "À distance : bonus égal à votre modificateur d'attaque des sorts, portée 180 m. Touché : 2d6 + 2 + le niveau du sort dégâts radiants"
+      },
+      {
+        "name": "Masse d'armes radiante (protecteur uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d10 + 3 + le niveau du sort dégâts radiants, et l'esprit peut choisir lui-même ou une autre créature qu'il peut voir dans un rayon de 3 m autour de la cible. La créature choisie gagne 1d10 points de vie temporaires"
+      },
+      {
+        "name": "Contact guérisseur (1/jour)",
+        "description": "L'esprit touche une autre créature. La cible récupère un nombre de points de vie égal à 2d8 + le niveau du sort. Voir Convocation de céleste"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "esprit-draconique",
+    "name": "Esprit draconique",
+    "type": "Dragon",
+    "size": "G",
+    "alignment": null,
+    "armorClass": 14,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m, vol 18 m, nage 9 m",
+    "abilities": {
+      "str": 19,
+      "dex": 14,
+      "con": 17,
+      "int": 10,
+      "wis": 14,
+      "cha": 14,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "+2",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+2"
+    },
+    "skills": null,
+    "damageImmunities": "Charmé, Effrayé, Empoisonné",
+    "damageResistances": "acide, froid, feu, foudre, poison",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision aveugle 9 m, Vision dans le noir 18 m, Perception passive 12",
+    "languages": "draconique, comprend les langues que vous connaissez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Résistances partagées",
+        "description": "Lorsque vous convoquez l'esprit, choisissez l'une de ses Résistances aux dégâts. Vous bénéficiez de la Résistance au type de dégâts choisi jusqu'à la fin du sort"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue autant d'attaques de Saignée que la moitié du niveau de ce sort (arrondir à l'inférieur) et il recourt à Souffle"
+      },
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 3 m. Touché : 1d6 + 4 + le niveau du sort dégâts perforants"
+      },
+      {
+        "name": "Souffle",
+        "description": "JdS Dextérité : DD égal à votre DD de sauvegarde des sorts, chaque créature dans un cône de 9 m. Échec : 2d6 dégâts d'un type auquel l'esprit a la Résistance (vous choisissez à l'incantation du sort). Réussite : 1/2 dégâts. Voir Convocation de dragon"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "esprit-elementaire",
+    "name": "Esprit élémentaire",
+    "type": "Élémentaire",
+    "size": "M",
+    "alignment": null,
+    "armorClass": 11,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "12 m, fouissement 12 m (terre uniquement) ; vol 12 m (stationnaire ; air uniquement) ; nage 12 m (eau uniquement)",
+    "abilities": {
+      "str": 18,
+      "dex": 15,
+      "con": 17,
+      "int": 4,
+      "wis": 10,
+      "cha": 16,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "-3",
+      "wisMod": "+0",
+      "chaMod": "+3",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "-3",
+      "wisSave": "+0",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": "feu (feu uniquement), poison",
+    "damageResistances": "acide (eau uniquement), foudre et tonnerre (air uniquement), perforant et tranchant (terre uniquement)",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "primordial, comprend les langues que vous connaissez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "État informe (air, feu et eau uniquement)",
+        "description": "L'esprit peut se déplacer dans un espace de 2,50 cm de large sans que cela soit considéré comme un Terrain difficile"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques de Coup égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d10 + 4 + le niveau du sort dégâts contondants (Terre uniquement), de froid (Eau uniquement), de foudre (Air uniquement) ou de feu (Feu uniquement). Voir Convocation d'élémentaire"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "esprit-feerique",
+    "name": "Esprit féerique",
+    "type": "Fée",
+    "size": "P",
+    "alignment": null,
+    "armorClass": 12,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m, vol 9 m",
+    "abilities": {
+      "str": 13,
+      "dex": 16,
+      "con": 14,
+      "int": 14,
+      "wis": 11,
+      "cha": 16,
+      "strMod": "+1",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "+2",
+      "wisMod": "+0",
+      "chaMod": "+3",
+      "strSave": "+1",
+      "dexSave": "+3",
+      "conSave": "+2",
+      "intSave": "+2",
+      "wisSave": "+0",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": "Charmé",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "sylvestre, comprend les langues que vous connaissez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques de Lame féerique égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Lame féerique",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 2d6 + 3 + le niveau du sort dégâts de force"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Foulée féerique",
+        "description": "L'esprit se téléporte magiquement jusqu'à 9 m dans un espace inoccupé qu'il peut voir. Ensuite, l'un des effets suivants se produit, selon l'humeur choisie par l'esprit :"
+      },
+      {
+        "name": "Furibond",
+        "description": "L'esprit a un Avantage à son prochain jet d'attaque avant la fin de ce tour"
+      },
+      {
+        "name": "Rieur",
+        "description": "JdS Sagesse : DD égal à votre DD de sauvegarde des sorts, une créature que l'esprit peut voir dans un rayon de 3 m. Échec : la cible est Charmée par vous et l'esprit pendant 1 minute ou jusqu'à ce qu'elle subisse des dégâts"
+      },
+      {
+        "name": "Espiègle",
+        "description": "L'esprit remplit un cube de 3 m de côté, dans un rayon de 1,50 m autour de lui, de Ténèbres magiques. L'effet jusqu'à la fin de son prochain tour. Voir Convocation de fée"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "esprit-fielon",
+    "name": "Esprit fiélon",
+    "type": "Fiélon",
+    "size": "G",
+    "alignment": null,
+    "armorClass": 12,
+    "hitPoints": 50,
+    "hitDice": "démon uniquement",
+    "initiativeBonus": null,
+    "speed": "12 m, escalade 12 m (démon uniquement) ; vol 18 m (diable uniquement)",
+    "abilities": {
+      "str": 13,
+      "dex": 16,
+      "con": 15,
+      "int": 10,
+      "wis": 10,
+      "cha": 16,
+      "strMod": "+1",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "+3",
+      "strSave": "+1",
+      "dexSave": "+3",
+      "conSave": "+2",
+      "intSave": "+0",
+      "wisSave": "+0",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": "feu",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "abyssal, infernal, télépathie 18 m",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Spasmes d'agonie (démon uniquement)",
+        "description": "Lorsque l'esprit tombe à 0 point de vie ou que le sort prend fin, il explose. JdS Dextérité : DD égal à votre DD de sauvegarde des sorts, chaque créature dans une Émanation de 3 m centrée sur l'esprit. Échec : 2d10 + le niveau du sort dégâts de feu. Réussite : dégâts réduits de moitié"
+      },
+      {
+        "name": "Vision du diable (diable uniquement)",
+        "description": "Les Ténèbres magiques n'entravent pas la Vision dans le noir de l'esprit"
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "L'esprit a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Morsure (démon uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d12 + 3 + le niveau du sort dégâts nécrotiques"
+      },
+      {
+        "name": "Griffes (yugoloth uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + 3 + le niveau du sort dégâts tranchants. Immédiatement après l'attaque (réussie ou non), l'esprit peut se téléporter jusqu'à 9 m dans un espace inoccupé qu'il peut voir"
+      },
+      {
+        "name": "Frappe ardente (diable uniquement)",
+        "description": "Corps à corps ou à distance : bonus égal à votre modificateur d'attaque des sorts, allonge : 1,50 m ou portée 45 m. Touché : 2d6 + 3 + le niveau du sort dégâts de feu. Voir Convocation de fiélon"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "esprit-follet",
+    "name": "Esprit follet",
+    "type": "Fée",
+    "size": "TP",
+    "alignment": "Neutre Bon",
+    "armorClass": 15,
+    "hitPoints": 10,
+    "hitDice": "4d4",
+    "initiativeBonus": 4,
+    "speed": "3 m, vol 12 m",
+    "abilities": {
+      "str": null,
+      "dex": 18,
+      "con": 10,
+      "int": 14,
+      "wis": 13,
+      "cha": 11,
+      "strMod": null,
+      "dexMod": "+4",
+      "conMod": "+0",
+      "intMod": "+2",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": null,
+      "dexSave": "+4",
+      "conSave": "+0",
+      "intSave": "+2",
+      "wisSave": "+1",
+      "chaSave": "+0"
+    },
+    "skills": "Discrétion +8, Perception +3",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 13",
+    "languages": "commun, elfique, sylvestre",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Épée-ingle",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 6 (1d4 + 4) dégâts perforants"
+      },
+      {
+        "name": "Arc enchanté",
+        "description": "À distance : +6, portée 12/48 m. Touché : 1 dégât perforant, et la cible subit l'état Charmé jusqu'au début du prochain tour de l'esprit follet"
+      },
+      {
+        "name": "Perception du for intérieur",
+        "description": "JdS Charisme : DD 10, une créature dans un rayon de 1,50 m que l'esprit follet peut voir (Célestes, Fiélons et Morts-vivants échouent automatiquement au jet de sauvegarde). Échec : l'esprit follet perçoit les émotions et l'alignement de la cible"
+      },
+      {
+        "name": "Invisibilité",
+        "description": "L'esprit follet lance invisibilité sur lui-même, sans avoir besoin de composantes de sort et en utilisant le Charisme comme caractéristique d'incantation"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Sprite",
+    "nameES": "Duende"
+  },
+  {
+    "key": "esprit-mort-vivant",
+    "name": "Esprit mort-vivant",
+    "type": "Mort-vivant",
+    "size": "M",
+    "alignment": null,
+    "armorClass": 11,
+    "hitPoints": 30,
+    "hitDice": "fantomatique et putride uniquement",
+    "initiativeBonus": null,
+    "speed": "9 m, vol 12 m (stationnaire ; fantomatique uniquement)",
+    "abilities": {
+      "str": 12,
+      "dex": 16,
+      "con": 15,
+      "int": 4,
+      "wis": 10,
+      "cha": 9,
+      "strMod": "+1",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "-3",
+      "wisMod": "+0",
+      "chaMod": "-1",
+      "strSave": "+1",
+      "dexSave": "+3",
+      "conSave": "+2",
+      "intSave": "-3",
+      "wisSave": "+0",
+      "chaSave": "-1"
+    },
+    "skills": null,
+    "damageImmunities": "nécrotique, poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Effrayé, Paralysé, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "comprend les langues que vous connaissez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Aura suppurante (putride uniquement)",
+        "description": "JdS Constitution : DD égal à votre DD de sauvegarde des sorts, toute créature (autre que vous) qui commence son tour dans une Émanation de 1,50 m centrée sur l'esprit. Échec : la créature subit l'état Empoisonné jusqu'au début de son prochain tour"
+      },
+      {
+        "name": "Passage intangible (fantomatique uniquement)",
+        "description": "L'esprit peut traverser les autres créatures et les objets comme s'il s'agissait d'un Terrain difficile. S'il termine son tour à l'intérieur d'un objet, il est repoussé vers l'espace inoccupé le plus proche et subit 1d10 dégâts de force par tranche de 1,50 m ainsi parcouru"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Attaques multiples. L'esprit effectue un nombre d'attaques égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Contact funeste (fantomatique uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + 3 + le niveau du sort dégâts nécrotiques, et la cible subit l'état Effrayé jusqu'à la fin de son prochain tour"
+      },
+      {
+        "name": "Trait sépulcral (squelettique uniquement)",
+        "description": "À distance : bonus égal à votre modificateur d'attaque des sorts, portée 45 m. Touché : 2d4 + 3 + le niveau du sort dégâts nécrotiques"
+      },
+      {
+        "name": "Griffe putréfiée (putride uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d6 + 3 + le niveau du sort dégâts tranchants. Si la cible est empoisonnée, elle subit l'état Paralysé jusqu'à la fin de son prochain tour. Voir Convocation de mort-vivant"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": null,
+    "nameEN": null,
+    "nameES": null
+  },
+  {
+    "key": "ettercap",
+    "name": "Ettercap",
+    "type": "Monstruosité",
+    "size": "M",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 13,
+    "hitPoints": 44,
+    "hitDice": "8d8 + 8",
+    "initiativeBonus": 2,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 14,
+      "dex": 15,
+      "con": 13,
+      "int": 7,
+      "wis": 12,
+      "cha": 8,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "-2",
+      "wisMod": "+1",
+      "chaMod": "-1",
+      "strSave": "+2",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "-2",
+      "wisSave": "+1",
+      "chaSave": "-1"
+    },
+    "skills": "Perception +3, Discrétion +4, Survie +3",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 13",
+    "languages": "—",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Marche dans les toiles",
+        "description": "L'ettercap n'est pas soumis aux contraintes de déplacement imposées par les toiles et connaît la position de toute autre créature en contact avec la même toile que lui"
+      },
+      {
+        "name": "Pattes d'araignée",
+        "description": "L'ettercap peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'ettercap effectue une attaque de Griffe et une de Morsure"
+      },
+      {
+        "name": "Griffe",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 7 (2d4 + 2) dégâts tranchants"
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 5 (1d6 + 2) dégâts perforants plus 2 (1d4) dégâts de poison, et la cible subit l'état Empoisonné jusqu'au début du tour suivant de l'ettercap"
+      },
+      {
+        "name": "Filandre (recharge 5–6)",
+        "description": "JdS Dextérité : DD 12, une créature de taille G ou inférieure que l'ettercap voit dans un rayon de 9 m. Échec : la cible subit l'état Entravé jusqu'à ce que la filandre soit détruite (CA 10 ; 5 pv ; Vulnérabilité aux dégâts de feu ; Immunité contre les dégâts contondants, psychiques et de poison)"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Traction",
+        "description": "L'ettercap tire vers lui en ligne droite une créature Entravée par sa Filandre et située dans un rayon de 9 m, en la déplaçant d'un maximum de 7,50 m"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Ettercap",
+    "nameES": "Ettercap"
+  },
+  {
+    "key": "ettin",
+    "name": "Ettin",
+    "type": "Géant",
+    "size": "G",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 12,
+    "hitPoints": 85,
+    "hitDice": "10d10 + 30",
+    "initiativeBonus": -1,
+    "speed": "12 m",
+    "abilities": {
+      "str": 21,
+      "dex": 8,
+      "con": 17,
+      "int": 6,
+      "wis": 10,
+      "cha": 8,
+      "strMod": "+5",
+      "dexMod": "-1",
+      "conMod": "+3",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-1",
+      "strSave": "+5",
+      "dexSave": "-1",
+      "conSave": "+3",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-1"
+    },
+    "skills": "Perception +4",
+    "damageImmunities": "Aveuglé, Charmé, Assourdi, Effrayé, Étourdi, Inconscient",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 14",
+    "languages": "géant",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'ettin effectue une attaque de Hache d'armes et une de Morgenstern"
+      },
+      {
+        "name": "Hache d'armes",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 14 (2d8 + 5) dégâts tranchants. Si la cible est une créature de taille G ou inférieure, elle subit l'état À terre"
+      },
+      {
+        "name": "Morgenstern",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 14 (2d8 + 5) dégâts perforants, et la cible subit un Désavantage à son prochain jet d'attaque intervenant avant la fin de son tour suivant"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Ettin",
+    "nameES": "Ettin"
+  },
+  {
+    "key": "familier-de-vampire",
+    "name": "Familier de vampire",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 15,
+    "hitPoints": 65,
+    "hitDice": "10d8 +20",
+    "initiativeBonus": 5,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 17,
+      "dex": 16,
+      "con": 15,
+      "int": 10,
+      "wis": 10,
+      "cha": 14,
+      "strMod": "+3",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "+2",
+      "strSave": "+3",
+      "dexSave": "+5",
+      "conSave": "+2",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+2"
+    },
+    "skills": "Perception +4, Persuasion +4, Discrétion +7",
+    "damageImmunities": "Charmé (sauf de son maître vampire)",
+    "damageResistances": "nécrotique",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 14",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Lien vampirique",
+        "description": "Tant que le familier et son maître vampire sont sur le même plan d'existence, le vampire peut communiquer avec son familier par télépathie et percevoir l'environnement du familier par les sens de ce dernier"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le familier effectue deux attaques de Dague des ombres"
+      },
+      {
+        "name": "Dague des ombres",
+        "description": "Corps à corps ou à distance : +5, allonge 1,50 m ou portée 6/18 m. Touché : 5 (1d4 + 3) dégâts perforants plus 7 (3d4) dégâts nécrotiques. Si la cible tombe à 0 point de vie en raison de cette attaque, elle se retrouve Stabilisée mais subit l'état Empoisonné pendant 1 heure. Tant qu'elle a l'état Empoisonné, la cible subit l'état Paralysé"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Agilité immortelle",
+        "description": "Le familier effectue l'action Désengagement ou Pointe"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Vampire Familiar",
+    "nameES": "Siervo de vampiro"
+  },
+  {
+    "key": "fantome",
+    "name": "Fantôme",
+    "type": "Mort-vivant",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 11,
+    "hitPoints": 45,
+    "hitDice": "10d8",
+    "initiativeBonus": 1,
+    "speed": "1,50 m, vol 12 m (stationnaire)",
+    "abilities": {
+      "str": 7,
+      "dex": 13,
+      "con": 10,
+      "int": 10,
+      "wis": 12,
+      "cha": 17,
+      "strMod": "-2",
+      "dexMod": "+1",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+3",
+      "strSave": "-2",
+      "dexSave": "+1",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "+1",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": "nécrotique, poison",
+    "damageResistances": "acide, contondant, froid, feu, foudre, perforant, tranchant, tonnerre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé",
+    "senses": "Vision dans le noir 18 m, Perception passive 11",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Déplacement intangible",
+        "description": "Le fantôme peut traverser d'autres créatures et objets comme s'il s'agissait d'un Terrain difficile. Il subit 5 (1d10) dégâts de force s'il termine son tour à l'intérieur d'un objet"
+      },
+      {
+        "name": "Vision éthérée",
+        "description": "Le fantôme voit sur un rayon de 18 m dans le Plan Éthéré quand il est sur le Plan Matériel"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le fantôme effectue deux attaques de Contact flétrissant"
+      },
+      {
+        "name": "Contact flétrissant",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 19 (3d10 + 3) dégâts nécrotiques"
+      },
+      {
+        "name": "Forme éthérée",
+        "description": "Le fantôme lance le sort forme éthérée sans composantes de sort, le Charisme étant sa caractéristique d'incantation. Le fantôme est visible depuis le Plan Matériel tant qu'il se trouve à la Frontière éthérée, et inversement, mais ne peut ni affecter, ni être affecté par quoi que ce soit depuis l'autre plan"
+      },
+      {
+        "name": "Possession (recharge 6)",
+        "description": "JdS Charisme : DD 13, un Humanoïde que le fantôme voit dans un rayon de 1,50 m. Échec : la cible est possédée par le fantôme ; le fantôme disparaît, la cible subit l'état Incapable d'agir et perd le contrôle de son corps. Le fantôme prend le contrôle du corps, mais la cible reste consciente. Le fantôme ne peut être ciblé par aucun sort, effet ou attaque, à l'exception de ceux qui ciblent spécifiquement les Morts-vivants. Le profil de jeu du fantôme reste le même, si ce n'est qu'il reprend la Vitesse de la cible, ainsi que ses modificateurs de Force, de Dextérité et de Constitution. Cette possession persiste jusqu'à ce que le corps tombe à 0 point de vie ou que le fantôme le quitte par une action Bonus. Quand la possession prend fin, le fantôme apparaît en un espace inoccupé dans un rayon de 1,50 m de la cible, et celle-ci est immunisée contre la Possession de ce fantôme pendant 24 heures. Réussite : la cible est immunisée contre la Possession de ce fantôme pendant 24 heures"
+      },
+      {
+        "name": "Visage terrifiant",
+        "description": "JdS Sagesse : DD 13, chaque créature dans un Cône de 18 m qui n'est pas un Mort-vivant et voit le fantôme. Échec : 10 (2d6 + 3) dégâts psychiques, et la cible subit l'état Effrayé jusqu'au début du tour suivant du fantôme. Réussite : la cible est immunisée contre le Visage terrifiant de ce fantôme pendant 24 heures"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Ghost",
+    "nameES": "Fantasma"
+  },
+  {
+    "key": "faucon-de-sang",
+    "name": "Faucon de sang",
+    "type": "Bête",
+    "size": "P",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 7,
+    "hitDice": "2d6",
+    "initiativeBonus": 2,
+    "speed": "3 m, vol 18 m",
+    "abilities": {
+      "str": 6,
+      "dex": 14,
+      "con": 10,
+      "int": 3,
+      "wis": 14,
+      "cha": 5,
+      "strMod": "-2",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "-4",
+      "wisMod": "+2",
+      "chaMod": "-3",
+      "strSave": "-2",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "-4",
+      "wisSave": "+2",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "aucune",
+    "challengeRating": "1/8",
+    "xp": "25",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Tactique de meute",
+        "description": "Quand au moins un de ses alliés non Incapable d'agir se situe dans un rayon de 1,50 m de la créature qu'il cible, le faucon a un Avantage au jet d'attaque correspondant"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Bec",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 4 (1d4 + 2) dégâts perforants, ou 6 (1d8 + 2) dégâts perforants si la cible est En péril"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Blood Hawk",
+    "nameES": "Halcón sangriento"
+  },
+  {
+    "key": "faucon",
+    "name": "Faucon",
+    "type": "Bête",
+    "size": "TP",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 1,
+    "hitDice": "1d4 - 1",
+    "initiativeBonus": 3,
+    "speed": "3 m, vol 18 m",
+    "abilities": {
+      "str": 5,
+      "dex": 16,
+      "con": 8,
+      "int": 2,
+      "wis": 14,
+      "cha": 6,
+      "strMod": "-3",
+      "dexMod": "+3",
+      "conMod": "-1",
+      "intMod": "-4",
+      "wisMod": "+2",
+      "chaMod": "-2",
+      "strSave": "-3",
+      "dexSave": "+3",
+      "conSave": "-1",
+      "intSave": "-4",
+      "wisSave": "+2",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Serres",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 1 dégât tranchant"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Hawk",
+    "nameES": "Halcón"
+  },
+  {
+    "key": "feu-follet",
+    "name": "Feu follet",
+    "type": "Mort-vivant",
+    "size": "TP",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 19,
+    "hitPoints": 27,
+    "hitDice": "11d4",
+    "initiativeBonus": 9,
+    "speed": "1,50 m, vol 15 m (stationnaire)",
+    "abilities": {
+      "str": 1,
+      "dex": 28,
+      "con": 10,
+      "int": 13,
+      "wis": 14,
+      "cha": 11,
+      "strMod": "-5",
+      "dexMod": "+9",
+      "conMod": "+0",
+      "intMod": "+1",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "-5",
+      "dexSave": "+9",
+      "conSave": "+0",
+      "intSave": "+1",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": "foudre, poison",
+    "damageResistances": "acide, contondant, froid, feu, nécrotique, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé, Inconscient",
+    "senses": "Vision dans le noir 36 m, Perception passive 12",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Déplacement intangible",
+        "description": "Le feu follet peut traverser d'autres créatures et objets comme s'il s'agissait d'un Terrain difficile. Il subit 5 (1d10) dégâts de force s'il termine son tour à l'intérieur d'un objet"
+      },
+      {
+        "name": "Fugace",
+        "description": "Le feu follet ne peut rien porter"
+      },
+      {
+        "name": "Illumination",
+        "description": "Le feu follet émet une Lumière vive sur un rayon de 6 m et une Lumière faible sur 6 m de plus"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Décharge",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 11 (2d8 + 2) dégâts de foudre"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Disparition",
+        "description": "Le feu follet et sa lumière ont l'état Invisible jusqu'à ce qu'il rompe sa Concentration sur cet effet, mais l'état prend fin prématurément juste après que le feu follet effectue un jet d'attaque ou recourt à Festin d'essence vitale"
+      },
+      {
+        "name": "Festin d'essence vitale",
+        "description": "JdS Constitution : DD 10, une créature vivante à 0 point de vie que le feu follet voit dans un rayon de 1,50 m. Échec : La cible meurt et le feu follet récupère 10 (3d6) points de vie"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Will-o'-Wisp",
+    "nameES": "Fuego fatuo"
+  },
+  {
+    "key": "flagelleur-mental-arcaniste",
+    "name": "Flagelleur mental, arcaniste",
+    "type": "Aberration",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 16,
+    "hitPoints": 143,
+    "hitDice": "26d8 + 26",
+    "initiativeBonus": 6,
+    "speed": "9 m, vol 9 m (stationnaire)",
+    "abilities": {
+      "str": 11,
+      "dex": 14,
+      "con": 13,
+      "int": 20,
+      "wis": 17,
+      "cha": 17,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+5",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "+0",
+      "dexSave": "+6",
+      "conSave": "+1",
+      "intSave": "+9",
+      "wisSave": "+7",
+      "chaSave": "+7"
+    },
+    "skills": "Arcanes +13, Intuition +7, Perception +7, Discrétion +6",
+    "damageImmunities": "psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Effrayé",
+    "senses": "Vision dans le noir 36 m, Perception passive 17",
+    "languages": "profond, commun des profondeurs ; télépathie 36 m",
+    "challengeRating": "11",
+    "xp": "7200",
+    "proficiencyBonus": "+4",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Mind Flayer Arcanist",
+    "nameES": "Azotamentes arcanista"
+  },
+  {
+    "key": "flagelleur-mental",
+    "name": "Flagelleur mental",
+    "type": "Aberration",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 15,
+    "hitPoints": 99,
+    "hitDice": "18d8 + 18",
+    "initiativeBonus": 4,
+    "speed": "9 m, vol 4,50 m (stationnaire)",
+    "abilities": {
+      "str": 11,
+      "dex": 12,
+      "con": 12,
+      "int": 19,
+      "wis": 17,
+      "cha": 17,
+      "strMod": "+0",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "+4",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "+0",
+      "dexSave": "+4",
+      "conSave": "+1",
+      "intSave": "+7",
+      "wisSave": "+6",
+      "chaSave": "+6"
+    },
+    "skills": "Arcanes +7, Intuition +6, Perception +6, Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": "psychique",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 16",
+    "languages": "profond, commun des profondeurs ; télépathie 36 m",
+    "challengeRating": "7",
+    "xp": "2 900",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": "Le flagelleur mental a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Tentacules",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 22 (4d8 + 4) dégâts psychiques. Si la cible est une créature de taille M ou inférieure, elle subit l'état Agrippé (évasion DD 14) par tous les tentacules du flagelleur mental, et la cible subit l'état Étourdi tant qu'elle est agrippée"
+      },
+      {
+        "name": "Extraction de cerveau",
+        "description": "JdS Constitution : DD 15, une créature agrippée par les tentacules du flagelleur mental. Échec : 55 (10d10) dégâts perforants. Réussite : demi-dégâts. Échec ou réussite : si ces dégâts réduisent les points de vie de la cible à 0, le flagelleur mental la tue et dévore son cerveau"
+      },
+      {
+        "name": "Décharge mentale (recharge 5–6)",
+        "description": "JdS Intelligence : DD 15, chaque créature dans un Cône de 18 m. Échec : 31 (6d8 + 4) dégâts psychiques, et la cible subit l'état Étourdi jusqu'à la fin du prochain tour du flagelleur mental. Réussite : demi-dégâts uniquement"
+      },
+      {
+        "name": "Incantation",
+        "description": "Le flagelleur mental lance l'un des sorts suivants sans composantes de sort, l'Intelligence étant sa caractéristique d'incantation (DD de sauvegarde 15) : À volonté : détection des pensées 1/jour chacun : domination de monstre , changement de plan (soi-même uniquement)"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Mind Flayer",
+    "nameES": "Azotamentes"
+  },
+  {
+    "key": "flumph",
+    "name": "Flumph",
+    "type": "Aberration",
+    "size": "P",
+    "alignment": "Loyal Bon",
+    "armorClass": 12,
+    "hitPoints": 7,
+    "hitDice": "2d6",
+    "initiativeBonus": 2,
+    "speed": "1,50 m, vol 9 m (stationnaire)",
+    "abilities": {
+      "str": 6,
+      "dex": 15,
+      "con": 10,
+      "int": 14,
+      "wis": 14,
+      "cha": 11,
+      "strMod": "-2",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "+2",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "-2",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "+2",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": "Arcanes +4, Histoire +4, Religion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": "psychique",
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "comprend le commun des profondeurs mais ne parle pas ; télépathie 18 m",
+    "challengeRating": "1/8",
+    "xp": "25",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Télépathie avancée",
+        "description": "Le flumph perçoit le contenu de toute communication télépathique dans un rayon de 18 m autour de lui"
+      },
+      {
+        "name": "Syndrome de la tortue",
+        "description": "Si le flumph subit l'état À terre, lancez un dé. Sur un résultat impair, il subit également l'état Incapable d'agir. À la fin de chacun de ses tours, le flumph effectue un jet de sauvegarde de Dextérité DD 10, mettant fin à l'état Incapable d'agir en cas de réussite"
+      },
+      {
+        "name": "Camouflage télépathique",
+        "description": "Les pensées du flumph sont impossibles à lire par aucun moyen, et la magie ne peut ni détecter sa position ni l'observer à distance"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Tentacule",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 4 (1d4 + 2) dégâts d'acide"
+      },
+      {
+        "name": "Aspersion nauséabonde (1/jour)",
+        "description": "JdS Dextérité : DD 10, une créature que le flumph peut voir dans un rayon de 4,50 m. Échec : la cible est recouverte d'un liquide nauséabond, dégage une puanteur pendant 1d4 heures et subit l'état Empoisonné tant que dure l'odeur. Les autres créatures subissent l'état Empoisonné tant qu'elles sont dans une Émanation de 1,50 m de rayon centrée sur la cible recouverte. La cible peut se débarrasser de la puanteur en prenant un bain pendant un Repos court ou long"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Flumph",
+    "nameES": "Flumph"
+  },
+  {
+    "key": "fomoire",
+    "name": "Fomoire",
+    "type": "Géant",
+    "size": "TG",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 14,
+    "hitPoints": 172,
+    "hitDice": "15d12 + 75",
+    "initiativeBonus": 0,
+    "speed": "12 m",
+    "abilities": {
+      "str": 23,
+      "dex": 10,
+      "con": 20,
+      "int": 9,
+      "wis": 14,
+      "cha": 6,
+      "strMod": "+6",
+      "dexMod": "+0",
+      "conMod": "+5",
+      "intMod": "-1",
+      "wisMod": "+2",
+      "chaMod": "-2",
+      "strSave": "+6",
+      "dexSave": "+0",
+      "conSave": "+5",
+      "intSave": "-1",
+      "wisSave": "+2",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +8, Discrétion +3",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 18",
+    "languages": "géant, commun des profondeurs",
+    "challengeRating": "8",
+    "xp": "3900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le fomoire effectue deux attaques de Gourdin de pierre. Il peut remplacer une attaque par l'utilisation de Maléfice convulsif si disponible"
+      },
+      {
+        "name": "Gourdin de pierre",
+        "description": "Corps à corps : +9, allonge 4,50 m. Touché : 24 (4d8 + 6) dégâts contondants"
+      },
+      {
+        "name": "Maléfice convulsif (recharge 4–6)",
+        "description": "JdS Sagesse : DD 16, une créature que le fomoire peut voir dans un rayon de 36 m. Échec : 21 (6d6) dégâts psychiques, et la cible subit 1 niveau d'épuisement. Réussite : demi-dégâts uniquement"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Fomorian",
+    "nameES": "Fomoré"
+  },
+  {
+    "key": "galeb-duhr",
+    "name": "Galeb Duhr",
+    "type": "Élémentaire",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 123,
+    "hitDice": "13d8 + 65",
+    "initiativeBonus": 2,
+    "speed": "4,50 m (9 m lorsqu'il roule, 18 m s'il roule en descente)",
+    "abilities": {
+      "str": 20,
+      "dex": 14,
+      "con": 20,
+      "int": 11,
+      "wis": 12,
+      "cha": 11,
+      "strMod": "+5",
+      "dexMod": "+2",
+      "conMod": "+5",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+5",
+      "dexSave": "+2",
+      "conSave": "+5",
+      "intSave": "+0",
+      "wisSave": "+1",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision dans le noir 18 m, perception des vibrations 18 m, Perception passive 11",
+    "languages": "primordial (terreux)",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Coup déferlant",
+        "description": "Corps à corps : +8, allonge 1,50 m. Touché : 12 (2d6 + 5) dégâts contondants. Si la cible est une créature de taille G ou inférieure et que le galeb duhr s'est déplacé de plus de 6 m directement vers elle immédiatement avant le coup, la cible subit 7 (2d6) dégâts contondants supplémentaires et l'état À terre"
+      },
+      {
+        "name": "Animation de rochers (1/jour)",
+        "description": "Le galeb duhr anime magiquement un ou deux rochers qu'il peut voir dans un rayon de 18 m. Chaque rocher possède le même profil que le galeb duhr, à l'exception de son Intelligence et de son Charisme qui sont de 1 et de son incapacité à effectuer cette action. Le rocher agit immédiatement après le galeb duhr, avec la même Initiative, et lui obéit. Un rocher reste animé pendant 1 minute ou jusqu'à sa mort ou celle du galeb duhr"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Galeb Duhr",
+    "nameES": "Galeb Duhr"
+  },
+  {
+    "key": "garde-bouclier-anime",
+    "name": "Garde bouclier|animé",
+    "type": "Artificiel",
+    "size": "G",
+    "alignment": "Non-aligné",
+    "armorClass": 17,
+    "hitPoints": 142,
+    "hitDice": "15d10 + 60",
+    "initiativeBonus": -1,
+    "speed": "9 m",
+    "abilities": {
+      "str": 18,
+      "dex": 8,
+      "con": 18,
+      "int": 7,
+      "wis": 10,
+      "cha": 3,
+      "strMod": "+4",
+      "dexMod": "-1",
+      "conMod": "+4",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-4",
+      "strSave": "+4",
+      "dexSave": "-1",
+      "conSave": "+4",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-4"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision aveugle 3 m, Vision dans le noir 18 m, Perception passive 10",
+    "languages": "comprend les ordres donnés dans n'importe quelle langue mais ne parle pas",
+    "challengeRating": "7",
+    "xp": "2900",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Pacte magique",
+        "description": "Le garde bouclier est magiquement lié à une amulette. Tant que le garde et son amulette sont sur le même plan d'existence, le porteur de l'amulette peut ordonner télépathiquement au garde de se rendre auprès de l'objet, l'Artificiel ayant une notion précise de la distance qui le sépare de l'amulette et de sa direction. Si le garde se trouve dans un rayon de 18 m du porteur de l'amulette, la moitié des dégâts subis par le porteur (arrondis au supérieur) sont en fait transférés sur le garde"
+      },
+      {
+        "name": "Régénération",
+        "description": "Le garde bouclier récupère 10 points de vie au début de chacun de ses tours s'il lui reste au moins 1 point de vie"
+      },
+      {
+        "name": "Stockage de sort",
+        "description": "Un incantateur qui porte l'amulette du garde bouclier peut stocker un sort du niveau 4 ou inférieur dans l'Artificiel. Pour ce faire, le porteur doit lancer le sort sur le garde bouclier en étant à 1,50 m ou moins de lui. Le sort n'a aucun effet immédiat ; il est stocké dans le garde. Tout sort précédemment stocké est perdu quand on en stocke un nouveau. Le garde bouclier peut lancer le sort stocké avec tous les paramètres choisis par l'incantateur de départ, sans composantes de sort et en prenant la caractéristique d'incantation de cet incantateur. Le sort stocké est alors perdu"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le garde bouclier effectue deux attaques de Poing"
+      },
+      {
+        "name": "Poing",
+        "description": "Corps à corps : +7, allonge 3 m. Touché : 11 (2d6 + 4) dégâts contondants plus 7 (2d6) dégâts de force"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Protection",
+        "description": "Déclencheur : un jet d'attaque touche le porteur de l'amulette du garde bouclier alors qu'ils sont dans un rayon de 1,50 m l'un de l'autre. Conséquences : le porteur reçoit un bonus de +5 à la CA, y compris contre l'attaque correspondante (ce qui peut la faire rater), jusqu'au début du tour suivant du garde bouclier"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Shield Guardian",
+    "nameES": "Guardián escudo"
+  },
+  {
+    "key": "garde-capitaine",
+    "name": "Garde, capitaine",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 18,
+    "hitPoints": 75,
+    "hitDice": "10d8 + 30",
+    "initiativeBonus": 4,
+    "speed": "9 m",
+    "abilities": {
+      "str": 18,
+      "dex": 14,
+      "con": 16,
+      "int": 12,
+      "wis": 14,
+      "cha": 13,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "+1",
+      "wisMod": "+2",
+      "chaMod": "+1",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "+1",
+      "wisSave": "+2",
+      "chaSave": "+1"
+    },
+    "skills": "Athlétisme +6, Perception +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 14",
+    "languages": "commun",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le garde effectue deux attaques, réparties à sa guise entre Épée longue et Javeline"
+      },
+      {
+        "name": "Épée longue",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 15 (2d10 + 4) dégâts tranchants"
+      },
+      {
+        "name": "Javeline",
+        "description": "Corps à corps ou à distance : +6, allonge 1,50 m ou portée 9/36 m. Touché : 14 (3d6 + 4) dégâts perforants"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Guard Captain",
+    "nameES": "Guardia capitán"
+  },
+  {
+    "key": "garde",
+    "name": "Garde",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 11,
+    "hitDice": "2d8 + 2",
+    "initiativeBonus": 1,
+    "speed": "9 m",
+    "abilities": {
+      "str": 13,
+      "dex": 12,
+      "con": 12,
+      "int": 10,
+      "wis": 11,
+      "cha": 10,
+      "strMod": "+1",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "+0",
+      "strSave": "+1",
+      "dexSave": "+1",
+      "conSave": "+1",
+      "intSave": "+0",
+      "wisSave": "+0",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +2",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 12",
+    "languages": "commun",
+    "challengeRating": "1/8",
+    "xp": "25",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Lance",
+        "description": "Jet d'attaque au corps-à-corps ou à distance : +3, allonge 1,50 m ou portée 6/18 m. Touché : 4 (1d6 + 1) dégâts perforants"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Guard",
+    "nameES": "Guardia"
+  },
+  {
+    "key": "gargouille",
+    "name": "Gargouille",
+    "type": "Élémentaire",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 15,
+    "hitPoints": 67,
+    "hitDice": "9d8 +27",
+    "initiativeBonus": 2,
+    "speed": "9 m, vol 18 m",
+    "abilities": {
+      "str": 15,
+      "dex": 11,
+      "con": 16,
+      "int": 6,
+      "wis": 11,
+      "cha": 7,
+      "strMod": "+2",
+      "dexMod": "+0",
+      "conMod": "+3",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+2",
+      "dexSave": "+0",
+      "conSave": "+3",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": "Discrétion +4",
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Pétrifié, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "primordial (terreux)",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Repli aérien",
+        "description": "La gargouille ne provoque pas d'attaque d'Opportunité lorsqu'elle quitte la zone d'allonge d'un ennemi en volant"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "La gargouille effectue deux attaques de Griffe"
+      },
+      {
+        "name": "Griffe",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 7 (2d4 + 2) dégâts tranchants"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Gargoyle",
+    "nameES": "Gárgola"
+  },
+  {
+    "key": "garou-chacal",
+    "name": "Garou-chacal",
+    "type": "Fiélon",
+    "size": "P",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 12,
+    "hitPoints": 18,
+    "hitDice": "4d6 + 4",
+    "initiativeBonus": 2,
+    "speed": "12 m",
+    "abilities": {
+      "str": 11,
+      "dex": 15,
+      "con": 12,
+      "int": 13,
+      "wis": 11,
+      "cha": 10,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+1",
+      "wisMod": "+0",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "+1",
+      "wisSave": "+0",
+      "chaSave": "+0"
+    },
+    "skills": "Tromperie +4, Perception +4, Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 27 m, Perception passive 14",
+    "languages": "commun",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Jackalwere",
+    "nameES": "Hombre chacal"
+  },
+  {
+    "key": "geant-des-collines",
+    "name": "Géant des collines",
+    "type": "Géant",
+    "size": "TG",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 13,
+    "hitPoints": 105,
+    "hitDice": "10d12 + 40",
+    "initiativeBonus": 2,
+    "speed": "12 m",
+    "abilities": {
+      "str": 21,
+      "dex": 8,
+      "con": 19,
+      "int": 5,
+      "wis": 9,
+      "cha": 6,
+      "strMod": "+5",
+      "dexMod": "-1",
+      "conMod": "+4",
+      "intMod": "-3",
+      "wisMod": "-1",
+      "chaMod": "-2",
+      "strSave": "+5",
+      "dexSave": "-1",
+      "conSave": "+4",
+      "intSave": "-3",
+      "wisSave": "-1",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +2",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 12",
+    "languages": "géant",
+    "challengeRating": "5",
+    "xp": "1 800",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le géant effectue deux attaques, réparties à sa guise entre Arbre-massue et Lancer de détritus"
+      },
+      {
+        "name": "Arbre-massue",
+        "description": "Corps à corps : +8, allonge 3 m. Touché : 18 (3d8 + 5) dégâts contondants. Si la cible est une créature de taille G ou inférieure, elle subit l'état À terre"
+      },
+      {
+        "name": "Lancer de détritus",
+        "description": "À distance : +8, portée 18/72 m. Touché : 16 (2d10 + 5) dégâts contondants, et la cible subit l'état Empoisonné jusqu'à la fin de son tour suivant"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Hill Giant",
+    "nameES": "Gigante de las colinas"
+  },
+  {
+    "key": "geant-des-nuages",
+    "name": "Géant des nuages",
+    "type": "Géant",
+    "size": "TG",
+    "alignment": "Neutre",
+    "armorClass": 14,
+    "hitPoints": 200,
+    "hitDice": "16d12 + 96",
+    "initiativeBonus": 4,
+    "speed": "12 m, vol 6 m (stationnaire)",
+    "abilities": {
+      "str": 27,
+      "dex": 10,
+      "con": 22,
+      "int": 12,
+      "wis": 16,
+      "cha": 16,
+      "strMod": "+8",
+      "dexMod": "+0",
+      "conMod": "+6",
+      "intMod": "+1",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "+8",
+      "dexSave": "+0",
+      "conSave": "+10",
+      "intSave": "+1",
+      "wisSave": "+7",
+      "chaSave": "+3"
+    },
+    "skills": "Intuition +7, Perception +11",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 21",
+    "languages": "commun, géant",
+    "challengeRating": "9",
+    "xp": "5000",
+    "proficiencyBonus": "+4",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le géant effectue deux attaques, réparties à sa guise entre Masse d'armes tonitruante et Nuage de tonnerre. Il peut remplacer l'une de ces attaques par une utilisation d'Incantation pour lancer nappe de brouillard"
+      },
+      {
+        "name": "Masse d'armes tonitruante",
+        "description": "Corps à corps : +12, allonge 3 m. Touché : 21 (3d8 + 8) dégâts contondants plus 7 (2d6) dégâts de tonnerre"
+      },
+      {
+        "name": "Nuage de tonnerre",
+        "description": "À distance : +12, portée 72 m. Touché : 18 (3d6 + 8) dégâts de tonnerre, et la cible subit l'état Incapable d'agir jusqu'à la fin de son tour suivant"
+      },
+      {
+        "name": "Incantation",
+        "description": "Le géant lance l'un des sorts suivants, sans composantes matérielles, le Charisme étant sa caractéristique d'incantation (DD de sauvegarde 15) : À volonté : détection de la magie , lumière, nappe de brouillard 1/jour chacun : contrôle du climat, forme gazeuse, télékinésie"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Foulée brumeuse",
+        "description": "Le géant lance le sort foulée brumeuse avec la même caractéristique d'incantation que pour Incantation"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Cloud Giant",
+    "nameES": "Gigante de las nubes"
+  },
+  {
+    "key": "geant-des-pierres",
+    "name": "Géant des pierres",
+    "type": "Géant",
+    "size": "TG",
+    "alignment": "Neutre",
+    "armorClass": 17,
+    "hitPoints": 126,
+    "hitDice": "11d12 + 55",
+    "initiativeBonus": 5,
+    "speed": "12 m",
+    "abilities": {
+      "str": 23,
+      "dex": 15,
+      "con": 20,
+      "int": 10,
+      "wis": 12,
+      "cha": 9,
+      "strMod": "+6",
+      "dexMod": "+2",
+      "conMod": "+5",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "-1",
+      "strSave": "+6",
+      "dexSave": "+5",
+      "conSave": "+8",
+      "intSave": "+0",
+      "wisSave": "+4",
+      "chaSave": "-1"
+    },
+    "skills": "Athlétisme +12, Perception +4, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 14",
+    "languages": "géant",
+    "challengeRating": "7",
+    "xp": "2900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le géant effectue deux attaques, réparties à sa guise entre Gourdin de pierre et Rocher"
+      },
+      {
+        "name": "Gourdin de pierre",
+        "description": "Corps à corps : +9, allonge 4,50 m. Touché : 22 (3d10 + 6) dégâts contondants"
+      },
+      {
+        "name": "Rocher",
+        "description": "À distance : +9, portée 18/72 m. Touché : 15 (2d8 + 6) dégâts contondants. Si la cible est une créature de taille G ou inférieure, elle subit l'état À terre"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Parade de projectile (recharge 5–6)",
+        "description": "Déclencheur : le géant est touché par un jet d'attaque à distance qui lui inflige des dégâts contondants, perforants ou tranchants. Conséquences : le géant réduit les dégâts infligés par l'attaque de 11 (1d10 + 6) ; si ces dégâts sont réduits à 0, le géant peut réorienter une partie de l'impact. JdS Dextérité : DD 17, une créature que le géant voit dans un rayon de 18 m. Échec : 11 (1d10 + 6) dégâts de force"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Stone Giant",
+    "nameES": "Gigante de piedra"
+  },
+  {
+    "key": "geant-des-tempetes",
+    "name": "Géant des tempêtes",
+    "type": "Géant",
+    "size": "TG",
+    "alignment": "Chaotique Bon",
+    "armorClass": 16,
+    "hitPoints": 230,
+    "hitDice": "20d12 + 100",
+    "initiativeBonus": 7,
+    "speed": "15 m, vol 7,50 m (stationnaire), nage 15 m",
+    "abilities": {
+      "str": 29,
+      "dex": 14,
+      "con": 20,
+      "int": 16,
+      "wis": 20,
+      "cha": 18,
+      "strMod": "+9",
+      "dexMod": "+2",
+      "conMod": "+5",
+      "intMod": "+3",
+      "wisMod": "+5",
+      "chaMod": "+4",
+      "strSave": "+14",
+      "dexSave": "+2",
+      "conSave": "+10",
+      "intSave": "+3",
+      "wisSave": "+10",
+      "chaSave": "+9"
+    },
+    "skills": "Arcanes +8, Athlétisme +14, Histoire +8, Perception +10",
+    "damageImmunities": "foudre, tonnerre",
+    "damageResistances": "froid",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, vision véritable 9 m, Perception passive 20",
+    "languages": "commun, géant",
+    "challengeRating": "13",
+    "xp": "10000",
+    "proficiencyBonus": "+5",
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "Le géant peut respirer sous l'eau comme à l'air libre"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le géant effectue deux attaques, réparties à sa guise entre Épée des orages et Foudroiement"
+      },
+      {
+        "name": "Épée des orages",
+        "description": "Corps à corps : +14, allonge 3 m. Touché : 23 (4d6 + 9) dégâts tranchants plus 13 (3d8) dégâts de foudre"
+      },
+      {
+        "name": "Foudroiement",
+        "description": "À distance : +14, portée 150 m. Touché : 22 (2d12 + 9) dégâts de foudre, et la cible subit les états Assourdi et Aveuglé jusqu'au début du tour suivant du géant"
+      },
+      {
+        "name": "Incantation",
+        "description": "Le géant lance l'un des sorts suivants, sans composantes matérielles, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 18) : À volonté : détection de la magie , lumière 1/jour : contrôle du climat"
+      },
+      {
+        "name": "Tempête foudroyante (recharge 5–6)",
+        "description": "JdS Dextérité : DD 18, chaque créature dans un Cylindre de 3 m de rayon et 12 m de haut émanant d'un point que le géant voit dans un rayon de 150 m. Échec : 55 (10d10) dégâts de foudre. Réussite : demi-dégâts"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Storm Giant",
+    "nameES": "Gigante de las tormentas"
+  },
+  {
+    "key": "geant-du-feu",
+    "name": "Géant du feu",
+    "type": "Géant",
+    "size": "TG",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 18,
+    "hitPoints": 162,
+    "hitDice": "13d12 + 78",
+    "initiativeBonus": 3,
+    "speed": "9 m",
+    "abilities": {
+      "str": 25,
+      "dex": 9,
+      "con": 23,
+      "int": 10,
+      "wis": 14,
+      "cha": 13,
+      "strMod": "+7",
+      "dexMod": "-1",
+      "conMod": "+6",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "+1",
+      "strSave": "+7",
+      "dexSave": "+3",
+      "conSave": "+10",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+5"
+    },
+    "skills": "Athlétisme +11, Perception +6",
+    "damageImmunities": "feu",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "géant",
+    "challengeRating": "9",
+    "xp": "5000",
+    "proficiencyBonus": "+4",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le géant effectue deux attaques, réparties à sa guise entre Épée de feu et Lancer de marteau"
+      },
+      {
+        "name": "Épée de feu",
+        "description": "Corps à corps : +11, allonge 3 m. Touché : 21 (4d6 + 7) dégâts tranchants plus 10 (3d6) dégâts de feu"
+      },
+      {
+        "name": "Lancer de marteau",
+        "description": "À distance : +11, portée 18/72 m. Touché : 23 (3d10 + 7) dégâts contondants plus 4 (1d8) dégâts de feu, et la cible est repoussée d'un maximum de 4,50 m du géant et subit un Désavantage à son prochain jet d'attaque intervenant avant la fin de son propre tour suivant"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Fire Giant",
+    "nameES": "Gigante de fuego"
+  },
+  {
+    "key": "geant-du-givre",
+    "name": "Géant du givre",
+    "type": "Géant",
+    "size": "TG",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 15,
+    "hitPoints": 149,
+    "hitDice": "13d12 + 65",
+    "initiativeBonus": 2,
+    "speed": "12 m",
+    "abilities": {
+      "str": 23,
+      "dex": 9,
+      "con": 21,
+      "int": 9,
+      "wis": 10,
+      "cha": 12,
+      "strMod": "+6",
+      "dexMod": "-1",
+      "conMod": "+5",
+      "intMod": "-1",
+      "wisMod": "+0",
+      "chaMod": "+1",
+      "strSave": "+6",
+      "dexSave": "-1",
+      "conSave": "+8",
+      "intSave": "-1",
+      "wisSave": "+3",
+      "chaSave": "+4"
+    },
+    "skills": "Athlétisme +9, Perception +3",
+    "damageImmunities": "froid",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 13",
+    "languages": "géant",
+    "challengeRating": "8",
+    "xp": "3900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le géant effectue deux attaques, réparties à sa guise entre Hache de givre et Grand arc"
+      },
+      {
+        "name": "Hache de givre",
+        "description": "Corps à corps : +9, allonge 3 m. Touché : 19 (2d12 + 6) dégâts tranchants plus 9 (2d8) dégâts de froid"
+      },
+      {
+        "name": "Grand arc",
+        "description": "À distance : +9, portée 45/180 m. Touché : 17 (2d10 + 6) dégâts perforants plus 7 (2d6) dégâts de froid, et la Vitesse de la cible est réduite de 3 m jusqu'à la fin de son tour suivant"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Cri de guerre (recharge 5–6)",
+        "description": "Le géant ou une créature de son choix parmi celles qui l'entendent ou le voient reçoit 16 (2d10 + 5) points de vie temporaires, ainsi qu'un Avantage aux jets d'attaque jusqu'au début du tour suivant du géant"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Frost Giant",
+    "nameES": "Gigante de escarcha"
+  },
+  {
+    "key": "gelee-ocre",
+    "name": "Gelée ocre",
+    "type": "Vase",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 8,
+    "hitPoints": 52,
+    "hitDice": "7d10 + 14",
+    "initiativeBonus": -2,
+    "speed": "6 m, escalade 6 m",
+    "abilities": {
+      "str": 15,
+      "dex": 6,
+      "con": 14,
+      "int": 2,
+      "wis": 6,
+      "cha": 1,
+      "strMod": "+2",
+      "dexMod": "-2",
+      "conMod": "+2",
+      "intMod": "-4",
+      "wisMod": "-2",
+      "chaMod": "-5",
+      "strSave": "+2",
+      "dexSave": "-2",
+      "conSave": "+2",
+      "intSave": "-4",
+      "wisSave": "-2",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": "foudre, tranchant",
+    "damageResistances": "acide",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Assourdi, Épuisement, Effrayé, Agrippé, À terre, Entravé",
+    "senses": "Vision aveugle 18 m, Perception passive 8",
+    "languages": "aucune",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Informe",
+        "description": "La gelée peut se déplacer dans un espace étroit d'une largeur minimale de 2,50 cm sans dépense supplémentaire en déplacement"
+      },
+      {
+        "name": "Pattes d'araignée",
+        "description": "La gelée peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Pseudopode",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 12 (3d6 + 2) dégâts d'acide"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Division",
+        "description": "Déclencheur : alors que la gelée est de taille G ou M et dispose d'au moins 10 points de vie, elle se retrouve En péril ou subit des dégâts de foudre ou tranchants. Conséquences : la gelée se divise en deux nouvelles gelées ocres . Chaque nouvelle gelée présente une catégorie de taille de moins que la gelée dont elle est issue et agit au même rang d'Initiative. Les points de vie de la gelée d'origine sont divisés équitablement entre les deux nouvelles (arrondis à l'inférieur)"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Ochre Jelly",
+    "nameES": "Gelatina ocre"
+  },
+  {
+    "key": "githyanki-chevalier",
+    "name": "Githyanki, chevalier",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 18,
+    "hitPoints": 117,
+    "hitDice": "18d8 + 36",
+    "initiativeBonus": 5,
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 14,
+      "con": 15,
+      "int": 14,
+      "wis": 14,
+      "cha": 15,
+      "strMod": "+3",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "+2",
+      "wisMod": "+2",
+      "chaMod": "+2",
+      "strSave": "+3",
+      "dexSave": "+2",
+      "conSave": "+5",
+      "intSave": "+5",
+      "wisSave": "+5",
+      "chaSave": "+2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 12",
+    "languages": "commun, gith",
+    "challengeRating": "8",
+    "xp": "3900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githyanki Knight",
+    "nameES": "Githyanki caballero"
+  },
+  {
+    "key": "githyanki-combattant",
+    "name": "Githyanki, combattant",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 17,
+    "hitPoints": 49,
+    "hitDice": "9d8 + 9",
+    "initiativeBonus": 4,
+    "speed": "9 m",
+    "abilities": {
+      "str": 15,
+      "dex": 14,
+      "con": 12,
+      "int": 13,
+      "wis": 13,
+      "cha": 10,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+1",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+2",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "+3",
+      "wisSave": "+3",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 11",
+    "languages": "commun, gith",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githyanki Warrior",
+    "nameES": "Githyanki guerrero"
+  },
+  {
+    "key": "githyanki-dracomancien",
+    "name": "Githyanki, dracomancien",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 18,
+    "hitPoints": 255,
+    "hitDice": "30d8 + 120",
+    "initiativeBonus": 8,
+    "speed": "9 m, vol 9 m (stationnaire)",
+    "abilities": {
+      "str": 10,
+      "dex": 16,
+      "con": 18,
+      "int": 20,
+      "wis": 16,
+      "cha": 18,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+4",
+      "intMod": "+5",
+      "wisMod": "+3",
+      "chaMod": "+4",
+      "strSave": "+0",
+      "dexSave": "+8",
+      "conSave": "+9",
+      "intSave": "+10",
+      "wisSave": "+8",
+      "chaSave": "+4"
+    },
+    "skills": "Arcanes +10, Perception +8",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision aveugle 9 m, Perception passive 18",
+    "languages": "commun, draconique, gith",
+    "challengeRating": "16",
+    "xp": "15000",
+    "proficiencyBonus": "+5",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githyanki Dracomancer",
+    "nameES": "Githyanki dracomante"
+  },
+  {
+    "key": "githzerai-moine",
+    "name": "Githzerai, moine",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Neutre",
+    "armorClass": 14,
+    "hitPoints": 38,
+    "hitDice": "7d8 + 7",
+    "initiativeBonus": 4,
+    "speed": "12 m",
+    "abilities": {
+      "str": 12,
+      "dex": 15,
+      "con": 12,
+      "int": 13,
+      "wis": 14,
+      "cha": 10,
+      "strMod": "+1",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+1",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+3",
+      "dexSave": "+4",
+      "conSave": "+1",
+      "intSave": "+3",
+      "wisSave": "+4",
+      "chaSave": "+0"
+    },
+    "skills": "Intuition +4, Perception +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 14",
+    "languages": "commun, gith",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githzerai Monk",
+    "nameES": "Githzerai monje"
+  },
+  {
+    "key": "githzerai-psion",
+    "name": "Githzerai, psion",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Neutre",
+    "armorClass": 18,
+    "hitPoints": 169,
+    "hitDice": "26d8 + 52",
+    "initiativeBonus": 8,
+    "speed": "12 m, vol 12 m (stationnaire)",
+    "abilities": {
+      "str": 12,
+      "dex": 18,
+      "con": 15,
+      "int": 19,
+      "wis": 18,
+      "cha": 14,
+      "strMod": "+1",
+      "dexMod": "+4",
+      "conMod": "+2",
+      "intMod": "+4",
+      "wisMod": "+4",
+      "chaMod": "+2",
+      "strSave": "+5",
+      "dexSave": "+8",
+      "conSave": "+2",
+      "intSave": "+8",
+      "wisSave": "+8",
+      "chaSave": "+2"
+    },
+    "skills": "Arcanes +8, Intuition +8, Perception +8",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 18",
+    "languages": "commun, gith",
+    "challengeRating": "12",
+    "xp": "8400",
+    "proficiencyBonus": "+4",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githzerai Psion",
+    "nameES": "Githzerai psiónico"
+  },
+  {
+    "key": "githzerai-zerth",
+    "name": "Githzerai, zerth",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Neutre",
+    "armorClass": 17,
+    "hitPoints": 84,
+    "hitDice": "13d8 + 26",
+    "initiativeBonus": 7,
+    "speed": "12 m",
+    "abilities": {
+      "str": 13,
+      "dex": 18,
+      "con": 15,
+      "int": 16,
+      "wis": 17,
+      "cha": 12,
+      "strMod": "+1",
+      "dexMod": "+4",
+      "conMod": "+2",
+      "intMod": "+3",
+      "wisMod": "+3",
+      "chaMod": "+1",
+      "strSave": "+4",
+      "dexSave": "+7",
+      "conSave": "+2",
+      "intSave": "+6",
+      "wisSave": "+6",
+      "chaSave": "+1"
+    },
+    "skills": "Arcanes +6, Intuition +6, Perception +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "commun, gith",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githzerai Zerth",
+    "nameES": "Githzerai zerth"
+  },
+  {
+    "key": "glabrezu",
+    "name": "Glabrezu",
+    "type": "Fiélon (Démon)",
+    "size": "G",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 17,
+    "hitPoints": 189,
+    "hitDice": "18d10 + 90",
+    "initiativeBonus": 6,
+    "speed": "12 m",
+    "abilities": {
+      "str": 20,
+      "dex": 15,
+      "con": 21,
+      "int": 19,
+      "wis": 17,
+      "cha": 16,
+      "strMod": "+5",
+      "dexMod": "+2",
+      "conMod": "+5",
+      "intMod": "+4",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "+9",
+      "dexSave": "+2",
+      "conSave": "+9",
+      "intSave": "+4",
+      "wisSave": "+7",
+      "chaSave": "+7"
+    },
+    "skills": "Tromperie +7, Perception +7",
+    "damageImmunities": "poison",
+    "damageResistances": "froid, feu, foudre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "vision véritable 36 m, Perception passive 17",
+    "languages": "abyssal ; télépathie 36 m",
+    "challengeRating": "9",
+    "xp": "5000",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": "Le glabrezu a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      },
+      {
+        "name": "Restauration démoniaque",
+        "description": "Si le glabrezu meurt hors des Abysses, son corps se dissout en ichor et il en acquiert aussitôt un nouveau en revenant à la vie avec tous ses pv, quelque part dans les Abysses"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le glabrezu effectue deux attaques de Pince et recourt à Incantation ou Rincée"
+      },
+      {
+        "name": "Pince",
+        "description": "Corps à corps : +9, allonge 3 m. Touché : 16 (2d10 + 5) dégâts tranchants. Si la cible est une créature de taille M ou inférieure, elle subit l'état Agrippé (évasion DD 15) par l'une des deux pinces"
+      },
+      {
+        "name": "Incantation",
+        "description": "Le glabrezu lance l'un des sorts suivants sans composantes matérielles, l'Intelligence étant sa caractéristique d'incantation (DD de sauvegarde 16) : À volonté : détection de la magie , dissipation de la magie , ténèbres 1/jour chacun : confusion, mot de pouvoir étourdissant, vol"
+      },
+      {
+        "name": "Rincée",
+        "description": "JdS Dextérité : DD 17, une créature Agrippée par le glabrezu. Échec : 15 (3d6 + 5) dégâts contondants. Réussite : demi-dégâts"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Glabrezu",
+    "nameES": "Glabrezu"
+  },
+  {
+    "key": "gladiateur",
+    "name": "Gladiateur",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 112,
+    "hitDice": "15d8 + 45",
+    "initiativeBonus": 5,
+    "speed": "9 m",
+    "abilities": {
+      "str": 18,
+      "dex": 15,
+      "con": 16,
+      "int": 10,
+      "wis": 12,
+      "cha": 15,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+2",
+      "strSave": "+7",
+      "dexSave": "+5",
+      "conSave": "+6",
+      "intSave": "+0",
+      "wisSave": "+4",
+      "chaSave": "+2"
+    },
+    "skills": "Athlétisme +10, Représentation +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 11",
+    "languages": "commun",
+    "challengeRating": "5",
+    "xp": "1 800",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le gladiateur effectue trois attaques de Lance. Il peut remplacer l'une de ces attaques par une utilisation de Coup de bouclier"
+      },
+      {
+        "name": "Lance",
+        "description": "Corps à corps ou à distance : +7, allonge 1,50 m ou portée 6/18 m. Touché : 11 (2d6 + 4) dégâts perforants"
+      },
+      {
+        "name": "Coup de bouclier",
+        "description": "JdS Force : DD 15, une créature dans un rayon de 1,50 m que le gladiateur voit. Échec : 9 (2d4 + 4) dégâts contondants. Si la cible est une créature de taille M ou inférieure, elle subit l'état À terre"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Parade",
+        "description": "Déclencheur : le gladiateur est touché par un jet d'attaque de corps à corps alors qu'il tient une arme. Conséquences : le gladiateur ajoute 3 à sa CA contre cette attaque, ce qui peut la faire rater"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Gladiator",
+    "nameES": "Gladiador"
+  },
+  {
+    "key": "gnoll-chef-de-meute",
+    "name": "Gnoll, chef de meute",
+    "type": "Fiélon",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 15,
+    "hitPoints": 49,
+    "hitDice": "9d8 + 9",
+    "initiativeBonus": 4,
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 14,
+      "con": 13,
+      "int": 8,
+      "wis": 11,
+      "cha": 9,
+      "strMod": "+3",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "-1",
+      "wisMod": "+0",
+      "chaMod": "-1",
+      "strSave": "+3",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "-1",
+      "wisSave": "+0",
+      "chaSave": "-1"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "Gnoll",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le gnoll effectue deux attaques, réparties à sa guise entre Fouet osseux et Javeline osseuse, et il utilise Incitation au déchaînement si disponible"
+      },
+      {
+        "name": "Fouet osseux",
+        "description": "Corps à corps : +5, allonge 3 m. Touché : 8 (2d4 + 3) dégâts tranchants"
+      },
+      {
+        "name": "Javeline osseuse",
+        "description": "À distance : +5, portée 30/36 m. Touché : 7 (1d8 + 3) dégâts perforants"
+      },
+      {
+        "name": "Incitation au déchaînement (recharge 5–6)",
+        "description": "Le gnoll cible une autre créature qu'il peut voir dans un rayon de 18 m et qui possède l'action Bonus Déchaînement. La cible peut utiliser sa Réaction pour effectuer une attaque au corps à corps"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Déchaînement (2/jour)",
+        "description": "Immédiatement après avoir infligé des dégâts à une créature déjà En péril, le gnoll se déplace jusqu'à la moitié de sa Vitesse et effectue une attaque de Fouet osseux"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Gnoll Pack Lord",
+    "nameES": "Gnoll líder de manada"
+  },
+  {
+    "key": "gnoll-combattant",
+    "name": "Gnoll, combattant",
+    "type": "Fiélon",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 15,
+    "hitPoints": 27,
+    "hitDice": "6d8",
+    "initiativeBonus": 1,
+    "speed": "9 m",
+    "abilities": {
+      "str": 14,
+      "dex": 12,
+      "con": 11,
+      "int": 6,
+      "wis": 10,
+      "cha": 7,
+      "strMod": "+2",
+      "dexMod": "+1",
+      "conMod": "+0",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+2",
+      "dexSave": "+1",
+      "conSave": "+0",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "gnoll",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 5 (1d6 + 2) dégâts perforants"
+      },
+      {
+        "name": "Arc en os",
+        "description": "À distance : +3, portée 45/180 m. Touché : 6 (1d10 + 1) dégâts perforants"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Déchaînement (1/jour)",
+        "description": "Aussitôt après avoir infligé des dégâts à une créature déjà En péril, le gnoll se déplace à concurrence de la moitié de sa Vitesse et effectue une attaque de Saignée"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Gnoll Warrior",
+    "nameES": "Gnoll guerrero"
+  },
+  {
+    "key": "gnoll-croc-de-yeenoghu",
+    "name": "Gnoll, croc de Yeenoghu",
+    "type": "Fiélon",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 14,
+    "hitPoints": 71,
+    "hitDice": "11d8 + 22",
+    "initiativeBonus": 4,
+    "speed": "9 m",
+    "abilities": {
+      "str": 17,
+      "dex": 15,
+      "con": 15,
+      "int": 10,
+      "wis": 11,
+      "cha": 13,
+      "strMod": "+3",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "+1",
+      "strSave": "+3",
+      "dexSave": "+2",
+      "conSave": "+4",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "abyssal, Gnoll",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le gnoll effectue une attaque de Morsure et deux attaques de Fléau osseux"
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 6 (1d6 + 3) dégâts perforants plus 7 (2d6) dégâts de poison, et la cible subit l'état Empoisonné jusqu'au début du prochain tour du gnoll"
+      },
+      {
+        "name": "Fléau osseux",
+        "description": "Corps à corps : +5, allonge 3 m. Touché : 7 (1d8 + 3) dégâts perforants"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Déchaînement (2/jour)",
+        "description": "Immédiatement après avoir infligé des dégâts à une créature déjà En péril, le gnoll se déplace jusqu'à la moitié de sa Vitesse et effectue une attaque de Morsure"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Gnoll Fang of Yeenoghu",
+    "nameES": "Gnoll colmillo de Yeenoghu"
+  },
+  {
+    "key": "gnoll-demoniaque",
+    "name": "Gnoll, démoniaque",
+    "type": "Fiélon",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 16,
+    "hitPoints": 135,
+    "hitDice": "18d8 + 54",
+    "initiativeBonus": 4,
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 12,
+      "con": 17,
+      "int": 14,
+      "wis": 15,
+      "cha": 17,
+      "strMod": "+3",
+      "dexMod": "+1",
+      "conMod": "+3",
+      "intMod": "+2",
+      "wisMod": "+2",
+      "chaMod": "+3",
+      "strSave": "+6",
+      "dexSave": "+1",
+      "conSave": "+6",
+      "intSave": "+2",
+      "wisSave": "+5",
+      "chaSave": "+6"
+    },
+    "skills": "Perception +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 15",
+    "languages": "abyssal, commun, gnoll",
+    "challengeRating": "8",
+    "xp": "3900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le gnoll effectue deux attaques de Frappe abyssale"
+      },
+      {
+        "name": "Frappe abyssale",
+        "description": "Corps à corps ou à distance : +6, allonge 1,50 m ou portée 18 m. Touché : 20 (5d6 + 3) dégâts de poison"
+      },
+      {
+        "name": "Voracité de Yeenoghu (recharge 5–6)",
+        "description": "Le gnoll invoque un Cube de Ténèbres magiques de 9 m, centré sur un point qu'il peut voir dans un rayon de 18 m. Ce Cube persiste pendant 1 minute ou jusqu'à ce que la concentration du gnoll prenne fin. Cette zone est un Terrain difficile. JdS Dextérité : DD 14, toute créature commençant son tour dans cette zone ou y entrant pour la première fois. Échec : 28 (8d6) dégâts nécrotiques, et le gnoll ou une créature de son choix qu'il peut voir gagne 10 points de vie temporaires. Réussite : demi-dégâts uniquement"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Déchaînement (2/jour)",
+        "description": "Immédiatement après avoir infligé des dégâts à une créature déjà En péril, le gnoll se déplace jusqu'à la moitié de sa Vitesse et effectue une attaque de Morsure"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Gnoll Demoniac",
+    "nameES": "Gnoll demoníaco"
+  },
+  {
+    "key": "gobelin-chef",
+    "name": "Gobelin, chef",
+    "type": "Fée (Gobelinoïde)",
+    "size": "P",
+    "alignment": "Chaotique Neutre",
+    "armorClass": 17,
+    "hitPoints": 21,
+    "hitDice": "6d6",
+    "initiativeBonus": 2,
+    "speed": "9 m",
+    "abilities": {
+      "str": 10,
+      "dex": 15,
+      "con": 10,
+      "int": 10,
+      "wis": 8,
+      "cha": 10,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "-1",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "-1",
+      "chaSave": "+0"
+    },
+    "skills": "Discrétion +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "commun, gobelin",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le gobelin effectue deux attaques, réparties à sa guise entre Cimeterre et Arc court"
+      },
+      {
+        "name": "Cimeterre",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 5 (1d6 + 2) dégâts tranchants, plus 2 (1d4) dégâts tranchants si le jet d'attaque avait un Avantage"
+      },
+      {
+        "name": "Arc court",
+        "description": "À distance : +4, portée 24/96 m. Touché : 5 (1d6 + 2) dégâts perforants, plus 2 (1d4) dégâts perforants si le jet d'attaque avait un Avantage"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Fuite agile",
+        "description": "Le gobelin entreprend l'action Désengagement ou Furtivité"
+      }
+    ],
+    "reactions": [
+      {
+        "name": "Attaque redirigée",
+        "description": "Déclencheur : une créature que le gobelin voit effectue un jet d'attaque contre lui. Conséquences : le gobelin choisit un allié de taille P ou M dans un rayon de 1,50 m. Le gobelin et cet allié échangent leurs places ; l'allié devient la nouvelle cible de l'attaque"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Goblin Boss",
+    "nameES": "Goblin jefe"
+  },
+  {
+    "key": "gobelin-combattant",
+    "name": "Gobelin, combattant",
+    "type": "Fée (Gobelinoïde)",
+    "size": "P",
+    "alignment": "Chaotique Neutre",
+    "armorClass": 15,
+    "hitPoints": 10,
+    "hitDice": "3d6",
+    "initiativeBonus": 2,
+    "speed": "9 m",
+    "abilities": {
+      "str": 8,
+      "dex": 15,
+      "con": 10,
+      "int": 10,
+      "wis": 8,
+      "cha": 8,
+      "strMod": "-1",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "-1",
+      "chaMod": "-1",
+      "strSave": "-1",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "-1",
+      "chaSave": "-1"
+    },
+    "skills": "Discrétion +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "commun, gobelin",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Cimeterre",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 5 (1d6 + 2) dégâts tranchants, plus 2 (1d4) dégâts tranchants si le jet d'attaque avait un Avantage"
+      },
+      {
+        "name": "Arc court",
+        "description": "À distance : +4, portée 24/96 m. Touché : 5 (1d6 + 2) dégâts perforants, plus 2 (1d4) dégâts perforants si le jet d'attaque avait un Avantage"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Fuite agile",
+        "description": "Le gobelin entreprend l'action Désengagement ou Furtivité"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Goblin Warrior",
+    "nameES": "Goblin guerrero"
+  },
+  {
+    "key": "gobelin-maleficeur",
+    "name": "Gobelin, maléficeur",
+    "type": "Fée (Gobelinoïde)",
+    "size": "P",
+    "alignment": "Chaotique Neutre",
+    "armorClass": 13,
+    "hitPoints": 45,
+    "hitDice": "10d6 + 10",
+    "initiativeBonus": 3,
+    "speed": "9 m",
+    "abilities": {
+      "str": 8,
+      "dex": 16,
+      "con": 12,
+      "int": 16,
+      "wis": 10,
+      "cha": 10,
+      "strMod": "-1",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "+3",
+      "wisMod": "+0",
+      "chaMod": "+0",
+      "strSave": "-1",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "+3",
+      "wisSave": "+0",
+      "chaSave": "+0"
+    },
+    "skills": "Escamotage +5, Discrétion +7",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "commun, gobelin",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le gobelin effectue deux attaques de Bâton à maléfice. Il peut remplacer une attaque par l'utilisation d'Incantation"
+      },
+      {
+        "name": "Bâton à maléfice",
+        "description": "Corps à corps ou à distance : +5, allonge 1,50 m ou portée 18 m. Touché : 12 (2d8 + 3) dégâts psychiques"
+      },
+      {
+        "name": "Incantation",
+        "description": "Le gobelin lance l'un des sorts suivants, l'Intelligence étant sa caractéristique d'incantation (DD de sauvegarde 13) : À volonté : illusion mineure 1 /jour chacun : cécité/surdité , lueurs féeriques , graisse"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Mauvais sort",
+        "description": "Déclencheur : une créature que le gobelin peut voir effectue un jet d'attaque. Conséquences—JdS Sagesse : DD 13, la créature ayant déclenché la Réaction. Échec : l'attaque rate"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Goblin Hexer",
+    "nameES": "Goblin embrujador"
+  },
+  {
+    "key": "gobelin-sbire",
+    "name": "Gobelin, sbire",
+    "type": "Fée (Gobelinoïde)",
+    "size": "P",
+    "alignment": "Chaotique Neutre",
+    "armorClass": 12,
+    "hitPoints": 7,
+    "hitDice": "2d6",
+    "initiativeBonus": 2,
+    "speed": "9 m",
+    "abilities": {
+      "str": 8,
+      "dex": 15,
+      "con": 10,
+      "int": 10,
+      "wis": 8,
+      "cha": 8,
+      "strMod": "-1",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "-1",
+      "chaMod": "-1",
+      "strSave": "-1",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "-1",
+      "chaSave": "-1"
+    },
+    "skills": "Discrétion +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "commun, gobelin",
+    "challengeRating": "1/8",
+    "xp": "25",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Dague",
+        "description": "Corps à corps ou à distance : +4, allonge 1,50 m ou portée 6/18 m. Touché : 4 (1d4 + 2) dégâts perforants"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Fuite agile",
+        "description": "Le gobelin entreprend l'action Désengagement ou Furtivité"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Goblin Minion",
+    "nameES": "Goblin secuaz"
+  },
+  {
+    "key": "gobelours-combattant",
+    "name": "Gobelours, combattant",
+    "type": "Fée (Gobelinoïde)",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 14,
+    "hitPoints": 33,
+    "hitDice": "6d8 + 6",
+    "initiativeBonus": 2,
+    "speed": "9 m",
+    "abilities": {
+      "str": 15,
+      "dex": 14,
+      "con": 13,
+      "int": 8,
+      "wis": 11,
+      "cha": 9,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "-1",
+      "wisMod": "+0",
+      "chaMod": "-1",
+      "strSave": "+2",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "-1",
+      "wisSave": "+0",
+      "chaSave": "-1"
+    },
+    "skills": "Discrétion +6, Survie +2",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "commun, gobelin",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Rapt",
+        "description": "Le gobelours n'a pas besoin de dépenser de déplacement supplémentaire pour déplacer une créature qu'il agrippe"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Empoignade",
+        "description": "Corps à corps : +4, allonge 3 m. Touché : 9 (2d6 + 2) dégâts contondants. Si la cible est une créature de taille M ou inférieure, elle subit l'état Agrippé (évasion DD 12)"
+      },
+      {
+        "name": "Marteau léger",
+        "description": "Corps à corps ou à distance : +4 (avec Avantage si la cible est agrippée par le gobelours), allonge 3 m ou portée 6/18 m. Touché : 9 (3d4 + 2) dégâts contondants"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Bugbear Warrior",
+    "nameES": "Osgo guerrero"
+  },
+  {
+    "key": "gobelours-traqueur",
+    "name": "Gobelours, traqueur",
+    "type": "Fée (Gobelinoïde)",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 15,
+    "hitPoints": 65,
+    "hitDice": "10d8 + 20",
+    "initiativeBonus": 2,
+    "speed": "9 m",
+    "abilities": {
+      "str": 17,
+      "dex": 14,
+      "con": 14,
+      "int": 11,
+      "wis": 12,
+      "cha": 11,
+      "strMod": "+3",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+3",
+      "dexSave": "+2",
+      "conSave": "+4",
+      "intSave": "+0",
+      "wisSave": "+3",
+      "chaSave": "+0"
+    },
+    "skills": "Discrétion +6, Survie +3",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 11",
+    "languages": "commun, gobelin",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Rapt",
+        "description": "Le gobelours n'a pas besoin de dépenser de déplacement supplémentaire pour déplacer une créature qu'il agrippe"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le gobelours effectue deux attaques de Javeline ou de Morgenstern"
+      },
+      {
+        "name": "Javeline",
+        "description": "Corps à corps ou à distance : +5, allonge 3 m ou portée 9/36 m. Touché : 13 (3d6 + 3) dégâts perforants"
+      },
+      {
+        "name": "Morgenstern",
+        "description": "Corps à corps : +5 (avec Avantage si la cible est agrippée par le gobelours), allonge 3 m. Touché : 12 (2d8 + 3) dégâts perforants"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Lutte rapide",
+        "description": "JdS Dextérité : DD 13, une créature de taille M ou inférieure que le gobelours voit dans un rayon de 3 m. Échec : la cible subit l'état Agrippé (évasion DD 13)"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Bugbear Stalker",
+    "nameES": "Osgo acechador"
+  },
+  {
+    "key": "golem-d-argile",
+    "name": "Golem d'argile",
+    "type": "Artificiel",
+    "size": "G",
+    "alignment": "Non-aligné",
+    "armorClass": 14,
+    "hitPoints": 123,
+    "hitDice": "13d10 + 52",
+    "initiativeBonus": 3,
+    "speed": "6 m",
+    "abilities": {
+      "str": 20,
+      "dex": 9,
+      "con": 18,
+      "int": 3,
+      "wis": 8,
+      "cha": 1,
+      "strMod": "+5",
+      "dexMod": "-1",
+      "conMod": "+4",
+      "intMod": "-4",
+      "wisMod": "-1",
+      "chaMod": "-5",
+      "strSave": "+5",
+      "dexSave": "-1",
+      "conSave": "+4",
+      "intSave": "-4",
+      "wisSave": "-1",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": "acide, poison, psychique",
+    "damageResistances": "contondant, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "9",
+    "xp": "5000",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Absorption de l'acide",
+        "description": "Chaque fois que le golem est soumis à des dégâts d'acide, il ne subit aucun dégât et récupère en fait autant de points de vie que les dégâts d'acide ainsi évités"
+      },
+      {
+        "name": "Folie furieuse",
+        "description": "Chaque fois que le golem commence son tour En péril, lancez 1d6. Sur un résultat de 6, il devient fou. À chacun de ses tours tant qu'il est dans cet état, le golem attaque la créature la plus proche qu'il voit. Si aucune créature n'est assez proche pour qu'il puisse se déplacer et l'attaquer, le golem s'en prend à un objet. Une fois le golem devenu fou, il continue à l'être jusqu'à sa destruction ou qu'il ne soit plus En péril"
+      },
+      {
+        "name": "Forme immuable",
+        "description": "Le golem ne peut pas être métamorphosé"
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "Le golem a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le golem effectue deux attaques de Coup, ou trois attaques de Coup s'il a utilisé Accélération ce tour-ci"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +9, allonge 1,50 m. Touché : 10 (1d10 + 5) dégâts contondants plus 6 (1d12) dégâts d'acide, et le maximum de points de vie de la cible diminue d'un montant égal aux dégâts d'acide subis"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Accélération (recharge 5–6)",
+        "description": "Le golem entreprend les actions Désengagement et Pointe"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Clay Golem",
+    "nameES": "Gólem de arcilla"
+  },
+  {
+    "key": "golem-de-chair",
+    "name": "Golem de chair",
+    "type": "Artificiel",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 9,
+    "hitPoints": 127,
+    "hitDice": "15d8 + 60",
+    "initiativeBonus": -1,
+    "speed": "MOD JdS",
+    "abilities": {
+      "str": 19,
+      "dex": 9,
+      "con": 18,
+      "int": 6,
+      "wis": 10,
+      "cha": 5,
+      "strMod": "+4",
+      "dexMod": "-1",
+      "conMod": "+4",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+4",
+      "dexSave": "-1",
+      "conSave": "+4",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": "foudre, poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "comprend le commun plus une autre langue, mais ne parle pas",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Absorption de la foudre",
+        "description": "Chaque fois que le golem est soumis à des dégâts de foudre, il récupère en fait autant de points de vie que les dégâts de foudre infligés"
+      },
+      {
+        "name": "Aversion des flammes",
+        "description": "Si le golem subit des dégâts de feu, il subit un Désavantage aux jets d'attaque et jets de caractéristique jusqu'à la fin de son tour suivant"
+      },
+      {
+        "name": "Folie furieuse",
+        "description": "Chaque fois que le golem commence son tour En péril, lancez 1d6. Sur un résultat de 6, il devient fou. À chacun de ses tours tant qu'il est dans cet état, le golem attaque la créature la plus proche qu'il voit. Si aucune créature n'est assez proche pour qu'il puisse se déplacer et l'attaquer, le golem s'en prend à un objet. Une fois le golem devenu fou, il le reste jusqu'à sa destruction ou qu'il ne soit plus En péril. Le créateur du golem, s'il est dans un rayon de 18 m du golem fou furieux, peut tenter de l'apaiser au prix d'une action et d'un jet de Charisme (Persuasion) DD 15 à condition que le golem l'entende. En cas de réussite, la folie furieuse cesse pour le golem jusqu'au début de son tour suivant, après quoi il est de nouveau soumis aux jets de 1d6 du trait s'il est encore En péril"
+      },
+      {
+        "name": "Forme immuable",
+        "description": "Le golem ne peut pas être métamorphosé"
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "Le golem a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le golem effectue deux attaques de Coup"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 13 (2d8 + 4) dégâts contondants plus 4 (1d8) dégâts de foudre"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Flesh Golem",
+    "nameES": "Gólem de carne"
+  },
+  {
+    "key": "golem-de-fer",
+    "name": "Golem de fer",
+    "type": "Artificiel",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 20,
+    "hitPoints": 252,
+    "hitDice": "24d10 + 120",
+    "initiativeBonus": 9,
+    "speed": "9 m",
+    "abilities": {
+      "str": 24,
+      "dex": 9,
+      "con": 20,
+      "int": 3,
+      "wis": 11,
+      "cha": 1,
+      "strMod": "+7",
+      "dexMod": "-1",
+      "conMod": "+5",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-5",
+      "strSave": "+7",
+      "dexSave": "-1",
+      "conSave": "+5",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": "feu, poison, psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision dans le noir 36 m, Perception passive 10",
+    "languages": "comprend le commun plus deux autres langues, mais ne parle pas",
+    "challengeRating": "16",
+    "xp": "15000",
+    "proficiencyBonus": "+5",
+    "traits": [
+      {
+        "name": "Absorption du feu",
+        "description": "Chaque fois que le golem est soumis à des dégâts de feu, il récupère en fait autant de points de vie que les dégâts de feu infligés"
+      },
+      {
+        "name": "Forme immuable",
+        "description": "Le golem ne peut pas être métamorphosé"
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "Le golem a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le golem effectue deux attaques, réparties à sa guise entre Lame brachiale et Trait enflammé"
+      },
+      {
+        "name": "Lame brachiale",
+        "description": "Corps à corps : +12, allonge 3 m. Touché : 20 (3d8 + 7) dégâts tranchants plus 10 (3d6) dégâts de feu"
+      },
+      {
+        "name": "Trait enflammé",
+        "description": "À distance : +10, portée 36 m. Touché : 36 (8d8) dégâts de feu"
+      },
+      {
+        "name": "Souffle empoisonné (recharge 6)",
+        "description": "JdS Constitution : DD 18, chaque créature dans un Cône de 18 m. Échec : 55 (10d10) dégâts de poison. Réussite : demi-dégâts"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Iron Golem",
+    "nameES": "Gólem de hierro"
+  },
+  {
+    "key": "golem-de-pierre",
+    "name": "Golem de pierre",
+    "type": "Artificiel",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 18,
+    "hitPoints": 220,
+    "hitDice": "21d10 + 105",
+    "initiativeBonus": 3,
+    "speed": "9 m",
+    "abilities": {
+      "str": 22,
+      "dex": 9,
+      "con": 20,
+      "int": 3,
+      "wis": 11,
+      "cha": 1,
+      "strMod": "+6",
+      "dexMod": "-1",
+      "conMod": "+5",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-5",
+      "strSave": "+6",
+      "dexSave": "-1",
+      "conSave": "+5",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": "poison, psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision dans le noir 36 m, Perception passive 10",
+    "languages": "comprend le commun plus deux autres langues, mais ne parle pas",
+    "challengeRating": "10",
+    "xp": "5900",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Forme immuable",
+        "description": "Le golem ne peut pas être métamorphosé"
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "Le golem a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le golem effectue deux attaques, réparties à sa guise entre Coup et Trait de force"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +10, allonge 1,50 m. Touché : 15 (2d8 + 6) dégâts contondants plus 9 (2d8) dégâts de force"
+      },
+      {
+        "name": "Trait de force",
+        "description": "À distance : +9, portée 36 m. Touché : 22 (4d10) dégâts de force"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Lenteur (recharge 5–6)",
+        "description": "Le golem lance lenteur , sans composantes de sort, la Constitution étant sa caractéristique d'incantation (DD de sauvegarde 17)"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Stone Golem",
+    "nameES": "Gólem de piedra"
+  },
+  {
+    "key": "gorgone-ardente",
+    "name": "Gorgone ardente",
+    "type": "Artificiel",
+    "size": "G",
+    "alignment": "Non-aligné",
+    "armorClass": 19,
+    "hitPoints": 161,
+    "hitDice": "17d10 + 68",
+    "initiativeBonus": 2,
+    "speed": "12 m",
+    "abilities": {
+      "str": 18,
+      "dex": 14,
+      "con": 19,
+      "int": 2,
+      "wis": 14,
+      "cha": 7,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+4",
+      "intMod": "-4",
+      "wisMod": "+2",
+      "chaMod": "-2",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+4",
+      "intSave": "-4",
+      "wisSave": "+2",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +10",
+    "damageImmunities": "feu",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Pétrifié",
+    "senses": "Vision dans le noir 18 m, Perception passive 20",
+    "languages": "—",
+    "challengeRating": "9",
+    "xp": "5000",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Aura de flammes",
+        "description": "À la fin de chacun des tours de la gorgone, chaque créature dans une Émanation de 1,50 m centrée sur la gorgone subit 13 (3d8) dégâts de Feu"
+      },
+      {
+        "name": "Illumination",
+        "description": "La gorgone émet une Lumière vive sur un rayon de 3 m et une Lumière faible sur 3 m de plus"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "La gorgone effectue deux attaques de Coup de corne"
+      },
+      {
+        "name": "Coup de corne",
+        "description": "Corps à corps : +8, allonge 1,50 m. Touché : 11 (2d6 + 4) dégâts perforants plus 10 (3d6) dégâts de feu"
+      },
+      {
+        "name": "Charge incandescente (recharge 5–6)",
+        "description": "La gorgone se déplace jusqu'à sa Vitesse sans provoquer d'attaques d'Opportunité et peut traverser l'espace occupé par des créatures de taille M ou inférieure. Chaque fois que la gorgone entre pour la première fois dans l'espace d'une créature durant ce déplacement, cette dernière est sujette à l'effet suivant. JdS Dextérité : DD 16. Échec : 13 (2d8 + 4) dégâts perforants plus 13 (3d8) dégâts de feu, et la cible est attirée dans l'espace de la gorgone et subit l'état Agrippé (évasion DD 14) ; si la gorgone agrippe déjà une créature, la cible subit l'état À terre. Tant qu'elle est agrippée, la cible subit l'état Entravé. Lorsque la gorgone se déplace, la cible agrippée se déplace avec lui, sans coût de mouvement supplémentaire"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Brazen Gorgon",
+    "nameES": "Gorgon de latón"
+  },
+  {
+    "key": "gorgone",
+    "name": "Gorgone",
+    "type": "Artificiel",
+    "size": "G",
+    "alignment": "Non-aligné",
+    "armorClass": 19,
+    "hitPoints": 114,
+    "hitDice": "12d10 + 48",
+    "initiativeBonus": 0,
+    "speed": "12 m",
+    "abilities": {
+      "str": 20,
+      "dex": 11,
+      "con": 18,
+      "int": 2,
+      "wis": 12,
+      "cha": 7,
+      "strMod": "+5",
+      "dexMod": "+0",
+      "conMod": "+4",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "+5",
+      "dexSave": "+0",
+      "conSave": "+4",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +7",
+    "damageImmunities": "Épuisement, Pétrifié",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 17",
+    "languages": "—",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Coup de corne",
+        "description": "Corps à corps : +8, allonge 1,50 m. Touché : 18 (2d12 + 5) dégâts perforants. Si la cible est une créature de taille G ou inférieure et si la gorgone s'est déplacée en ligne droite d'un minimum de 6 m juste avant de la toucher, la cible subit l'état À terre"
+      },
+      {
+        "name": "Souffle pétrifiant (recharge 5–6)",
+        "description": "JdS Constitution : DD 15, chaque créature dans un Cône de 9 m. Premier échec : la cible subit l'état Entravé et réitère le JdS à la fin de son tour suivant si elle est toujours Entravée ; elle met un terme à l'effet sur elle-même en cas de réussite. Deuxième échec : la cible subit l'état Pétrifié qui remplace l'état Entravé"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Piétinement",
+        "description": "JdS Dextérité : DD 16, une créature subissant l'état À terre dans un rayon de 1,50 m. Échec : 16 (2d10 + 5) dégâts contondants. Réussite : demi-dégâts"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR)",
+    "nameEN": "Gorgon",
+    "nameES": "Gorgon"
+  },
+  {
+    "key": "goristro",
+    "name": "Goristro",
+    "type": "Fiélon (Démon)",
+    "size": "TG",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 19,
+    "hitPoints": 310,
+    "hitDice": "23d12 + 161",
+    "initiativeBonus": 6,
+    "speed": "15 m",
+    "abilities": {
+      "str": 25,
+      "dex": 11,
+      "con": 25,
+      "int": 6,
+      "wis": 13,
+      "cha": 14,
+      "strMod": "+7",
+      "dexMod": "+0",
+      "conMod": "+7",
+      "intMod": "-2",
+      "wisMod": "+1",
+      "chaMod": "+2",
+      "strSave": "+13",
+      "dexSave": "+6",
+      "conSave": "+13",
+      "intSave": "-2",
+      "wisSave": "+7",
+      "chaSave": "+2"
+    },
+    "skills": "Perception +7, Survie +7",
+    "damageImmunities": "poison",
+    "damageResistances": "froid, feu, foudre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision dans le noir 36 m, Perception passive 17",
+    "languages": "abyssal",
+    "challengeRating": "17",
+    "xp": "18000",
+    "proficiencyBonus": "+6",
+    "traits": [
+      {
+        "name": "Restauration démoniaque",
+        "description": "Si le goristro meurt hors des Abysses, son corps se dissout en ichor et il en acquiert aussitôt un nouveau en revenant à la vie avec tous ses pv, quelque part dans les Abysses"
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "Le goristro a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques"
+      },
+      {
+        "name": "Monstre de siège",
+        "description": "Le goristro inflige des dégâts doublés aux objets et aux structures"
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le goristro effectue une attaque de Coup de boutoir et deux attaques de Coup"
+      },
+      {
+        "name": "Coup de boutoir",
+        "description": "Corps à corps : +13, allonge 3 m. Touché : 40 (6d10 + 7) dégâts perforants. Si la cible est une créature de taille Gig ou inférieure, elle est repoussée du goristro jusqu'à 6 m en ligne droite et subit l'état À terre"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +13, allonge 3 m. Touché : 29 (4d10 + 7) dégâts contondants"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Charge",
+        "description": "Le goristro se déplace en ligne droite à concurrence de la moitié de sa Vitesse vers un ennemi qu'il voit"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Goristro",
+    "nameES": "Goristro"
+  }
+]

@@ -1,0 +1,5606 @@
+[
+  {
+    "key": "aarakocre-aeromancien",
+    "name": "Aarakocre, aéromancien",
+    "type": "Élémentaire",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 66,
+    "hitDice": "12d8+12",
+    "initiativeBonus": 3,
+    "speed": "6 m, vol 15 m",
+    "abilities": {
+      "str": 10,
+      "dex": 16,
+      "con": 12,
+      "int": 13,
+      "wis": 17,
+      "cha": 12,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "+1",
+      "wisMod": "+3",
+      "chaMod": "+1",
+      "strSave": "+0",
+      "dexSave": "+5",
+      "conSave": "+1",
+      "intSave": "+1",
+      "wisSave": "+5",
+      "chaSave": "+1"
+    },
+    "skills": "Arcanes +3, Nature +5, Perception +7",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 17",
+    "languages": "aarakocre, primordial (aérien)",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'aarakocre effectue deux attaques de"
+      },
+      {
+        "name": "Bâton des vents",
+        "description": "Corps à corps ou à distance : +5, allonge 1,50 m ou portée 36 m. Touché : 7 (1d8 + 3) dégâts contondants plus 11 (2d10) dégâts de foudre."
+      },
+      {
+        "name": "Incantation",
+        "description": "L'aarakocre lance l'un des sorts suivants sans composantes matérielles, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 13) : À volonté : élémentalisme , bourrasque , main de mage , message 1/jour :"
+      },
+      {
+        "name": "Bâton de vent",
+        "description": "Jet d'attaque au corps à corps ou à distance : +5, portée 1,5 m ou 36 m. Touché : 7 (1d8 + 3) dégâts contondants plus 11 (2d10) dégâts de foudre."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Feuille morte (1/jour)",
+        "description": "L'aarakocre lance feuille morte en réponse au déclencheur de ce sort, en utilisant la même caractéristique d'incantation que pour Incantation."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Aarakocra Aeromancer",
+    "nameEN": "Aarakocra aeromante",
+    "nameES": "Aarakocra aeromante"
+  },
+  {
+    "key": "aarakocre-tirailleur",
+    "name": "Aarakocre, tirailleur",
+    "type": "Élémentaire",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 12,
+    "hitPoints": 11,
+    "hitDice": "2d8+2",
+    "initiativeBonus": 2,
+    "speed": "6 m, vol 15 m",
+    "abilities": {
+      "str": 10,
+      "dex": 14,
+      "con": 12,
+      "int": 11,
+      "wis": 12,
+      "cha": 11,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "+0",
+      "wisSave": "+1",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 15",
+    "languages": "aarakocre, primordial (aérien)",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Serres",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 4 (1d4 + 2) dégâts tranchants, ou 9 (3d4 + 2) dégâts tranchants si l'aarakocre s'est déplacé d'au moins 9 m en ligne droite vers la cible juste avant de toucher."
+      },
+      {
+        "name": "Javeline des vents",
+        "description": "Corps à corps ou à distance : +4, allonge 1,50 m ou portée 30/36 m. Touché : 5 (1d6 + 2) dégâts perforants plus 2 (1d4) dégâts de tonnerre. Échec ou réussite : la javeline retourne magiquement dans la main de l'aarakocre immédiatement après une attaque à distance."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Aarakocra Skirmisher",
+    "nameEN": "Aarakocra experto en escaramuzas",
+    "nameES": "Aarakocra experto en escaramuzas"
+  },
+  {
+    "key": "abattis-de-troll",
+    "name": "Abattis de troll",
+    "type": "Géant",
+    "size": "P",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 13,
+    "hitPoints": 14,
+    "hitDice": "4d6",
+    "initiativeBonus": 1,
+    "speed": "6 m",
+    "abilities": {
+      "str": 18,
+      "dex": 12,
+      "con": 10,
+      "int": 1,
+      "wis": 9,
+      "cha": 1,
+      "strMod": "+4",
+      "dexMod": "+1",
+      "conMod": "+0",
+      "intMod": "-5",
+      "wisMod": "-1",
+      "chaMod": "-5",
+      "strSave": "+4",
+      "dexSave": "+1",
+      "conSave": "+0",
+      "intSave": "-5",
+      "wisSave": "-1",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "—",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Régénération",
+        "description": "L'abattis récupère 5 points de vie au début de chacun de ses tours. S'il subit des dégâts d'acide ou de feu, ce trait ne fonctionne pas à son tour suivant. L'abattis ne meurt que s'il commence son tour à 0 point de vie et ne se régénère pas."
+      },
+      {
+        "name": "Trollesquerie",
+        "description": "L'abattis dispose des mêmes sens que le troll dont il est issu. Si l'abattis n'est pas détruit dans les 24 heures, lancez 1d12. Sur un résultat de 12, l'abattis devient un troll à part entière. Sinon, le membre dépérit."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 9 (2d4 + 4) dégâts tranchants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Troll Limb",
+    "nameEN": "Extremidad de troll",
+    "nameES": "Extremidad de troll"
+  },
+  {
+    "key": "aboleth",
+    "name": "Aboleth",
+    "type": "Aberration",
+    "size": "G",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 17,
+    "hitPoints": 150,
+    "hitDice": "20d10+40",
+    "initiativeBonus": 7,
+    "speed": "3 m, nage 12 m",
+    "abilities": {
+      "str": 21,
+      "dex": 9,
+      "con": 15,
+      "int": 18,
+      "wis": 15,
+      "cha": 18,
+      "strMod": "+5",
+      "dexMod": "-1",
+      "conMod": "+2",
+      "intMod": "+4",
+      "wisMod": "+2",
+      "chaMod": "+4",
+      "strSave": "+5",
+      "dexSave": "+3",
+      "conSave": "+6",
+      "intSave": "+8",
+      "wisSave": "+6",
+      "chaSave": "+4"
+    },
+    "skills": "Histoire +12, Perception +10",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 20",
+    "languages": "profond ; télépathie 36 m",
+    "challengeRating": "10",
+    "xp": "5900 ou 7200 dans son antre",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "L'aboleth peut respirer sous l'eau comme à l'air libre."
+      },
+      {
+        "name": "Nuage de mucus",
+        "description": "Tant qu'il est sous l'eau, l'aboleth est entouré d'un mucus réactif. JdS Constitution : DD 14, chaque créature dans une Émanation de 1,50 m centrée sur l'aboleth, à la fin du tour de celui-ci. Échec : la cible est maudite. Jusqu'à la fin de la malédiction, la cible présente une peau visqueuse, elle peut respirer sous l'eau comme à l'air libre et ne peut récupérer de points de vie que si elle est sous l'eau. Quand la créature maudite n'est pas dans l'eau, elle subit 6 (1d12) dégâts d'acide à la fin de chaque période de 10 minutes, sauf si sa peau est humidifiée dans l'intervalle."
+      },
+      {
+        "name": "Résistance légendaire (3/jour, ou 4/jour dans son antre)",
+        "description": "Si l'aboleth rate un jet de sauvegarde, il peut décider de le réussir tout de même."
+      },
+      {
+        "name": "Restauration occulte",
+        "description": "S'il est détruit, l'aboleth acquiert un nouveau corps en 5d10 jours et revient à la vie avec tous ses pv dans le Royaume Lointain (ou en un autre lieu choisi par le MD)."
+      },
+      {
+        "name": "Télépathie inquisitrice",
+        "description": "Si une créature communique par télépathie avec l'aboleth, ce dernier a conscience des désirs profonds de la créature."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'aboleth effectue deux attaques de Tentacule et recourt à Assimilation de mémoire ou Domination d'esprit si disponible."
+      },
+      {
+        "name": "Tentacule",
+        "description": "Corps à corps : +9, allonge 4,50 m. Touché : 12 (2d6 + 5) dégâts contondants. Si la cible est une créature de taille G ou inférieure, elle subit l'état Agrippé (évasion DD 14) par l'un des quatre tentacules."
+      },
+      {
+        "name": "Assimilation de mémoire",
+        "description": "JdS Intelligence : DD 16, une créature dans un rayon de 9 m Charmée ou Agrippée par l'aboleth. Échec : 10 (3d6) dégâts psychiques. Réussite : demi-dégâts. Échec ou réussite : L'aboleth acquiert les souvenirs de la cible si elle est Humanoïde et si cette action la fait tomber à 0 point de vie."
+      },
+      {
+        "name": "Domination d'esprit (2/jour)",
+        "description": "JdS Sagesse : DD 16, une créature que l'aboleth voit dans un rayon de 9 m. Échec : la cible subit l'état Charmé jusqu'à ce que l'aboleth meure ou soit sur un autre plan d'existence qu'elle. Ainsi Charmée, la cible se comporte en alliée de l'aboleth ; elle est directement sous son contrôle tant qu'elle reste dans un rayon de 18 m de lui. L'aboleth et la cible peuvent en outre communiquer télépathiquement l'un avec l'autre, quelle que soit la distance qui les sépare. La cible réitère le JdS chaque fois qu'elle subit des dégâts, ainsi qu'à la fin de toute période de 24 heures passée à plus de 1,5 km de l'aboleth, et met un terme à l'effet sur elle-même en cas de réussite."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [
+      {
+        "name": "Coup de tentacule",
+        "description": "L'aboleth effectue une attaque de Tentacule."
+      },
+      {
+        "name": "Succion psychique",
+        "description": "Si l'aboleth maintient au moins une créature Charmée ou Agrippée, il recourt à Assimilation de mémoire et récupère 5 (1d10) points de vie."
+      }
+    ],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Aboleth",
+    "nameEN": "Aboleth",
+    "nameES": "Aboleth"
+  },
+  {
+    "key": "aigle-geant",
+    "name": "Aigle géant",
+    "type": "Céleste",
+    "size": "G",
+    "alignment": "Neutre Bon",
+    "armorClass": 13,
+    "hitPoints": 26,
+    "hitDice": "4d10+4",
+    "initiativeBonus": 3,
+    "speed": "3 m, vol 24 m",
+    "abilities": {
+      "str": 16,
+      "dex": 17,
+      "con": 13,
+      "int": 8,
+      "wis": 14,
+      "cha": 10,
+      "strMod": "+3",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "-1",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+3",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "-1",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +6",
+    "damageImmunities": null,
+    "damageResistances": "nécrotique, radiant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "céleste ; comprend le commun et le primordial (aérien) mais ne peut pas les parler",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'aigle effectue deux attaques de Saignée."
+      },
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 5 (1d4 + 3) dégâts tranchants plus 3 (1d6) dégâts radiants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Giant Eagle",
+    "nameEN": "Águila gigante",
+    "nameES": "Águila gigante"
+  },
+  {
+    "key": "aigle",
+    "name": "Aigle",
+    "type": "Bête",
+    "size": "P",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 4,
+    "hitDice": "1d6+1",
+    "initiativeBonus": 2,
+    "speed": "3 m, vol 18 m",
+    "abilities": {
+      "str": 6,
+      "dex": 15,
+      "con": 12,
+      "int": 2,
+      "wis": 14,
+      "cha": 7,
+      "strMod": "-2",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "-4",
+      "wisMod": "+2",
+      "chaMod": "-2",
+      "strSave": "-2",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "-4",
+      "wisSave": "+2",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Serres",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 4 (1d4 + 2) dégâts tranchants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Eagle",
+    "nameEN": "Águila",
+    "nameES": "Águila"
+  },
+  {
+    "key": "allosaure",
+    "name": "Allosaure",
+    "type": "Bête (Dinosaure)",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 51,
+    "hitDice": "6d10+18",
+    "initiativeBonus": 1,
+    "speed": "18 m",
+    "abilities": {
+      "str": 19,
+      "dex": 13,
+      "con": 17,
+      "int": 2,
+      "wis": 12,
+      "cha": 5,
+      "strMod": "+4",
+      "dexMod": "+1",
+      "conMod": "+3",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "+4",
+      "dexSave": "+1",
+      "conSave": "+3",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 15",
+    "languages": "aucune",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Griffes",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 8 (1d8 + 4) dégâts tranchants. Si la cible est une créature de taille G ou inférieure et si l'allosaure s'est déplacé en ligne droite d'un minimum de 9 m juste avant de la toucher, la cible subit l'état À terre et l'allosaure peut effectuer contre elle une attaque de Morsure."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 15 (2d10 + 4) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Allosaurus",
+    "nameEN": "Alosaurio",
+    "nameES": "Alosaurio"
+  },
+  {
+    "key": "ame-en-peine",
+    "name": "Âme-en-peine",
+    "type": "Mort-vivant",
+    "size": "M ou P",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 13,
+    "hitPoints": 67,
+    "hitDice": "9d8+27",
+    "initiativeBonus": 3,
+    "speed": "1,50 m, vol 18 m (stationnaire)",
+    "abilities": {
+      "str": 6,
+      "dex": 16,
+      "con": 16,
+      "int": 12,
+      "wis": 14,
+      "cha": 15,
+      "strMod": "-2",
+      "dexMod": "+3",
+      "conMod": "+3",
+      "intMod": "+1",
+      "wisMod": "+2",
+      "chaMod": "+2",
+      "strSave": "-2",
+      "dexSave": "+3",
+      "conSave": "+3",
+      "intSave": "+1",
+      "wisSave": "+2",
+      "chaSave": "+2"
+    },
+    "skills": null,
+    "damageImmunities": "nécrotique, poison",
+    "damageResistances": "acide, contondant, froid, feu, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé, Inconscient",
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "commun plus deux autres langues",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Déplacement intangible",
+        "description": "L'âme-en-peine peut traverser d'autres créatures et objets comme s'il s'agissait d'un Terrain difficile. Elle subit 5 (1d10) dégâts de force si elle termine son tour à l'intérieur d'un objet."
+      },
+      {
+        "name": "Sensibilité au soleil",
+        "description": "Tant qu'elle est exposée à la lumière du soleil, l'âme-en-peine subit un Désavantage aux jets de caractéristique et aux jets d'attaque."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Absorption de vie",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 21 (4d8 + 3) dégâts nécrotiques. Si la cible est une créature, son maximum de points de vie est réduit d'un montant égal aux dégâts subis."
+      },
+      {
+        "name": "Création de spectre",
+        "description": "L'âme-en-peine cible un Humanoïde dans un rayon de 3 m, mort depuis moins de 1 minute. L'esprit de la cible émerge sous forme de spectre de l'espace de son cadavre ou dans l'espace inoccupé le plus proche. Le spectre est sous le contrôle de l'âme-en-peine. L'âme-en-peine ne peut ainsi contrôler plus de sept spectres à la fois."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Wraith",
+    "nameEN": "Aparición",
+    "nameES": "Aparición"
+  },
+  {
+    "key": "ankheg",
+    "name": "Ankheg",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "Non-aligné",
+    "armorClass": 14,
+    "hitPoints": 45,
+    "hitDice": "6d10+12",
+    "initiativeBonus": 0,
+    "speed": "9 m, creusement 3 m",
+    "abilities": {
+      "str": 17,
+      "dex": 11,
+      "con": 14,
+      "int": 1,
+      "wis": 13,
+      "cha": 6,
+      "strMod": "+3",
+      "dexMod": "+0",
+      "conMod": "+2",
+      "intMod": "-5",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "+3",
+      "dexSave": "+0",
+      "conSave": "+2",
+      "intSave": "-5",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, perception des vibrations 18 m, Perception passive 11",
+    "languages": "—",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Fouisseur",
+        "description": "L'ankheg peut creuser à travers la roche à concurrence de la moitié de sa Vitesse de fouissement en laissant un tunnel de 3 m de diamètre dans son sillage."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5 (avec Avantage si la cible est agrippée par l'ankheg), allonge 1,50 m. Touché : 10 (2d6 + 3) dégâts tranchants plus 3 (1d6) dégâts d'acide. Si la cible est une créature de taille G ou inférieure, elle subit l'état Agrippé (évasion DD 13)."
+      },
+      {
+        "name": "Aspersion acide (recharge 6)",
+        "description": "JdS Dextérité : DD 12, chaque créature dans une Ligne de 9 m de long sur 1,50 m de large. Échec : 14 (4d6) dégâts d'acide. Réussite : demi-dégâts."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Ankheg",
+    "nameEN": "Ankheg",
+    "nameES": "Ankheg"
+  },
+  {
+    "key": "ankylosaure",
+    "name": "Ankylosaure",
+    "type": "Bête (Dinosaure)",
+    "size": "TG",
+    "alignment": "non aligné",
+    "armorClass": 15,
+    "hitPoints": 68,
+    "hitDice": "8d12+16",
+    "initiativeBonus": 0,
+    "speed": "9 m",
+    "abilities": {
+      "str": 19,
+      "dex": 11,
+      "con": 15,
+      "int": 2,
+      "wis": 12,
+      "cha": 5,
+      "strMod": "+4",
+      "dexMod": "+0",
+      "conMod": "+2",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "+6",
+      "dexSave": "+0",
+      "conSave": "+2",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 11",
+    "languages": "aucune",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'ankylosaure effectue deux attaques de Queue."
+      },
+      {
+        "name": "Queue",
+        "description": "Corps à corps : +6, allonge 3 m. Touché : 9 (1d10 + 4) dégâts contondants. Si la cible est une créature de taille TG ou inférieure, elle subit l'état À terre."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Ankylosaurus",
+    "nameEN": "Anquilosaurio",
+    "nameES": "Anquilosaurio"
+  },
+  {
+    "key": "araignee-de-phase",
+    "name": "Araignée de phase",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 14,
+    "hitPoints": 45,
+    "hitDice": "7d10+7",
+    "initiativeBonus": 3,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 15,
+      "dex": 16,
+      "con": 12,
+      "int": 6,
+      "wis": 10,
+      "cha": 6,
+      "strMod": "+2",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+2",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": "Discrétion +7",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "—",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Marche dans les toiles",
+        "description": "L'araignée n'est pas soumise aux contraintes de déplacement imposées par les toiles et connaît la position de toute autre créature en contact avec la même toile qu'elle."
+      },
+      {
+        "name": "Pattes d'araignée",
+        "description": "L'araignée peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique."
+      },
+      {
+        "name": "Vision éthérée",
+        "description": "L'araignée voit à 18 m dans le Plan Éthéré quand elle est sur le Plan Matériel, et inversement."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'araignée effectue deux attaques de Morsure."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 8 (1d10 + 3) dégâts perforants plus 9 (2d8) dégâts de poison. Si ces dégâts réduisent la cible à 0 point de vie, celle-ci devient Stabilisée et subit l'état Empoisonné pendant 1 heure. Tant qu'elle est ainsi Empoisonnée, la cible subit en outre l'état Paralysé."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Saut éthéré",
+        "description": "L'araignée se téléporte du Plan Matériel vers le Plan Éthéré ou vice versa."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Phase Spider",
+    "nameEN": "Araña de fase",
+    "nameES": "Araña de fase"
+  },
+  {
+    "key": "araignee-geante",
+    "name": "Araignée géante",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 14,
+    "hitPoints": 26,
+    "hitDice": "4d10+4",
+    "initiativeBonus": 3,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 14,
+      "dex": 16,
+      "con": 12,
+      "int": 2,
+      "wis": 11,
+      "cha": 4,
+      "strMod": "+2",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+2",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +4, Discrétion +7",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 14",
+    "languages": "aucune",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Pattes d'araignée",
+        "description": "L'araignée peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique."
+      },
+      {
+        "name": "Marche dans les toiles",
+        "description": "L'araignée ignore les restrictions de mouvement causées par une toile d'araignée, et connait l'emplacement de toutes les créatures qui sont en contact avec la même toile qu'elle."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 7 (1d8 + 3) dégâts perforants plus 7 (2d6) dégâts de poison. Toile d'araignée (recharge 5–6) . JdS Dextérité : DD 13, une créature que l'araignée peut voir dans un rayon de 18 m. Échec : la cible subit l'état Entravé jusqu'à ce que la toile d'araignée soit détruite (CA 10 ; Pv 5 ; Vulnérabilité aux dégâts du feu ; Immunité aux dégâts de poison et psychiques)."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Giant Spider",
+    "nameEN": "Araña gigante",
+    "nameES": "Araña gigante"
+  },
+  {
+    "key": "araignee-loup-geante",
+    "name": "Araignée-loup géante",
+    "type": "Bête",
+    "size": "M",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 11,
+    "hitDice": "2d8+2",
+    "initiativeBonus": 3,
+    "speed": "12 m, escalade 12 m",
+    "abilities": {
+      "str": 12,
+      "dex": 16,
+      "con": 13,
+      "int": 3,
+      "wis": 12,
+      "cha": 4,
+      "strMod": "+1",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "+1",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +3, Discrétion +7",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision aveugle 3 m, Vision dans le noir 18 m, Perception passive 13",
+    "languages": "aucune",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Pattes d'araignée",
+        "description": "L'araignée peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 5 (1d4 + 3) dégâts perforants plus 5 (2d4) dégâts de poison."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Giant Wolf Spider",
+    "nameEN": "Tarántula gigante",
+    "nameES": "Tarántula gigante"
+  },
+  {
+    "key": "araignee",
+    "name": "Araignée",
+    "type": "Bête",
+    "size": "TP",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 1,
+    "hitDice": "1d4-1",
+    "initiativeBonus": 2,
+    "speed": "6 m, escalade 6 m",
+    "abilities": {
+      "str": 2,
+      "dex": 14,
+      "con": 8,
+      "int": 1,
+      "wis": 10,
+      "cha": 2,
+      "strMod": "-4",
+      "dexMod": "+2",
+      "conMod": "-1",
+      "intMod": "-5",
+      "wisMod": "+0",
+      "chaMod": "-4",
+      "strSave": "-4",
+      "dexSave": "+2",
+      "conSave": "-1",
+      "intSave": "-5",
+      "wisSave": "+0",
+      "chaSave": "-4"
+    },
+    "skills": "Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 9 m, Perception passive 10",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Pattes d'araignée",
+        "description": "L'araignée peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique."
+      },
+      {
+        "name": "Marche dans les toiles",
+        "description": "L'araignée ignore les restrictions de mouvement causées par les toiles et connaît l'emplacement de toute autre créature en contact avec la même toile."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 1 dégât perforant plus 2 (1d4) dégâts de poison."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Spider",
+    "nameEN": "Araña",
+    "nameES": "Araña"
+  },
+  {
+    "key": "arbre-eveille",
+    "name": "Arbre éveillé",
+    "type": "Plante",
+    "size": "TG",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": 59,
+    "hitDice": "7d12+14",
+    "initiativeBonus": -2,
+    "speed": "6 m",
+    "abilities": {
+      "str": 19,
+      "dex": 6,
+      "con": 15,
+      "int": 10,
+      "wis": 10,
+      "cha": 7,
+      "strMod": "+4",
+      "dexMod": "-2",
+      "conMod": "+2",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+4",
+      "dexSave": "-2",
+      "conSave": "+2",
+      "intSave": "+0",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": "contondant, perforant",
+    "damageVulnerabilities": "feu",
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +6, allonge 3 m. Touché : 14 (3d6 + 4) dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Awakened Tree",
+    "nameEN": "Árbol despertado",
+    "nameES": "Árbol despertado"
+  },
+  {
+    "key": "arbroyeux",
+    "name": "Arbroyeux",
+    "type": "Plante",
+    "size": "TG",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 15,
+    "hitPoints": 115,
+    "hitDice": "10d12+50",
+    "initiativeBonus": 3,
+    "speed": "9 m",
+    "abilities": {
+      "str": 23,
+      "dex": 10,
+      "con": 20,
+      "int": 6,
+      "wis": 10,
+      "cha": 3,
+      "strMod": "+6",
+      "dexMod": "+0",
+      "conMod": "+5",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-4",
+      "strSave": "+6",
+      "dexSave": "+0",
+      "conSave": "+5",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-4"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Assourdi",
+    "senses": "Vision aveugle 18 m, Perception passive 10",
+    "languages": "comprend le commun et le druidique mais ne parle pas",
+    "challengeRating": "7",
+    "xp": "2900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'arbroyeux effectue deux attaques de Branche et utilise Étreinte végétale."
+      },
+      {
+        "name": "Branche",
+        "description": "Corps à corps : +9, allonge 4,50 m. Touché : 16 (3d6 + 6) dégâts contondants."
+      },
+      {
+        "name": "Étreinte végétale",
+        "description": "JdS Force : DD 17, une créature de taille G ou inférieure que l'arbroyeux peut voir dans un rayon de 4,50 m. Échec : la cible est tirée jusqu'à 3 m vers l'arbroyeux et subit l'état Agrippé (évasion DD 16) par l'une des six racines. Tant qu'elle est agrippée, la cible subit 13 (2d6 + 6) dégâts contondants au début de chacun de ses tours."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Gnaque",
+        "description": "JdS Dextérité : DD 17, une créature agrippée par l'arbroyeux. Échec : 19 (3d8 + 6) dégâts perforants. Réussite : demi-dégâts."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Tree Blight",
+    "nameEN": "Marchito árbol",
+    "nameES": "Marchito árbol"
+  },
+  {
+    "key": "arbuste-eveille",
+    "name": "Arbuste éveillé",
+    "type": "Plante",
+    "size": "P",
+    "alignment": "Neutre",
+    "armorClass": 9,
+    "hitPoints": 10,
+    "hitDice": "3d6",
+    "initiativeBonus": -1,
+    "speed": "6 m",
+    "abilities": {
+      "str": 3,
+      "dex": 8,
+      "con": 11,
+      "int": 10,
+      "wis": 10,
+      "cha": 6,
+      "strMod": "-4",
+      "dexMod": "-1",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "-4",
+      "dexSave": "-1",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": "perforant",
+    "damageVulnerabilities": "feu",
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Ratissage",
+        "description": "Corps à corps : +1, allonge 1,50 m. Touché : 1 dégât tranchant."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Awakened Shrub",
+    "nameEN": "Arbusto despertado",
+    "nameES": "Arbusto despertado"
+  },
+  {
+    "key": "arcanaloth",
+    "name": "Arcanaloth",
+    "type": "Fiélon (Yugoloth)",
+    "size": "M",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 18,
+    "hitPoints": 175,
+    "hitDice": "27d8+54",
+    "initiativeBonus": 5,
+    "speed": "9 m, vol 9 m (stationnaire)",
+    "abilities": {
+      "str": 17,
+      "dex": 12,
+      "con": 14,
+      "int": 20,
+      "wis": 16,
+      "cha": 17,
+      "strMod": "+3",
+      "dexMod": "+1",
+      "conMod": "+2",
+      "intMod": "+5",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "+3",
+      "dexSave": "+5",
+      "conSave": "+6",
+      "intSave": "+9",
+      "wisSave": "+7",
+      "chaSave": "+3"
+    },
+    "skills": "Arcanes +9, Tromperie +7, Intuition +7, Perception +7",
+    "damageImmunities": "acide, poison",
+    "damageResistances": "froid, feu, foudre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Empoisonné",
+    "senses": "vision véritable 36 m, Perception passive 17",
+    "languages": "toutes ; télépathie 36 m",
+    "challengeRating": "12",
+    "xp": "8400",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Restauration fiélonne",
+        "description": "Si l'arcanaloth meurt hors de Géhenne, son corps se dissout en ichor et il en acquiert aussitôt un nouveau et revient à la vie avec tous ses pv, quelque part dans Géhenne."
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "L'arcanaloth a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques."
+      },
+      {
+        "name": "Tome spirituel",
+        "description": "L'arcanaloth possède un grimoire magique. Lorsqu'il le tient ou le transporte, il peut utiliser son action Griffe du ban. Le grimoire a une CA de 17, 35 pv et est immunisé contre les dégâts nécrotiques, de poison et psychiques. Il récupère tous ses points de vie à la fin de chaque tour, mais se désintègre s'il tombe à 0 pv ou si l'arcanaloth meurt. Si le grimoire est détruit, l'arcanaloth peut en créer un nouveau lorsqu'il termine un Repos court ou long."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'arcanaloth effectue trois attaques de Décharge fiélonne. Il peut remplacer une attaque par une attaque de Griffe du ban."
+      },
+      {
+        "name": "Décharge fiélonne",
+        "description": "Corps à corps ou à distance : +9, allonge 1,50 m ou portée 36 m. Touché : 31 (4d12 + 5) dégâts nécrotiques."
+      },
+      {
+        "name": "Griffe du ban (nécessite le tome spirituel)",
+        "description": "Corps à corps : +9, allonge 1,50 m. Touché : 10 (2d4 + 5) dégâts tranchants plus 19 (3d12) dégâts psychiques. Si la cible est une créature, elle est sujette à l'effet suivant. JdS Charisme : DD 17. Échec : la cible est piégée dans un demi-plan à l'intérieur du tome spirituel. Tant qu'elle y est prisonnière, elle subit l'état Incapable d'agir. À la fin de chacun de ses tours, la cible renouvelle son jet de sauvegarde et s'échappe du grimoire en cas de réussite. Lorsqu'elle s'échappe, elle réapparaît à l'endroit qu'elle a quitté ou, si cet endroit est occupé, à l'endroit libre le plus proche. Si la cible rate trois de ces jets de sauvegarde dans le demi-plan, elle devient liée au grimoire et ne peut s'en échapper que si le grimoire atteint 0 point de vie."
+      },
+      {
+        "name": "Incantation",
+        "description": "L'arcanaloth lance l'un des sorts suivants sans composantes matérielles, l'Intelligence étant sa caractéristique d'incantation (DD de sauvegarde 17) : À volonté : modification d'apparence , détection de la magie , identification , main de mage , prestidigitation 1/jour chacun : contact avec les plans , détection des pensées , porte dimensionnelle , esprit impénétrable"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Téléportation",
+        "description": "L'arcanaloth se téléporte d'un maximum de 9 m en un espace inoccupé qu'il voit."
+      }
+    ],
+    "reactions": [
+      {
+        "name": "Contresort",
+        "description": "L'arcanaloth lance contresort en réponse au déclencheur de ce sort, en utilisant la même capacité d'incantation que pour Incantation."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Arcanaloth",
+    "nameEN": "Arcanaloth",
+    "nameES": "Arcanaloth"
+  },
+  {
+    "key": "archelon",
+    "name": "Archélon",
+    "type": "Bête (Dinosaure)",
+    "size": "TG",
+    "alignment": "non aligné",
+    "armorClass": 17,
+    "hitPoints": 90,
+    "hitDice": "12d12+12",
+    "initiativeBonus": 3,
+    "speed": "6 m, nage 24 m",
+    "abilities": {
+      "str": 18,
+      "dex": 16,
+      "con": 13,
+      "int": 4,
+      "wis": 14,
+      "cha": 6,
+      "strMod": "+4",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "-3",
+      "wisMod": "+2",
+      "chaMod": "-2",
+      "strSave": "+4",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "-3",
+      "wisSave": "+2",
+      "chaSave": "-2"
+    },
+    "skills": "Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 12",
+    "languages": "aucune",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "L'archélon peut respirer sous l'eau comme à l'air libre."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'archélon effectue deux attaques de Morsure."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 14 (3d6 + 4) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Archelon",
+    "nameEN": "Archelon",
+    "nameES": "Archelon"
+  },
+  {
+    "key": "archi-guenaude",
+    "name": "Archi-guenaude",
+    "type": "Fée",
+    "size": "G",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 20,
+    "hitPoints": 333,
+    "hitDice": "29d10+174",
+    "initiativeBonus": 16,
+    "speed": "12 m",
+    "abilities": {
+      "str": 24,
+      "dex": 15,
+      "con": 23,
+      "int": 19,
+      "wis": 19,
+      "cha": 25,
+      "strMod": "+7",
+      "dexMod": "+2",
+      "conMod": "+6",
+      "intMod": "+4",
+      "wisMod": "+4",
+      "chaMod": "+7",
+      "strSave": "+7",
+      "dexSave": "+9",
+      "conSave": "+6",
+      "intSave": "+4",
+      "wisSave": "+11",
+      "chaSave": "+7"
+    },
+    "skills": "Tromperie +14, Perception +11, Persuasion +21",
+    "damageImmunities": null,
+    "damageResistances": "froid, feu, psychique",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé",
+    "senses": "vision véritable 18 m, Perception passive 21",
+    "languages": "toutes",
+    "challengeRating": "21",
+    "xp": "33000 ou 41000 dans son antre",
+    "proficiencyBonus": "+7",
+    "traits": [
+      {
+        "name": "Magie d'assemblée",
+        "description": "Tant qu'elle se trouve dans un rayon de 9 m d'au moins deux alliées guenaudes, la guenaude peut lancer l'un des sorts suivants sans composantes matérielles, avec le temps d'incantation normal, l'Intelligence étant sa caractéristique d'incantation (DD de sauvegarde 19) : appel de familier , augure , identification , localisation d'objet , scrutation ou serviteur invisible . La guenaude doit terminer un Repos long avant de pouvoir relancer ce sort par ce trait."
+      },
+      {
+        "name": "Résistance légendaire (4/jour, ou 5/jour dans son antre)",
+        "description": "Si la guenaude rate un jet de sauvegarde, il peut décider de le réussir tout de même."
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "La guenaude a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques."
+      },
+      {
+        "name": "Évasion hargneuse",
+        "description": "Lorsque la guenaude tombe à 0 point de vie, elle ne meurt que si elle se trouve dans un rayon de 9 m autour de son anathème (un élément choisi par le MD comme étant ce qu'elle déteste le plus). Sinon, elle tombe à 1 point de vie et se téléporte dans un demi-plan inoffensif. Elle ne peut retourner dans son plan d'origine pendant 2d6 jours. Lorsque la guenaude se téléporte, chaque créature dans un rayon de 18 m autour de l'espace qu'elle laisse est maudite. Tant que la malédiction persiste, la créature subit un Désavantage aux jets de caractéristique et aux jets de sauvegarde, et la guenaude connaît sa position partout dans le multivers."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "La guenaude effectue deux attaques de Griffe spectrale et utilise Vague crépitante."
+      },
+      {
+        "name": "Griffe spectrale",
+        "description": "Corps à corps ou à distance : +14, allonge 3 m ou portée 18 m. Touché : 17 (3d6 + 7) dégâts de force. Si la cible est une créature de taille G ou inférieure, elle subit l'état À terre."
+      },
+      {
+        "name": "Vague crépitante",
+        "description": "JdS Dextérité : DD 22, chaque créature dans un Cône de 18 m. Échec : 32 (5d12) dégâts de foudre. Réussite : demi-dégâts. Échec ou réussite : la cible est maudite jusqu'à la fin du prochain tour de la guenaude. La cible ne peut pas prendre de"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Et frappe la sorcière",
+        "description": "Chaque créature maudite par la guenaude et se trouvant dans un rayon de 18 m d'elle subit 14 (4d6) dégâts de foudre."
+      },
+      {
+        "name": "Virelangue",
+        "description": "La guenaude lance contresort en réponse au déclenchement de ce sort, en utilisant la même caractéristique d'incantation que pour Incantation. Si la cible rate son jet de sauvegarde, elle est maudite jusqu'à la fin de son prochain tour. Tant que la malédiction persiste, la cible ne peut pas lancer de sorts à composante verbale et, lorsqu'elle parle, elle dit le contraire de ce qu'elle pense."
+      }
+    ],
+    "reactions": [
+      {
+        "name": "Incantation",
+        "description": "La guenaude lance l'un des sorts suivants sans composantes matérielles, le Charisme étant sa caractéristique d'incantation (DD de sauvegarde 22) : À volonté : détection des pensées , porte dimensionnelle , dissipation de la magie , motif hypnotique 2/jour chacun : suggestion de groupe , modification de mémoire , changement de plan"
+      }
+    ],
+    "legendaryActions": [
+      {
+        "name": "Gifle de la guenaude",
+        "description": "La guenaude effectue une attaque de Griffe spectrale."
+      },
+      {
+        "name": "Incantation pour lancer porte dimensionnelle ou motif hypnotique",
+        "description": "Elle ne pourra pas réutiliser cette action avant le début de son prochain tour."
+      }
+    ],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Arch-hag",
+    "nameEN": "Archisaga",
+    "nameES": "Archisaga"
+  },
+  {
+    "key": "archimage",
+    "name": "Archimage",
+    "type": "Humanoïde (Magicien)",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 17,
+    "hitPoints": 170,
+    "hitDice": "31d8+31",
+    "initiativeBonus": 6,
+    "speed": "9 m",
+    "abilities": {
+      "str": 10,
+      "dex": 14,
+      "con": 12,
+      "int": 20,
+      "wis": 15,
+      "cha": 16,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+5",
+      "wisMod": "+2",
+      "chaMod": "+3",
+      "strSave": "+0",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "+9",
+      "wisSave": "+6",
+      "chaSave": "+3"
+    },
+    "skills": "Arcanes +13, Histoire +9, Perception +6",
+    "damageImmunities": "psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé (avec esprit impénétrable )",
+    "senses": "Perception passive 16",
+    "languages": "commun plus cinq autres langues",
+    "challengeRating": "12",
+    "xp": "8000",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": "L'archimage a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'archimage effectue quatre attaques de Jaillissement arcanique."
+      },
+      {
+        "name": "Jaillissement arcanique",
+        "description": "Corps à corps ou à distance : +9, allonge 1,50 m ou portée 45 m. Touché : 27 (4d10 + 5) dégâts de force."
+      },
+      {
+        "name": "Incantation",
+        "description": "L'archimage lance l'un des sorts suivants, l'Intelligence étant sa caractéristique d'incantation (DD de sauvegarde 17) : À volonté : armure de mage (compris dans la CA), déguisement , détection de la magie , détection des pensées , invisibilité , lumière , main de mage , prestidigitation 2/jour chacun : éclair (au niveau 7), vol 1/jour chacun : cône de froid (au niveau 9), esprit impénétrable (lancé avant un combat), scrutation , téléportation"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Foulée brumeuse (3/jour)",
+        "description": "Le mage lance foulée brumeuse , avec la même caractéristique d'incantation que pour Incantation."
+      }
+    ],
+    "reactions": [
+      {
+        "name": "Magie protectrice (3/jour)",
+        "description": "L'archimage lance bouclier ou contresort en réponse au déclencheur du sort correspondant, avec la même caractéristique d'incantation que pour Incantation."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Archmage",
+    "nameEN": "Archimago",
+    "nameES": "Archimago"
+  },
+  {
+    "key": "archipretre",
+    "name": "Archiprêtre",
+    "type": "Humanoïde (Clerc)",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 240,
+    "hitDice": "32d8+96",
+    "initiativeBonus": 5,
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 12,
+      "con": 17,
+      "int": 14,
+      "wis": 21,
+      "cha": 14,
+      "strMod": "+3",
+      "dexMod": "+1",
+      "conMod": "+3",
+      "intMod": "+2",
+      "wisMod": "+5",
+      "chaMod": "+2",
+      "strSave": "+7",
+      "dexSave": "+1",
+      "conSave": "+7",
+      "intSave": "+6",
+      "wisSave": "+9",
+      "chaSave": "+2"
+    },
+    "skills": "Intuition +9, Médecine +9, Perception +9, Religion +10",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 19",
+    "languages": "commun plus deux autres langues",
+    "challengeRating": "12",
+    "xp": "8400",
+    "proficiencyBonus": "+4",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'archiprêtre effectue trois attaques d'Éruption radiante."
+      },
+      {
+        "name": "Éruption radiante",
+        "description": "Corps à corps ou à distance : +9, allonge 1,50 m ou portée 18 m. Touché : 27 (4d10 + 5) dégâts radiants. Parole divine (recharge 4–6) . JdS Sagesse : DD 17, chaque ennemi dans une Émanation de 6 m centrée sur l'archiprêtre. Échec : 21 (6d6) dégâts radiants, et la cible subit l'état Étourdi jusqu'à la fin du prochain tour de l'archiprêtre. Réussite : demi-dégâts uniquement."
+      },
+      {
+        "name": "Incantation",
+        "description": "L'archiprêtre lance l'un des sorts suivants sans composantes matérielles, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 17) : À volonté : lumière, thaumaturgie 1 fois par jour : colonne de flamme s (au niveau 6), restauration suprême , rappel à la vie, zone de vérité"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Soutien divin (3/jour)",
+        "description": "Le prêtre lance bénédiction, dissipation de la magie , mot de guérison ou restauration mineure , en utilisant la même caractéristique d'incantation que pour Incantation."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Archpriest",
+    "nameEN": "Arcipreste",
+    "nameES": "Arcipreste"
+  },
+  {
+    "key": "armure-animee",
+    "name": "Armure animée",
+    "type": "Artificiel",
+    "size": "M",
+    "alignment": "Non-aligné",
+    "armorClass": 18,
+    "hitPoints": 33,
+    "hitDice": "6d8+6",
+    "initiativeBonus": 2,
+    "speed": "7,50 m",
+    "abilities": {
+      "str": 14,
+      "dex": 11,
+      "con": 13,
+      "int": 1,
+      "wis": 3,
+      "cha": 1,
+      "strMod": "+2",
+      "dexMod": "+0",
+      "conMod": "+1",
+      "intMod": "-5",
+      "wisMod": "-4",
+      "chaMod": "-5",
+      "strSave": "+2",
+      "dexSave": "+0",
+      "conSave": "+1",
+      "intSave": "-5",
+      "wisSave": "-4",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": "poison, psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Assourdi, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision aveugle 18 m, Perception passive 6",
+    "languages": "—",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'armure effectue deux attaques de Coup."
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 5 (1d6 + 2) dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Animated Armor",
+    "nameEN": "Armadura animada",
+    "nameES": "Armadura animada"
+  },
+  {
+    "key": "assassin",
+    "name": "Assassin",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 97,
+    "hitDice": "15d8+30",
+    "initiativeBonus": 10,
+    "speed": "9 m",
+    "abilities": {
+      "str": 11,
+      "dex": 18,
+      "con": 14,
+      "int": 16,
+      "wis": 11,
+      "cha": 10,
+      "strMod": "+0",
+      "dexMod": "+4",
+      "conMod": "+2",
+      "intMod": "+3",
+      "wisMod": "+0",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+7",
+      "conSave": "+2",
+      "intSave": "+6",
+      "wisSave": "+0",
+      "chaSave": "+0"
+    },
+    "skills": "Acrobaties +7, Perception +6, Discrétion +10",
+    "damageImmunities": null,
+    "damageResistances": "poison",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "commun, jargon des voleurs",
+    "challengeRating": "8",
+    "xp": "3 900",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Esquive totale",
+        "description": "Si l'assassin est soumis à un effet qui lui permet d'effectuer un jet de sauvegarde de Dextérité pour réduire les dégâts de moitié, il ne subit en fait aucun dégât en cas de JdS réussi, et seulement la moitié en cas d'échec. Il ne peut pas recourir à ce trait s'il subit l'état Incapable d'agir."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'assassin effectue trois attaques, réparties à sa guise entre Épée courte et Arbalète légère."
+      },
+      {
+        "name": "Épée courte",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 7 (1d6 + 4) dégâts perforants plus 17 (5d6) dégâts de poison, et la cible subit l'état Empoisonné jusqu'au début du tour suivant de l'assassin."
+      },
+      {
+        "name": "Arbalète légère",
+        "description": "À distance : +7, portée 24/96 m. Touché : 8 (1d8 + 4) dégâts perforants plus 21 (6d6) dégâts de poison."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Ruse",
+        "description": "L'assassin entreprend l'action Désengagement, Furtivité ou Pointe."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Assassin",
+    "nameEN": "Asesino",
+    "nameES": "Asesino"
+  },
+  {
+    "key": "azer-pyromancien",
+    "name": "Azer, pyromancien",
+    "type": "Élémentaire",
+    "size": "M",
+    "alignment": "Loyal Neutre",
+    "armorClass": 18,
+    "hitPoints": 97,
+    "hitDice": "13d8+39",
+    "initiativeBonus": 2,
+    "speed": "9 m",
+    "abilities": {
+      "str": 15,
+      "dex": 14,
+      "con": 16,
+      "int": 12,
+      "wis": 18,
+      "cha": 13,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "+1",
+      "wisMod": "+4",
+      "chaMod": "+1",
+      "strSave": "+2",
+      "dexSave": "+2",
+      "conSave": "+6",
+      "intSave": "+1",
+      "wisSave": "+7",
+      "chaSave": "+1"
+    },
+    "skills": "Arcanes +4, Perception +7",
+    "damageImmunities": "feu, poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Perception passive 17",
+    "languages": "primordial (igné)",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Traits",
+        "description": "Aura de feu. Illumination."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Actions",
+        "description": "Attaques multiples. Projection ardente. Incantation."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Réactions",
+        "description": "Représailles infernales (2/jour)."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Azer Pyromancer",
+    "nameEN": "Azer piromante",
+    "nameES": "Azer piromante"
+  },
+  {
+    "key": "azer-sentinelle",
+    "name": "Azer, sentinelle",
+    "type": "Élémentaire",
+    "size": "M",
+    "alignment": "Loyal Neutre",
+    "armorClass": 17,
+    "hitPoints": 39,
+    "hitDice": "6d8+12",
+    "initiativeBonus": 1,
+    "speed": "9 m",
+    "abilities": {
+      "str": 17,
+      "dex": 12,
+      "con": 15,
+      "int": 12,
+      "wis": 13,
+      "cha": 10,
+      "strMod": "+3",
+      "dexMod": "+1",
+      "conMod": "+2",
+      "intMod": "+1",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+3",
+      "dexSave": "+1",
+      "conSave": "+4",
+      "intSave": "+1",
+      "wisSave": "+1",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": "feu, poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Perception passive 11",
+    "languages": "primordial (igné)",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Aura de feu",
+        "description": "À la fin de chaque tour de l'azer, chaque créature qu'il choisit dans une Émanation de 1,50 m centrée sur lui subit 5 (1d10) dégâts de feu, sauf si cet azer subit l'état Incapable d'agir."
+      },
+      {
+        "name": "Illumination",
+        "description": "L'azer projette une Lumière vive sur un rayon de 3 m, et une Lumière faible sur 3 m de plus."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Marteau ardent",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 8 (1d10 + 3) dégâts contondants plus 3 (1d6) dégâts de feu."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Azer Sentinel",
+    "nameEN": "Azer centinela",
+    "nameES": "Azer centinela"
+  },
+  {
+    "key": "babelien",
+    "name": "Babélien",
+    "type": "Aberration",
+    "size": "M",
+    "alignment": "Chaotique Neutre",
+    "armorClass": 9,
+    "hitPoints": 52,
+    "hitDice": "7d8+21",
+    "initiativeBonus": -1,
+    "speed": "6 m, nage 6 m",
+    "abilities": {
+      "str": 10,
+      "dex": 8,
+      "con": 16,
+      "int": 3,
+      "wis": 10,
+      "cha": 6,
+      "strMod": "+0",
+      "dexMod": "-1",
+      "conMod": "+3",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+0",
+      "dexSave": "-1",
+      "conSave": "+3",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "À terre",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "—",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Charabia",
+        "description": "Le babélien bredouille de façon incohérente tant qu'il ne subit pas l'état Incapable d'agir. JdS Sagesse : DD 10, toute créature qui commence son tour dans un rayon de 6 m du babélien alors qu'il bredouille. Échec : la cible lance 1d8 pour déterminer ce qu'elle fait pour le tour en cours : 1–4 . La cible ne fait rien. 5–6 . La cible n'entreprend ni action ni action Bonus, et consacre tout son déplacement dans une direction aléatoire. 7–8 . La cible effectue une attaque de corps à corps contre une créature déterminée aléatoirement à portée d'allonge (elle ne fait rien si une telle attaque n'est pas possible)."
+      },
+      {
+        "name": "Sol aberrant",
+        "description": "Le sol dans une Émanation de 3 m centrée sur le babélien est un Terrain difficile."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +2, allonge 1,50 m. Touché : 7 (2d6) dégâts perforants. Si la cible est une créature de taille M ou inférieure, elle subit l'état À terre. La cible meurt si cette attaque la fait tomber à 0 point de vie. Son corps est alors absorbé par le babélien en ne laissant que son équipement. Crachat aveuglant (recharge 5–6) . JdS Dextérité : DD 10, chaque créature dans une Sphère de 3 m de rayon centrée sur un point dans un rayon de 9 m. Échec : 7 (2d6) dégâts radiants, et la cible subit l'état Aveuglé jusqu'à la fin du tour suivant du babélien."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Gibbering Mouther",
+    "nameEN": "Bocón barbotante",
+    "nameES": "Bocón barbotante"
+  },
+  {
+    "key": "babouin",
+    "name": "Babouin",
+    "type": "Bête",
+    "size": "P",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 3,
+    "hitDice": "1d6",
+    "initiativeBonus": 2,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 8,
+      "dex": 14,
+      "con": 11,
+      "int": 4,
+      "wis": 12,
+      "cha": 6,
+      "strMod": "-1",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "-3",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "-1",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "-3",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 11",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Tactique de meute",
+        "description": "Quand au moins un de ses alliés non Incapable d'agir se situe dans un rayon de 1,50 m de la créature qu'il cible, le babouin a un Avantage au jet d'attaque correspondant."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +1, allonge 1,50 m. Touché : 1 (1d4 − 1) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Baboon",
+    "nameEN": "Babuino",
+    "nameES": "Babuino"
+  },
+  {
+    "key": "balai-anime",
+    "name": "Balai animé",
+    "type": "Artificiel",
+    "size": "P",
+    "alignment": "Non-aligné",
+    "armorClass": 15,
+    "hitPoints": 14,
+    "hitDice": "4d6",
+    "initiativeBonus": 5,
+    "speed": "1,50 m, vol 15 m (stationnaire)",
+    "abilities": {
+      "str": 10,
+      "dex": 17,
+      "con": 10,
+      "int": 1,
+      "wis": 5,
+      "cha": 1,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+0",
+      "intMod": "-5",
+      "wisMod": "-3",
+      "chaMod": "-5",
+      "strSave": "+0",
+      "dexSave": "+3",
+      "conSave": "+0",
+      "intSave": "-5",
+      "wisSave": "-3",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": "poison, psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Assourdi, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision aveugle 18 m, Perception passive 7",
+    "languages": "—",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Repli aérien",
+        "description": "Le balai ne provoque pas d'attaque d'Opportunité lorsqu'il quitte la zone d'allonge d'un ennemi en volant."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Coup",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 5 (1d4 + 3) dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Animated Broom",
+    "nameEN": "Escoba animada",
+    "nameES": "Escoba animada"
+  },
+  {
+    "key": "balor",
+    "name": "Balor",
+    "type": "Fiélon (Démon)",
+    "size": "TG",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 19,
+    "hitPoints": 287,
+    "hitDice": "23d12+138",
+    "initiativeBonus": 14,
+    "speed": "12 m, vol 24 m",
+    "abilities": {
+      "str": 26,
+      "dex": 15,
+      "con": 22,
+      "int": 20,
+      "wis": 16,
+      "cha": 22,
+      "strMod": "+8",
+      "dexMod": "+2",
+      "conMod": "+6",
+      "intMod": "+5",
+      "wisMod": "+3",
+      "chaMod": "+6",
+      "strSave": "+8",
+      "dexSave": "+2",
+      "conSave": "+12",
+      "intSave": "+5",
+      "wisSave": "+9",
+      "chaSave": "+6"
+    },
+    "skills": "Perception +9",
+    "damageImmunities": "feu, poison",
+    "damageResistances": "froid, foudre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Effrayé, Empoisonné",
+    "senses": "vision véritable 36 m, Perception passive 19",
+    "languages": "abyssal ; télépathie 36 m",
+    "challengeRating": "19",
+    "xp": "22000",
+    "proficiencyBonus": "+6",
+    "traits": [
+      {
+        "name": "Aura de feu",
+        "description": "À la fin de chacun des tours du balor, chaque créature dans une Émanation de 1,50 m centrée sur le balor subit 13 (3d8) dégâts de feu."
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "Le balor a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques."
+      },
+      {
+        "name": "Résistance légendaire (3/jour)",
+        "description": "Si le Balor rate un jet de sauvegarde, il peut décider de le réussir tout de même."
+      },
+      {
+        "name": "Spasmes d'agonie",
+        "description": "Le balor explose quand il meurt. JdS Dextérité : DD 20, chaque créature dans une Émanation de 9 m centrée sur le balor. Échec : 31 (9d6) dégâts de feu plus 31 (9d6) dégâts de force. Réussite : demi-dégâts. Échec ou réussite : si le balor meurt hors des Abysses, il acquiert aussitôt un nouveau corps et revient à la vie avec tous ses pv quelque part dans les Abysses."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le balor effectue une attaque de Fouet embrasé et une de Lame de foudre."
+      },
+      {
+        "name": "Fouet embrasé",
+        "description": "Corps à corps : +14, allonge 9 m. Touché : 18 (3d6 + 8) dégâts de force plus 17 (5d6) dégâts de feu. Si la cible est une créature de taille TG ou inférieure, le balor la tire directement vers lui d'un maximum de 7,50 m, et la cible subit l'état À terre."
+      },
+      {
+        "name": "Lame de foudre",
+        "description": "Corps à corps : +14, allonge 3 m. Touché : 21 (3d8 + 8) dégâts de force plus 22 (4d10) dégâts de foudre, et la cible ne peut pas jouer de Réaction jusqu'au début du tour suivant du balor."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Téléportation",
+        "description": "Le balor téléporte un démon consentant situé dans un rayon de 3 m (ou lui-même) d'un maximum de 18 m vers un espace inoccupé qu'il voit."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Balor",
+    "nameEN": "Balor",
+    "nameES": "Balor"
+  },
+  {
+    "key": "bandit-baron-du-crime",
+    "name": "Bandit, baron du crime",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 17,
+    "hitPoints": 169,
+    "hitDice": "26d8+52",
+    "initiativeBonus": 9,
+    "speed": "9 m",
+    "abilities": {
+      "str": 10,
+      "dex": 20,
+      "con": 14,
+      "int": 18,
+      "wis": 14,
+      "cha": 15,
+      "strMod": "+0",
+      "dexMod": "+5",
+      "conMod": "+2",
+      "intMod": "+4",
+      "wisMod": "+2",
+      "chaMod": "+2",
+      "strSave": "+0",
+      "dexSave": "+9",
+      "conSave": "+6",
+      "intSave": "+4",
+      "wisSave": "+2",
+      "chaSave": "+2"
+    },
+    "skills": "Acrobaties +9, Perception +10, Discrétion +13",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 20",
+    "languages": "commun, jargon des voleurs",
+    "challengeRating": "11",
+    "xp": "7200",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Esquive totale",
+        "description": "Si le bandit est soumis à un effet qui lui permet d'effectuer un jet de sauvegarde de Dextérité pour réduire les dégâts de moitié, il ne subit en fait aucun dégât en cas de JdS réussi, et seulement la moitié en cas d'échec. Il ne peut pas recourir à ce trait s'il subit l'état Incapable d'agir."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le bandit effectue trois attaques, réparties à sa guise entre Cimeterre et Pistolet."
+      },
+      {
+        "name": "Cimeterre",
+        "description": "Corps à corps : +9, allonge 1,50 m. Touché : 12 (2d6 + 5) dégâts tranchants plus 14 (4d6) dégâts de poison."
+      },
+      {
+        "name": "Pistolet",
+        "description": "À distance : +9, portée 9/27 m. Touché : 10 (1d10 + 5) dégâts perforants plus 14 (4d6) dégâts de poison."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Visée meurtrière",
+        "description": "Le bandit s'octroie un Avantage sur son prochain jet d'attaque durant son tour. Si l'attaque réussit, la cible subit 28 (8d6) dégâts de poison supplémentaires."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Bandit Crime Lord",
+    "nameEN": "Bandido señor del crimen",
+    "nameES": "Bandido señor del crimen"
+  },
+  {
+    "key": "bandit-capitaine",
+    "name": "Bandit, capitaine",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 15,
+    "hitPoints": 52,
+    "hitDice": "8d8+16",
+    "initiativeBonus": 3,
+    "speed": "9 m",
+    "abilities": {
+      "str": 15,
+      "dex": 16,
+      "con": 14,
+      "int": 14,
+      "wis": 11,
+      "cha": 14,
+      "strMod": "+2",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "+2",
+      "wisMod": "+0",
+      "chaMod": "+2",
+      "strSave": "+4",
+      "dexSave": "+5",
+      "conSave": "+2",
+      "intSave": "+2",
+      "wisSave": "+2",
+      "chaSave": "+2"
+    },
+    "skills": "Athlétisme +4, Tromperie +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "commun, jargon des voleurs",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le bandit effectue deux attaques, réparties à sa guise entre Cimeterre et Pistolet."
+      },
+      {
+        "name": "Cimeterre",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 6 (1d6 + 3) dégâts tranchants."
+      },
+      {
+        "name": "Pistolet",
+        "description": "À distance : +5, portée 9/27 m. Touché : 8 (1d10 + 3) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Parade",
+        "description": "Déclencheur : le bandit est touché par un jet d'attaque de corps à corps alors qu'il tient une arme. Conséquences : le bandit ajoute 2 à sa CA contre cette attaque, ce qui peut la faire rater."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Bandit Captain",
+    "nameEN": "Bandido capitán",
+    "nameES": "Bandido capitán"
+  },
+  {
+    "key": "bandit-embrouilleur",
+    "name": "Bandit, embrouilleur",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 130,
+    "hitDice": "20d8+40",
+    "initiativeBonus": 6,
+    "speed": "9 m",
+    "abilities": {
+      "str": 8,
+      "dex": 16,
+      "con": 14,
+      "int": 17,
+      "wis": 12,
+      "cha": 16,
+      "strMod": "-1",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "+3",
+      "wisMod": "+1",
+      "chaMod": "+3",
+      "strSave": "-1",
+      "dexSave": "+6",
+      "conSave": "+2",
+      "intSave": "+6",
+      "wisSave": "+1",
+      "chaSave": "+3"
+    },
+    "skills": "Acrobaties +6, Perception +4, Discrétion +9",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 14",
+    "languages": "commun, jargon des voleurs",
+    "challengeRating": "7",
+    "xp": "2900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le bandit effectue trois attaques de Dague."
+      },
+      {
+        "name": "Dague",
+        "description": "Corps à corps ou à distance : +6, allonge 1,50 m ou portée 6/18 m. Touché : 8 (2d4 + 3) dégâts perforants plus 10 (3d6) dégâts de poison. Éclat aveuglant (recharge 4–6) . JdS Constitution : DD 14, chaque créature dans une Sphère de 3 m de rayon centrée sur un point que le bandit peut voir dans un rayon de 36 m. Échec : 13 (3d6 + 3) dégâts radiants, et la cible subit l'état Aveuglé jusqu'au début du prochain tour du bandit. Réussite : demi-dégâts uniquement."
+      },
+      {
+        "name": "Incantation",
+        "description": "Le bandit lance l'un des sorts suivants, l'Intelligence étant sa caractéristique d'incantation (DD de sauvegarde 14) : À volonté : déguisement , main de mage , illusion mineure 1/jour chacun : immobilisation de personne (au niveau 4), armure de mage (compris dans la CA), image majeure"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Bandit Deceiver",
+    "nameEN": "Embaucador bandido",
+    "nameES": "Embaucador bandido"
+  },
+  {
+    "key": "bandit",
+    "name": "Bandit",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 12,
+    "hitPoints": 11,
+    "hitDice": "2d8+2",
+    "initiativeBonus": 1,
+    "speed": "9 m",
+    "abilities": {
+      "str": 11,
+      "dex": 12,
+      "con": 12,
+      "int": 10,
+      "wis": 10,
+      "cha": 10,
+      "strMod": "+0",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+1",
+      "conSave": "+1",
+      "intSave": "+0",
+      "wisSave": "+0",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "commun, jargon des voleurs",
+    "challengeRating": "1/8",
+    "xp": "25",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Cimeterre",
+        "description": "Corps à corps : +3, allonge 1,50 m. Touché : 4 (1d6 + 1) dégâts tranchants."
+      },
+      {
+        "name": "Arbalète légère",
+        "description": "À distance : +3, portée 24/96 m. Touché : 5 (1d8 + 1) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Bandit",
+    "nameEN": "Bandido",
+    "nameES": "Bandido"
+  },
+  {
+    "key": "banshie",
+    "name": "Banshie",
+    "type": "Mort-vivant",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 12,
+    "hitPoints": 54,
+    "hitDice": "12d8",
+    "initiativeBonus": 2,
+    "speed": "1,50 m, vol 12 m (stationnaire)",
+    "abilities": {
+      "str": 1,
+      "dex": 14,
+      "con": 10,
+      "int": 12,
+      "wis": 11,
+      "cha": 17,
+      "strMod": "-5",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "+1",
+      "wisMod": "+0",
+      "chaMod": "+3",
+      "strSave": "-5",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "+1",
+      "wisSave": "+2",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": "froid, nécrotique, poison",
+    "damageResistances": "acide, contondant, feu, foudre, perforant, tranchant, tonnerre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "commun, elfe",
+    "challengeRating": "4",
+    "xp": "1 100",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Détection de vie",
+        "description": "La banshie perçoit magiquement la direction dans laquelle se trouvent des créatures situées jusqu'à 1,5 km de distance, à l'exception des Artificiels et des Morts-vivants."
+      },
+      {
+        "name": "Déplacement intangible",
+        "description": "La banshie peut traverser d'autres créatures et objets comme s'il s'agissait d'un Terrain difficile. Elle subit 5 (1d10) dégâts de force si elle termine son tour à l'intérieur d'un objet."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "La banshie effectue deux attaques de Contact corrupteur et utilise Horreur."
+      },
+      {
+        "name": "Contact corrupteur",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 7 (1d8 + 3) dégâts nécrotiques."
+      },
+      {
+        "name": "Horreur",
+        "description": "JdS Sagesse : DD 13, une créature que la banshie peut voir dans un rayon de 18 m et qui peut voir la banshie. Échec : la cible subit l'état Effrayé jusqu'au début du prochain tour de la banshie. Réussite : la cible est immunisée contre l'effet Horreur de cette banshie pendant 24 heures."
+      },
+      {
+        "name": "Plainte funeste (1/jour)",
+        "description": "La banshie pousse un gémissement funèbre si elle n'est pas exposée à la lumière du soleil. JdS Constitution : DD 13, chaque créature dans un rayon de 9 m qui peut entendre le gémissement et qui n'est ni un Artificiel ni un Mort-vivant. Échec : si la cible a 25 points de vie ou moins, elle tombe à 0 point de vie. Sinon, elle subit 10 (3d6) dégâts psychiques."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Banshee",
+    "nameEN": "Banshee",
+    "nameES": "Banshee"
+  },
+  {
+    "key": "barlgura",
+    "name": "Barlgura",
+    "type": "Fiélon (Démon)",
+    "size": "G",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 15,
+    "hitPoints": 85,
+    "hitDice": "10d10+30",
+    "initiativeBonus": 2,
+    "speed": "12 m, escalade 12 m",
+    "abilities": {
+      "str": 18,
+      "dex": 15,
+      "con": 16,
+      "int": 7,
+      "wis": 14,
+      "cha": 9,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "-2",
+      "wisMod": "+2",
+      "chaMod": "-1",
+      "strSave": "+4",
+      "dexSave": "+5",
+      "conSave": "+6",
+      "intSave": "-2",
+      "wisSave": "+2",
+      "chaSave": "-1"
+    },
+    "skills": "Perception +5, Discrétion +5",
+    "damageImmunities": "poison",
+    "damageResistances": "froid, feu, foudre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision aveugle 9 m, Vision dans le noir 36 m, Perception passive 15",
+    "languages": "abyssal ; télépathie 36 m",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Restauration démoniaque",
+        "description": "Si le barlgura meurt hors des Abysses, son corps se dissout en ichor et il en acquiert aussitôt un nouveau en revenant à la vie avec tous ses pv, quelque part dans les Abysses."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le barlgura effectue une attaque de Morsure accablante et deux attaques de Rossée."
+      },
+      {
+        "name": "Morsure accablante",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 11 (2d6 + 4) dégâts perforants plus 13 (2d12) dégâts psychiques."
+      },
+      {
+        "name": "Rossée",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 9 (1d10 + 4) dégâts contondants. Si la cible est une créature G ou inférieure, elle subit l'état À terre."
+      },
+      {
+        "name": "Incantation",
+        "description": "Le barlgura lance l'un des sorts suivants sans composantes matérielles, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 13) : 2/jour chacun : déguisement , invisibilité (soi-même uniquement) 1/jour chacun : enchevêtrement , assassin fantasmal (au niveau 6)"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Bond",
+        "description": "Le barlgura effectue un saut d'un maximum de 12 m en dépensant 3 m de déplacement."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Barlgura",
+    "nameEN": "Barlgura",
+    "nameES": "Barlgura"
+  },
+  {
+    "key": "basilic",
+    "name": "Basilic",
+    "type": "Monstruosité",
+    "size": "M",
+    "alignment": "non aligné",
+    "armorClass": 15,
+    "hitPoints": 52,
+    "hitDice": "8d8+16",
+    "initiativeBonus": -1,
+    "speed": "6 m",
+    "abilities": {
+      "str": 16,
+      "dex": 8,
+      "con": 15,
+      "int": 2,
+      "wis": 8,
+      "cha": 7,
+      "strMod": "+3",
+      "dexMod": "-1",
+      "conMod": "+2",
+      "intMod": "-4",
+      "wisMod": "-1",
+      "chaMod": "-2",
+      "strSave": "+3",
+      "dexSave": "-1",
+      "conSave": "+2",
+      "intSave": "-4",
+      "wisSave": "-1",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "aucune",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 10 (2d6 + 3) dégâts perforants plus 7 (2d6) dégâts de poison."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Basilisk",
+    "nameEN": "Basilisco",
+    "nameES": "Basilisco"
+  },
+  {
+    "key": "bec-de-hache-autrache",
+    "name": "Bec de hache|Autrache",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "Non-aligné",
+    "armorClass": 11,
+    "hitPoints": 19,
+    "hitDice": "3d10+3",
+    "initiativeBonus": 1,
+    "speed": "15 m",
+    "abilities": {
+      "str": 14,
+      "dex": 12,
+      "con": 12,
+      "int": 2,
+      "wis": 10,
+      "cha": 5,
+      "strMod": "+2",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+2",
+      "dexSave": "+1",
+      "conSave": "+1",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "—",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Bec",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 6 (1d8 + 2) dégâts tranchants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Axe Beak",
+    "nameEN": "Pico de hacha",
+    "nameES": "Pico de hacha"
+  },
+  {
+    "key": "bec-de-hache-geant-autrache-geante",
+    "name": "Bec de hache géant|Autrache géante",
+    "type": "Monstruosité",
+    "size": "TG",
+    "alignment": "Non-aligné",
+    "armorClass": 15,
+    "hitPoints": 84,
+    "hitDice": "8d12+32",
+    "initiativeBonus": 5,
+    "speed": "15 m",
+    "abilities": {
+      "str": 21,
+      "dex": 14,
+      "con": 19,
+      "int": 3,
+      "wis": 12,
+      "cha": 5,
+      "strMod": "+5",
+      "dexMod": "+2",
+      "conMod": "+4",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "+5",
+      "dexSave": "+2",
+      "conSave": "+4",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 14",
+    "languages": "—",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le bec de hache effectue une attaque de Bec acéré et une attaque de Serres."
+      },
+      {
+        "name": "Bec acéré",
+        "description": "Corps à corps : +8, allonge 3 m. Touché : 18 (2d12 + 5) dégâts tranchants, et une créature dans un rayon de 1,50 m autour de la cible (au choix du bec de hache) reçoit 6 (1d12) dégâts tranchants."
+      },
+      {
+        "name": "Serres",
+        "description": "Corps à corps : +8, allonge 1,50 m. Touché : 14 (2d8 + 5) dégâts perforants. Si la cible est une créature de taille G ou inférieure, elle subit l'état À terre."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Giant Axe Beak",
+    "nameEN": "Pico de hacha gigante",
+    "nameES": "Pico de hacha gigante"
+  },
+  {
+    "key": "behir",
+    "name": "Béhir",
+    "type": "Monstruosité",
+    "size": "TG",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 17,
+    "hitPoints": 168,
+    "hitDice": "16d12+64",
+    "initiativeBonus": 3,
+    "speed": "15 m, escalade 15 m",
+    "abilities": {
+      "str": 23,
+      "dex": 16,
+      "con": 18,
+      "int": 7,
+      "wis": 14,
+      "cha": 12,
+      "strMod": "+6",
+      "dexMod": "+3",
+      "conMod": "+4",
+      "intMod": "-2",
+      "wisMod": "+2",
+      "chaMod": "+1",
+      "strSave": "+6",
+      "dexSave": "+3",
+      "conSave": "+4",
+      "intSave": "-2",
+      "wisSave": "+2",
+      "chaSave": "+1"
+    },
+    "skills": "Perception +6, Discrétion +7",
+    "damageImmunities": "foudre",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 27 m, Perception passive 16",
+    "languages": "draconique",
+    "challengeRating": "11",
+    "xp": "7200",
+    "proficiencyBonus": "+4",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le béhir effectue une attaque de Morsure et recourt à Constriction."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +10, allonge 3 m. Touché : 19 (2d12 + 6) dégâts perforants plus 11 (2d10) dégâts de foudre."
+      },
+      {
+        "name": "Constriction",
+        "description": "JdS Force : DD 18, une créature de taille G ou inférieure que le béhir voit dans un rayon de 1,50 m. Échec : 28 (5d8 + 6) dégâts contondants. La cible subit l'état Agrippé (évasion DD 16), ainsi que l'état Entravé tant qu'elle est agrippée. Souffle de foudre (recharge 5–6) . JdS Dextérité : DD 16, chaque créature dans une Ligne de 27 m de long sur 1,50 m de large. Échec : 66 (12d10) dégâts de foudre. Réussite : demi-dégâts."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Engloutissement",
+        "description": "JdS Dextérité : DD 18, une créature de taille G ou inférieure Agrippée par le béhir (celui-ci ne peut contenir qu'une seule créature engloutie). Échec : le béhir engloutit la cible, qui n'est plus Agrippée. La créature engloutie subit les états Aveuglé et Entravé, bénéficie d'un Abri total contre les attaques et effets émanant de l'extérieur du béhir et subit 21 (6d6) dégâts d'acide au début de chacun des tours du monstre. Si le béhir subit 30 dégâts ou plus lors d'un même tour de la part de la créature engloutie, il doit réussir un jet de sauvegarde de Constitution DD 14 à la fin du tour concerné sous peine de régurgiter la créature, qui se retrouve avec l'état À terre dans un espace situé dans un rayon de 3 m du monstre. Si le béhir meurt, la créature engloutie n'est plus Entravée par lui et peut s'en extraire en dépensant 4,50 m de déplacement pour se retrouver À terre près du cadavre."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Behir",
+    "nameEN": "Behir",
+    "nameES": "Behir"
+  },
+  {
+    "key": "belette-geante",
+    "name": "Belette géante",
+    "type": "Bête",
+    "size": "M",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 9,
+    "hitDice": "2d8",
+    "initiativeBonus": 3,
+    "speed": "12 m, escalade 9 m",
+    "abilities": {
+      "str": 11,
+      "dex": 17,
+      "con": 10,
+      "int": 4,
+      "wis": 12,
+      "cha": 5,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+0",
+      "intMod": "-3",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "+0",
+      "dexSave": "+3",
+      "conSave": "+0",
+      "intSave": "-3",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": "Acrobaties +5, Perception +3, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 13",
+    "languages": "aucune",
+    "challengeRating": "1/8",
+    "xp": "25",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 5 (1d4 + 3) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Giant Weasel",
+    "nameEN": "Comadreja gigante",
+    "nameES": "Comadreja gigante"
+  },
+  {
+    "key": "belette",
+    "name": "Belette",
+    "type": "Bête",
+    "size": "TP",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 1,
+    "hitDice": "1d4-1",
+    "initiativeBonus": 3,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 3,
+      "dex": 16,
+      "con": 8,
+      "int": 2,
+      "wis": 12,
+      "cha": 3,
+      "strMod": "-4",
+      "dexMod": "+3",
+      "conMod": "-1",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-4",
+      "strSave": "-4",
+      "dexSave": "+3",
+      "conSave": "-1",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-4"
+    },
+    "skills": "Acrobaties +5, Perception +3, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 13",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 1 dégât perforant."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Weasel",
+    "nameEN": "Comadreja",
+    "nameES": "Comadreja"
+  },
+  {
+    "key": "berserker-chef",
+    "name": "Berserker, chef",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 136,
+    "hitDice": "16d8+64",
+    "initiativeBonus": 5,
+    "speed": "12 m",
+    "abilities": {
+      "str": 19,
+      "dex": 14,
+      "con": 19,
+      "int": 10,
+      "wis": 14,
+      "cha": 9,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+4",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "-1",
+      "strSave": "+7",
+      "dexSave": "+2",
+      "conSave": "+7",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "-1"
+    },
+    "skills": "Athlétisme +7, Perception +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Effrayé",
+    "senses": "Perception passive 15",
+    "languages": "commun",
+    "challengeRating": "8",
+    "xp": "3900",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Frénésie du péril",
+        "description": "Lorsqu'il est En péril, le berserker a un Avantage aux jets d'attaque et de sauvegarde."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le berserker effectue trois attaques, réparties à sa guise entre Hache à deux mains et Javeline."
+      },
+      {
+        "name": "Hache à deux mains",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 10 (1d12 + 4) dégâts tranchants, plus 10 (3d6) dégâts de tonnerre contre la cible ou une autre créature dans un rayon de 1,50 m autour de la cible."
+      },
+      {
+        "name": "Javeline",
+        "description": "Corps à corps ou à distance : +7, allonge 1,50 m ou portée 30/36 m. Touché : 18 (4d6 + 4) dégâts perforants, et la Vitesse de la cible est réduite de 1,50 m jusqu'au début du prochain tour du berserker."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Ruée frénétique",
+        "description": "Chaque allié dans un rayon de 9 m autour du berserker peut prendre une Réaction pour se déplacer jusqu'à la moitié de sa Vitesse sans provoquer d'attaques d'Opportunité. Le berserker peut également se déplacer jusqu'à la moitié de sa vitesse sans provoquer d'attaques d'Opportunité."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Berserker Commander",
+    "nameEN": "Berserker comandante",
+    "nameES": "Berserker comandante"
+  },
+  {
+    "key": "berserker",
+    "name": "Berserker",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Tout alignement",
+    "armorClass": 13,
+    "hitPoints": 67,
+    "hitDice": "9d8+27",
+    "initiativeBonus": 1,
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 12,
+      "con": 17,
+      "int": 9,
+      "wis": 11,
+      "cha": 9,
+      "strMod": "+3",
+      "dexMod": "+1",
+      "conMod": "+3",
+      "intMod": "-1",
+      "wisMod": "+0",
+      "chaMod": "-1",
+      "strSave": "+3",
+      "dexSave": "+1",
+      "conSave": "+3",
+      "intSave": "-1",
+      "wisSave": "+0",
+      "chaSave": "-1"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "commun",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Frénésie du péril",
+        "description": "Lorsqu'il est En péril, le berserker a un Avantage aux jets d'attaque et de sauvegarde."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Hache à deux mains",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 9 (1d12 + 3) dégâts tranchants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Berserker",
+    "nameEN": "Berserker",
+    "nameES": "Berserker"
+  },
+  {
+    "key": "bete-des-cieux",
+    "name": "Bête des cieux",
+    "type": "Bête",
+    "size": "P",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "3 m, vol 18 m",
+    "abilities": {
+      "str": 6,
+      "dex": 16,
+      "con": 13,
+      "int": 8,
+      "wis": 14,
+      "cha": 11,
+      "strMod": "-2",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "-1",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "-2",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "-1",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "comprend les langues que vous parlez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Repli aérien",
+        "description": "La bête ne provoque pas d'attaque d'Opportunité lorsqu'elle quitte l'allonge d'un ennemi en volant."
+      },
+      {
+        "name": "Lien primordial",
+        "description": "Ajoutez votre bonus de maîtrise à tout jet de caractéristique ou de sauvegarde effectué par la bête."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Bête",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d4 + 3 + votre modificateur de Sagesse dégâts tranchants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024 Beast of the Sky",
+    "nameEN": "Bestia del cielo",
+    "nameES": "Bestia del cielo"
+  },
+  {
+    "key": "bete-des-mers",
+    "name": "Bête des mers",
+    "type": "Bête",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "1,50 m, nage 18 m",
+    "abilities": {
+      "str": 14,
+      "dex": 14,
+      "con": 15,
+      "int": 8,
+      "wis": 14,
+      "cha": 11,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "-1",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+2",
+      "dexSave": "+2",
+      "conSave": "+2",
+      "intSave": "-1",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 27 m, Perception passive 12",
+    "languages": "comprend les langues que vous parlez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "La bête peut respirer sous l'eau comme à l'air libre."
+      },
+      {
+        "name": "Lien primordial",
+        "description": "Ajoutez votre bonus de maîtrise à tout jet de caractéristique ou de sauvegarde effectué par la bête."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Bête",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d6 + 2 + votre modificateur de Sagesse dégâts contondants ou perforants (à votre choix lorsque vous invoquez la bête), et la cible subit l'état Agrippé (évasion DD égal à votre DD de sauvegarde des sorts)."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024 Beast of the Sea",
+    "nameEN": "Bestia de los mares",
+    "nameES": "Bestia de los mares"
+  },
+  {
+    "key": "bete-des-terres",
+    "name": "Bête des terres",
+    "type": "Bête",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "12 m, escalade 12 m",
+    "abilities": {
+      "str": 14,
+      "dex": 14,
+      "con": 15,
+      "int": 8,
+      "wis": 14,
+      "cha": 11,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "-1",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+2",
+      "dexSave": "+2",
+      "conSave": "+2",
+      "intSave": "-1",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "comprend les langues que vous parlez",
+    "challengeRating": null,
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [
+      {
+        "name": "Lien primordial",
+        "description": "Ajoutez votre bonus de maîtrise à tout jet de caractéristique ou de sauvegarde effectué par la bête."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Bête",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + 2 + votre modificateur de Sagesse dégâts contondants, perforants ou tranchants (à votre choix lorsque vous invoquez la bête). Si la bête s'est déplacée d'au moins 6 m en ligne droite vers la cible avant de la toucher, la cible subit 1d6 dégâts supplémentaires du même type et l'état À terre si elle est de taille G ou inférieure."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024 Beast of the Land",
+    "nameEN": "Bestia de tierra firme",
+    "nameES": "Bestia de tierra firme"
+  },
+  {
+    "key": "bete-eclipsante",
+    "name": "Bête éclipsante",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 13,
+    "hitPoints": 76,
+    "hitDice": "9d10+27",
+    "initiativeBonus": 4,
+    "speed": "12 m",
+    "abilities": {
+      "str": 18,
+      "dex": 15,
+      "con": 16,
+      "int": 6,
+      "wis": 12,
+      "cha": 8,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "-2",
+      "wisMod": "+1",
+      "chaMod": "-1",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "-2",
+      "wisSave": "+1",
+      "chaSave": "-1"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 11",
+    "languages": "comprend le sylvestre mais ne parle pas",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Évitement",
+        "description": "Si la bête éclipsante est soumise à un effet lui permettant d'effectuer un jet de sauvegarde pour ne subir que la moitié des dégâts, elle ne subit aucun dégât en cas de réussite et la moitié en cas d'échec. Elle ne peut pas utiliser cette capacité si elle subit l'état Incapable d'agir."
+      },
+      {
+        "name": "Décalage",
+        "description": "Les jets d'attaque contre la bête éclipsante ont un Désavantage, car elle projette une illusion la faisant apparaître proche de son emplacement réel. Cet effet est supprimé si la bête éclipsante subit l'effet Incapable d'agir."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "La bête éclipsante effectue une attaque de Saignée et une attaque de Tentacule."
+      },
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 9 (1d10 + 4) dégâts tranchants. Si la cible est une créature de taille G ou inférieure, elle subit l'état À terre."
+      },
+      {
+        "name": "Tentacule",
+        "description": "Corps à corps : +6, allonge 3 m. Touché : 11 (2d6 + 4) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Displacer Beast",
+    "nameEN": "Bestia trémula",
+    "nameES": "Bestia trémula"
+  },
+  {
+    "key": "blaireau-geant",
+    "name": "Blaireau géant",
+    "type": "Bête",
+    "size": "M",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 15,
+    "hitDice": "2d8+6",
+    "initiativeBonus": 0,
+    "speed": "9 m, fouissement 3 m",
+    "abilities": {
+      "str": 13,
+      "dex": 10,
+      "con": 17,
+      "int": 2,
+      "wis": 12,
+      "cha": 5,
+      "strMod": "+1",
+      "dexMod": "+0",
+      "conMod": "+3",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "+1",
+      "dexSave": "+0",
+      "conSave": "+3",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +3",
+    "damageImmunities": null,
+    "damageResistances": "poison",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 13",
+    "languages": "aucune",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +3, allonge 1,50 m. Touché : 6 (2d4 + 1) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Giant Badger",
+    "nameEN": "Tejón gigante",
+    "nameES": "Tejón gigante"
+  },
+  {
+    "key": "blaireau",
+    "name": "Blaireau",
+    "type": "Bête",
+    "size": "TP",
+    "alignment": "non aligné",
+    "armorClass": 11,
+    "hitPoints": 5,
+    "hitDice": "1d4+3",
+    "initiativeBonus": 0,
+    "speed": "6 m, fouissement 1,50 m",
+    "abilities": {
+      "str": 10,
+      "dex": 11,
+      "con": 16,
+      "int": 2,
+      "wis": 12,
+      "cha": 5,
+      "strMod": "+0",
+      "dexMod": "+0",
+      "conMod": "+3",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "+0",
+      "dexSave": "+0",
+      "conSave": "+3",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +3",
+    "damageImmunities": null,
+    "damageResistances": "poison",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 9 m, Perception passive 13",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +2, allonge 1,50 m. Touché : 1 dégât perforant."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Badger",
+    "nameEN": "Tejón",
+    "nameES": "Tejón"
+  },
+  {
+    "key": "bleme-fossoyeuse",
+    "name": "Blême fossoyeuse",
+    "type": "Mort-vivant",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 16,
+    "hitPoints": 97,
+    "hitDice": "15d8+30",
+    "initiativeBonus": 3,
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 17,
+      "con": 14,
+      "int": 18,
+      "wis": 14,
+      "cha": 8,
+      "strMod": "+3",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "+4",
+      "wisMod": "+2",
+      "chaMod": "-1",
+      "strSave": "+3",
+      "dexSave": "+3",
+      "conSave": "+5",
+      "intSave": "+4",
+      "wisSave": "+5",
+      "chaSave": "-1"
+    },
+    "skills": null,
+    "damageImmunities": "nécrotique, poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Empoisonné",
+    "senses": "Vision dans le noir 36 m, Perception passive 12",
+    "languages": "abyssal, commun",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Traits",
+        "description": "Puanteur."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Actions",
+        "description": "Attaques multiples. Griffe. Nécrose effroyable. Incantation."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Ghast Gravecaller",
+    "nameEN": "Ghast llamatumbas",
+    "nameES": "Ghast llamatumbas"
+  },
+  {
+    "key": "bleme",
+    "name": "Blême",
+    "type": "Mort-vivant",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 13,
+    "hitPoints": 36,
+    "hitDice": "8d8",
+    "initiativeBonus": 3,
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 17,
+      "con": 10,
+      "int": 11,
+      "wis": 10,
+      "cha": 8,
+      "strMod": "+3",
+      "dexMod": "+3",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "-1",
+      "strSave": "+3",
+      "dexSave": "+3",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "-1"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": "nécrotique",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "commun",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Puanteur",
+        "description": "JdS Constitution : DD 10, toute créature qui commence son tour dans une Émanation de 1,50 m centrée sur la blême. Échec : la cible subit l'état Empoisonné jusqu'au début de son tour suivant. Réussite : la cible est immunisée contre la puanteur de cette blême pendant 24 heures."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Griffe",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 10 (2d6 + 3) dégâts tranchants. Si la cible est une créature autre qu'un Mort-vivant, elle est soumise à l'effet suivant. JdS Constitution : DD 10. Échec : la cible subit l'état Paralysé jusqu'à la fin de son tour suivant."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 7 (1d8 + 3) dégâts perforants plus 9 (2d8) dégâts nécrotiques."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Ghast",
+    "nameEN": "Ghast",
+    "nameES": "Ghast"
+  },
+  {
+    "key": "blob-d-annihilation",
+    "name": "Blob d'annihilation",
+    "type": "Vase (Titan)",
+    "size": "Gig",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 18,
+    "hitPoints": 448,
+    "hitDice": "23d20+207",
+    "initiativeBonus": 16,
+    "speed": "9 m",
+    "abilities": {
+      "str": 27,
+      "dex": 14,
+      "con": 28,
+      "int": 10,
+      "wis": 16,
+      "cha": 10,
+      "strMod": "+8",
+      "dexMod": "+2",
+      "conMod": "+9",
+      "intMod": "+0",
+      "wisMod": "+3",
+      "chaMod": "+0",
+      "strSave": "+8",
+      "dexSave": "+9",
+      "conSave": "+16",
+      "intSave": "+0",
+      "wisSave": "+3",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": "acide, nécrotique, poison",
+    "damageResistances": "contondant, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé, Étourdi, Inconscient",
+    "senses": "Vision aveugle 36 m, Perception passive 13",
+    "languages": "—",
+    "challengeRating": "23",
+    "xp": "50000",
+    "proficiencyBonus": "+7",
+    "traits": [
+      {
+        "name": "Traits",
+        "description": "Implosion astrale. Résistance légendaire (4/jour). Résistance à la magie."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Actions",
+        "description": "Attaques multiples. Pseudopode. Enveloppement. Amas entraveur."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [
+      {
+        "name": "Actions Légendaires",
+        "description": "Utilisations d'action Légendaire : 3. Décomposition. Chiquenaude visqueuse. Happement."
+      }
+    ],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Blob of Annihilation",
+    "nameEN": "Amasijo de aniquilación",
+    "nameES": "Amasijo de aniquilación"
+  },
+  {
+    "key": "brutacien-combattant",
+    "name": "Brutacien, combattant",
+    "type": "Fée",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 15,
+    "hitPoints": 11,
+    "hitDice": "2d8+2",
+    "initiativeBonus": 2,
+    "speed": "9 m, nage 9 m",
+    "abilities": {
+      "str": 12,
+      "dex": 14,
+      "con": 13,
+      "int": 7,
+      "wis": 10,
+      "cha": 7,
+      "strMod": "+1",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "-2",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+1",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "-2",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": "Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "brutacien, commun",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "Le brutacien peut respirer sous l'eau comme à l'air libre."
+      },
+      {
+        "name": "Communication avec les grenouilles et les crapauds",
+        "description": "Le brutacien peut communiquer des idées simples aux grenouilles et aux crapauds lorsqu'il s'exprime en brutacien."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Rapière venimeuse",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 6 (1d8 + 2) dégâts perforants plus 2 (1d4) dégâts de poison."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Bond",
+        "description": "Le brutacien effectue un saut d'un maximum de 9 m en dépensant 3 m de déplacement."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Bullywug Warrior",
+    "nameEN": "Bullywug guerrero",
+    "nameES": "Bullywug guerrero"
+  },
+  {
+    "key": "brutacien-sage-du-marais",
+    "name": "Brutacien, sage du marais",
+    "type": "Fée",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 16,
+    "hitPoints": 52,
+    "hitDice": "8d8+16",
+    "initiativeBonus": 3,
+    "speed": "9 m, nage 9 m",
+    "abilities": {
+      "str": 8,
+      "dex": 16,
+      "con": 14,
+      "int": 10,
+      "wis": 16,
+      "cha": 12,
+      "strMod": "-1",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "+0",
+      "wisMod": "+3",
+      "chaMod": "+1",
+      "strSave": "-1",
+      "dexSave": "+3",
+      "conSave": "+4",
+      "intSave": "+0",
+      "wisSave": "+5",
+      "chaSave": "+1"
+    },
+    "skills": "Nature +4, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 13",
+    "languages": "brutacien, commun, sylvestre",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Amphibie",
+        "description": "Le brutacien peut respirer sous l'eau comme à l'air libre."
+      },
+      {
+        "name": "Communication avec les grenouilles et les crapauds",
+        "description": "Le brutacien peut communiquer des idées simples aux grenouilles et aux crapauds lorsqu'il s'exprime en brutacien."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le brutacien effectue deux attaques de Bâton du marais."
+      },
+      {
+        "name": "Bâton du marais",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 7 (1d8 + 3) dégâts contondants plus 10 (3d6) dégâts de poison."
+      },
+      {
+        "name": "Incantation",
+        "description": "Le brutacien lance l'un des sorts suivants, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 13, +5 pour toucher) : À volonté : druidisme , lumières dansantes, rayon empoisonné 1/jour chacun : communication avec les plantes, sphère de vitriol"
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Bond",
+        "description": "Le brutacien effectue un saut d'un maximum de 9 m en dépensant 3 m de déplacement."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Bullywug Bog Sage",
+    "nameEN": "Bullywug erudito del pantano",
+    "nameES": "Bullywug erudito del pantano"
+  },
+  {
+    "key": "bulette",
+    "name": "Bulette",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "Non-aligné",
+    "armorClass": 17,
+    "hitPoints": 94,
+    "hitDice": "9d10+45",
+    "initiativeBonus": 0,
+    "speed": "12 m, creusement 12 m",
+    "abilities": {
+      "str": 19,
+      "dex": 11,
+      "con": 21,
+      "int": 2,
+      "wis": 10,
+      "cha": 5,
+      "strMod": "+4",
+      "dexMod": "+0",
+      "conMod": "+5",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+4",
+      "dexSave": "+0",
+      "conSave": "+5",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, perception des vibrations 36 m, Perception passive 16",
+    "languages": "—",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "La bulette effectue deux attaques de Morsure."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 17 (2d12 + 4) dégâts perforants."
+      },
+      {
+        "name": "Saut meurtrier",
+        "description": "Au prix de 1,50 m de déplacement, la bulette saute en un espace situé dans un rayon de 4,50 m et contenant une ou plusieurs créatures de taille G ou inférieure. JdS Dextérité : DD 15, chaque créature dans l'espace de destination de la bulette. Échec : 19 (3d12) dégâts contondants, et la cible subit l'état À terre. Réussite : demi-dégâts, et la cible est repoussée sur 1,50 m en ligne droite de la bulette."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Bond",
+        "description": "La bulette effectue un saut d'un maximum de 9 m en dépensant 3 m de déplacement."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Bulette",
+    "nameEN": "Bulette",
+    "nameES": "Bulette"
+  },
+  {
+    "key": "bulettiot",
+    "name": "Bulettiot",
+    "type": "Monstruosité",
+    "size": "M",
+    "alignment": "Non-aligné",
+    "armorClass": 16,
+    "hitPoints": 45,
+    "hitDice": "6d8+18",
+    "initiativeBonus": -1,
+    "speed": "9 m, creusement 6 m",
+    "abilities": {
+      "str": 16,
+      "dex": 8,
+      "con": 17,
+      "int": 2,
+      "wis": 10,
+      "cha": 4,
+      "strMod": "+3",
+      "dexMod": "-1",
+      "conMod": "+3",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+3",
+      "dexSave": "-1",
+      "conSave": "+3",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 9 m, perception des vibrations 18 m, Perception passive 14",
+    "languages": "—",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Actions",
+        "description": "Morsure."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Actions Bonus",
+        "description": "Bond."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Bulette Pup",
+    "nameEN": "Bulette cachorro",
+    "nameES": "Bulette cachorro"
+  },
+  {
+    "key": "calamar-geant",
+    "name": "Calamar géant",
+    "type": "Bête",
+    "size": "TG",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 120,
+    "hitDice": "16d12+16",
+    "initiativeBonus": 2,
+    "speed": "1,50 m, nage 24 m",
+    "abilities": {
+      "str": 23,
+      "dex": 14,
+      "con": 12,
+      "int": 5,
+      "wis": 11,
+      "cha": 4,
+      "strMod": "+6",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "-3",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+9",
+      "dexSave": "+5",
+      "conSave": "+1",
+      "intSave": "-3",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 16",
+    "languages": "aucune",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Respiration aquatique",
+        "description": "Le calamar ne peut respirer que sous l'eau."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le calamar effectue une attaque de Morsure et une de Tentacule."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +9, allonge 1,50 m. Touché : 28 (4d10 + 6) dégâts perforants."
+      },
+      {
+        "name": "Tentacule",
+        "description": "Corps à corps : +9, allonge 4,50 m. Touché : 19 (3d8 + 6) dégâts contondants. Si la cible est une créature TG ou inférieure, elle subit l'état Agrippé (évasion DD 16) par l'un des deux tentacules, et le calmar peut tirer la cible de jusqu'à 3 m vers lui."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Nuage d'encre (1/jour)",
+        "description": "Déclencheur : le calmar subit des dégâts alors qu'il est sous l'eau. Conséquences : le calmar libère de l'encre qui remplit un cube de 4,50 m de côté centré sur lui, puis il se déplace de sa Vitesse de nage. Le cube est une zone à Visibilité nulle pendant 1 minute ou jusqu'à ce qu'un fort courant fort ou autre phénomène similaire disperse l'encre."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Giant Squid",
+    "nameEN": "Calamar gigante",
+    "nameES": "Calamar gigante"
+  },
+  {
+    "key": "cambion",
+    "name": "Cambion",
+    "type": "Fiélon",
+    "size": "M",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 19,
+    "hitPoints": 105,
+    "hitDice": "14d8+42",
+    "initiativeBonus": 4,
+    "speed": "9 m, vol 18 m",
+    "abilities": {
+      "str": 18,
+      "dex": 18,
+      "con": 16,
+      "int": 14,
+      "wis": 12,
+      "cha": 16,
+      "strMod": "+4",
+      "dexMod": "+4",
+      "conMod": "+3",
+      "intMod": "+2",
+      "wisMod": "+1",
+      "chaMod": "+3",
+      "strSave": "+7",
+      "dexSave": "+4",
+      "conSave": "+6",
+      "intSave": "+5",
+      "wisSave": "+1",
+      "chaSave": "+6"
+    },
+    "skills": "Tromperie +6, Perception +4, Discrétion +7",
+    "damageImmunities": null,
+    "damageResistances": "froid, feu, foudre, poison",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision dans le noir 36 m, Perception passive 14",
+    "languages": "abyssal, commun, infernal",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le cambion effectue deux attaques, réparties à sa guise entre Griffe et Rayon de feu."
+      },
+      {
+        "name": "Griffe",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 8 (1d8 + 4) dégâts tranchants plus 7 (2d6) dégâts de feu."
+      },
+      {
+        "name": "Rayon de feu",
+        "description": "À distance : +7, portée 36 m. Touché : 13 (3d6 + 3) dégâts de feu."
+      },
+      {
+        "name": "Incantation",
+        "description": "Le cambion lance l'un des sorts suivants sans composantes matérielles, le Charisme étant sa caractéristique d'incantation (DD de sauvegarde 14) : 2/jour chacun : modification d'apparence , injonction (au niveau 3), détection de la magie 1/jour chacun : domination de personne (au niveau 8), changement de plan (soi-même uniquement)"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Cambion",
+    "nameEN": "Cambion",
+    "nameES": "Cambion"
+  },
+  {
+    "key": "cataclysme-elementaire",
+    "name": "Cataclysme élémentaire",
+    "type": "Élémentaire (Titan)",
+    "size": "Gig",
+    "alignment": "Chaotique Neutre",
+    "armorClass": 20,
+    "hitPoints": 370,
+    "hitDice": "20d20+160",
+    "initiativeBonus": 18,
+    "speed": "18 m, creusement 18 m, vol 24 m (stationnaire), nage 24 m",
+    "abilities": {
+      "str": 26,
+      "dex": 19,
+      "con": 27,
+      "int": 9,
+      "wis": 14,
+      "cha": 9,
+      "strMod": "+8",
+      "dexMod": "+4",
+      "conMod": "+8",
+      "intMod": "-1",
+      "wisMod": "+2",
+      "chaMod": "-1",
+      "strSave": "+8",
+      "dexSave": "+11",
+      "conSave": "+15",
+      "intSave": "-1",
+      "wisSave": "+9",
+      "chaSave": "+6"
+    },
+    "skills": null,
+    "damageImmunities": "acide, froid, feu, foudre, poison, tonnerre",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Aveuglé, Charmé, Assourdi, Épuisement, Effrayé, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé, Étourdi, Inconscient",
+    "senses": "vision véritable 45 m, Perception passive 12",
+    "languages": "primordial",
+    "challengeRating": "22",
+    "xp": "41000",
+    "proficiencyBonus": "+7",
+    "traits": [
+      {
+        "name": "Traits",
+        "description": "Déplacement tellurique. Résistance légendaire (4/jour). Monstre de siège."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Actions",
+        "description": "Attaques multiples. Décharge élémentaire. Événement cataclysmique (recharge 4–6). Contrôle du climat."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [
+      {
+        "name": "Actions Légendaires",
+        "description": "Utilisations d'action Légendaire : 3. Éruption. Déplacement cataclysmal."
+      }
+    ],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Elemental Cataclysm",
+    "nameEN": "Cataclismo elemental",
+    "nameES": "Cataclismo elemental"
+  },
+  {
+    "key": "centaure-gardien",
+    "name": "Centaure, gardien",
+    "type": "Fée",
+    "size": "G",
+    "alignment": "Neutre Bon",
+    "armorClass": 16,
+    "hitPoints": 105,
+    "hitDice": "14d10+28",
+    "initiativeBonus": 2,
+    "speed": "15 m",
+    "abilities": {
+      "str": 18,
+      "dex": 14,
+      "con": 14,
+      "int": 9,
+      "wis": 18,
+      "cha": 11,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "-1",
+      "wisMod": "+4",
+      "chaMod": "+0",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+5",
+      "intSave": "-1",
+      "wisSave": "+7",
+      "chaSave": "+0"
+    },
+    "skills": "Athlétisme +7, Nature +5, Perception +7",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 17",
+    "languages": "druidique, elfe, sylvestre",
+    "challengeRating": "7",
+    "xp": "2900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le centaure effectue deux attaques, réparties à sa guise entre Bâton forestier et Rayon du soleil."
+      },
+      {
+        "name": "Bâton forestier",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 13 (2d8 + 4) dégâts contondants plus 14 (4d6) dégâts de poison."
+      },
+      {
+        "name": "Rayon du soleil",
+        "description": "À distance : +7, portée 27 m. Touché : 14 (3d6 + 4) dégâts radiants, et la cible subit l'état Aveuglé jusqu'au début du prochain tour du centaure."
+      },
+      {
+        "name": "Incantation",
+        "description": "Le centaure lance l'un des sorts suivants, la Sagesse étant sa caractéristique d'incantation (DD de sauvegarde 15) : À volonté : druidisme , communication avec les animaux"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Centaur Warden",
+    "nameEN": "Centauro guardián",
+    "nameES": "Centauro guardián"
+  },
+  {
+    "key": "centaure-soldat",
+    "name": "Centaure, soldat",
+    "type": "Fée",
+    "size": "G",
+    "alignment": "Neutre Bon",
+    "armorClass": 16,
+    "hitPoints": 45,
+    "hitDice": "6d10+12",
+    "initiativeBonus": 2,
+    "speed": "15 m",
+    "abilities": {
+      "str": 18,
+      "dex": 14,
+      "con": 14,
+      "int": 9,
+      "wis": 13,
+      "cha": 11,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "-1",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+2",
+      "intSave": "-1",
+      "wisSave": "+1",
+      "chaSave": "+0"
+    },
+    "skills": "Athlétisme +6, Perception +3",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 13",
+    "languages": "elfe, sylvestre",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le centaure effectue deux attaques, réparties à sa guise entre Pique et Arc long."
+      },
+      {
+        "name": "Pique",
+        "description": "Corps à corps : +6, allonge 3 m. Touché : 9 (1d10 + 4) dégâts perforants."
+      },
+      {
+        "name": "Arc long",
+        "description": "À distance : +4, portée 45/180 m. Touché : 6 (1d8 + 2) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Centaur Trooper",
+    "nameEN": "Centauro soldado",
+    "nameES": "Centauro soldado"
+  },
+  {
+    "key": "cerf-petit-cervide",
+    "name": "Cerf|Petit cervidé",
+    "type": "Bête",
+    "size": "M",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 4,
+    "hitDice": "1d8",
+    "initiativeBonus": 3,
+    "speed": "15 m",
+    "abilities": {
+      "str": 11,
+      "dex": 16,
+      "con": 11,
+      "int": 2,
+      "wis": 14,
+      "cha": 5,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+0",
+      "intMod": "-4",
+      "wisMod": "+2",
+      "chaMod": "-3",
+      "strSave": "+0",
+      "dexSave": "+3",
+      "conSave": "+0",
+      "intSave": "-4",
+      "wisSave": "+2",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 14",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Agile",
+        "description": "Le cerf ne provoque pas d'attaque d'Opportunité lorsqu'il quitte l'allonge d'un ennemi en se déplaçant."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Coup de bélier",
+        "description": "Corps à corps : +2, allonge 1,50 m. Touché : 2 (1d4) dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Deer",
+    "nameEN": "Ciervo",
+    "nameES": "Ciervo"
+  },
+  {
+    "key": "chacal",
+    "name": "Chacal",
+    "type": "Bête",
+    "size": "P",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 3,
+    "hitDice": "1d6",
+    "initiativeBonus": 2,
+    "speed": "12 m",
+    "abilities": {
+      "str": 8,
+      "dex": 15,
+      "con": 11,
+      "int": 3,
+      "wis": 12,
+      "cha": 6,
+      "strMod": "-1",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "-1",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +5, Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 27 m, Perception passive 15",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +1, allonge 1,50 m. Touché : 1 (1d4 – 1) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Jackal",
+    "nameEN": "Chacal",
+    "nameES": "Chacal"
+  },
+  {
+    "key": "chameau",
+    "name": "Chameau",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 10,
+    "hitPoints": 17,
+    "hitDice": "2d10+6",
+    "initiativeBonus": -1,
+    "speed": "15 m",
+    "abilities": {
+      "str": 15,
+      "dex": 8,
+      "con": 17,
+      "int": 2,
+      "wis": 11,
+      "cha": 5,
+      "strMod": "+2",
+      "dexMod": "-1",
+      "conMod": "+3",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+2",
+      "dexSave": "-1",
+      "conSave": "+5",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "aucune",
+    "challengeRating": "1/8",
+    "xp": "25",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 4 (1d4 + 2) dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Camel",
+    "nameEN": "Camello",
+    "nameES": "Camello"
+  },
+  {
+    "key": "charognard-rampant",
+    "name": "Charognard rampant",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 51,
+    "hitDice": "6d10+18",
+    "initiativeBonus": 1,
+    "speed": "9 m, escalade 9 m",
+    "abilities": {
+      "str": 14,
+      "dex": 13,
+      "con": 16,
+      "int": 1,
+      "wis": 12,
+      "cha": 5,
+      "strMod": "+2",
+      "dexMod": "+1",
+      "conMod": "+3",
+      "intMod": "-5",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "+2",
+      "dexSave": "+1",
+      "conSave": "+3",
+      "intSave": "-5",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 15",
+    "languages": "aucune",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Pattes d'araignée",
+        "description": "Le charognard rampant peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le charognard rampant recourt à Tentacules paralysants et effectue une attaque de Morsure."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 7 (2d4 + 2) dégâts perforants plus 3 (1d6) dégâts de poison."
+      },
+      {
+        "name": "Tentacules paralysants",
+        "description": "JdS Constitution : DD 12, une créature que le charognard rampant voit dans un rayon de 3 m. Échec : la cible subit l'état Empoisonné et réitère le JdS à la fin de chacun de ses tours ; elle met un terme à l'effet sur elle-même en cas de réussite. Au bout de 1 minute, elle réussit automatiquement ce JdS. Tant qu'elle est ainsi Empoisonnée, la cible subit l'état Paralysé."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Carrion Crawler",
+    "nameEN": "Carroñero reptante",
+    "nameES": "Carroñero reptante"
+  },
+  {
+    "key": "chasme",
+    "name": "Chasme",
+    "type": "Fiélon (Démon)",
+    "size": "G",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 15,
+    "hitPoints": 78,
+    "hitDice": "12d10+12",
+    "initiativeBonus": 5,
+    "speed": "6 m, vol 18 m",
+    "abilities": {
+      "str": 15,
+      "dex": 15,
+      "con": 12,
+      "int": 11,
+      "wis": 14,
+      "cha": 10,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+2",
+      "dexSave": "+5",
+      "conSave": "+1",
+      "intSave": "+0",
+      "wisSave": "+5",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +5",
+    "damageImmunities": "poison",
+    "damageResistances": "froid, feu, foudre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Empoisonné",
+    "senses": "Vision aveugle 3 m, Vision dans le noir 36 m, Perception passive 15",
+    "languages": "abyssal ; télépathie 36 m",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Restauration démoniaque",
+        "description": "Si le chasme meurt hors des Abysses, son corps se dissout en ichor et il en acquiert aussitôt un nouveau en revenant à la vie avec tous ses pv, quelque part dans les Abysses."
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "Le chasme a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques."
+      },
+      {
+        "name": "Pattes d'araignée",
+        "description": "Le chasme peut parcourir les parois les plus difficiles à escalader, y compris les plafonds, sans passer par un jet de caractéristique."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Trompe",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 16 (4d6 + 2) dégâts perforants plus 21 (6d6) dégâts nécrotiques. Si la cible est une créature, son maximum de points de vie diminue d'un montant égal aux dégâts nécrotiques subis."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Bourdonnement",
+        "description": "JdS Constitution : DD 12, chaque créature dans une Émanation de 9 m centrée sur le chasme (les démons réussissent automatiquement ce jet). Échec : la cible subit l'état Inconscient et doit refaire le jet à la fin de chacun de ses tours. Elle réussit automatiquement après 10 minutes, ou si elle subit des dégâts, ou encore si une créature dans un rayon de 1,50 m autour d'elle prend une action pour vider une fiole d'eau bénite sur elle. Réussite : la cible est immunisée contre le Bourdonnement de ce chasme pendant 24 heures."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Chasme",
+    "nameEN": "Chasme",
+    "nameES": "Chasme"
+  },
+  {
+    "key": "chat",
+    "name": "Chat",
+    "type": "Bête",
+    "size": "TP",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 2,
+    "hitDice": "1d4",
+    "initiativeBonus": 2,
+    "speed": "12 m, escalade 12 m",
+    "abilities": {
+      "str": 3,
+      "dex": 15,
+      "con": 10,
+      "int": 3,
+      "wis": 12,
+      "cha": 7,
+      "strMod": "-4",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "-4",
+      "dexSave": "+4",
+      "conSave": "+0",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +3, Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 13",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Sauteur",
+        "description": "La distance de saut du chat est déterminée en utilisant sa Dextérité au lieu de sa Force."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Éraflure",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 1 dégât tranchant."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Cat",
+    "nameEN": "Gato",
+    "nameES": "Gato"
+  },
+  {
+    "key": "chauve-souris-geante",
+    "name": "Chauve-souris géante",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 13,
+    "hitPoints": 22,
+    "hitDice": "4d10",
+    "initiativeBonus": 3,
+    "speed": "3 m, vol 18 m",
+    "abilities": {
+      "str": 15,
+      "dex": 16,
+      "con": 11,
+      "int": 2,
+      "wis": 12,
+      "cha": 6,
+      "strMod": "+2",
+      "dexMod": "+3",
+      "conMod": "+0",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "+2",
+      "dexSave": "+3",
+      "conSave": "+0",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision aveugle 36 m, Perception passive 11",
+    "languages": "aucune",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 6 (1d6 + 3) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Giant Bat",
+    "nameEN": "Murciélago gigante",
+    "nameES": "Murciélago gigante"
+  },
+  {
+    "key": "chauve-souris",
+    "name": "Chauve-souris",
+    "type": "Bête",
+    "size": "TP",
+    "alignment": "non aligné",
+    "armorClass": 12,
+    "hitPoints": 1,
+    "hitDice": "1d4-1",
+    "initiativeBonus": 2,
+    "speed": "1,50 m, vol 9 m",
+    "abilities": {
+      "str": 2,
+      "dex": 15,
+      "con": 8,
+      "int": 2,
+      "wis": 12,
+      "cha": 4,
+      "strMod": "-4",
+      "dexMod": "+2",
+      "conMod": "-1",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-3",
+      "strSave": "-4",
+      "dexSave": "+2",
+      "conSave": "-1",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision aveugle 18 m, Perception passive 11",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 1 dégât perforant."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Bat",
+    "nameEN": "Murciélago",
+    "nameES": "Murciélago"
+  },
+  {
+    "key": "cheval-de-guerre-destrier",
+    "name": "Cheval de guerre|Destrier",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 11,
+    "hitPoints": 19,
+    "hitDice": "3d10+3",
+    "initiativeBonus": 1,
+    "speed": "18 m",
+    "abilities": {
+      "str": 18,
+      "dex": 12,
+      "con": 13,
+      "int": 2,
+      "wis": 12,
+      "cha": 7,
+      "strMod": "+4",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "+4",
+      "dexSave": "+1",
+      "conSave": "+1",
+      "intSave": "-4",
+      "wisSave": "+3",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 11",
+    "languages": "aucune",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Sabots",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 9 (2d4 + 4) dégâts contondants. Si le cheval s'est déplacé d'au moins 6 m en ligne droite vers la cible juste avant de la toucher, la cible subit 5 (2d4) dégâts contondants supplémentaires et, si elle est de taille TG ou inférieure, elle subit l'état À terre."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Warhorse",
+    "nameEN": "Caballo de guerra",
+    "nameES": "Caballo de guerra"
+  },
+  {
+    "key": "cheval-de-guerre-squelette",
+    "name": "Cheval de guerre squelette",
+    "type": "Mort-vivant",
+    "size": "G",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 13,
+    "hitPoints": 22,
+    "hitDice": "3d10+6",
+    "initiativeBonus": 1,
+    "speed": "18 m",
+    "abilities": {
+      "str": 18,
+      "dex": 12,
+      "con": 15,
+      "int": 2,
+      "wis": 8,
+      "cha": 5,
+      "strMod": "+4",
+      "dexMod": "+1",
+      "conMod": "+2",
+      "intMod": "-4",
+      "wisMod": "-1",
+      "chaMod": "-3",
+      "strSave": "+4",
+      "dexSave": "+1",
+      "conSave": "+2",
+      "intSave": "-4",
+      "wisSave": "-1",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": null,
+    "damageVulnerabilities": "contondant",
+    "conditionImmunities": "Épuisement, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "aucune",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Sabots",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 7 (1d6 + 4) dégâts contondants. Si la cible est une créature de taille G ou inférieure et si le squelette s'est déplacé en ligne droite d'un minimum de 6 m juste avant de la toucher, la cible subit l'état À terre."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Warhorse Skeleton",
+    "nameEN": "Caballo de guerra esqueleto",
+    "nameES": "Caballo de guerra esqueleto"
+  },
+  {
+    "key": "cheval-de-selle",
+    "name": "Cheval de selle",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 11,
+    "hitPoints": 13,
+    "hitDice": "2d10+2",
+    "initiativeBonus": 1,
+    "speed": "18 m",
+    "abilities": {
+      "str": 16,
+      "dex": 13,
+      "con": 12,
+      "int": 2,
+      "wis": 11,
+      "cha": 7,
+      "strMod": "+3",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+3",
+      "dexSave": "+1",
+      "conSave": "+1",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "aucune",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Sabots",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 7 (1d8 + 3) dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Riding Horse",
+    "nameEN": "Caballo de monta",
+    "nameES": "Caballo de monta"
+  },
+  {
+    "key": "cheval-de-trait",
+    "name": "Cheval de trait",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 10,
+    "hitPoints": 15,
+    "hitDice": "2d10+4",
+    "initiativeBonus": 0,
+    "speed": "12 m",
+    "abilities": {
+      "str": 18,
+      "dex": 10,
+      "con": 15,
+      "int": 2,
+      "wis": 11,
+      "cha": 7,
+      "strMod": "+4",
+      "dexMod": "+0",
+      "conMod": "+2",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+4",
+      "dexSave": "+0",
+      "conSave": "+2",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "aucune",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Sabots",
+        "description": "Corps à corps : +6, allonge 1,50 m. Touché : 6 (1d4 + 4) dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Draft Horse",
+    "nameEN": "Caballo de tiro",
+    "nameES": "Caballo de tiro"
+  },
+  {
+    "key": "chevalier-de-la-mort-aspirant",
+    "name": "Chevalier de la mort, aspirant",
+    "type": "Mort-vivant",
+    "size": "M ou P",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 20,
+    "hitPoints": 178,
+    "hitDice": "21d8+84",
+    "initiativeBonus": 4,
+    "speed": "9 m",
+    "abilities": {
+      "str": 20,
+      "dex": 10,
+      "con": 18,
+      "int": 10,
+      "wis": 12,
+      "cha": 16,
+      "strMod": "+5",
+      "dexMod": "+0",
+      "conMod": "+4",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+3",
+      "strSave": "+5",
+      "dexSave": "+4",
+      "conSave": "+4",
+      "intSave": "+0",
+      "wisSave": "+5",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": "nécrotique, poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Effrayé, Empoisonné",
+    "senses": "Vision dans le noir 36 m, Perception passive 11",
+    "languages": "abyssal, commun",
+    "challengeRating": "11",
+    "xp": "7200",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Traits",
+        "description": "Résistance à la magie. Brigade des morts-vivants."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Actions",
+        "description": "Attaques multiples. Lame d'épouvante. Orbe de feu infernal (recharge 5–6). Incantation."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Réactions",
+        "description": "Parade."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Death Knight Aspirant",
+    "nameEN": "Caballero de la muerte aspirante",
+    "nameES": "Caballero de la muerte aspirante"
+  },
+  {
+    "key": "chevalier-de-la-mort",
+    "name": "Chevalier de la mort",
+    "type": "Mort-vivant",
+    "size": "M ou P",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 20,
+    "hitPoints": 199,
+    "hitDice": "21d8+105",
+    "initiativeBonus": 12,
+    "speed": "9 m",
+    "abilities": {
+      "str": 20,
+      "dex": 11,
+      "con": 20,
+      "int": 12,
+      "wis": 16,
+      "cha": 18,
+      "strMod": "+5",
+      "dexMod": "+0",
+      "conMod": "+5",
+      "intMod": "+1",
+      "wisMod": "+3",
+      "chaMod": "+4",
+      "strSave": "+5",
+      "dexSave": "+6",
+      "conSave": "+5",
+      "intSave": "+1",
+      "wisSave": "+9",
+      "chaSave": "+4"
+    },
+    "skills": null,
+    "damageImmunities": "nécrotique, poison",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Effrayé, Empoisonné",
+    "senses": "Vision dans le noir 36 m, Perception passive 13",
+    "languages": "abyssal, commun",
+    "challengeRating": "17",
+    "xp": "18000",
+    "proficiencyBonus": "+6",
+    "traits": [
+      {
+        "name": "Résistance légendaire (3/jour)",
+        "description": "Si le chevalier de la mort rate un jet de sauvegarde, il peut décider de le réussir tout de même."
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": "Le chevalier de la mort a un Avantage aux jets de sauvegarde contre les sorts et autres effets magiques."
+      },
+      {
+        "name": "Brigade des morts-vivants",
+        "description": "Les créatures de type Mort-vivant choisies par le chevalier de la mort (à l'exclusion de lui-même) qui se trouvent dans une Émanation de 18 m centrée sur lui bénéficient d'un Avantage aux jets d'attaque et de sauvegarde. Le chevalier de la mort ne peut utiliser ce trait s'il subit l'état Incapable d'agir."
+      },
+      {
+        "name": "Restauration funeste",
+        "description": "S'il est détruit avant d'avoir expédié ses péchés, le chevalier de la mort se reforme et récupère tous ses points de vie en 1d10 jours. Le nouveau corps apparaît dans un lieu important pour le chevalier de la mort."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le chevalier de la mort effectue trois attaques de Lame d'épouvante."
+      },
+      {
+        "name": "Lame d'épouvante",
+        "description": "Corps à corps : +11, allonge 1,50 m. Touché : 12 (2d6 + 5) dégâts tranchants plus 13 (3d8) dégâts nécrotiques. Orbe de feu infernal (recharge 5–6) . JdS Dextérité : DD 18, chaque créature dans une Sphère de 6 m de rayon centrée sur un point que le chevalier de la mort peut voir dans un rayon de 36 m. Échec : 35 (10d6) dégâts de feu plus 35 (10d6) dégâts nécrotiques. Réussite : demi-dégâts."
+      },
+      {
+        "name": "Incantation",
+        "description": "Le chevalier de la mort lance l'un des sorts suivants sans composantes matérielles, le Charisme étant sa caractéristique d'incantation (DD de sauvegarde 18) : À volonté : injonction , monture fantôme 2/jour chacun : vague destructive (Nécrose), dissipation de la magie"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Parade",
+        "description": "Déclencheur : le chevalier de la mort est touché par un jet d'attaque de corps à corps alors qu'il tient une arme. Conséquences : le chevalier de la mort ajoute 6 à sa CA contre cette attaque, ce qui peut la faire rater."
+      }
+    ],
+    "legendaryActions": [
+      {
+        "name": "Incantation pour lancer injonction",
+        "description": "Il ne peut pas réutiliser cette action avant le début de son prochain tour."
+      },
+      {
+        "name": "Parole funeste",
+        "description": "JdS Constitution : DD 18, une créature que le chevalier de la mort peut voir dans un rayon de 36 m. Échec : 17 (5d6) dégâts nécrotiques, et les points de vie maximum de la cible diminuent d'un montant égal aux dégâts subis. Échec ou réussite : le chevalier de la mort ne peut pas réutiliser cette action avant le début de son prochain tour."
+      },
+      {
+        "name": "Assaut",
+        "description": "Le chevalier de la mort se déplace jusqu'à la moitié de sa Vitesse et effectue une attaque de Lame d'épouvante."
+      }
+    ],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Death Knight",
+    "nameEN": "Caballero de la muerte",
+    "nameES": "Caballero de la muerte"
+  },
+  {
+    "key": "chevalier-errant",
+    "name": "Chevalier errant",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 18,
+    "hitPoints": 202,
+    "hitDice": "27d8+81",
+    "initiativeBonus": 7,
+    "speed": "9 m",
+    "abilities": {
+      "str": 20,
+      "dex": 16,
+      "con": 16,
+      "int": 11,
+      "wis": 12,
+      "cha": 18,
+      "strMod": "+5",
+      "dexMod": "+3",
+      "conMod": "+3",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+4",
+      "strSave": "+9",
+      "dexSave": "+3",
+      "conSave": "+7",
+      "intSave": "+0",
+      "wisSave": "+5",
+      "chaSave": "+8"
+    },
+    "skills": "Athlétisme +9, Perception +5, Persuasion +8",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Effrayé",
+    "senses": "Perception passive 15",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "12",
+    "xp": "8400",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Aura de bravoure",
+        "description": "Les créatures choisies par le chevalier dans une Émanation de 9 m centrée sur celui-ci bénéficient d'une Immunité aux états Charmé et Effrayé tant qu'elles s'y trouvent."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le chevalier effectue trois attaques, réparties à sa guise entre Épée à deux mains et Arc long."
+      },
+      {
+        "name": "Épée à deux mains",
+        "description": "Corps à corps : +9, allonge 1,50 m. Touché : 12 (2d6 + 5) dégâts tranchants plus 22 (5d8) dégâts radiants."
+      },
+      {
+        "name": "Arc long",
+        "description": "À distance : +7, portée 45/180 m. Touché : 12 (2d8 + 3) dégâts perforants plus 22 (5d8) dégâts radiants."
+      },
+      {
+        "name": "Incantation",
+        "description": "Le chevalier lance l'un des sorts suivants, le Charisme étant sa caractéristique d'incantation (DD de sauvegarde 16) : 1/jour chacun : lumière du jour , dissipation du mal et du bien , restauration suprême , monture fantôme"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 Questing Knight",
+    "nameEN": "Caballero andante",
+    "nameES": "Caballero andante"
+  },
+  {
+    "key": "chevalier",
+    "name": "Chevalier",
+    "type": "Humanoïde",
+    "size": "M ou P",
+    "alignment": "Tout alignement",
+    "armorClass": 18,
+    "hitPoints": 52,
+    "hitDice": "8d8+16",
+    "initiativeBonus": 0,
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 11,
+      "con": 14,
+      "int": 11,
+      "wis": 11,
+      "cha": 15,
+      "strMod": "+3",
+      "dexMod": "+0",
+      "conMod": "+2",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "+2",
+      "strSave": "+3",
+      "dexSave": "+0",
+      "conSave": "+4",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 10",
+    "languages": "commun plus une autre langue",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le chevalier effectue deux attaques, réparties à sa guise entre Épée à deux mains et Arbalète lourde."
+      },
+      {
+        "name": "Épée à deux mains",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 10 (2d6 + 3) dégâts tranchants plus 4 (1d8) dégâts radiants."
+      },
+      {
+        "name": "Arbalète lourde",
+        "description": "À distance : +2, portée 30/120 m. Touché : 11 (2d10) dégâts perforants plus 4 (1d8) dégâts radiants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Parade",
+        "description": "Déclencheur : le chevalier est touché par un jet d'attaque de corps à corps alors qu'il tient une arme. Conséquences : le chevalier ajoute 2 à sa CA contre cette attaque, ce qui peut la faire rater."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Knight",
+    "nameEN": "Caballero",
+    "nameES": "Caballero"
+  },
+  {
+    "key": "chevre-geante",
+    "name": "Chèvre géante",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 11,
+    "hitPoints": 19,
+    "hitDice": "3d10+3",
+    "initiativeBonus": 1,
+    "speed": "12 m, escalade 9 m",
+    "abilities": {
+      "str": 17,
+      "dex": 13,
+      "con": 12,
+      "int": 3,
+      "wis": 12,
+      "cha": 6,
+      "strMod": "+3",
+      "dexMod": "+1",
+      "conMod": "+1",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "+5",
+      "dexSave": "+1",
+      "conSave": "+1",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +3",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 13",
+    "languages": "aucune",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Coup de bélier",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 6 (1d6 + 3) dégâts contondants. Si la cible est une créature taille G ou inférieure et que la chèvre s'est déplacée d'au moins 6 m en ligne droite vers elle juste avant de la toucher, la cible subit 5 (2d4) dégâts contondants supplémentaires et subit l'état À terre."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Giant Goat",
+    "nameEN": "Cabra gigante",
+    "nameES": "Cabra gigante"
+  },
+  {
+    "key": "chevre",
+    "name": "Chèvre",
+    "type": "Bête",
+    "size": "M",
+    "alignment": "non aligné",
+    "armorClass": 10,
+    "hitPoints": 4,
+    "hitDice": "1d8",
+    "initiativeBonus": 0,
+    "speed": "12 m, escalade 9 m",
+    "abilities": {
+      "str": 11,
+      "dex": 10,
+      "con": 11,
+      "int": 2,
+      "wis": 10,
+      "cha": 5,
+      "strMod": "+0",
+      "dexMod": "+0",
+      "conMod": "+0",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+2",
+      "dexSave": "+0",
+      "conSave": "+0",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": "Perception +2",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Coup de bélier",
+        "description": "Corps à corps : +2, allonge 1,50 m. Touché : 1 dégât contondant, ou la chèvre inflige 2 (1d4) dégâts contondants si elle s'est déplacée d'au moins 6 m en ligne droite vers la cible juste avant de la toucher."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Goat",
+    "nameEN": "Cabra",
+    "nameES": "Cabra"
+  },
+  {
+    "key": "chien-du-trepas",
+    "name": "Chien du trépas",
+    "type": "Monstruosité",
+    "size": "M",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 12,
+    "hitPoints": 39,
+    "hitDice": "6d8+12",
+    "initiativeBonus": 2,
+    "speed": "12 m",
+    "abilities": {
+      "str": 15,
+      "dex": 14,
+      "con": 14,
+      "int": 3,
+      "wis": 13,
+      "cha": 6,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "+2",
+      "dexSave": "+2",
+      "conSave": "+2",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +5, Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Aveuglé, Charmé, Assourdi, Effrayé, Étourdi, Inconscient",
+    "senses": "Vision dans le noir 36 m, Perception passive 15",
+    "languages": "—",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le chien du trépas effectue deux attaques de Morsure."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 4 (1d4 + 2) dégâts perforants. Si la cible est une créature, elle est soumise à l'effet suivant. JdS Constitution : DD 12. Premier échec : la cible subit l'état Empoisonné. Tant que la cible est Empoisonnée, son maximum de points de vie ne revient pas à la normale quand elle termine un Repos long. La cible réitère le JdS toutes les 24 heures et met un terme à l'effet sur elle-même en cas de réussite. Échecs suivants : le maximum de points de vie de la cible Empoisonnée diminue de 5 (1d10)."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Death Dog",
+    "nameEN": "Perro del inframundo",
+    "nameES": "Perro del inframundo"
+  },
+  {
+    "key": "chien-esquiveur",
+    "name": "Chien esquiveur",
+    "type": "Fée",
+    "size": "M",
+    "alignment": "Loyal Bon",
+    "armorClass": 13,
+    "hitPoints": 16,
+    "hitDice": "3d8+3",
+    "initiativeBonus": 3,
+    "speed": "12 m",
+    "abilities": {
+      "str": 12,
+      "dex": 17,
+      "con": 12,
+      "int": 10,
+      "wis": 13,
+      "cha": 11,
+      "strMod": "+1",
+      "dexMod": "+3",
+      "conMod": "+1",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+1",
+      "dexSave": "+3",
+      "conSave": "+1",
+      "intSave": "+0",
+      "wisSave": "+1",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +5, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 15",
+    "languages": "chien esquiveur ; comprend l'elfe et le sylvestre mais ne les parle pas",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 5 (1d4 + 3) dégâts perforants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Blink Dog",
+    "nameEN": "Perro intermitente",
+    "nameES": "Perro intermitente"
+  },
+  {
+    "key": "chimere",
+    "name": "Chimère",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 14,
+    "hitPoints": 114,
+    "hitDice": "12d10+48",
+    "initiativeBonus": 0,
+    "speed": "9 m, vol 18 m",
+    "abilities": {
+      "str": 19,
+      "dex": 11,
+      "con": 19,
+      "int": 3,
+      "wis": 14,
+      "cha": 10,
+      "strMod": "+4",
+      "dexMod": "+0",
+      "conMod": "+4",
+      "intMod": "-4",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+4",
+      "dexSave": "+0",
+      "conSave": "+4",
+      "intSave": "-4",
+      "wisSave": "+2",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +8",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 18",
+    "languages": "comprend le draconique mais ne parle pas",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "La chimère effectue trois attaques : une de Coup de bélier, une de Griffe et une de Morsure. Elle peut remplacer l'attaque de Griffe par une utilisation de son Souffle de feu si disponible."
+      },
+      {
+        "name": "Coup de bélier",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 10 (1d12 + 4) dégâts contondants. Si la cible est une créature de taille M ou inférieure, elle subit l'état À terre."
+      },
+      {
+        "name": "Griffe",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 7 (1d6 + 4) dégâts tranchants."
+      },
+      {
+        "name": "Morsure",
+        "description": "Corps à corps : +7, allonge 1,50 m. Touché : 11 (2d6 + 4) dégâts perforants, ou 18 (4d6 + 4) dégâts perforants si la chimère avait un Avantage au jet d'attaque. Souffle de feu (recharge 5–6) . JdS Dextérité : DD 15, chaque créature dans un Cône de 4,50 m. Échec : 31 (7d8) dégâts de feu. Réussite : demi-dégâts."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Chimera",
+    "nameEN": "Quimera",
+    "nameES": "Quimera"
+  },
+  {
+    "key": "chouette-geante",
+    "name": "Chouette géante",
+    "type": "Céleste",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 12,
+    "hitPoints": 19,
+    "hitDice": "3d10+3",
+    "initiativeBonus": 2,
+    "speed": "1,50 m, vol 18 m",
+    "abilities": {
+      "str": 13,
+      "dex": 15,
+      "con": 12,
+      "int": 10,
+      "wis": 14,
+      "cha": 10,
+      "strMod": "+1",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+1",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "+0",
+      "wisSave": "+4",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +6, Discrétion +6",
+    "damageImmunities": null,
+    "damageResistances": "nécrotique, radiant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 16",
+    "languages": "céleste ; comprend le commun, l'elfique et le sylvestre mais ne peut pas les parler",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Repli aérien",
+        "description": "La chouette ne provoque pas d'attaque d'Opportunité lorsqu'elle quitte la zone d'allonge d'un ennemi en volant."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Serres",
+        "description": "Corps à corps : +4, allonge 1,50 m. Touché : 7 (1d10 + 2) dégâts tranchants."
+      },
+      {
+        "name": "Incantation",
+        "description": "La chouette lance l'un des sorts suivants sans composantes, la Sagesse étant sa caractéristique d'incantation : À volonté : détection de la magie, détection du mal et du bien 1/jour : clairvoyance"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Giant Owl",
+    "nameEN": "Búho gigante",
+    "nameES": "Búho gigante"
+  },
+  {
+    "key": "chouette",
+    "name": "Chouette",
+    "type": "Bête",
+    "size": "TP",
+    "alignment": "non aligné",
+    "armorClass": 11,
+    "hitPoints": 1,
+    "hitDice": "1d4-1",
+    "initiativeBonus": 1,
+    "speed": "1,50 m, vol 18 m",
+    "abilities": {
+      "str": 3,
+      "dex": 13,
+      "con": 8,
+      "int": 2,
+      "wis": 12,
+      "cha": 7,
+      "strMod": "-4",
+      "dexMod": "+1",
+      "conMod": "-1",
+      "intMod": "-4",
+      "wisMod": "+1",
+      "chaMod": "-2",
+      "strSave": "-4",
+      "dexSave": "+1",
+      "conSave": "-1",
+      "intSave": "-4",
+      "wisSave": "+1",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +5, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 15",
+    "languages": "aucune",
+    "challengeRating": "0",
+    "xp": "10",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Repli aérien",
+        "description": "La chouette ne provoque pas d'attaque d'Opportunité lorsqu'elle vole hors de l'allonge d'un ennemi."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Serres",
+        "description": "Corps à corps : +3, allonge 1,50 m. Touché : 1 dégât tranchant."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024 (BR) Owl",
+    "nameEN": "Búho",
+    "nameES": "Búho"
+  }
+]

@@ -1,0 +1,102 @@
+Tu es un extracteur JSON. Ta seule tâche : lire le fichier texte contenant des pages de monstres D&D 5.5 (2024) et produire un fichier JSON structuré.
+
+## Fichier source
+C:\\_work\\my_projects\\donjon-dragon\\docs\\characteres\\monsters-batches\\lot_01.txt
+
+## Fichier de sortie
+C:\\_work\\my_projects\\donjon-dragon\\docs\\characteres\\monsters-batches\\lot_01.seed.json
+
+## Règles absolues
+1. Tu ne produis QUE le fichier JSON. Pas de commentaires, pas d'explications, pas de markdown, pas de blocs de code.
+2. Chaque monstre est délimité par `<!-- MONSTER: slug -->`. Le slug est la clé unique.
+3. Si un champ est absent de la source, mets `null` (pour les chaînes) ou `[]` (pour les tableaux). Ne devine jamais.
+4. Respecte EXACTEMENT le schéma ci-dessous. Pas de champs supplémentaires.
+
+## Schéma JSON
+
+```json
+[
+  {
+    "key": "string (slug unique)",
+    "name": "string (nom français)",
+    "type": "string (ex: Aberration, Bête (Dinosaure), Humanoïde (Magicien))",
+    "size": "string (TP, P, M, G, TG, Gig, ou 'M ou P')",
+    "alignment": "string (ex: Loyal Mauvais, Chaotique Neutre, Non aligné, Neutre Bon)",
+    "armorClass": "number | null",
+    "hitPoints": "number | null",
+    "hitDice": "string | null (ex: '20d10 + 40')",
+    "initiativeBonus": "number | null (valeur entre parenthèses après Initiative)",
+    "speed": "string | null (ex: '12 m, vol 24 m, nage 12 m')",
+    "abilities": {
+      "str": "number | null",
+      "dex": "number | null",
+      "con": "number | null",
+      "int": "number | null",
+      "wis": "number | null",
+      "cha": "number | null",
+      "strMod": "string | null (ex: '+5')",
+      "dexMod": "string | null",
+      "conMod": "string | null",
+      "intMod": "string | null",
+      "wisMod": "string | null",
+      "chaMod": "string | null",
+      "strSave": "string | null",
+      "dexSave": "string | null",
+      "conSave": "string | null",
+      "intSave": "string | null",
+      "wisSave": "string | null",
+      "chaSave": "string | null"
+    },
+    "skills": "string | null (ex: 'Histoire +12, Perception +10')",
+    "damageImmunities": "string | null (ex: 'feu, poison')",
+    "damageResistances": "string | null",
+    "damageVulnerabilities": "string | null",
+    "conditionImmunities": "string | null (ex: 'Charmé, Épuisement')",
+    "senses": "string | null (ex: 'Vision dans le noir 36 m, Perception passive 20')",
+    "languages": "string | null",
+    "challengeRating": "string | null (ex: '10', '1/4', '0')",
+    "xp": "string | null (ex: '5900 ou 7200 dans son antre')",
+    "proficiencyBonus": "string | null (ex: '+7')",
+    "traits": [
+      {"name": "string", "description": "string"}
+    ],
+    "actions": [
+      {"name": "string", "description": "string"}
+    ],
+    "bonusActions": [
+      {"name": "string", "description": "string"}
+    ],
+    "reactions": [
+      {"name": "string", "description": "string"}
+    ],
+    "legendaryActions": [
+      {"name": "string", "description": "string"}
+    ],
+    "mythicActions": [
+      {"name": "string", "description": "string"}
+    ],
+    "source": "string | null",
+    "nameEN": "string | null",
+    "nameES": "string | null"
+  }
+]
+```
+
+## Règles d'extraction
+
+- **abilities** : extraire des lignes `For <val> <mod> <save>` etc. Si absent, toutes les valeurs sont null.
+- **skills** : concaténer tout après "Compétences" jusqu'au prochain libellé (Sens / Immunités / Langues).
+- **damageImmunities** : extraire après "Immunités" (dégâts seulement, pas les états). Ex: "Immunités feu" → "feu".
+- **conditionImmunities** : après "Immunités", tout ce qui est un état (Charmé, Empoisonné, Épuisement, etc.).
+- **damageResistances** : après "Résistances" (dégâts).
+- **damageVulnerabilities** : après "Vulnérabilités" (dégâts).
+- **traits** : section "Traits" jusqu'à "Actions". Chaque trait commence par un nom suivi d'un point puis la description.
+- **actions** : section "Actions" jusqu'à "Actions Légendaires" ou "Réactions" ou "Actions Bonus" ou la source.
+- **bonusActions** : section "Actions Bonus".
+- **reactions** : section "Réactions".
+- **legendaryActions** : section "Actions Légendaires".
+- **mythicActions** : section "Actions Mythiques".
+- **source** : dernière ligne significative avant le nom EN/ES.
+- **nameEN** : ligne contenant "[EN]"
+- **nameES** : ligne contenant "[ES]"
+- Si une section n'existe pas, le tableau correspondant est vide `[]`.

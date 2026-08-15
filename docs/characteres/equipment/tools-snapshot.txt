@@ -1,0 +1,494 @@
+- banner
+  - link "AideDD" [ref=e2]
+  - paragraph
+    - StaticText "Un site sur le jeu de rôle Dungeons & Dragons 5"
+  - form
+    - textbox "rechercher" [ref=e52]
+  - navigation
+    - list
+      - listitem [level=1]
+        - link "D&D 5" [ref=e36]
+      - listitem [level=1]
+        - link "Règles 2014" [ref=e37]
+      - listitem [level=1]
+        - link "Règles 2024" [ref=e38]
+      - listitem [level=1]
+        - link "Aides de jeu" [ref=e39]
+      - listitem [level=1]
+        - link "Univers" [ref=e40]
+      - listitem [level=1]
+        - link "Site" [ref=e41]
+      - listitem [level=1]
+        - link "English" [ref=e42]
+      - listitem [level=1]
+        - link "Forum" [ref=e43]
+- main
+  - complementary
+    - navigation
+      - heading " RÈGLES 2024" [level=3, ref=e32]
+        - StaticText ""
+        - StaticText " RÈGLES 2024"
+      - list
+        - listitem [level=1]
+          - link "COMMENT JOUER" [ref=e44]
+          - list
+        - listitem [level=1]
+          - link "CRÉATION DE PERSONNAGE" [ref=e45]
+          - list
+        - listitem [level=1]
+          - link "CLASSES DE PERSONNAGE" [ref=e46]
+          - list
+        - listitem [level=1]
+          - link "ORIGINES DES PERSONNAGES" [ref=e47]
+          - list
+        - listitem [level=1]
+          - link "DONS" [ref=e48]
+        - listitem [level=1]
+          - link "ÉQUIPEMENT" [ref=e49]
+          - list
+            - listitem [level=2]
+              - link "ARMES" [ref=e53]
+            - listitem [level=2]
+              - link "ARMURES" [ref=e54]
+            - listitem [level=2]
+              - link "OUTILS" [ref=e55]
+            - listitem [level=2]
+              - link "MATÉRIEL D’AVENTURIER" [ref=e56]
+        - listitem [level=1]
+          - link "SORTS" [ref=e50]
+        - listitem [level=1]
+          - link "GLOSSAIRE" [ref=e51]
+          - list
+  - article
+    - heading "Outils" [level=1, ref=e3]
+    - paragraph
+      - StaticText "Un outil vous aide à effectuer certains jets de caractéristique particuliers, à fabriquer des objets, ou les deux. La description d’un outil comprend le coût et le poids de l’outil, ainsi que les entrées suivantes :"
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText ". Cette entrée indique quelle caractéristique employer lorsqu'un jet de caractéristique est effectué avec l’outil."
+    - paragraph
+      - strong
+        - StaticText "Utilisation"
+      - StaticText ". Cette entrée énumère les choses que vous pouvez faire avec l’outil dans le cadre de l’action Utilisation. Vous pouvez faire l’une de ces choses chaque fois que vous effectuez cette action. Cette entrée fournit également le DD pour l’action."
+    - paragraph
+      - strong
+        - StaticText "Artisanat"
+      - StaticText ". Cette entrée indique ce que vous pouvez fabriquer avec l’outil, le cas échéant. Les sections « Fabrication d’objets non magiques », « Préparer des potions de guérison » et « Écrire des parchemins de sort », présentent les règles propres à diverses fabrications."
+    - paragraph
+      - strong
+        - StaticText "Variantes"
+      - StaticText ". Cette entrée apparaît si l’outil présente des variantes, qui sont répertoriées. Chacune nécessite une maîtrise distincte."
+    - heading "Maîtrise d’outils" [level=3, ref=e4]
+    - paragraph
+      - StaticText "Si vous avez la maîtrise d’un outil, ajoutez votre bonus de maîtrise aux jets de caractéristique correspondants. Si vous avez la maîtrise d’une compétence associée à ce jet, vous avez en outre un Avantage au jet."
+    - paragraph
+      - StaticText "Vos capacités peuvent vous octroyer la maîtrise d’un outil. Un monstre a la maîtrise des outils qui figurent dans son profil."
+    - heading "Outils d’artisan" [level=3, ref=e5]
+    - paragraph
+      - StaticText "Les outils d’artisan sont tous axés sur la fabrication d’objets et l’exercice d’un métier. Chacun nécessite une maîtrise distincte."
+    - heading "Matériel d’alchimiste (50 po)" [level=4, ref=e6]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Intelligence   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 4 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : identifier une substance (DD 15), allumer un feu (DD 15)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : acide, feu grégeois, huile, papier, parfum, sacoche à composantes"
+    - heading "Matériel de brasseur (20 po)" [level=4, ref=e7]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Intelligence   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 4,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : détecter qu’une boisson est empoisonnée (DD 15), identifier un alcool (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : antidote"
+    - heading "Matériel de calligraphe (10 po)" [level=4, ref=e8]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Dextérité   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 2,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : écrire des textes avec des fioritures impressionnantes qui le prémunissent contre la contrefaçon (DD 15)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : encre, parchemin de sort"
+    - heading "Matériel de peintre (10 po)" [level=4, ref=e9]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Sagesse   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 2,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : produire une image ressemblante de quelque chose que vous avez vu (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : focaliseur druidique, symbole sacré"
+    - heading "Outils de bricoleur (50 po)" [level=4, ref=e10]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Dextérité   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : assembler un objet de taille TP composé de ferraille, qui se désagrège au bout de 1 minute (DD 20)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : mousquet, pistolet, boîte à amadou, cloche, lanterne à capote, lanterne sourde, menottes, pelle, piège à mâchoires, serrure, sifflet"
+    - heading "Outils de cartographe (15 po)" [level=4, ref=e11]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Sagesse   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 3 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : cartographier une petite région (DD 15)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : carte"
+    - heading "Outils de charpentier (8 po)" [level=4, ref=e12]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Force   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 3 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : sceller ou forcer une porte ou un contenant (DD 20)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : bâton de combat, bélier portable, coffre, échelle, gourdin, massue, perche, tonneau, torche"
+    - heading "Outils de cordonnier (5 po)" [level=4, ref=e13]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Dextérité   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 2,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : modifier des chaussures afin d’octroyer un Avantage au prochain jet de Dextérité (Acrobaties) de leur porteur (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : matériel d’escalade"
+    - heading "Outils de forgeron (20 po)" [level=4, ref=e14]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Force   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 4 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : forcer une porte ou un contenant (DD 20)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : toute arme de corps à corps (hormis bâton de combat, gourdin, massue et fouet), toute armure intermédiaire (hormis armure de peaux), toute armure lourde, balles pour arme à feu, billes, billes de fronde, chaîne, chausse-trappes, grappin, pied-de-biche, pointes en fer, pot en fer, seau"
+    - heading "Outils de joaillier (25 po)" [level=4, ref=e15]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Intelligence   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 1 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : déterminer la valeur d’une gemme (DD 15)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : focaliseur arcanique, symbole sacré"
+    - heading "Outils de maçon (10 po)" [level=4, ref=e16]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Force   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 4 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : ciseler un symbole ou creuser un trou dans la pierre (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : palan"
+    - heading "Outils de menuisier (1 po)" [level=4, ref=e17]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Dextérité   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 2,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : sculpter un motif dans le bois (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : armes à distance (sauf fronde, mousquet et pistolet), bâton de combat, carreaux d’arbalète, dards de sarbacane, flèches, focaliseur arcanique, focaliseur druidique, porte-plume"
+    - heading "Outils de potier (10 po)" [level=4, ref=e18]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Intelligence   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 1,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : déterminer ce qu’a contenu un objet en céramique lors des dernières 24 heures (DD 15)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : cruche, lampe"
+    - heading "Outils de souffleur de verre (30 po)" [level=4, ref=e19]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Intelligence   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 2,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : déterminer ce qu’a contenu un objet en verre lors des dernières 24 heures (DD 15)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : bouteille en verre, fiole, longue-vue, loupe"
+    - heading "Outils de tanneur (5 po)" [level=4, ref=e20]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Dextérité   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 2,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : ajouter un motif à un objet en cuir (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : fouet, fronde, armure de cuir, armure de cuir clouté, armure de peaux, carquois, étui à carreaux d’arbalète, étui à cartes ou à parchemins, outre, parchemin, sacoche, sac à dos"
+    - heading "Outils de tisserand (1 po)" [level=4, ref=e21]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Dextérité   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 2,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : raccommoder une déchirure dans un vêtement (DD 10), coudre un motif de taille TP (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : armure matelassée, beaux habits, corde, couverture, ficelle, filet, panier, robe, sac, sac de couchage, tente, tenue de voyage"
+    - heading "Ustensiles de cuisinier (1 po)" [level=4, ref=e22]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Sagesse   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 4 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : améliorer la saveur des aliments (DD 10), détecter si un plat est avarié ou empoisonné (DD 15)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : rations"
+    - image "outils"
+    - heading "Autres outils" [level=3, ref=e23]
+    - heading "Accessoires de déguisement (25 po)" [level=4, ref=e24]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Charisme   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 1,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : appliquer du maquillage (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : costume"
+    - heading "Boîte de jeux (variable)" [level=4, ref=e25]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Sagesse   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : —"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : déterminer si quelqu'un triche (DD 10), gagner la partie (DD 20)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Variantes"
+      - StaticText " : cartes à jouer (5 pa), dés (1 pa), échecs draconiques (1 po), jeu des dragons (1 po)"
+    - heading "Instrument de musique (variable)" [level=4, ref=e26]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Charisme   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : variable"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : jouer un air connu (DD 10), improviser une chanson (DD 15)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Variantes"
+      - StaticText " : chalemie (2 po, 0,5 kg), cor (3 po, 1 kg), cornemuse (30 po, 3 kg), flûte (2 po, 0,5 kg), flûte de pan (12 po, 1 kg), luth (35 po, 1 kg), lyre (30 po, 1 kg), tambour (6 po, 1,5 kg), tympanon (25 po, 5 kg), viole (30 po, 0,5 kg)"
+    - heading "Instruments de navigateur (25 po)" [level=4, ref=e27]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Sagesse   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 1 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : tracer un cap (DD 10), déterminer sa position en observant les étoiles (DD 15)"
+    - heading "Matériel d’empoisonneur (50 po)" [level=4, ref=e28]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Intelligence   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 1 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : déterminer qu’un objet est empoisonné (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : poison standard"
+    - heading "Matériel d’herboriste (5 po)" [level=4, ref=e29]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Intelligence   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 1,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : identifier une plante (DD 10)"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Artisanat"
+      - StaticText " : antidote, bougie, trousse de soins, potion de guérison"
+    - heading "Matériel de contrefaçon (15 po)" [level=4, ref=e30]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Dextérité   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 2,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : imiter 10 mots ou moins de l’écriture d’autrui (DD 15), reproduire un cachet de cire (DD 20)"
+    - heading "Outils de voleur (25 po)" [level=4, ref=e31]
+    - paragraph
+      - strong
+        - StaticText "Caractéristique"
+      - StaticText " : Dextérité   "
+      - strong
+        - StaticText "Poids"
+      - StaticText " : 0,5 kg"
+      - LineBreak "\n"
+      - strong
+        - StaticText "Utilisation"
+      - StaticText " : crocheter une serrure (DD 15), désamorcer un piège (DD 15)"
+    - image "jeux"
+- contentinfo
+  - generic
+    - generic
+      - link "Règles 2024" [ref=e34]
+      - StaticText " » "
+      - link "Équipement" [ref=e35]
+      - StaticText " » Outils"
+    - StaticText "Donjons et Dragons 5 - D&D 5"
+- generic
+  - Iframe "Publicité" [ref=e33] focusable [tabindex]
+    - generic
+      - Iframe "frame showing an advertisement served by advanced store" [ref=e57]
+  - generic [ref=e1] clickable [cursor:pointer]
+    - image

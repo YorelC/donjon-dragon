@@ -1,0 +1,2085 @@
+[
+  {
+    "key": "empyreen-iota",
+    "name": "Empyréen iota",
+    "type": "Céleste ou Fiélon (Titan)",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": 22,
+    "hitDice": "5d8",
+    "initiativeBonus": "+2",
+    "speed": "1,50 m, vol 9 m (stationnaire)",
+    "abilities": {
+      "str": 1,
+      "dex": 14,
+      "con": 10,
+      "int": 15,
+      "wis": 16,
+      "cha": 16,
+      "strMod": "-5",
+      "dexMod": "+2",
+      "conMod": "+0",
+      "intMod": "+2",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "-5",
+      "dexSave": "+2",
+      "conSave": "+0",
+      "intSave": "+2",
+      "wisSave": "+3",
+      "chaSave": "+3"
+    },
+    "skills": "Histoire +4, Intuition +5, Perception +5",
+    "damageImmunities": null,
+    "damageResistances": "contondant, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "À terre",
+    "senses": "vision véritable 9 m, Perception passive 15",
+    "languages": "toutes",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Déplacement intangible",
+        "description": ""
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Sanction d'Outre-monde",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Mot de guérison (1/jour)",
+        "description": ""
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Empyrean Iota",
+    "nameES": "Empíreo ápice"
+  },
+  {
+    "key": "empyreen",
+    "name": "Empyréen",
+    "type": "Céleste ou Fiélon (Titan)",
+    "size": "TG",
+    "alignment": "Neutre",
+    "armorClass": 22,
+    "hitPoints": 346,
+    "hitDice": "21d12+210",
+    "initiativeBonus": "+19",
+    "speed": "15 m, vol 15 m (stationnaire), nage 15 m",
+    "abilities": {
+      "str": 30,
+      "dex": 21,
+      "con": 30,
+      "int": 21,
+      "wis": 22,
+      "cha": 27,
+      "strMod": "+10",
+      "dexMod": "+5",
+      "conMod": "+10",
+      "intMod": "+5",
+      "wisMod": "+6",
+      "chaMod": "+8",
+      "strSave": "+17",
+      "dexSave": "+5",
+      "conSave": "+10",
+      "intSave": "+5",
+      "wisSave": "+13",
+      "chaSave": "+8"
+    },
+    "skills": "Intuition +13, Perception +13",
+    "damageImmunities": "nécrotique, radiant",
+    "damageResistances": "contondant, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "vision véritable 36 m, Perception passive 23",
+    "languages": "toutes",
+    "challengeRating": "23",
+    "xp": "50000",
+    "proficiencyBonus": "+7",
+    "traits": [
+      {
+        "name": "Résistance légendaire (4/jour)",
+        "description": ""
+      },
+      {
+        "name": "Résistance à la magie",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Arme sacrée",
+        "description": ""
+      },
+      {
+        "name": "Rayon divin",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [
+      {
+        "name": "Utilisations d'action Légendaire : 3",
+        "description": ""
+      },
+      {
+        "name": "Galvanisation",
+        "description": ""
+      },
+      {
+        "name": "Raz-de-gloire",
+        "description": ""
+      },
+      {
+        "name": "Châtiment",
+        "description": ""
+      }
+    ],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Empyrean",
+    "nameES": "Empíreo"
+  },
+  {
+    "key": "esprit-aberrant",
+    "name": "Esprit aberrant",
+    "type": "Aberration",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 11,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m, vol 9 m (stationnaire ; tyrannoeillidé uniquement)",
+    "abilities": {
+      "str": 16,
+      "dex": 10,
+      "con": 15,
+      "int": 16,
+      "wis": 10,
+      "cha": 6,
+      "strMod": "+3",
+      "dexMod": "+0",
+      "conMod": "+2",
+      "intMod": "+3",
+      "wisMod": "+0",
+      "chaMod": "-2",
+      "strSave": "+3",
+      "dexSave": "+0",
+      "conSave": "+2",
+      "intSave": "+3",
+      "wisSave": "+0",
+      "chaSave": "-2"
+    },
+    "skills": null,
+    "damageImmunities": "psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "profond, comprend les langues que vous connaissez",
+    "challengeRating": "aucun",
+    "xp": "0",
+    "proficiencyBonus": "= PB",
+    "traits": [
+      {
+        "name": "Régénération (slaad uniquement)",
+        "description": "L'esprit récupère 5 points de vie au début de son tour s'il lui reste au moins 1 point de vie"
+      },
+      {
+        "name": "Aura des murmures (flagelleur mental uniquement)",
+        "description": "Au début de chaque tour de l'esprit, celui-ci émet des énergies psioniques s'il ne subit pas l'état Incapable d'agir. JdS Sagesse : DD égal à votre DD de sauvegarde des sorts, chaque créature (autre que vous) dans un rayon de 1,50 m autour de l'esprit. Échec : 2d6 dégâts psychiques."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Griffes (slaad uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d10 + 3 + le niveau du sort dégâts perforants, et la cible ne peut pas récupérer de points de vie avant le début du prochain tour de l'esprit"
+      },
+      {
+        "name": "Rayon oculaire (tyrannoeillidé uniquement)",
+        "description": "À distance : bonus égal à votre modificateur d'attaque des sorts, portée 45 m. Touché : 1d8 + 3 + le niveau du sort dégâts psychiques"
+      },
+      {
+        "name": "Choc psychique (flagelleur mental uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + 3 + le niveau du sort dégâts psychiques"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024",
+    "nameEN": "Aberrant Spirit",
+    "nameES": "Espíritu aberrante"
+  },
+  {
+    "key": "esprit-artificiel",
+    "name": "Esprit artificiel",
+    "type": "Artificiel",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m",
+    "abilities": {
+      "str": 18,
+      "dex": 10,
+      "con": 18,
+      "int": 14,
+      "wis": 11,
+      "cha": 5,
+      "strMod": "+4",
+      "dexMod": "+0",
+      "conMod": "+4",
+      "intMod": "+2",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+4",
+      "dexSave": "+0",
+      "conSave": "+4",
+      "intSave": "+2",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": "",
+    "damageResistances": "poison",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "comprend les langues que vous connaissez",
+    "challengeRating": "aucun",
+    "xp": "0",
+    "proficiencyBonus": "= PB",
+    "traits": [
+      {
+        "name": "Corps brûlant (métal uniquement)",
+        "description": "Une créature qui frappe l'esprit avec une attaque au corps à corps ou qui commence son tour en lutte avec l'esprit subit 1d10 dégâts de feu"
+      },
+      {
+        "name": "Léthargie de la pierre (pierre uniquement)",
+        "description": "Lorsqu'une créature commence son tour dans un rayon de 3 m autour de l'esprit, ce dernier peut la cibler avec des énergies magiques s'il peut la voir. JdS Sagesse : DD égal à votre DD de sauvegarde des sorts, la cible. Échec : jusqu'au début de son prochain tour, la cible ne peut pas effectuer d'attaque d'Opportunité et sa Vitesse est réduite de moitié."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques de Coup égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + 4 + le niveau du sort dégâts contondants."
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Riposte rageuse (argile uniquement)",
+        "description": "Déclencheur : l'esprit subit des dégâts d'une créature. Conséquences : l'esprit effectue une attaque de Coup contre cette créature s'il le peut, ou se déplace jusqu'à la moitié de sa Vitesse vers elle sans provoquer d'attaque d'Opportunité"
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024",
+    "nameEN": "Construct Spirit",
+    "nameES": "Espíritu autómata"
+  },
+  {
+    "key": "esprit-celeste",
+    "name": "Esprit céleste",
+    "type": "Céleste",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 11,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m, vol 12 m",
+    "abilities": {
+      "str": 16,
+      "dex": 14,
+      "con": 16,
+      "int": 10,
+      "wis": 14,
+      "cha": 16,
+      "strMod": "+3",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "+3",
+      "strSave": "+3",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": "radiant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Effrayé",
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "céleste, comprend les langues que vous connaissez",
+    "challengeRating": "aucun",
+    "xp": "0",
+    "proficiencyBonus": "= PB",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Arc radiant (vengeur uniquement)",
+        "description": "À distance : bonus égal à votre modificateur d'attaque des sorts, portée 180 m. Touché : 2d6 + 2 + le niveau du sort dégâts radiants"
+      },
+      {
+        "name": "Masse d'armes radiante (protecteur uniquement)",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d10 + 3 + le niveau du sort dégâts radiants, et l'esprit peut choisir lui-même ou une autre créature qu'il peut voir dans un rayon de 3 m autour de la cible. La créature choisie gagne 1d10 points de vie temporaires"
+      },
+      {
+        "name": "Contact guérisseur (1/jour)",
+        "description": "L'esprit touche une autre créature. La cible récupère un nombre de points de vie égal à 2d8 + le niveau du sort"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024",
+    "nameEN": "Celestial Spirit",
+    "nameES": "Espíritu celestial"
+  },
+  {
+    "key": "esprit-draconique",
+    "name": "Esprit draconique",
+    "type": "Dragon",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 14,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m, vol 18 m, nage 9 m",
+    "abilities": {
+      "str": 19,
+      "dex": 14,
+      "con": 17,
+      "int": 10,
+      "wis": 14,
+      "cha": 14,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "+2",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+2"
+    },
+    "skills": null,
+    "damageImmunities": "",
+    "damageResistances": "acide, froid, feu, foudre, poison",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Effrayé, Empoisonné",
+    "senses": "Vision aveugle 9 m, Vision dans le noir 18 m, Perception passive 12",
+    "languages": "draconique, comprend les langues que vous connaissez",
+    "challengeRating": "aucun",
+    "xp": "0",
+    "proficiencyBonus": "= PB",
+    "traits": [
+      {
+        "name": "Résistances partagées",
+        "description": "Lorsque vous convoquez l'esprit, choisissez l'une de ses Résistances aux dégâts. Vous bénéficiez de la Résistance au type de dégâts choisi jusqu'à la fin du sort."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue autant d'attaques de Saignée que la moitié du niveau de ce sort (arrondir à l'inférieur) et il recourt à Souffle"
+      },
+      {
+        "name": "Saignée",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 3 m. Touché : 1d6 + 4 + le niveau du sort dégâts perforants"
+      },
+      {
+        "name": "Souffle",
+        "description": "JdS Dextérité : DD égal à votre DD de sauvegarde des sorts, chaque créature dans un cône de 9 m. Échec : 2d6 dégâts d'un type auquel l'esprit a la Résistance (vous choisissez à l'incantation du sort). Réussite : 1/2 dégâts. Voir Convocation de dragon"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024",
+    "nameEN": "Draconic Spirit",
+    "nameES": "Espíritu dracónico"
+  },
+  {
+    "key": "esprit-elementaire",
+    "name": "Esprit élémentaire",
+    "type": "Élémentaire",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 11,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "12 m, fouissement 12 m (terre uniquement) ; vol 12 m (stationnaire ; air uniquement) ; nage 12 m (eau uniquement)",
+    "abilities": {
+      "str": 18,
+      "dex": 15,
+      "con": 17,
+      "int": 4,
+      "wis": 10,
+      "cha": 16,
+      "strMod": "+4",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "-3",
+      "wisMod": "+0",
+      "chaMod": "+3",
+      "strSave": "+4",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "-3",
+      "wisSave": "+0",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": "feu (feu uniquement), poison",
+    "damageResistances": "acide (eau uniquement), foudre et tonnerre (air uniquement), perforant et tranchant (terre uniquement)",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Épuisement, Paralysé, Pétrifié, Empoisonné",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "primordial, comprend les langues que vous connaissez",
+    "challengeRating": "aucun",
+    "xp": "0",
+    "proficiencyBonus": "= PB",
+    "traits": [
+      {
+        "name": "État informe (air, feu et eau uniquement)",
+        "description": "L'esprit peut se déplacer dans un espace de 2,50 cm de large sans que cela soit considéré comme un Terrain difficile."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques de Coup égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Coup",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d10 + 4 + le niveau du sort dégâts contondants (Terre uniquement), de froid (Eau uniquement), de foudre (Air uniquement) ou de feu (Feu uniquement)"
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024",
+    "nameEN": "Elemental Spirit",
+    "nameES": "Espíritu elemental"
+  },
+  {
+    "key": "esprit-feerique",
+    "name": "Esprit féerique",
+    "type": "Fée",
+    "size": "P",
+    "alignment": "Neutre",
+    "armorClass": 12,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "9 m, vol 9 m",
+    "abilities": {
+      "str": 13,
+      "dex": 16,
+      "con": 14,
+      "int": 14,
+      "wis": 11,
+      "cha": 16,
+      "strMod": "+1",
+      "dexMod": "+3",
+      "conMod": "+2",
+      "intMod": "+2",
+      "wisMod": "+0",
+      "chaMod": "+3",
+      "strSave": "+1",
+      "dexSave": "+3",
+      "conSave": "+2",
+      "intSave": "+2",
+      "wisSave": "+0",
+      "chaSave": "+3"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé",
+    "senses": "Vision dans le noir 18 m, Perception passive 10",
+    "languages": "sylvestre, comprend les langues que vous connaissez",
+    "challengeRating": "aucun",
+    "xp": "0",
+    "proficiencyBonus": "= PB",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'esprit effectue un nombre d'attaques de Lame féerique égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Lame féerique",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 2d6 + 3 + le niveau du sort dégâts de force."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Foulée féerique",
+        "description": "L'esprit se téléporte magiquement jusqu'à 9 m dans un espace inoccupé qu'il peut voir"
+      },
+      {
+        "name": "Ensuite, l'un des effets suivants se produit, selon l'humeur choisie par l'esprit : Furibond",
+        "description": "L'esprit a un Avantage à son prochain jet d'attaque avant la fin de ce tour"
+      },
+      {
+        "name": "Rieur",
+        "description": "JdS Sagesse : DD égal à votre DD de sauvegarde des sorts, une créature que l'esprit peut voir dans un rayon de 3 m. Échec : la cible est Charmée par vous et l'esprit pendant 1 minute ou jusqu'à ce qu'elle subisse des dégâts"
+      },
+      {
+        "name": "Espiègle",
+        "description": "L'esprit remplit un cube de 3 m de côté, dans un rayon de 1,50 m autour de lui, de Ténèbres magiques. L'effet jusqu'à la fin de son prochain tour"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024",
+    "nameEN": "Fey Spirit",
+    "nameES": "Espíritu feérico"
+  },
+  {
+    "key": "flagelleur-mental-arcaniste",
+    "name": "Flagelleur mental, arcaniste",
+    "type": "Aberration",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 16,
+    "hitPoints": 143,
+    "hitDice": "26d8+26",
+    "initiativeBonus": "+6",
+    "speed": "9 m, vol 9 m (stationnaire)",
+    "abilities": {
+      "str": 11,
+      "dex": 14,
+      "con": 13,
+      "int": 20,
+      "wis": 17,
+      "cha": 17,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+5",
+      "wisMod": "+3",
+      "chaMod": "+3",
+      "strSave": "+0",
+      "dexSave": "+6",
+      "conSave": "+1",
+      "intSave": "+9",
+      "wisSave": "+7",
+      "chaSave": "+7"
+    },
+    "skills": "Arcanes +13, Intuition +7, Perception +7, Discrétion +6",
+    "damageImmunities": "psychique",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Effrayé",
+    "senses": "Vision dans le noir 36 m, Perception passive 17",
+    "languages": "profond, commun des profondeurs ; télépathie 36 m",
+    "challengeRating": "11",
+    "xp": "7200",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Tentacules arcaniques",
+        "description": ""
+      },
+      {
+        "name": "Explosion mentale (recharge 5–6)",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Bouclier (2/jour)",
+        "description": ""
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Mind Flayer Arcanist",
+    "nameES": "Azotamentes arcanista"
+  },
+  {
+    "key": "garou-chacal",
+    "name": "Garou-chacal",
+    "type": "Fiélon",
+    "size": "P",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 12,
+    "hitPoints": 18,
+    "hitDice": "4d6+4",
+    "initiativeBonus": "+2",
+    "speed": "12 m",
+    "abilities": {
+      "str": 11,
+      "dex": 15,
+      "con": 12,
+      "int": 13,
+      "wis": 11,
+      "cha": 10,
+      "strMod": "+0",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+1",
+      "wisMod": "+0",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+2",
+      "conSave": "+1",
+      "intSave": "+1",
+      "wisSave": "+0",
+      "chaSave": "+0"
+    },
+    "skills": "Tromperie +4, Perception +4, Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 27 m, Perception passive 14",
+    "languages": "commun",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Tactique de meute",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Saignée (forme de chacal ou hybride uniquement)",
+        "description": ""
+      },
+      {
+        "name": "Coup (forme humaine ou hybride uniquement)",
+        "description": ""
+      },
+      {
+        "name": "Regard soporifique (recharge 5–6)",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Changement d'aspect",
+        "description": ""
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Jackalwere",
+    "nameES": "Hombre chacal"
+  },
+  {
+    "key": "githyanki-chevalier",
+    "name": "Githyanki, chevalier",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 18,
+    "hitPoints": 117,
+    "hitDice": "18d8+36",
+    "initiativeBonus": "+5",
+    "speed": "9 m",
+    "abilities": {
+      "str": 16,
+      "dex": 14,
+      "con": 15,
+      "int": 14,
+      "wis": 14,
+      "cha": 15,
+      "strMod": "+3",
+      "dexMod": "+2",
+      "conMod": "+2",
+      "intMod": "+2",
+      "wisMod": "+2",
+      "chaMod": "+2",
+      "strSave": "+3",
+      "dexSave": "+2",
+      "conSave": "+5",
+      "intSave": "+5",
+      "wisSave": "+5",
+      "chaSave": "+2"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 12",
+    "languages": "commun, gith",
+    "challengeRating": "8",
+    "xp": "3900",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Épée d'argent",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Foulée brumeuse (2/jour)",
+        "description": ""
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githyanki Knight",
+    "nameES": "Githyanki caballero"
+  },
+  {
+    "key": "githyanki-combattant",
+    "name": "Githyanki, combattant",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 17,
+    "hitPoints": 49,
+    "hitDice": "9d8+9",
+    "initiativeBonus": "+4",
+    "speed": "9 m",
+    "abilities": {
+      "str": 15,
+      "dex": 14,
+      "con": 12,
+      "int": 13,
+      "wis": 13,
+      "cha": 10,
+      "strMod": "+2",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+1",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+2",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "+3",
+      "wisSave": "+3",
+      "chaSave": "+0"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 11",
+    "languages": "commun, gith",
+    "challengeRating": "3",
+    "xp": "700",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Lame psi",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Foulée brumeuse (2/jour)",
+        "description": ""
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githyanki Warrior",
+    "nameES": "Githyanki guerrero"
+  },
+  {
+    "key": "githyanki-dracomancien",
+    "name": "Githyanki, dracomancien",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Mauvais",
+    "armorClass": 18,
+    "hitPoints": 255,
+    "hitDice": "30d8+120",
+    "initiativeBonus": "+8",
+    "speed": "9 m, vol 9 m (stationnaire)",
+    "abilities": {
+      "str": 10,
+      "dex": 16,
+      "con": 18,
+      "int": 20,
+      "wis": 16,
+      "cha": 18,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+4",
+      "intMod": "+5",
+      "wisMod": "+3",
+      "chaMod": "+4",
+      "strSave": "+0",
+      "dexSave": "+8",
+      "conSave": "+9",
+      "intSave": "+10",
+      "wisSave": "+8",
+      "chaSave": "+4"
+    },
+    "skills": "Arcanes +10, Perception +8",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision aveugle 9 m, Perception passive 18",
+    "languages": "commun, draconique, gith",
+    "challengeRating": "16",
+    "xp": "15000",
+    "proficiencyBonus": "+5",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Frappe draconique",
+        "description": ""
+      },
+      {
+        "name": "Souffle du dragon invoqué (recharge 5–6)",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Foulée brumeuse (3/jour)",
+        "description": ""
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githyanki Dracomancer",
+    "nameES": "Githyanki dracomante"
+  },
+  {
+    "key": "githzerai-moine",
+    "name": "Githzerai, moine",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Neutre",
+    "armorClass": 14,
+    "hitPoints": 38,
+    "hitDice": "7d8+7",
+    "initiativeBonus": "+4",
+    "speed": "12 m",
+    "abilities": {
+      "str": 12,
+      "dex": 15,
+      "con": 12,
+      "int": 13,
+      "wis": 14,
+      "cha": 10,
+      "strMod": "+1",
+      "dexMod": "+2",
+      "conMod": "+1",
+      "intMod": "+1",
+      "wisMod": "+2",
+      "chaMod": "+0",
+      "strSave": "+3",
+      "dexSave": "+4",
+      "conSave": "+1",
+      "intSave": "+3",
+      "wisSave": "+4",
+      "chaSave": "+0"
+    },
+    "skills": "Intuition +4, Perception +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 14",
+    "languages": "commun, gith",
+    "challengeRating": "2",
+    "xp": "450",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Frappe psi",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Bond psi (2/jour)",
+        "description": ""
+      }
+    ],
+    "reactions": [
+      {
+        "name": "Défense psionique (2/jour)",
+        "description": ""
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githzerai Monk",
+    "nameES": "Githzerai monje"
+  },
+  {
+    "key": "githzerai-psion",
+    "name": "Githzerai, psion",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Neutre",
+    "armorClass": 18,
+    "hitPoints": 169,
+    "hitDice": "26d8+52",
+    "initiativeBonus": "+8",
+    "speed": "12 m, vol 12 m (stationnaire)",
+    "abilities": {
+      "str": 12,
+      "dex": 18,
+      "con": 15,
+      "int": 19,
+      "wis": 18,
+      "cha": 14,
+      "strMod": "+1",
+      "dexMod": "+4",
+      "conMod": "+2",
+      "intMod": "+4",
+      "wisMod": "+4",
+      "chaMod": "+2",
+      "strSave": "+5",
+      "dexSave": "+8",
+      "conSave": "+2",
+      "intSave": "+8",
+      "wisSave": "+8",
+      "chaSave": "+2"
+    },
+    "skills": "Arcanes +8, Intuition +8, Perception +8",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 18",
+    "languages": "commun, gith",
+    "challengeRating": "12",
+    "xp": "8400",
+    "proficiencyBonus": "+4",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Distorsion psychique",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Défense psionique",
+        "description": ""
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githzerai Psion",
+    "nameES": "Githzerai psiónico"
+  },
+  {
+    "key": "githzerai-zerth",
+    "name": "Githzerai, zerth",
+    "type": "Aberration (Gith)",
+    "size": "M",
+    "alignment": "Loyal Neutre",
+    "armorClass": 17,
+    "hitPoints": 84,
+    "hitDice": "13d8+26",
+    "initiativeBonus": "+7",
+    "speed": "12 m",
+    "abilities": {
+      "str": 13,
+      "dex": 18,
+      "con": 15,
+      "int": 16,
+      "wis": 17,
+      "cha": 12,
+      "strMod": "+1",
+      "dexMod": "+4",
+      "conMod": "+2",
+      "intMod": "+3",
+      "wisMod": "+3",
+      "chaMod": "+1",
+      "strSave": "+4",
+      "dexSave": "+7",
+      "conSave": "+2",
+      "intSave": "+6",
+      "wisSave": "+6",
+      "chaSave": "+1"
+    },
+    "skills": "Arcanes +6, Intuition +6, Perception +6",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 16",
+    "languages": "commun, gith",
+    "challengeRating": "6",
+    "xp": "2300",
+    "proficiencyBonus": "+3",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Frappe psi",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Bond psi (2/jour)",
+        "description": ""
+      }
+    ],
+    "reactions": [
+      {
+        "name": "Défense psionique (2/jour)",
+        "description": ""
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Githzerai Zerth",
+    "nameES": "Githzerai zerth"
+  },
+  {
+    "key": "insecte-geant",
+    "name": "Insecte géant",
+    "type": "Bête",
+    "size": "G",
+    "alignment": "non aligné",
+    "armorClass": 11,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "12 m, escalade 12 m, vol 12 m (guêpe uniquement)",
+    "abilities": {
+      "str": 17,
+      "dex": 13,
+      "con": 15,
+      "int": 4,
+      "wis": 14,
+      "cha": 3,
+      "strMod": "+3",
+      "dexMod": "+1",
+      "conMod": "+2",
+      "intMod": "-3",
+      "wisMod": "+2",
+      "chaMod": "-4",
+      "strSave": "+3",
+      "dexSave": "+1",
+      "conSave": "+2",
+      "intSave": "-3",
+      "wisSave": "+2",
+      "chaSave": "-4"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "comprend les langues que vous connaissez",
+    "challengeRating": "aucun",
+    "xp": "0",
+    "proficiencyBonus": "= PB",
+    "traits": [
+      {
+        "name": "Pattes d'araignée",
+        "description": "L'insecte peut escalader des surfaces difficiles, y compris le long des plafonds, sans avoir besoin de faire un jet de caractéristique."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "L'insecte effectue un nombre d'attaques égal à la moitié du niveau de ce sort (arrondir à l'inférieur)"
+      },
+      {
+        "name": "Piqûre toxique",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 3 m. Touché : 1d6 + 3 + le niveau du sort dégâts perforants plus 1d4 dégâts de poison"
+      },
+      {
+        "name": "Jet de toile (araignée uniquement)",
+        "description": "À distance : bonus égal à votre modificateur d'attaque des sorts, portée 18 m. Touché : 1d10 + 3 + le niveau du sort dégâts contondants, et la Vitesse de la cible est réduite à 0 jusqu'au début du prochain tour de l'insecte."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Crachat venimeux (mille-pattes uniquement)",
+        "description": "JdS Constitution : DD égal au DD de sauvegarde de vos sorts, une créature que l'insecte peut voir dans un rayon de 3 m. Échec : la cible subit l'état Empoisonné jusqu'au début du prochain tour de l'insecte"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024",
+    "nameEN": "Giant Insect",
+    "nameES": "Insecto gigante"
+  },
+  {
+    "key": "kenku",
+    "name": "Kenku",
+    "type": "Monstruosité",
+    "size": "M",
+    "alignment": "Neutre",
+    "armorClass": 13,
+    "hitPoints": 13,
+    "hitDice": "3d8",
+    "initiativeBonus": "+3",
+    "speed": "9 m",
+    "abilities": {
+      "str": 10,
+      "dex": 16,
+      "con": 10,
+      "int": 11,
+      "wis": 10,
+      "cha": 10,
+      "strMod": "+0",
+      "dexMod": "+3",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "+0",
+      "strSave": "+0",
+      "dexSave": "+3",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "+0",
+      "chaSave": "+0"
+    },
+    "skills": "Tromperie +4, Perception +2, Discrétion +5",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 12",
+    "languages": "commun, primordial (aérien)",
+    "challengeRating": "1/4",
+    "xp": "50",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Imitation",
+        "description": "Le kenku peut imiter tous les sons qu'il a entendus, y compris les voix. Une créature qui entend ces sons peut les reconnaître comme des imitations en réussissant un jet de Sagesse (Intuition) DD 14."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Lame d'ombre",
+        "description": "Corps à corps ou à distance : +5, allonge 1,50 m ou portée 18 m. Touché : 6 (1d6 + 3) dégâts nécrotiques. Touché ou raté : la lame retourne magiquement dans la main du kenku immédiatement après une attaque à distance."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Lanterne occulte (recharge 4–6)",
+        "description": "Le kenku lance lueurs féeriques , en utilisant l'Intelligence comme caractéristique d'incantation (DD de sauvegarde 10)."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Kenku",
+    "nameES": "Kenku"
+  },
+  {
+    "key": "mane-vaporeux",
+    "name": "Mâne vaporeux",
+    "type": "Fiélon (Démon)",
+    "size": "M",
+    "alignment": "Chaotique Mauvais",
+    "armorClass": 13,
+    "hitPoints": 19,
+    "hitDice": "3d8+6",
+    "initiativeBonus": "+1",
+    "speed": "9 m",
+    "abilities": {
+      "str": 14,
+      "dex": 12,
+      "con": 15,
+      "int": 5,
+      "wis": 8,
+      "cha": 3,
+      "strMod": "+2",
+      "dexMod": "+1",
+      "conMod": "+2",
+      "intMod": "-3",
+      "wisMod": "-1",
+      "chaMod": "-4",
+      "strSave": "+2",
+      "dexSave": "+1",
+      "conSave": "+2",
+      "intSave": "-3",
+      "wisSave": "-1",
+      "chaSave": "-4"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": "froid, feu, foudre",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Agrippé, Empoisonné, Entravé",
+    "senses": "Vision dans le noir 18 m, Perception passive 9",
+    "languages": "comprend l'abyssal mais ne parle pas",
+    "challengeRating": "1",
+    "xp": "200",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Contortionniste",
+        "description": ""
+      },
+      {
+        "name": "Vapeurs morbides",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Griffes",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Discrétion dans les ombres",
+        "description": ""
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Manes Vaporspawn",
+    "nameES": "Mane engendro vaporoso"
+  },
+  {
+    "key": "monture-d-outremonde",
+    "name": "Monture d'Outremonde",
+    "type": "Céleste ou Fée ou Fiélon (votre choix)",
+    "size": "G",
+    "alignment": "Neutre",
+    "armorClass": 10,
+    "hitPoints": null,
+    "hitDice": null,
+    "initiativeBonus": null,
+    "speed": "18 m, vol 18 m (nécessite un sort de niveau 4 ou plus)",
+    "abilities": {
+      "str": 18,
+      "dex": 12,
+      "con": 14,
+      "int": 6,
+      "wis": 12,
+      "cha": 8,
+      "strMod": "+4",
+      "dexMod": "+1",
+      "conMod": "+2",
+      "intMod": "-2",
+      "wisMod": "+1",
+      "chaMod": "-1",
+      "strSave": "+4",
+      "dexSave": "+1",
+      "conSave": "+2",
+      "intSave": "-2",
+      "wisSave": "+1",
+      "chaSave": "-1"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 11",
+    "languages": "télépathie 1,5 km (fonctionne uniquement avec vous)",
+    "challengeRating": "aucun",
+    "xp": "0",
+    "proficiencyBonus": "= PB",
+    "traits": [
+      {
+        "name": "Lien vital",
+        "description": "Lorsque vous récupérez des points de vie grâce à un sort de niveau 1 ou supérieur, la monture récupère le même nombre de points de vie si vous êtes dans un rayon de 1,50 m autour d'elle."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Coup d'Outremonde",
+        "description": "Corps à corps : bonus égal à votre modificateur d'attaque des sorts, allonge 1,50 m. Touché : 1d8 + le niveau du sort dégâts radiants (Céleste), psychiques (Fée) ou nécrotiques (Fiélon)."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Regard fiélon (Fiélon uniquement ; recharge après un Repos long)",
+        "description": "JdS Sagesse : DD égal au DD de sauvegarde de vos sorts, une créature dans un rayon de 18 m que la monture peut voir. Échec : la cible subit l'état Effrayé jusqu'à la fin de votre prochain tour"
+      },
+      {
+        "name": "Foulée féerique (Fée uniquement ; recharge après un Repos long)",
+        "description": "La monture se téléporte, avec son cavalier, vers un espace inoccupé de votre choix dans un rayon de 18 m"
+      },
+      {
+        "name": "Contact guérisseur (Céleste uniquement ; recharge après un Repos long)",
+        "description": "Une créature dans un rayon de 1,50 m autour de la monture récupère un nombre de points de vie égal à 2d8 plus le niveau du sort"
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Player´s Handbook 2024",
+    "nameEN": "Otherworldly Steed",
+    "nameES": "Corcel sobrenatural"
+  },
+  {
+    "key": "nuee-d-insectes",
+    "name": "Nuée d'insectes",
+    "type": "Nuée de Bêtes TP",
+    "size": "M",
+    "alignment": "non aligné",
+    "armorClass": 11,
+    "hitPoints": 19,
+    "hitDice": "3d8+6",
+    "initiativeBonus": "+1",
+    "speed": "6 m, escalade ou vol 6 m (au choix du MD)",
+    "abilities": {
+      "str": 3,
+      "dex": 13,
+      "con": 14,
+      "int": 1,
+      "wis": 7,
+      "cha": 1,
+      "strMod": "-4",
+      "dexMod": "+1",
+      "conMod": "+2",
+      "intMod": "-5",
+      "wisMod": "-2",
+      "chaMod": "-5",
+      "strSave": "-4",
+      "dexSave": "+1",
+      "conSave": "+2",
+      "intSave": "-5",
+      "wisSave": "-2",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": "contondant, perforant, tranchant",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Effrayé, Agrippé, Paralysé, Pétrifié, À terre, Entravé, Étourdi",
+    "senses": "Vision aveugle 9 m, Perception passive 8",
+    "languages": "aucune",
+    "challengeRating": "1/2",
+    "xp": "100",
+    "proficiencyBonus": "+2",
+    "traits": [
+      {
+        "name": "Nuée",
+        "description": "La nuée peut occuper l'espace d'une autre créature et réciproquement, et elle peut se déplacer par toute ouverture assez large pour un insecte de taille TP. La nuée ne peut ni récupérer de points de vie ni recevoir de points de vie temporaires"
+      },
+      {
+        "name": "Pattes d'araignée",
+        "description": "Si la nuée dispose d'une Vitesse d'escalade, la nuée peut parcourir les parois les plus difficiles, y compris les plafonds, sans passer par un jet de caractéristique."
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsures",
+        "description": ""
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Swarm of Insects",
+    "nameES": "Enjambre de insectos"
+  },
+  {
+    "key": "ours-hibou-primitif",
+    "name": "Ours-hibou primitif",
+    "type": "Monstruosité",
+    "size": "TG",
+    "alignment": "Non-aligné",
+    "armorClass": 16,
+    "hitPoints": 126,
+    "hitDice": "12d12+48",
+    "initiativeBonus": "+5",
+    "speed": "12 m, escalade 12 m, vol 1,50 m",
+    "abilities": {
+      "str": 22,
+      "dex": 14,
+      "con": 19,
+      "int": 8,
+      "wis": 15,
+      "cha": 7,
+      "strMod": "+6",
+      "dexMod": "+2",
+      "conMod": "+4",
+      "intMod": "-1",
+      "wisMod": "+2",
+      "chaMod": "-2",
+      "strSave": "+6",
+      "dexSave": "+2",
+      "conSave": "+7",
+      "intSave": "-1",
+      "wisSave": "+5",
+      "chaSave": "-2"
+    },
+    "skills": "Perception +8",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 36 m, Perception passive 18",
+    "languages": "—",
+    "challengeRating": "7",
+    "xp": "2900",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Dévastation",
+        "description": ""
+      },
+      {
+        "name": "Hurlement perçant (recharge 5–6)",
+        "description": ""
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Primeval Owlbear",
+    "nameES": "Oso lechuza primigenio"
+  },
+  {
+    "key": "pixie-emerveilleuse",
+    "name": "Pixie émerveilleuse",
+    "type": "Fée",
+    "size": "TP",
+    "alignment": "Neutre Bon",
+    "armorClass": 15,
+    "hitPoints": 60,
+    "hitDice": "24d4",
+    "initiativeBonus": "+5",
+    "speed": "3 m, vol 9 m",
+    "abilities": {
+      "str": 2,
+      "dex": 20,
+      "con": 10,
+      "int": 11,
+      "wis": 14,
+      "cha": 18,
+      "strMod": "-4",
+      "dexMod": "+5",
+      "conMod": "+0",
+      "intMod": "+0",
+      "wisMod": "+2",
+      "chaMod": "+4",
+      "strSave": "-4",
+      "dexSave": "+5",
+      "conSave": "+0",
+      "intSave": "+0",
+      "wisSave": "+2",
+      "chaSave": "+4"
+    },
+    "skills": "Arcanes +3, Perception +5, Discrétion +8",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 15",
+    "languages": "commun, elfe, sylvestre",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Résistance à la magie",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Poussière féerique",
+        "description": ""
+      },
+      {
+        "name": "Incantation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Émerveillement spontané (recharge 5–6)",
+        "description": ""
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Pixie Wonderbringer",
+    "nameES": "Pixie hacedor de maravillas"
+  },
+  {
+    "key": "remorhaz-jeune",
+    "name": "Remorhaz, jeune",
+    "type": "Monstruosité",
+    "size": "G",
+    "alignment": "Non-aligné",
+    "armorClass": 14,
+    "hitPoints": 93,
+    "hitDice": "11d10+33",
+    "initiativeBonus": "+1",
+    "speed": "9 m, creusement 6 m",
+    "abilities": {
+      "str": 18,
+      "dex": 13,
+      "con": 17,
+      "int": 3,
+      "wis": 10,
+      "cha": 4,
+      "strMod": "+4",
+      "dexMod": "+1",
+      "conMod": "+3",
+      "intMod": "-4",
+      "wisMod": "+0",
+      "chaMod": "-3",
+      "strSave": "+4",
+      "dexSave": "+1",
+      "conSave": "+3",
+      "intSave": "-4",
+      "wisSave": "+0",
+      "chaSave": "-3"
+    },
+    "skills": null,
+    "damageImmunities": "froid, feu",
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, perception des vibrations 18 m, Perception passive 10",
+    "languages": "—",
+    "challengeRating": "5",
+    "xp": "1800",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Aura de chaleur",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Morsure",
+        "description": ""
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Young Remorhaz",
+    "nameES": "Remorhaz joven"
+  },
+  {
+    "key": "revenant-charnier",
+    "name": "Revenant, charnier",
+    "type": "Mort-vivant",
+    "size": "TG",
+    "alignment": "Neutre",
+    "armorClass": 14,
+    "hitPoints": 161,
+    "hitDice": "14d12+70",
+    "initiativeBonus": "+2",
+    "speed": "12 m",
+    "abilities": {
+      "str": 20,
+      "dex": 14,
+      "con": 20,
+      "int": 13,
+      "wis": 16,
+      "cha": 18,
+      "strMod": "+5",
+      "dexMod": "+2",
+      "conMod": "+5",
+      "intMod": "+1",
+      "wisMod": "+3",
+      "chaMod": "+4",
+      "strSave": "+8",
+      "dexSave": "+2",
+      "conSave": "+8",
+      "intSave": "+1",
+      "wisSave": "+6",
+      "chaSave": "+7"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": "nécrotique, psychique",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Paralysé, Pétrifié, Empoisonné, Étourdi, Inconscient",
+    "senses": "Vision dans le noir 36 m, Perception passive 13",
+    "languages": "commun plus deux autres langues",
+    "challengeRating": "7",
+    "xp": "2900",
+    "proficiencyBonus": "+3",
+    "traits": [
+      {
+        "name": "Restauration funeste",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Asphyxie",
+        "description": ""
+      },
+      {
+        "name": "Regard tourmenteur (recharge 5–6)",
+        "description": ""
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Graveyard Revenant",
+    "nameES": "Redivivo de cementerio"
+  },
+  {
+    "key": "revenant-tourmenteur",
+    "name": "Revenant, tourmenteur",
+    "type": "Mort-vivant",
+    "size": "Gig",
+    "alignment": "Neutre",
+    "armorClass": 20,
+    "hitPoints": 203,
+    "hitDice": "14d20+56",
+    "initiativeBonus": "+5",
+    "speed": "9 m",
+    "abilities": {
+      "str": 20,
+      "dex": 12,
+      "con": 18,
+      "int": 16,
+      "wis": 18,
+      "cha": 20,
+      "strMod": "+5",
+      "dexMod": "+1",
+      "conMod": "+4",
+      "intMod": "+3",
+      "wisMod": "+4",
+      "chaMod": "+5",
+      "strSave": "+5",
+      "dexSave": "+1",
+      "conSave": "+8",
+      "intSave": "+3",
+      "wisSave": "+8",
+      "chaSave": "+5"
+    },
+    "skills": null,
+    "damageImmunities": "poison",
+    "damageResistances": "nécrotique, psychique",
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Charmé, Épuisement, Effrayé, Agrippé, Paralysé, Pétrifié, Empoisonné, À terre, Entravé, Inconscient",
+    "senses": "vision véritable 18 m, Perception passive 14",
+    "languages": "commun plus deux autres langues",
+    "challengeRating": "10",
+    "xp": "5900",
+    "proficiencyBonus": "+4",
+    "traits": [
+      {
+        "name": "Zone hantée",
+        "description": ""
+      },
+      {
+        "name": "Restauration funeste",
+        "description": ""
+      }
+    ],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": ""
+      },
+      {
+        "name": "Frappe d'objet",
+        "description": ""
+      },
+      {
+        "name": "Invitation",
+        "description": ""
+      }
+    ],
+    "bonusActions": [],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Haunting Revenant",
+    "nameES": "Redivivo de guarida"
+  },
+  {
+    "key": "sanglier-garou",
+    "name": "Sanglier-garou",
+    "type": "Monstruosité (Lycanthrope)",
+    "size": "M ou P",
+    "alignment": "Neutre Mauvais",
+    "armorClass": 15,
+    "hitPoints": 97,
+    "hitDice": "15d8+30",
+    "initiativeBonus": "+2",
+    "speed": "9 m, 12 m (forme de sanglier uniquement)",
+    "abilities": {
+      "str": 17,
+      "dex": 10,
+      "con": 15,
+      "int": 10,
+      "wis": 11,
+      "cha": 8,
+      "strMod": "+3",
+      "dexMod": "+0",
+      "conMod": "+2",
+      "intMod": "+0",
+      "wisMod": "+0",
+      "chaMod": "-1",
+      "strSave": "+3",
+      "dexSave": "+0",
+      "conSave": "+2",
+      "intSave": "+0",
+      "wisSave": "+0",
+      "chaSave": "-1"
+    },
+    "skills": "Perception +2",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Perception passive 12",
+    "languages": "commun (ne peut pas parler sous forme de sanglier)",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le sanglier-garou effectue deux attaques, réparties à sa guise entre Défense et Javeline. Il peut en remplacer une par une attaque de Coup de défense"
+      },
+      {
+        "name": "Coup de défense (forme de sanglier ou hybride uniquement)",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 12 (2d8 + 3) dégâts perforants. Si la cible est un Humanoïde, elle est soumise à l'effet suivant. JdS Constitution : DD 12. Échec : la cible est maudite. Si la cible maudite tombe à 0 point de vie, elle se retrouve en fait à 10 pv et devient un sanglier-garou sous le contrôle du MD. Réussite : la cible est immunisée contre la malédiction de ce sanglier-garou pendant 24 heures"
+      },
+      {
+        "name": "Défense (forme de sanglier ou hybride uniquement)",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 10 (2d6 + 3) dégâts perforants. Si la cible est une créature de taille M ou inférieure et si le sanglier-garou s'est déplacé en ligne droite d'un minimum de 6 m juste avant de la toucher, la cible subit 7 (2d6) dégâts perforants supplémentaires, ainsi que l'état À terre"
+      },
+      {
+        "name": "Javeline (forme humanoïde ou hybride uniquement)",
+        "description": "Corps à corps ou à distance : +5, allonge 1,50 m ou portée 9/36 m. Touché : 13 (3d6 + 3) dégâts perforants."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Changement d'aspect",
+        "description": "Le sanglier-garou se transforme en hybride sanglier-humanoïde de taille M ou en sanglier de taille P, ou bien retrouve sa forme véritable d'humanoïde. En dehors de sa catégorie de taille, son profil reste le même, quelle que soit la forme. Rien de ce qu'il porte n'est transformé."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Wereboar",
+    "nameES": "Hombre jabalí"
+  },
+  {
+    "key": "thallophyte-criard",
+    "name": "Thallophyte, criard",
+    "type": "Plante",
+    "size": "M",
+    "alignment": "Non-aligné",
+    "armorClass": 5,
+    "hitPoints": 13,
+    "hitDice": "3d8",
+    "initiativeBonus": "-5",
+    "speed": "1,50 m",
+    "abilities": {
+      "str": 1,
+      "dex": 1,
+      "con": 10,
+      "int": 1,
+      "wis": 3,
+      "cha": 1,
+      "strMod": "-5",
+      "dexMod": "-5",
+      "conMod": "+0",
+      "intMod": "-5",
+      "wisMod": "-4",
+      "chaMod": "-5",
+      "strSave": "-5",
+      "dexSave": "-5",
+      "conSave": "+0",
+      "intSave": "-5",
+      "wisSave": "-4",
+      "chaSave": "-5"
+    },
+    "skills": null,
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": "Aveuglé, Charmé, Assourdi, Effrayé",
+    "senses": "Vision aveugle 9 m, Perception passive 6",
+    "languages": "—",
+    "challengeRating": "0",
+    "xp": null,
+    "proficiencyBonus": null,
+    "traits": [],
+    "actions": [],
+    "bonusActions": [],
+    "reactions": [
+      {
+        "name": "Criaillement",
+        "description": "Déclencheur : une créature ou une source de Lumière vive se déplace dans un rayon de 9 m du criard. Conséquences : le criard émet un hurlement audible dans un rayon de 90 m pendant 1 minute (le cri cesse s'il meurt)."
+      }
+    ],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Shrieker Fungus",
+    "nameES": "Hongo chillón"
+  },
+  {
+    "key": "tigre-garou",
+    "name": "Tigre-garou",
+    "type": "Monstruosité (Lycanthrope)",
+    "size": "M ou P",
+    "alignment": "Neutre",
+    "armorClass": 12,
+    "hitPoints": 120,
+    "hitDice": "16d8+48",
+    "initiativeBonus": "+2",
+    "speed": "9 m, 12 m (forme de tigre uniquement)",
+    "abilities": {
+      "str": 17,
+      "dex": 15,
+      "con": 16,
+      "int": 10,
+      "wis": 13,
+      "cha": 11,
+      "strMod": "+3",
+      "dexMod": "+2",
+      "conMod": "+3",
+      "intMod": "+0",
+      "wisMod": "+1",
+      "chaMod": "+0",
+      "strSave": "+3",
+      "dexSave": "+2",
+      "conSave": "+3",
+      "intSave": "+0",
+      "wisSave": "+1",
+      "chaSave": "+0"
+    },
+    "skills": "Perception +5, Discrétion +4",
+    "damageImmunities": null,
+    "damageResistances": null,
+    "damageVulnerabilities": null,
+    "conditionImmunities": null,
+    "senses": "Vision dans le noir 18 m, Perception passive 15",
+    "languages": "commun (ne peut pas parler sous forme de tigre)",
+    "challengeRating": "4",
+    "xp": "1100",
+    "proficiencyBonus": "+2",
+    "traits": [],
+    "actions": [
+      {
+        "name": "Attaques multiples",
+        "description": "Le tigre-garou effectue deux attaques, réparties à sa guise entre Éraflure et Arc long. Il peut en remplacer une par une attaque de Morsure"
+      },
+      {
+        "name": "Éraflure",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 10 (2d6 + 3) dégâts tranchants"
+      },
+      {
+        "name": "Morsure (forme de tigre ou hybride uniquement)",
+        "description": "Corps à corps : +5, allonge 1,50 m. Touché : 12 (2d8 + 3) dégâts perforants. Si la cible est un Humanoïde, elle est soumise à l'effet suivant. JdS Constitution : DD 13. Échec : la cible est maudite. Si la cible maudite tombe à 0 point de vie, elle se retrouve en fait à 10 pv et devient un tigre-garou sous le contrôle du MD. Réussite : la cible est immunisée contre la malédiction de ce tigre-garou pendant 24 heures"
+      },
+      {
+        "name": "Arc long (forme humanoïde ou hybride uniquement)",
+        "description": "À distance : +4, portée 45/180 m. Touché : 11 (2d8 + 2) dégâts perforants."
+      }
+    ],
+    "bonusActions": [
+      {
+        "name": "Affût (forme de tigre ou hybride uniquement)",
+        "description": "Le tigre-garou se déplace dans les limites de sa Vitesse sans provoquer d'attaque d'Opportunité. À la fin de ce déplacement, il peut prendre l'action Furtivité"
+      },
+      {
+        "name": "Changement d'aspect",
+        "description": "Le tigre-garou se transforme en hybride tigre-humanoïde de taille G ou en tigre de taille G, ou bien retrouve sa forme véritable d'humanoïde. En dehors de sa catégorie de taille, son profil reste le même, quelle que soit la forme. Rien de ce qu'il porte n'est transformé."
+      }
+    ],
+    "reactions": [],
+    "legendaryActions": [],
+    "mythicActions": [],
+    "source": "Monster Manual 2024",
+    "nameEN": "Weretiger",
+    "nameES": "Hombre tigre"
+  }
+]

@@ -1,0 +1,52 @@
+Tu es un extracteur JSON. Lis le fichier snapshot et produis un JSON structuré des outils D&D 2024.
+
+## Fichier source
+C:\_work\my_projects\donjon-dragon\docs\characteres\equipment\tools-snapshot.txt
+
+## Fichier de sortie
+C:\_work\my_projects\donjon-dragon\docs\characteres\equipment\tools.seed.json
+
+## Règles
+1. UNIQUEMENT le fichier JSON. Pas de markdown, pas de blocs de code, pas d'explications.
+2. Chaque outil est un heading h4 "Nom (prix)" suivi des champs dans les StaticText.
+3. Ne devine rien. Champ absent = null ou "".
+
+## Structure du snapshot
+```
+- heading "Matériel d'alchimiste (50 po)" [level=4]
+  - paragraph
+    - StaticText "Caractéristique : Intelligence"
+    - StaticText "Poids : 4 kg"
+    - StaticText "Utilisation : identifier une substance (DD 15), allumer un feu (DD 15)"
+    - StaticText "Artisanat : acide, feu grégeois, huile, papier, parfum, sacoche à composantes"
+```
+
+Les sections "Outils d'artisan", "Autres outils", "Maîtrise d'outils" sont des titres de section, pas des outils.
+
+## Schéma JSON
+
+```json
+[
+  {
+    "key": "string (slug: nom en minuscules, accents conservés, espaces → tirets)",
+    "name": "string (nom français)",
+    "cost": "string (ex: '50 po', 'variable')",
+    "category": "string ('outil d'artisan' ou 'autre outil')",
+    "characteristic": "string (ex: 'Intelligence')",
+    "weight": "string | null (ex: '4 kg', '—' → null)",
+    "use": "string | null (activités possibles)",
+    "craft": "string | null (objets fabricables)",
+    "variants": "string | null (variantes si mentionnées)"
+  }
+]
+```
+
+## Règles d'extraction
+- **key** : lowercase du nom, accents conservés, espaces→tirets, apostrophes supprimées
+- **category** : "outil d'artisan" si avant le heading "Autres outils", sinon "autre outil"
+- **characteristic** : extraire après "Caractéristique : "
+- **weight** : extraire après "Poids : ". "—" → null
+- **use** : extraire après "Utilisation : "
+- **craft** : extraire après "Artisanat : "
+- Pour "Instrument de musique", les variantes sont dans le champ Artisanat
+- Pour "Boîte de jeux", les variantes sont dans le champ Artisanat

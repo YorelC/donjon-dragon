@@ -1,0 +1,67 @@
+Tu es un extracteur JSON. Ta seule tâche : lire le fichier texte contenant des pages de monstres D&D 5.5 (2024) et produire un fichier JSON structuré.
+
+## Fichier source
+C:\_work\my_projects\donjon-dragon\docs\characteres\monsters-batches\fix_lot.txt
+
+## Fichier de sortie
+C:\_work\my_projects\donjon-dragon\docs\characteres\monsters-batches\fix_lot.seed.json
+
+## Règles absolues
+1. Tu ne produis QUE le fichier JSON. Pas de commentaires, pas d'explications, pas de markdown, pas de blocs de code.
+2. Chaque monstre est délimité par `<!-- MONSTER: slug -->`. Le slug est la clé unique.
+3. Si un champ est absent, mets `null` (chaînes) ou `[]` (tableaux). Ne devine jamais.
+4. Respecte EXACTEMENT le schéma. Pas de champs supplémentaires.
+5. **ATTENTION** : plusieurs monstres dans ce lot ont échoué à la première extraction. Utilise un parser Python robuste, pas de regex fragile. Les sections Actions/Traits/Légendaires DOIVENT être extraites.
+
+## Schéma JSON
+
+```json
+[
+  {
+    "key": "string (slug unique)",
+    "name": "string (nom français)",
+    "type": "string (ex: Aberration, Bête (Dinosaure), Humanoïde (Magicien))",
+    "size": "string (TP, P, M, G, TG, Gig, ou 'M ou P')",
+    "alignment": "string",
+    "armorClass": "number | null",
+    "hitPoints": "number | null",
+    "hitDice": "string | null",
+    "initiativeBonus": "number | null",
+    "speed": "string | null",
+    "abilities": {
+      "str": "number | null", "dex": "number | null", "con": "number | null",
+      "int": "number | null", "wis": "number | null", "cha": "number | null",
+      "strMod": "string | null", "dexMod": "string | null", "conMod": "string | null",
+      "intMod": "string | null", "wisMod": "string | null", "chaMod": "string | null",
+      "strSave": "string | null", "dexSave": "string | null", "conSave": "string | null",
+      "intSave": "string | null", "wisSave": "string | null", "chaSave": "string | null"
+    },
+    "skills": "string | null",
+    "damageImmunities": "string | null",
+    "damageResistances": "string | null",
+    "damageVulnerabilities": "string | null",
+    "conditionImmunities": "string | null",
+    "senses": "string | null",
+    "languages": "string | null",
+    "challengeRating": "string | null",
+    "xp": "string | null",
+    "proficiencyBonus": "string | null",
+    "traits": [{"name": "string", "description": "string"}],
+    "actions": [{"name": "string", "description": "string"}],
+    "bonusActions": [{"name": "string", "description": "string"}],
+    "reactions": [{"name": "string", "description": "string"}],
+    "legendaryActions": [{"name": "string", "description": "string"}],
+    "mythicActions": [{"name": "string", "description": "string"}],
+    "source": "string | null",
+    "nameEN": "string | null",
+    "nameES": "string | null"
+  }
+]
+```
+
+## Pièges à éviter
+
+- **Type qui déborde** : le type ne contient QUE le type (ex: "Monstruosité (Lycanthrope)"). Pas la taille, pas l'alignement, pas le texte qui suit. Arrête-toi au premier "de taille" ou "Initiative" ou "," après le type.
+- **Actions vides** : CHAQUE monstre qui a une section "Actions" dans le texte DOIT avoir ses actions extraites. Même les githyanki, empyréens, flagelleurs mentaux.
+- **Séparateur de traits/actions** : les items sont séparés par " . " (espace-point-espace). Chaque item a un nom avant le " . " et une description après.
+- **Sections sans items** : si une section n'existe pas dans le texte, le tableau est vide []. Ne mets pas le texte brut dans un champ scalaire.
