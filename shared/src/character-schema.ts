@@ -151,23 +151,14 @@ export const CharacterEquipmentSchema = z.object({
 // Requêtes
 // ---------------------------------------------------------------------------
 
-/** Créer un personnage, c'est ouvrir un brouillon : un nom, et rien d'autre. */
-export const StartCharacterSchema = z.object({
-  name: characterNameField(),
-});
-
 /**
- * Renommer ne touche à rien d'autre. Même forme que l'ouverture d'un brouillon,
- * mais pas la même intention : `PUT` rejoue tous les choix, `PATCH` ne bouge que
- * le nom — un joueur corrige une faute de frappe sans repasser par le wizard.
- */
-export const RenameCharacterSchema = z.object({
-  name: characterNameField(),
-});
-
-/**
- * Le wizard rend sa copie. `base` doit être une permutation exacte du tirage
- * persisté — c'est le serveur qui le vérifie, pas le client.
+ * Le wizard rend sa copie complète — un personnage n'existe qu'à ce moment-là,
+ * jamais avant. Ce même schéma sert à la création (`POST`) et à l'édition d'un
+ * personnage déjà créé (`PUT`, montée de niveau ou correction).
+ *
+ * Le tirage de caractéristiques est fait côté client et envoyé tel quel : le
+ * serveur ne le vérifie plus. `abilityRoll` est `null` pour les méthodes
+ * `standardArray`/`pointBuy`, qui n'ont jamais de tirage.
  */
 export const FinalizeCharacterSchema = z.object({
   name: characterNameField(),
@@ -180,10 +171,14 @@ export const FinalizeCharacterSchema = z.object({
   backgroundBonuses: BackgroundAbilityBonusesSchema,
   choices: z.array(CharacterChoiceSchema),
   equipment: CharacterEquipmentSchema,
+  abilityRoll: AbilityRollSchema.nullable(),
 });
 
 /** L'aperçu du wizard : les mêmes choix, mais rien n'est persisté ni vérifié. */
-export const PreviewCharacterSheetSchema = FinalizeCharacterSchema.omit({ name: true });
+export const PreviewCharacterSheetSchema = FinalizeCharacterSchema.omit({
+  name: true,
+  abilityRoll: true,
+});
 
 export const AssignCharacterSchema = z.object({
   playerDisplayName: z.string().trim().min(1),
@@ -194,9 +189,9 @@ export const AssignCharacterSchema = z.object({
 // ---------------------------------------------------------------------------
 
 /**
- * Ce que la liste affiche d'un personnage terminé. `null` tant qu'il est un
- * brouillon : les noms viennent des données de référence du back, le front ne
- * les recalcule pas.
+ * Ce que la liste affiche d'un personnage : les noms viennent des données de
+ * référence du back, le front ne les recalcule pas. Toujours présent — un
+ * personnage n'existe en base que déjà complet.
  */
 export const CharacterBuildSummarySchema = z.object({
   speciesKey: SpeciesKeySchema,
@@ -209,15 +204,65 @@ export const CharacterBuildSummarySchema = z.object({
 });
 
 /**
+ * Le build d'un personnage déjà créé, dans la forme granulaire qu'attend le
+ * wizard pour se pré-remplir en édition. Les choix bruts de `choices[]` sont
+ * déjà éclatés côté serveur — le front n'a pas à rejouer le classement sort
+ * mineur / sort de niveau 1. Contrairement à la composition du wizard, rien
+ * n'est nullable ici « faute d'avoir encore choisi » : un personnage persisté
+ * est toujours complet.
+ */
+export const CharacterBuildDetailSchema = z.object({
+  name: characterNameField(),
+
+  speciesKey: SpeciesKeySchema,
+  lineageKey: z.string().nullable(),
+  speciesSkills: z.array(SkillNameSchema),
+  speciesFeat: OriginFeatKeySchema.nullable(),
+
+  classKey: ClassKeySchema,
+  classSkills: z.array(SkillNameSchema),
+  expertise: z.array(SkillNameSchema),
+  classCantrips: z.array(z.string()),
+  classSpells: z.array(z.string()),
+  fightingStyle: z.string().nullable(),
+  classOrder: z.string().nullable(),
+
+  backgroundKey: BackgroundKeySchema,
+  backgroundBonuses: BackgroundAbilityBonusesSchema,
+
+  featSkills: z.array(SkillNameSchema),
+  featTools: z.array(z.string()),
+  spellcastingAbility: AbilitySchema.nullable(),
+  spellList: ClassKeySchema.nullable(),
+  featCantrips: z.array(z.string()),
+  featSpells: z.array(z.string()),
+
+  abilityMethod: AbilityMethodSchema,
+  base: AbilityScoresSchema,
+  abilityRoll: AbilityRollSchema.nullable(),
+
+  armorKey: z.string().nullable(),
+  shield: z.boolean(),
+});
+
+/**
  * `assignedTo` est un résumé du joueur, jamais son id — le client n'a pas à
  * connaître l'identité système des autres joueurs.
+ *
+ * `status` ne décrit pas l'avancement de la création — un personnage n'existe
+ * en base que déjà complet — mais sa participation à l'aventure de la
+ * campagne. `'waiting_adventure'` est la seule valeur possible pour l'instant ;
+ * un futur statut `'in_adventure'` viendra restreindre l'édition au MJ une
+ * fois la partie commencée.
  */
+export const CharacterStatusSchema = z.enum(['waiting_adventure']);
+
 export const CharacterSchema = z.object({
   id: z.string().uuid(),
   campaignId: z.string().uuid(),
   name: characterNameField(),
-  status: z.enum(['draft', 'ready']),
-  build: CharacterBuildSummarySchema.nullable(),
+  status: CharacterStatusSchema,
+  build: CharacterBuildSummarySchema,
   abilityRoll: AbilityRollSchema.nullable(),
   createdByMe: z.boolean(),
   assignedTo: UserSummarySchema.nullable(),
@@ -230,10 +275,10 @@ export type AbilityRoll = z.infer<typeof AbilityRollSchema>;
 export type ChoiceSource = z.infer<typeof ChoiceSourceSchema>;
 export type CharacterChoice = z.infer<typeof CharacterChoiceSchema>;
 export type CharacterEquipment = z.infer<typeof CharacterEquipmentSchema>;
-export type StartCharacterDto = z.infer<typeof StartCharacterSchema>;
-export type RenameCharacterDto = z.infer<typeof RenameCharacterSchema>;
+export type CharacterStatus = z.infer<typeof CharacterStatusSchema>;
 export type FinalizeCharacterDto = z.infer<typeof FinalizeCharacterSchema>;
 export type PreviewCharacterSheetDto = z.infer<typeof PreviewCharacterSheetSchema>;
 export type AssignCharacterDto = z.infer<typeof AssignCharacterSchema>;
 export type CharacterBuildSummary = z.infer<typeof CharacterBuildSummarySchema>;
+export type CharacterBuildDetailDto = z.infer<typeof CharacterBuildDetailSchema>;
 export type Character = z.infer<typeof CharacterSchema>;

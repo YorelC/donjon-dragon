@@ -7,8 +7,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/atoms/dialog";
-import { Input } from "@/shared/components/atoms/input";
 import { Label } from "@/shared/components/atoms/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/atoms/select";
 import type { AssignCharacterFormState } from "../hooks/use-assign-character-form";
 
 interface CharacterAssignViewProps {
@@ -29,11 +35,18 @@ export function CharacterAssignView({ assign }: CharacterAssignViewProps) {
         </DialogHeader>
         <div className="grid gap-1.5">
           <Label htmlFor="assign-player">Pseudo du joueur</Label>
-          <Input
-            id="assign-player"
-            value={assign.playerDisplayName}
-            onChange={(e) => assign.onChangeDisplayName(e.target.value)}
-          />
+          <Select value={assign.playerDisplayName} onValueChange={assign.onChangeDisplayName}>
+            <SelectTrigger id="assign-player" className="w-full">
+              <SelectValue placeholder="Choisir un joueur" />
+            </SelectTrigger>
+            <SelectContent>
+              {assign.playerOptions.map((displayName) => (
+                <SelectItem key={displayName} value={displayName}>
+                  {displayName}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
         <DialogFooter>
           <Button

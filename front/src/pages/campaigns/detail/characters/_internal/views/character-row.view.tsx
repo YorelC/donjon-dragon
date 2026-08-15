@@ -5,6 +5,7 @@ import { Button } from "@/shared/components/atoms/button";
 import { toCharacterBuilder, toCharacterSheet } from "@/shared/constants/routes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
 import { CharacterAssignContainer } from "../containers/character-assign.container";
+import { DeleteCharacterButton } from "./delete-character-button.view";
 
 export interface CharacterRowViewer {
   isGameMaster: boolean;
@@ -77,15 +78,9 @@ function RowActions(props: CharacterRowProps) {
 
   return (
     <div className="flex gap-2">
-      <Button asChild size="sm" variant="outline">
-        <Link to={toCharacterSheet(campaignId, character.id)}>Voir la fiche</Link>
-      </Button>
-      <Button asChild size="sm" variant="outline">
-        <Link to={toCharacterBuilder(campaignId, character.id)}>Éditer</Link>
-      </Button>
-      <Button variant="destructive" size="sm" onClick={() => onDelete(character.id)}>
-        Supprimer
-      </Button>
+      <ViewSheetButton campaignId={campaignId} characterId={character.id} />
+      <EditCharacterButton campaignId={campaignId} characterId={character.id} />
+      <DeleteCharacterButton characterName={character.name} onDelete={() => onDelete(character.id)} />
       {viewer.isGameMaster ? (
         <GameMasterAssignmentActions
           character={character}
@@ -94,6 +89,22 @@ function RowActions(props: CharacterRowProps) {
         />
       ) : null}
     </div>
+  );
+}
+
+function ViewSheetButton({ campaignId, characterId }: { campaignId: string; characterId: string }) {
+  return (
+    <Button asChild size="sm" variant="outline">
+      <Link to={toCharacterSheet(campaignId, characterId)}>Voir la fiche</Link>
+    </Button>
+  );
+}
+
+function EditCharacterButton({ campaignId, characterId }: { campaignId: string; characterId: string }) {
+  return (
+    <Button asChild size="sm" variant="outline">
+      <Link to={toCharacterBuilder(campaignId, characterId)}>Éditer</Link>
+    </Button>
   );
 }
 

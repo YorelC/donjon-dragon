@@ -4,7 +4,6 @@ import {
   AbilityRollSchema,
   AbilityScoresSchema,
   FinalizeCharacterSchema,
-  StartCharacterSchema,
 } from './character-schema.js';
 
 const VALID_SCORES = {
@@ -33,17 +32,8 @@ const A_FINALIZED_CHARACTER = {
     },
   ],
   equipment: { armorKey: 'leather', shield: false, items: [], gold: 8 },
+  abilityRoll: null,
 };
-
-describe('StartCharacterSchema', () => {
-  it('n’attend qu’un nom pour ouvrir un brouillon', () => {
-    expect(StartCharacterSchema.safeParse({ name: 'Frodo Sacquet' }).success).toBe(true);
-  });
-
-  it('refuse un nom trop court', () => {
-    expect(StartCharacterSchema.safeParse({ name: 'F' }).success).toBe(false);
-  });
-});
 
 describe('FinalizeCharacterSchema', () => {
   it('accepte une fiche complète', () => {
