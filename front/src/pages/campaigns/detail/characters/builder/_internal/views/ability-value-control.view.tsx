@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/atoms/select";
-import { ABILITIES, type CharacterComposition } from "../types/character-composition";
+import { ABILITIES, ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
 
 /** Radix refuse une valeur vide : il faut une sentinelle pour « aucune ». */
 const NO_SCORE = "none";
@@ -58,13 +58,22 @@ function ScoreSelect({ ability, control }: AbilityValueControlProps) {
       <SelectContent>
         <SelectItem value={NO_SCORE}>—</SelectItem>
         {available.map((score, index) => (
-          <SelectItem key={`${score}-${index}`} value={String(index)}>
-            {score}
-          </SelectItem>
+          <ScoreOption
+            key={`${score}-${index}`}
+            index={index}
+            score={score}
+            holder={holderOf(composition, ability, index)}
+          />
         ))}
       </SelectContent>
     </Select>
   );
+}
+
+function ScoreOption({ index, score, holder }: { index: number; score: number; holder?: Ability }) {
+  const label = holder ? `${score} - ${ABILITY_LABELS[holder]}` : String(score);
+
+  return <SelectItem value={String(index)}>{label}</SelectItem>;
 }
 
 function PointBuyStepper({ ability, control }: AbilityValueControlProps) {
@@ -113,6 +122,16 @@ function shift(
     ...composition.pointBuyScores,
     [ability]: composition.pointBuyScores[ability] + offset,
   };
+}
+
+function holderOf(
+  composition: CharacterComposition,
+  ability: Ability,
+  slot: number,
+): Ability | undefined {
+  return ABILITIES.find(
+    (other) => other !== ability && composition.assignment[other] === slot,
+  );
 }
 
 function place(

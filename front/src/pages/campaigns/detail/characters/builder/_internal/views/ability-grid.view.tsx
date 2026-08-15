@@ -53,12 +53,14 @@ interface AbilityRowProps extends AbilityGridViewProps {
 }
 
 function AbilityRow({ ability, grid }: AbilityRowProps) {
+  const primaryBonus = grid.plan === "spread" ? 1 : 2;
+
   return (
     <div className={ROW_COLUMNS}>
       <Label>{ABILITY_LABELS[ability]}</Label>
       <AbilityValueControlView ability={ability} control={grid.control} />
-      <BonusCell ability={ability} grid={grid} bonus={2} />
-      <BonusCell ability={ability} grid={grid} bonus={1} />
+      <BonusCell ability={ability} grid={grid} bonus={primaryBonus} />
+      {grid.plan === "spread" ? <span /> : <BonusCell ability={ability} grid={grid} bonus={1} />}
     </div>
   );
 }
@@ -69,12 +71,11 @@ interface BonusCellProps extends AbilityRowProps {
 
 function BonusCell({ ability, grid, bonus }: BonusCellProps) {
   const allowed = grid.background?.abilityBonuses.includes(ability) ?? false;
-  const hidden = grid.plan === "spread" && bonus === 1;
-  if (hidden) return <span />;
 
   return (
     <div className="flex justify-center">
       <Checkbox
+        className={allowed ? "border-primary" : "opacity-30"}
         checked={(grid.control.composition.backgroundBonuses[ability] ?? 0) === bonus}
         disabled={!allowed || grid.plan === "spread"}
         onCheckedChange={() =>
