@@ -7,11 +7,11 @@ import type {
   SkillName,
 } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
-import { Button } from "@/shared/components/atoms/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
 import { Separator } from "@/shared/components/atoms/separator";
 import { ABILITY_LABELS, allSkillsOf, type CharacterComposition } from "../types/character-composition";
 import { knownSkillsExcept } from "../types/builder-lookups";
+import { ChoiceButtonView } from "./choice-button.view";
 import { SkillPickerView } from "./skill-picker.view";
 
 interface FeatsStepViewProps {
@@ -50,15 +50,12 @@ function SpeciesFeatChoice({ catalog, composition, onChange }: FeatsStepViewProp
       <h3 className="section-title text-sm">Don d'Origines au choix ({species.name})</h3>
       <div className="flex flex-wrap gap-2">
         {catalog.originFeats.map((feat) => (
-          <Button
+          <ChoiceButtonView
             key={feat.key}
-            type="button"
-            size="sm"
-            variant={composition.speciesFeat === feat.key ? "default" : "outline"}
-            onClick={() => onChange({ speciesFeat: feat.key as OriginFeatKey })}
-          >
-            {feat.name}
-          </Button>
+            label={feat.name}
+            selected={composition.speciesFeat === feat.key}
+            onSelect={() => onChange({ speciesFeat: feat.key as OriginFeatKey })}
+          />
         ))}
       </div>
     </div>
@@ -110,28 +107,22 @@ function SpellListChoice({ catalog, feat, composition, onChange }: FeatCardProps
     <div className="grid gap-3">
       <ChoiceRow label="Liste de sorts">
         {choice.spellListOptions.map((classKey) => (
-          <Button
+          <ChoiceButtonView
             key={classKey}
-            type="button"
-            size="sm"
-            variant={composition.spellList === classKey ? "default" : "outline"}
-            onClick={() => onChange({ spellList: classKey as ClassKey, featSpells: [] })}
-          >
-            {catalog.classes.find((entry) => entry.key === classKey)?.name ?? classKey}
-          </Button>
+            label={catalog.classes.find((entry) => entry.key === classKey)?.name ?? classKey}
+            selected={composition.spellList === classKey}
+            onSelect={() => onChange({ spellList: classKey as ClassKey, featSpells: [] })}
+          />
         ))}
       </ChoiceRow>
       <ChoiceRow label="Caractéristique d'incantation">
         {choice.abilityOptions.map((ability) => (
-          <Button
+          <ChoiceButtonView
             key={ability}
-            type="button"
-            size="sm"
-            variant={composition.spellcastingAbility === ability ? "default" : "outline"}
-            onClick={() => onChange({ spellcastingAbility: ability as Ability })}
-          >
-            {ABILITY_LABELS[ability as Ability]}
-          </Button>
+            label={ABILITY_LABELS[ability as Ability]}
+            selected={composition.spellcastingAbility === ability}
+            onSelect={() => onChange({ spellcastingAbility: ability as Ability })}
+          />
         ))}
       </ChoiceRow>
     </div>

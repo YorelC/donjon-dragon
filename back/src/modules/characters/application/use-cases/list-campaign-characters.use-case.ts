@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Character as CharacterDto } from '@donjon-dragon/shared/character-schema';
+import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
@@ -12,6 +13,7 @@ import {
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
 import { toCharacterDtoResolved } from '../character.mapper';
+import { NotActiveCampaignMemberError } from '../../domain/character.errors';
 import { OwningCampaignId } from '../../domain/owning-campaign-id';
 
 export interface ListCampaignCharactersDto {
@@ -19,6 +21,13 @@ export interface ListCampaignCharactersDto {
   actorId: ActorId;
 }
 
+/**
+ * Les personnages de la campagne, pour un membre actif de cette campagne.
+ *
+ * L'appartenance se vérifie ici et non par un filtre de requête : le listing
+ * n'est pas moins sensible que la fiche, et sans ce contrôle un id de campagne
+ * deviné suffisait à lire la table de quelqu'un d'autre.
+ */
 @Injectable()
 export class ListCampaignCharactersUseCase {
   constructor(
@@ -26,9 +35,16 @@ export class ListCampaignCharactersUseCase {
     private readonly characterRepo: CharacterRepositoryPort,
     @Inject(CHARACTER_DIRECTORY)
     private readonly directory: CharacterDirectoryPort,
+    private readonly membership: GetCampaignMembershipUseCase,
   ) {}
 
   async execute(dto: ListCampaignCharactersDto): Promise<CharacterDto[]> {
+    const role = await this.membership.execute({
+      campaignId: dto.campaignId,
+      userId: dto.actorId,
+    });
+    if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
+
     const viewerId = UserId.create(dto.actorId);
     const characters = await this.characterRepo.findByCampaignId(
       OwningCampaignId.create(dto.campaignId),

@@ -36,32 +36,36 @@ export class VerifyEmailUseCase {
   ) {}
 
   async execute(plainToken: string): Promise<IssuedSession> {
-    const token = await this.readVerificationToken(plainToken);
+    // Un seul instant pour toute l'opération : le lien vérifié à la milliseconde
+    // près et le refresh token qu'il ouvre doivent dater du même moment.
+    const now = this.clock.now();
+    const token = await this.readVerificationToken(plainToken, now);
     // La transition appartient à user ; auth ne fait que la déclencher.
     const verifiedUser = await this.markEmailVerified.execute(token.userId.value);
     // Usage unique : le lien est consommé, donc supprimé.
     await this.verificationRepo.delete(token);
 
-    return this.issueTokens(verifiedUser);
+    return this.issueTokens(verifiedUser, now);
   }
 
   private async readVerificationToken(
     plainToken: string,
+    now: Date,
   ): Promise<EmailVerificationToken> {
     const token = await this.verificationRepo.findBySecret(
       TokenSecret.fromPlain(plainToken),
     );
     if (!token) throw new InvalidVerificationTokenError();
 
-    if (token.isExpired(this.clock.now())) throw new VerificationTokenExpiredError();
+    if (token.isExpired(now)) throw new VerificationTokenExpiredError();
 
     return token;
   }
 
-  private async issueTokens(user: PublicUser): Promise<IssuedSession> {
+  private async issueTokens(user: PublicUser, now: Date): Promise<IssuedSession> {
     const userId = UserId.create(user.id);
 
-    const { token, plainToken } = RefreshToken.issue(userId, this.clock.now());
+    const { token, plainToken } = RefreshToken.issue(userId, now);
     await this.refreshRepo.save(token);
 
     return {

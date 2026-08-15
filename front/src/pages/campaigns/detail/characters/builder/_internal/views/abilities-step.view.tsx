@@ -9,6 +9,7 @@ import {
   type CharacterComposition,
 } from "../types/character-composition";
 import { AbilityGridView, type BonusPlan } from "./ability-grid.view";
+import { ChoiceButtonView } from "./choice-button.view";
 
 const METHODS: { key: AbilityMethod; label: string; hint: string }[] = [
   {
@@ -79,15 +80,12 @@ function MethodPicker({ composition, onChange }: AbilitiesStepViewProps) {
     <div className="grid gap-2">
       <div className="flex flex-wrap gap-2">
         {METHODS.map((method) => (
-          <Button
+          <ChoiceButtonView
             key={method.key}
-            type="button"
-            size="sm"
-            variant={composition.abilityMethod === method.key ? "default" : "outline"}
-            onClick={() => onChange({ abilityMethod: method.key, assignment: {} })}
-          >
-            {method.label}
-          </Button>
+            label={method.label}
+            selected={composition.abilityMethod === method.key}
+            onSelect={() => onChange({ abilityMethod: method.key, assignment: {} })}
+          />
         ))}
       </div>
       <p className="text-sm text-muted-foreground">{current?.hint}</p>
@@ -137,15 +135,14 @@ function BonusPlanPicker({ step, plan, onChange }: BonusPlanPickerProps) {
       <h3 className="section-title text-sm">Bonus de {step.background.name}</h3>
       <div className="flex flex-wrap gap-2">
         {PLANS.map((option) => (
-          <Button
+          <ChoiceButtonView
             key={option.key}
-            type="button"
-            size="sm"
-            variant={plan === option.key ? "default" : "outline"}
-            onClick={() => onChange({ backgroundBonuses: startPlan(step.background, option.key) })}
-          >
-            {option.label}
-          </Button>
+            label={option.label}
+            selected={plan === option.key}
+            onSelect={() =>
+              onChange({ backgroundBonuses: startPlan(step.background, option.key) })
+            }
+          />
         ))}
       </div>
     </div>

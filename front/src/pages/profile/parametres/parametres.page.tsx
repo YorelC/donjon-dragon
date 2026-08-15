@@ -1,5 +1,5 @@
-import { SettingsView } from "./_internal/views/settings.view";
+import { SettingsContainer } from "./_internal/containers/settings.container";
 
 export function SettingsPage() {
-  return <SettingsView />;
+  return <SettingsContainer />;
 }
