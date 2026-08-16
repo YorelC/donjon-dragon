@@ -14,6 +14,7 @@ import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
 import { FriendshipModule } from '@modules/friendship/friendship.module';
 import { CampaignsModule } from '@modules/campaigns/campaigns.module';
+import { BestiaryModule } from '@modules/bestiary/bestiary.module';
 import { ItemsModule } from '@modules/items/items.module';
 import { CharactersModule } from '@modules/characters/characters.module';
 
@@ -38,6 +39,7 @@ import { CharactersModule } from '@modules/characters/characters.module';
     FriendshipModule,
     CampaignsModule,
     ItemsModule,
+    BestiaryModule,
     CharactersModule,
   ],
   providers: [

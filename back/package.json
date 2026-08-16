@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:cov": "vitest run --coverage",
     "seed": "tsx src/scripts/seed-users.script.ts",
-    "seed:items": "tsx src/scripts/seed-items.script.ts"
+    "seed:items": "tsx src/scripts/seed-items.script.ts",
+    "seed:monsters": "tsx src/scripts/seed-monsters.script.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",

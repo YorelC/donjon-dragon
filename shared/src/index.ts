@@ -6,6 +6,7 @@ export * from './character-schema.js';
 export * from './dnd-reference-schema.js';
 export * from './dnd-catalog-schema.js';
 export * from './item-schema.js';
+export * from './monster-schema.js';
 export * from './character-sheet-schema.js';
 export * from './error-schema.js';
 export * from './csrf-transport.js';

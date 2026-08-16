@@ -8,7 +8,8 @@
     "lint:rules": "node scripts/check-rules-coverage.mjs",
     "test": "pnpm -r test",
     "seed": "pnpm --filter back seed",
-  "seed:items": "pnpm --filter back seed:items"
+    "seed:items": "pnpm --filter back seed:items",
+    "seed:monsters": "pnpm --filter back seed:monsters"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
