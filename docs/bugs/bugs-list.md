@@ -2,21 +2,32 @@
 
 ## Ouverts
 
-### La fiche n'affiche aucun nom de sort
-
-Quelle qu'en soit la source. `cantripsKnown` et `spellsPrepared` traversent bien le
-contrat, puis sont jetés par la vue : `SpellcastingRow`
-(`front/src/shared/components/character/character-features.view.tsx`) ne rend qu'origine,
-DD, bonus d'attaque et emplacements.
-
-Les sorts mineurs du magicien lui-même sont donc invisibles, tout comme celui de sa
-lignée — qui est désormais correctement *compté*, mais toujours pas *nommé*.
-
-Repéré en marge du bug du sort de lignée. Chantier de vue, sans impact sur le moteur.
+Aucun.
 
 ---
 
 ## Corrigés
+
+### ~~La fiche n'affiche aucun nom de sort~~ — 16/08/2026
+
+**Symptôme** — Aucun nom de sort nulle part sur la fiche, quelle qu'en soit la source.
+`cantripsKnown` et `spellsPrepared` traversaient bien le contrat, puis étaient jetés par
+`SpellcastingRow`, qui ne rendait qu'origine, DD, bonus d'attaque et emplacements.
+
+**Correction** — Les deux champs portent désormais `{spellKey, name}` (`ResolvedSpellSchema`)
+au lieu d'une clé nue. C'est le **moteur** qui nomme, pas la couche application :
+contrairement au catalogue d'objets qui vit en base, `SPELLS` est une constante du domaine,
+donc nommer un sort ne coûte aucune I/O et ne casse pas la pureté de la résolution. La vue
+gagne un sous-composant `SpellList`.
+
+Vérifié dans l'application, sur un roublard haut-elfe — une classe sans aucune incantation,
+donc la seule ligne affichée vient de la lignée :
+
+```
+Incantation
+Haut-elfe — DD 10, attaque +2
+Sorts mineurs : Prestidigitation
+```
 
 ### ~~Création bloquée : clerc Thaumaturge avec Initié à la magie~~ — 16/08/2026
 

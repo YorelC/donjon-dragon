@@ -12,13 +12,23 @@ const SPELL_SAVE_DC_BASE = 8;
 
 const CANTRIP_LEVEL = 0;
 
+/**
+ * Un sort connu porte son nom en plus de sa clé : la fiche l'affiche, et le
+ * moteur est le seul à pouvoir le nommer sans I/O — `SPELLS` est une constante
+ * du domaine, contrairement au catalogue d'objets qui vit en base.
+ */
+export interface NamedSpell {
+  spellKey: SpellKey;
+  name: string;
+}
+
 export interface ResolvedSpellcasting {
   origin: string;
   ability: Ability;
   saveDc: number;
   attackBonus: number;
-  cantripsKnown: SpellKey[];
-  spellsPrepared: SpellKey[];
+  cantripsKnown: NamedSpell[];
+  spellsPrepared: NamedSpell[];
   level1Slots: number;
   /** Le pacte de l'occultiste se récupère au Repos court, pas au Repos long. */
   slotsRecoverOnShortRest: boolean;
@@ -101,8 +111,8 @@ function originSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
       ...scoresFor(ability, input),
       origin: granted.source.label,
       ability,
-      cantripsKnown: granted.spellKeys.filter(isCantrip),
-      spellsPrepared: granted.spellKeys.filter(isNotCantrip),
+      cantripsKnown: granted.spellKeys.filter(isCantrip).map(named),
+      spellsPrepared: granted.spellKeys.filter(isNotCantrip).map(named),
       level1Slots: 0,
       slotsRecoverOnShortRest: false,
     };
@@ -184,20 +194,25 @@ function spellsChosenBy(
   choices: CharacterChoices,
   type: 'class' | 'feat',
   key: string,
-): { cantrips: SpellKey[]; prepared: SpellKey[] } {
+): { cantrips: NamedSpell[]; prepared: NamedSpell[] } {
   const chosen = choices.from({ type, key });
   return {
-    cantrips: chosen.flatMap((choice) => choice.spells ?? []).filter(isCantrip),
-    prepared: chosen.flatMap((choice) => choice.spells ?? []).filter(isNotCantrip),
+    cantrips: chosen.flatMap((choice) => choice.spells ?? []).filter(isCantrip).map(named),
+    prepared: chosen.flatMap((choice) => choice.spells ?? []).filter(isNotCantrip).map(named),
   };
 }
 
-function cantripsOf(choice: MagicInitiateChoice): SpellKey[] {
-  return (choice.spells ?? []).filter(isCantrip);
+function cantripsOf(choice: MagicInitiateChoice): NamedSpell[] {
+  return (choice.spells ?? []).filter(isCantrip).map(named);
 }
 
-function level1SpellsOf(choice: MagicInitiateChoice): SpellKey[] {
-  return (choice.spells ?? []).filter(isNotCantrip);
+function level1SpellsOf(choice: MagicInitiateChoice): NamedSpell[] {
+  return (choice.spells ?? []).filter(isNotCantrip).map(named);
+}
+
+/** Une clé inconnue se rend telle quelle : mieux qu'un trou dans la fiche. */
+function named(spellKey: SpellKey): NamedSpell {
+  return { spellKey, name: SPELLS[spellKey]?.name ?? spellKey };
 }
 
 function isCantrip(spellKey: SpellKey): boolean {

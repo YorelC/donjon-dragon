@@ -56,13 +56,23 @@ export const ResolvedProficienciesSchema = z.object({
   savingThrows: z.array(AbilitySchema),
 });
 
+/**
+ * Un sort connu, nommé. Contrairement à l'inventaire, il n'a pas besoin de la
+ * couche application : les sorts sont des constantes du domaine, et le moteur
+ * les nomme lui-même sans rien lire en base.
+ */
+export const ResolvedSpellSchema = z.object({
+  spellKey: z.string(),
+  name: z.string(),
+});
+
 export const ResolvedSpellcastingSchema = z.object({
   origin: z.string(),
   ability: AbilitySchema,
   saveDc: z.number().int(),
   attackBonus: z.number().int(),
-  cantripsKnown: z.array(z.string()),
-  spellsPrepared: z.array(z.string()),
+  cantripsKnown: z.array(ResolvedSpellSchema),
+  spellsPrepared: z.array(ResolvedSpellSchema),
   level1Slots: z.number().int().nonnegative(),
   slotsRecoverOnShortRest: z.boolean(),
 });
@@ -147,6 +157,7 @@ export type ResolvedAbility = z.infer<typeof ResolvedAbilitySchema>;
 export type ResolvedSkill = z.infer<typeof ResolvedSkillSchema>;
 export type ResolvedSavingThrow = z.infer<typeof ResolvedSavingThrowSchema>;
 export type ResolvedProficiencies = z.infer<typeof ResolvedProficienciesSchema>;
+export type ResolvedSpell = z.infer<typeof ResolvedSpellSchema>;
 export type ResolvedSpellcasting = z.infer<typeof ResolvedSpellcastingSchema>;
 export type ResolvedFeature = z.infer<typeof ResolvedFeatureSchema>;
 export type ResolvedResource = z.infer<typeof ResolvedResourceSchema>;

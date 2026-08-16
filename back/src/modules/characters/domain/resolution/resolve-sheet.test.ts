@@ -278,8 +278,11 @@ describe('clerc acolyte', () => {
     const featCasting = sheet.spellcasting.find((entry) => entry.origin.startsWith('Initié'));
 
     expect(featCasting?.origin).toBe('Initié à la magie (Clerc)');
-    expect(featCasting?.cantripsKnown).toEqual(['thaumaturgy', 'mending']);
-    expect(featCasting?.spellsPrepared).toEqual(['detect-magic']);
+    expect(featCasting?.cantripsKnown.map((spell) => spell.spellKey)).toEqual([
+      'thaumaturgy',
+      'mending',
+    ]);
+    expect(featCasting?.spellsPrepared.map((spell) => spell.spellKey)).toEqual(['detect-magic']);
     expect(featCasting?.level1Slots).toBe(0);
   });
 });
@@ -510,7 +513,9 @@ describe('magicien haut-elfe', () => {
     const sheet = resolveSheetOf(buildWith([]));
     const lineage = sheet.spellcasting.find((entry) => entry.origin === 'Haut-elfe');
 
-    expect(lineage?.cantripsKnown).toEqual(['prestidigitation']);
+    expect(lineage?.cantripsKnown).toEqual([
+      { spellKey: 'prestidigitation', name: 'Prestidigitation' },
+    ]);
     expect(sheet.spellcasting.flatMap((entry) => entry.cantripsKnown)).toHaveLength(4);
   });
 

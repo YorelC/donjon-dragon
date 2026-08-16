@@ -1,6 +1,7 @@
 import type {
   ComputedCharacter,
   ResolvedFeature,
+  ResolvedSpell,
   ResolvedSpellcasting,
 } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
@@ -43,13 +44,32 @@ function SpellcastingBlock({ sheet }: CharacterFeaturesViewProps) {
 
 function SpellcastingRow({ entry }: { entry: ResolvedSpellcasting }) {
   return (
-    <p className="text-sm">
-      <span className="font-medium">{entry.origin}</span> — DD {entry.saveDc}, attaque{" "}
-      {formatValue(entry.attackBonus, true)}
-      {entry.level1Slots > 0
-        ? `, ${entry.level1Slots} emplacement${entry.level1Slots > 1 ? "s" : ""} de niveau 1`
-        : ""}
-      {entry.slotsRecoverOnShortRest ? " (repos court)" : ""}
+    <div className="grid gap-1">
+      <p className="text-sm">
+        <span className="font-medium">{entry.origin}</span> — DD {entry.saveDc}, attaque{" "}
+        {formatValue(entry.attackBonus, true)}
+        {entry.level1Slots > 0
+          ? `, ${entry.level1Slots} emplacement${entry.level1Slots > 1 ? "s" : ""} de niveau 1`
+          : ""}
+        {entry.slotsRecoverOnShortRest ? " (repos court)" : ""}
+      </p>
+      <SpellList label="Sorts mineurs" spells={entry.cantripsKnown} />
+      <SpellList label="Sorts préparés" spells={entry.spellsPrepared} />
+    </div>
+  );
+}
+
+interface SpellListProps {
+  label: string;
+  spells: ResolvedSpell[];
+}
+
+function SpellList({ label, spells }: SpellListProps) {
+  if (spells.length === 0) return null;
+
+  return (
+    <p className="text-sm text-muted-foreground">
+      {label} : {spells.map((spell) => spell.name).join(", ")}
     </p>
   );
 }
