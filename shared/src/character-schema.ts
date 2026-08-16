@@ -140,11 +140,31 @@ export const CharacterChoiceSchema = z.object({
   feature: z.string().optional(),
 });
 
+/** Une ligne d'inventaire : la clé d'un objet du catalogue, en tant d'exemplaires. */
+export const CharacterItemSchema = z.object({
+  itemKey: z.string().min(1),
+  quantity: z.number().int().positive(),
+});
+
+/**
+ * Ce que porte et ce que possède le personnage.
+ *
+ * `armorKey` et `shield` disent ce qu'il PORTE — eux seuls entrent dans le calcul
+ * de la classe d'armure. `items` et `gold` disent ce qu'il POSSÈDE, et sortent
+ * des options de paquetage retenues.
+ *
+ * Les deux identifiants d'option gardent la trace du choix : sans eux, rouvrir
+ * le wizard en édition obligerait à deviner l'option d'origine en recomparant
+ * les inventaires. Ils sont nullables — les personnages créés avant que
+ * l'équipement existe n'en ont aucun.
+ */
 export const CharacterEquipmentSchema = z.object({
   armorKey: z.string().nullable(),
   shield: z.boolean(),
-  items: z.array(z.string()),
+  items: z.array(CharacterItemSchema),
   gold: z.number().int().nonnegative(),
+  classOptionId: z.string().nullable(),
+  backgroundOptionId: z.string().nullable(),
 });
 
 // ---------------------------------------------------------------------------
@@ -243,6 +263,10 @@ export const CharacterBuildDetailSchema = z.object({
 
   armorKey: z.string().nullable(),
   shield: z.boolean(),
+  items: z.array(CharacterItemSchema),
+  gold: z.number().int().nonnegative(),
+  classOptionId: z.string().nullable(),
+  backgroundOptionId: z.string().nullable(),
 });
 
 /**
@@ -274,6 +298,7 @@ export type AbilityMethod = z.infer<typeof AbilityMethodSchema>;
 export type AbilityRoll = z.infer<typeof AbilityRollSchema>;
 export type ChoiceSource = z.infer<typeof ChoiceSourceSchema>;
 export type CharacterChoice = z.infer<typeof CharacterChoiceSchema>;
+export type CharacterItem = z.infer<typeof CharacterItemSchema>;
 export type CharacterEquipment = z.infer<typeof CharacterEquipmentSchema>;
 export type CharacterStatus = z.infer<typeof CharacterStatusSchema>;
 export type FinalizeCharacterDto = z.infer<typeof FinalizeCharacterSchema>;

@@ -62,6 +62,23 @@ export const WEAPON_PROPERTIES = [
 
 export type WeaponProperty = (typeof WEAPON_PROPERTIES)[number];
 
+/**
+ * Les huit maîtrises de 2024. Contrairement aux propriétés, une arme n'en porte
+ * qu'une seule : c'est ce que sait en faire celui qui y a été formé.
+ */
+export const WEAPON_MASTERIES = [
+  'cleave',
+  'graze',
+  'nick',
+  'push',
+  'sap',
+  'slow',
+  'topple',
+  'vex',
+] as const;
+
+export type WeaponMastery = (typeof WEAPON_MASTERIES)[number];
+
 export const ARMOR_TRAININGS = ['light', 'medium', 'heavy', 'shields'] as const;
 
 export type ArmorTraining = (typeof ARMOR_TRAININGS)[number];
@@ -79,6 +96,8 @@ export interface WeaponStatsSnapshot {
   versatileDice: string | null;
   range: WeaponRange | null;
   properties: WeaponProperty[];
+  /** `null` pour l'arme qu'un MJ invente sans lui donner de maîtrise. */
+  mastery: WeaponMastery | null;
 }
 
 /**

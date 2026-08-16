@@ -12,7 +12,8 @@
       "range": null,
       "properties": [
         "versatile"
-      ]
+      ],
+      "mastery": "topple"
     },
     "armor": null,
     "costInCopper": 1000,
@@ -37,7 +38,8 @@
       "properties": [
         "ammunition",
         "loading"
-      ]
+      ],
+      "mastery": "vex"
     },
     "armor": null,
     "costInCopper": 1000,
@@ -58,7 +60,8 @@
       "range": null,
       "properties": [
         "light"
-      ]
+      ],
+      "mastery": "slow"
     },
     "armor": null,
     "costInCopper": 10,
@@ -84,7 +87,8 @@
         "finesse",
         "light",
         "thrown"
-      ]
+      ],
+      "mastery": "nick"
     },
     "armor": null,
     "costInCopper": 200,
@@ -109,7 +113,8 @@
       "properties": [
         "finesse",
         "thrown"
-      ]
+      ],
+      "mastery": "vex"
     },
     "armor": null,
     "costInCopper": 5,
@@ -128,7 +133,8 @@
       "damageType": "bludgeoning",
       "versatileDice": null,
       "range": null,
-      "properties": []
+      "properties": [],
+      "mastery": "sap"
     },
     "armor": null,
     "costInCopper": 1000,
@@ -151,7 +157,8 @@
         "heavy",
         "reach",
         "twoHanded"
-      ]
+      ],
+      "mastery": "graze"
     },
     "armor": null,
     "costInCopper": 2000,
@@ -173,7 +180,8 @@
       "properties": [
         "heavy",
         "twoHanded"
-      ]
+      ],
+      "mastery": "cleave"
     },
     "armor": null,
     "costInCopper": 3000,
@@ -194,7 +202,8 @@
       "range": null,
       "properties": [
         "twoHanded"
-      ]
+      ],
+      "mastery": "push"
     },
     "armor": null,
     "costInCopper": 20,
@@ -216,7 +225,8 @@
       "properties": [
         "heavy",
         "twoHanded"
-      ]
+      ],
+      "mastery": "graze"
     },
     "armor": null,
     "costInCopper": 5000,
@@ -239,7 +249,8 @@
         "heavy",
         "reach",
         "twoHanded"
-      ]
+      ],
+      "mastery": "cleave"
     },
     "armor": null,
     "costInCopper": 2000,
@@ -265,7 +276,8 @@
         "ammunition",
         "light",
         "loading"
-      ]
+      ],
+      "mastery": "vex"
     },
     "armor": null,
     "costInCopper": 7500,
@@ -290,7 +302,8 @@
       "properties": [
         "light",
         "thrown"
-      ]
+      ],
+      "mastery": "vex"
     },
     "armor": null,
     "costInCopper": 500,
@@ -317,7 +330,8 @@
         "heavy",
         "loading",
         "twoHanded"
-      ]
+      ],
+      "mastery": "push"
     },
     "armor": null,
     "costInCopper": 5000,
@@ -341,7 +355,8 @@
       },
       "properties": [
         "thrown"
-      ]
+      ],
+      "mastery": "slow"
     },
     "armor": null,
     "costInCopper": 50,
@@ -364,7 +379,8 @@
         "heavy",
         "reach",
         "twoHanded"
-      ]
+      ],
+      "mastery": "topple"
     },
     "armor": null,
     "costInCopper": 1000,
@@ -390,7 +406,8 @@
         "ammunition",
         "loading",
         "twoHanded"
-      ]
+      ],
+      "mastery": "slow"
     },
     "armor": null,
     "costInCopper": 2500,
@@ -415,7 +432,8 @@
       "properties": [
         "light",
         "thrown"
-      ]
+      ],
+      "mastery": "nick"
     },
     "armor": null,
     "costInCopper": 200,
@@ -441,7 +459,8 @@
         "ammunition",
         "heavy",
         "twoHanded"
-      ]
+      ],
+      "mastery": "slow"
     },
     "armor": null,
     "costInCopper": 5000,
@@ -462,7 +481,8 @@
       "range": null,
       "properties": [
         "versatile"
-      ]
+      ],
+      "mastery": "sap"
     },
     "armor": null,
     "costInCopper": 1500,
@@ -481,7 +501,8 @@
       "damageType": "bludgeoning",
       "versatileDice": null,
       "range": null,
-      "properties": []
+      "properties": [],
+      "mastery": "sap"
     },
     "armor": null,
     "costInCopper": 500,
@@ -503,7 +524,8 @@
       "properties": [
         "heavy",
         "twoHanded"
-      ]
+      ],
+      "mastery": "topple"
     },
     "armor": null,
     "costInCopper": 1000,
@@ -522,7 +544,8 @@
       "damageType": "piercing",
       "versatileDice": null,
       "range": null,
-      "properties": []
+      "properties": [],
+      "mastery": "sap"
     },
     "armor": null,
     "costInCopper": 1500,
@@ -548,7 +571,8 @@
         "ammunition",
         "loading",
         "twoHanded"
-      ]
+      ],
+      "mastery": "slow"
     },
     "armor": null,
     "costInCopper": 50000,
@@ -571,7 +595,8 @@
         "heavy",
         "reach",
         "twoHanded"
-      ]
+      ],
+      "mastery": "push"
     },
     "armor": null,
     "costInCopper": 500,
@@ -596,7 +621,8 @@
       "properties": [
         "ammunition",
         "loading"
-      ]
+      ],
+      "mastery": "vex"
     },
     "armor": null,
     "costInCopper": 25000,
@@ -617,7 +643,8 @@
       "range": null,
       "properties": [
         "versatile"
-      ]
+      ],
+      "mastery": "topple"
     },
     "armor": null,
     "costInCopper": 20,
@@ -638,7 +665,8 @@
       "range": null,
       "properties": [
         "finesse"
-      ]
+      ],
+      "mastery": "vex"
     },
     "armor": null,
     "costInCopper": 2500,
@@ -660,7 +688,8 @@
       "properties": [
         "finesse",
         "light"
-      ]
+      ],
+      "mastery": "nick"
     },
     "armor": null,
     "costInCopper": 2500,
@@ -685,7 +714,8 @@
       "properties": [
         "ammunition",
         "twoHanded"
-      ]
+      ],
+      "mastery": "vex"
     },
     "armor": null,
     "costInCopper": 2500,
@@ -707,7 +737,8 @@
       "properties": [
         "finesse",
         "light"
-      ]
+      ],
+      "mastery": "vex"
     },
     "armor": null,
     "costInCopper": 1000,
@@ -728,7 +759,8 @@
       "range": null,
       "properties": [
         "light"
-      ]
+      ],
+      "mastery": "nick"
     },
     "armor": null,
     "costInCopper": 100,
@@ -752,7 +784,8 @@
       },
       "properties": [
         "ammunition"
-      ]
+      ],
+      "mastery": "slow"
     },
     "armor": null,
     "costInCopper": 10,
@@ -777,7 +810,8 @@
       "properties": [
         "thrown",
         "versatile"
-      ]
+      ],
+      "mastery": "sap"
     },
     "armor": null,
     "costInCopper": 100,
@@ -802,7 +836,8 @@
       "properties": [
         "thrown",
         "versatile"
-      ]
+      ],
+      "mastery": "topple"
     },
     "armor": null,
     "costInCopper": 500,
@@ -823,7 +858,8 @@
       "range": null,
       "properties": [
         "versatile"
-      ]
+      ],
+      "mastery": "sap"
     },
     "armor": null,
     "costInCopper": 500,
@@ -844,7 +880,8 @@
       "range": null,
       "properties": [
         "versatile"
-      ]
+      ],
+      "mastery": "push"
     },
     "armor": null,
     "costInCopper": 1500,
@@ -866,7 +903,8 @@
       "properties": [
         "finesse",
         "reach"
-      ]
+      ],
+      "mastery": "slow"
     },
     "armor": null,
     "costInCopper": 200,

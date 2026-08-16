@@ -93,7 +93,29 @@ const abilityRecord = <T extends z.ZodTypeAny>(value: T) =>
     charisma: value,
   });
 
+/**
+ * L'inventaire, résolu en noms. Il ne sort pas du moteur de résolution : celui-ci
+ * est pur et synchrone, alors que nommer un objet demande de lire une collection.
+ * C'est la couche application qui le remplit, juste avant l'envoi.
+ */
+export const ResolvedItemSchema = z.object({
+  itemKey: z.string(),
+  name: z.string(),
+  quantity: z.number().int().positive(),
+});
+
+export const ResolvedEquipmentSchema = z.object({
+  items: z.array(ResolvedItemSchema),
+  gold: z.number().int().nonnegative(),
+  /** Ce qui est porté, déjà nommé — la CA en dit la conséquence, pas la cause. */
+  armorName: z.string().nullable(),
+  shield: z.boolean(),
+  /** L'armure portée impose-t-elle le désavantage aux tests de Discrétion ? */
+  stealthDisadvantage: z.boolean(),
+});
+
 export const ComputedCharacterSchema = z.object({
+  equipment: ResolvedEquipmentSchema,
   level: z.number().int().min(1).max(20),
   proficiencyBonus: z.number().int(),
   speciesName: z.string(),
@@ -128,4 +150,6 @@ export type ResolvedProficiencies = z.infer<typeof ResolvedProficienciesSchema>;
 export type ResolvedSpellcasting = z.infer<typeof ResolvedSpellcastingSchema>;
 export type ResolvedFeature = z.infer<typeof ResolvedFeatureSchema>;
 export type ResolvedResource = z.infer<typeof ResolvedResourceSchema>;
+export type ResolvedItem = z.infer<typeof ResolvedItemSchema>;
+export type ResolvedEquipment = z.infer<typeof ResolvedEquipmentSchema>;
 export type ComputedCharacter = z.infer<typeof ComputedCharacterSchema>;

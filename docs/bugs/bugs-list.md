@@ -1,4 +1,17 @@
-# Bug création clerc avec Thaumaturge et initié à la magie
+# ~~Bug création clerc avec Thaumaturge et initié à la magie~~ — CORRIGÉ (16/08/2026)
+
+**Cause** : deux calculs concurrents du nombre de sorts mineurs de classe. L'étape lisait
+`cantripQuotaOf` (qui appliquait bien `extraCantripsOf`), le sélecteur lisait directement
+`spellcasting.cantripsKnown` du catalogue (qui ne l'appliquait pas). L'étape exigeait 6,
+le sélecteur n'en laissait choisir que 5.
+
+**Correction** : `classCantripsOf` extraite dans
+`front/src/pages/campaigns/detail/characters/builder/_internal/types/builder-lookups.ts`,
+et lue par les deux. La divergence n'est plus exprimable. Régression couverte par
+`builder-lookups.test.ts`.
+
+---
+
 Dans la création du personnage, quand je sélectionne un clerc ,que je prends l'ordre divin Thaumaturge, Je vois dans la Step view les orts mineur qui passent de 3 à 4 (normal)
 Je continue, je prends l'historique Acolyte, je sélectionne initié à la magie, peut importe si c'est une sélection Clerc, Druide, Magicien, les deux sorts mineurs font passer la liste de Sorts mineurs à 6 dans la stemp view, ce qui est correct.
 Mais quand j'arrive dans la liste des sorts mineurs, j'ai marqué 3 sort mineurs de classes et 2 sorts minieurs initié à la magie, il en manque un à choisir dans les sorts mineur de classe via Thaumaturge.

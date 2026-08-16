@@ -31,7 +31,17 @@ const A_FINALIZED_CHARACTER = {
       expertise: ['stealth', 'perception'],
     },
   ],
-  equipment: { armorKey: 'leather', shield: false, items: [], gold: 8 },
+  equipment: {
+    armorKey: 'leather',
+    shield: false,
+    items: [
+      { itemKey: 'leather', quantity: 1 },
+      { itemKey: 'dagger', quantity: 2 },
+    ],
+    gold: 8,
+    classOptionId: 'A',
+    backgroundOptionId: 'A',
+  },
   abilityRoll: null,
 };
 

@@ -1,0 +1,162 @@
+[
+  {
+    "domain": "items",
+    "key": "dart",
+    "field": "costInCopper",
+    "project": "5",
+    "srd": "500",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "hand-crossbow",
+    "field": "costInCopper",
+    "project": "7500",
+    "srd": "2500",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "hand-crossbow",
+    "field": "weightInKg",
+    "project": "1.5",
+    "srd": "1",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "javelin",
+    "field": "costInCopper",
+    "project": "50",
+    "srd": "500",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "longbow",
+    "field": "costInCopper",
+    "project": "5000",
+    "srd": "500",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "mace",
+    "field": "weightInKg",
+    "project": "2",
+    "srd": "1",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "pike",
+    "field": "weightInKg",
+    "project": "9",
+    "srd": "3",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "sling",
+    "field": "weapon.damageType",
+    "project": "bludgeoning",
+    "srd": "piercing",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "spear",
+    "field": "costInCopper",
+    "project": "100",
+    "srd": "500",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "spear",
+    "field": "weightInKg",
+    "project": "1.5",
+    "srd": "1",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "trident",
+    "field": "weapon.damageDice",
+    "project": "1d8",
+    "srd": "1d6",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "trident",
+    "field": "weapon.versatileDice",
+    "project": "1d10",
+    "srd": "1d8",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "chain-shirt",
+    "field": "weightInKg",
+    "project": "10",
+    "srd": "7",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "hide",
+    "field": "armor.training",
+    "project": "medium",
+    "srd": "light",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "robe",
+    "field": "weightInKg",
+    "project": "2",
+    "srd": "0.5",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "species",
+    "key": "tiefling",
+    "field": "size",
+    "project": "Medium",
+    "srd": "—",
+    "verdict": "srd-incomplet"
+  },
+  {
+    "domain": "classes",
+    "key": "fighter",
+    "field": "skillChoice.options",
+    "project": "[\"acrobatics\",\"animalHandling\",\"athletics\",\"history\",\"insight\",\"intimidation\",\"perception\",\"persuasion\",\"survival\"]",
+    "srd": "[\"acrobatics\",\"animalHandling\",\"athletics\",\"history\",\"insight\",\"intimidation\",\"perception\",\"survival\"]",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "classes",
+    "key": "monk",
+    "field": "weaponProficiencies",
+    "project": "[\"simple\",\"martialLight\"]",
+    "srd": "[\"simple\"]",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "classes",
+    "key": "rogue",
+    "field": "weaponProficiencies",
+    "project": "[\"simple\",\"martialFinesseOrLight\"]",
+    "srd": "[\"simple\"]",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "classes",
+    "key": "wizard",
+    "field": "skillChoice.options",
+    "project": "[\"arcana\",\"history\",\"insight\",\"investigation\",\"medicine\",\"nature\",\"religion\"]",
+    "srd": "[\"arcana\",\"history\",\"insight\",\"investigation\",\"medicine\",\"religion\"]",
+    "verdict": "srd-faux"
+  }
+]

@@ -34,6 +34,7 @@ const WeaponStatsSubSchema = new Schema<WeaponStatsSnapshot>(
     versatileDice: { type: String, default: null },
     range: { type: WeaponRangeSubSchema, default: null },
     properties: { type: [String], required: true },
+    mastery: { type: String, default: null },
   },
   { _id: false, versionKey: false },
 );

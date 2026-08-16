@@ -14,6 +14,7 @@ import { toComposition } from "../types/character-build-detail";
 import { rollAbilities } from "../types/roll-abilities";
 import {
   backgroundOf,
+  classCantripsOf,
   classOf,
   featSpellcastingOf,
   type StepContext,
@@ -140,7 +141,7 @@ function useSpellsStep(context: StepContext | null): BuilderScreen["spells"] {
 
   return {
     classSpells: classSpells.data ?? null,
-    classCantripsKnown: spellcasting?.cantripsKnown ?? 0,
+    classCantripsKnown: context ? classCantripsOf(context) : 0,
     classSpellsPrepared: spellcasting?.spellsPrepared ?? 0,
     featSpells: featSpells.data ?? null,
     featCantripsKnown: featChoice?.cantripsKnown ?? 0,

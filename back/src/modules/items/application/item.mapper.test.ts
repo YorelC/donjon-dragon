@@ -39,6 +39,7 @@ describe('toItemDto', () => {
       versatileDice: null,
       range: { normal: 6, max: 18 },
       properties: ['finesse', 'light', 'thrown'],
+      mastery: 'nick',
     });
   });
 

@@ -651,6 +651,7 @@ const CLASS_LIST: readonly CharacterClass[] = [
         'intimidation',
         'investigation',
         'perception',
+        'performance',
         'persuasion',
         'sleightOfHand',
         'stealth',

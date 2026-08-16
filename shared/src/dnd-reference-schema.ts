@@ -101,6 +101,51 @@ export const OriginFeatKeySchema = z.enum([
 
 export const ArmorTrainingSchema = z.enum(['light', 'medium', 'heavy', 'shields']);
 
+export const DamageTypeSchema = z.enum([
+  'acid',
+  'bludgeoning',
+  'cold',
+  'fire',
+  'force',
+  'lightning',
+  'necrotic',
+  'piercing',
+  'poison',
+  'psychic',
+  'radiant',
+  'slashing',
+  'thunder',
+]);
+
+/** Les propriétés d'arme du manuel 2024, en vocabulaire fermé. */
+export const WeaponPropertySchema = z.enum([
+  'ammunition',
+  'finesse',
+  'heavy',
+  'light',
+  'loading',
+  'reach',
+  'thrown',
+  'twoHanded',
+  'versatile',
+]);
+
+/**
+ * Les huit maîtrises d'arme de 2024. Chaque arme du manuel en porte exactement
+ * une : c'est ce que sait en faire celui qui a été formé à l'arme, et non une
+ * propriété de l'arme elle-même comme `versatile` ou `heavy`.
+ */
+export const WeaponMasterySchema = z.enum([
+  'cleave',
+  'graze',
+  'nick',
+  'push',
+  'sap',
+  'slow',
+  'topple',
+  'vex',
+]);
+
 export const WeaponProficiencySchema = z.enum([
   'simple',
   'martial',
@@ -155,6 +200,9 @@ export type BackgroundKey = z.infer<typeof BackgroundKeySchema>;
 export type OriginFeatKey = z.infer<typeof OriginFeatKeySchema>;
 export type ArmorTraining = z.infer<typeof ArmorTrainingSchema>;
 export type WeaponProficiency = z.infer<typeof WeaponProficiencySchema>;
+export type DamageType = z.infer<typeof DamageTypeSchema>;
+export type WeaponProperty = z.infer<typeof WeaponPropertySchema>;
+export type WeaponMastery = z.infer<typeof WeaponMasterySchema>;
 export type CreatureSize = z.infer<typeof CreatureSizeSchema>;
 export type Language = z.infer<typeof LanguageSchema>;
 export type EffectApplication = z.infer<typeof EffectApplicationSchema>;

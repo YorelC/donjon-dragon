@@ -59,12 +59,24 @@ function extraCantripsOf({ composition }: StepContext): number {
   return composition.classOrder && MYSTIC_ORDER_OPTIONS.includes(composition.classOrder) ? 1 : 0;
 }
 
+/**
+ * Les sorts mineurs que la classe fait choisir, Ordre mystique compris.
+ *
+ * Le sélecteur de sorts et le compte affiché par l'étape lisent tous deux cette
+ * fonction. Quand ils calculaient chacun le leur, l'Ordre divin Thaumaturge
+ * n'était appliqué que d'un côté : l'étape annonçait six sorts mineurs, le
+ * sélecteur n'en proposait que cinq, et la création restait bloquée.
+ */
+export function classCantripsOf(context: StepContext): number {
+  const fromClass = classOf(context)?.spellcasting?.cantripsKnown ?? 0;
+  if (fromClass === 0) return 0;
+
+  return fromClass + extraCantripsOf(context);
+}
+
 /** Les sorts de la classe et ceux d'un don s'additionnent, sans se confondre. */
 export function cantripQuotaOf(context: StepContext): number {
-  const fromClass = classOf(context)?.spellcasting?.cantripsKnown ?? 0;
-  const fromFeat = featSpellcastingOf(context)?.cantripsKnown ?? 0;
-
-  return fromClass + fromFeat + (fromClass > 0 ? extraCantripsOf(context) : 0);
+  return classCantripsOf(context) + (featSpellcastingOf(context)?.cantripsKnown ?? 0);
 }
 
 export function spellQuotaOf(context: StepContext): number {

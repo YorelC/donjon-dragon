@@ -12,6 +12,7 @@ const DEFAULT_ITEM: ItemSnapshot = {
     versatileDice: null,
     range: { normal: 6, max: 18 },
     properties: ['finesse', 'light', 'thrown'],
+    mastery: 'nick',
   },
   armor: null,
   costInCopper: 200,

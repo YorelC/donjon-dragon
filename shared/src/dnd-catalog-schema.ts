@@ -37,6 +37,33 @@ export const CatalogFeatureSchema = z.object({
   description: z.string(),
 });
 
+/**
+ * Une option de paquetage de départ : « A, B ou C, ou bien l'or ».
+ *
+ * `label` est la phrase du manuel, affichée telle quelle. `entries` est ce qui
+ * atterrit vraiment dans l'inventaire. Les deux ne se recouvrent pas toujours :
+ * quand le manuel dit « outils d'artisan », il désigne une catégorie et non un
+ * objet, et c'est l'étape des maîtrises d'outils qui tranche — la ligne reste
+ * donc dans le libellé sans entrer dans l'inventaire.
+ *
+ * L'option « or seul » n'a rien de particulier : elle a simplement `entries` vide.
+ */
+export const CatalogEquipmentEntrySchema = z.object({
+  itemKey: z.string(),
+  quantity: z.number().int().positive(),
+});
+
+export const CatalogEquipmentOptionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  entries: z.array(CatalogEquipmentEntrySchema),
+  gold: z.number().int().nonnegative(),
+});
+
+export const CatalogStartingEquipmentSchema = z.object({
+  options: z.array(CatalogEquipmentOptionSchema).min(1),
+});
+
 export const CatalogLineageSchema = z.object({
   key: z.string(),
   name: z.string(),
@@ -94,10 +121,7 @@ export const CatalogClassSchema = z.object({
   toolProficiencies: z.array(z.string()),
   armorTraining: z.array(ArmorTrainingSchema),
   weaponProficiencies: z.array(WeaponProficiencySchema),
-  startingEquipment: z.object({
-    description: z.string(),
-    goldAlternative: z.number().int(),
-  }),
+  startingEquipment: CatalogStartingEquipmentSchema,
   spellcasting: CatalogSpellcastingSchema.nullable(),
   level1Features: z.array(CatalogFeatureSchema),
   /** Combien de compétences voient leur bonus de maîtrise doublé. Roublard : 2. */
@@ -136,20 +160,7 @@ export const CatalogBackgroundSchema = z.object({
   originFeatSpellList: ClassKeySchema.nullable(),
   skillProficiencies: z.array(SkillNameSchema),
   toolProficiency: z.string(),
-  equipment: z.object({
-    description: z.string(),
-    goldAlternative: z.number().int(),
-  }),
-});
-
-export const CatalogArmorSchema = z.object({
-  key: z.string(),
-  name: z.string(),
-  training: ArmorTrainingSchema,
-  baseArmorClass: z.number().int(),
-  dexterityAllowance: z.enum(['full', 'capped', 'none']),
-  strengthRequirement: z.number().int().nullable(),
-  stealthDisadvantage: z.boolean(),
+  equipment: CatalogStartingEquipmentSchema,
 });
 
 export const DndCatalogSchema = z.object({
@@ -157,8 +168,6 @@ export const DndCatalogSchema = z.object({
   classes: z.array(CatalogClassSchema),
   backgrounds: z.array(CatalogBackgroundSchema),
   originFeats: z.array(CatalogOriginFeatSchema),
-  armors: z.array(CatalogArmorSchema),
-  shieldArmorClassBonus: z.number().int(),
   /** Les libellés français des 18 compétences, pour que le front n'en tienne pas la table. */
   skillLabels: z.record(SkillNameSchema, z.string()),
 });
@@ -184,6 +193,9 @@ export const CatalogSpellListSchema = z.object({
 
 export type CatalogSkillChoice = z.infer<typeof CatalogSkillChoiceSchema>;
 export type CatalogFeature = z.infer<typeof CatalogFeatureSchema>;
+export type CatalogEquipmentEntry = z.infer<typeof CatalogEquipmentEntrySchema>;
+export type CatalogEquipmentOption = z.infer<typeof CatalogEquipmentOptionSchema>;
+export type CatalogStartingEquipment = z.infer<typeof CatalogStartingEquipmentSchema>;
 export type CatalogLineage = z.infer<typeof CatalogLineageSchema>;
 export type CatalogLineageChoice = z.infer<typeof CatalogLineageChoiceSchema>;
 export type CatalogSpecies = z.infer<typeof CatalogSpeciesSchema>;
@@ -192,7 +204,6 @@ export type CatalogClass = z.infer<typeof CatalogClassSchema>;
 export type CatalogSpellcastingChoice = z.infer<typeof CatalogSpellcastingChoiceSchema>;
 export type CatalogOriginFeat = z.infer<typeof CatalogOriginFeatSchema>;
 export type CatalogBackground = z.infer<typeof CatalogBackgroundSchema>;
-export type CatalogArmor = z.infer<typeof CatalogArmorSchema>;
 export type DndCatalog = z.infer<typeof DndCatalogSchema>;
 export type CatalogSpell = z.infer<typeof CatalogSpellSchema>;
 export type CatalogSpellList = z.infer<typeof CatalogSpellListSchema>;
