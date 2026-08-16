@@ -1,58 +1,64 @@
-# ~~Bug création clerc avec Thaumaturge et initié à la magie~~ — CORRIGÉ (16/08/2026)
+# Bugs
 
-**Cause** : deux calculs concurrents du nombre de sorts mineurs de classe. L'étape lisait
-`cantripQuotaOf` (qui appliquait bien `extraCantripsOf`), le sélecteur lisait directement
-`spellcasting.cantripsKnown` du catalogue (qui ne l'appliquait pas). L'étape exigeait 6,
-le sélecteur n'en laissait choisir que 5.
+## Ouverts
 
-**Correction** : `classCantripsOf` extraite dans
-`front/src/pages/campaigns/detail/characters/builder/_internal/types/builder-lookups.ts`,
-et lue par les deux. La divergence n'est plus exprimable. Régression couverte par
-`builder-lookups.test.ts`.
+### La fiche n'affiche aucun nom de sort
+
+Quelle qu'en soit la source. `cantripsKnown` et `spellsPrepared` traversent bien le
+contrat, puis sont jetés par la vue : `SpellcastingRow`
+(`front/src/shared/components/character/character-features.view.tsx`) ne rend qu'origine,
+DD, bonus d'attaque et emplacements.
+
+Les sorts mineurs du magicien lui-même sont donc invisibles, tout comme celui de sa
+lignée — qui est désormais correctement *compté*, mais toujours pas *nommé*.
+
+Repéré en marge du bug du sort de lignée. Chantier de vue, sans impact sur le moteur.
 
 ---
 
-Dans la création du personnage, quand je sélectionne un clerc ,que je prends l'ordre divin Thaumaturge, Je vois dans la Step view les orts mineur qui passent de 3 à 4 (normal)
-Je continue, je prends l'historique Acolyte, je sélectionne initié à la magie, peut importe si c'est une sélection Clerc, Druide, Magicien, les deux sorts mineurs font passer la liste de Sorts mineurs à 6 dans la stemp view, ce qui est correct.
-Mais quand j'arrive dans la liste des sorts mineurs, j'ai marqué 3 sort mineurs de classes et 2 sorts minieurs initié à la magie, il en manque un à choisir dans les sorts mineur de classe via Thaumaturge.
-Cette erreur bloque la suite de la création du personnage car le bouton suivant est bloqué, car il manque le nombre attendu de sorts mineurs de classe à choisir.
+## Corrigés
 
-# Le sort mineur d'une lignée ne compte pas comme un sort connu
+### ~~Création bloquée : clerc Thaumaturge avec Initié à la magie~~ — 16/08/2026
 
-Créer un elfe de lignée Haut-elfe. La lignée annonce « Le sort mineur
-Prestidigitation, remplaçable par un autre sort mineur de magicien à chaque Repos
-long ». Le sort n'apparaît nulle part dans les sorts du personnage.
+**Symptôme** — Clerc, Ordre divin Thaumaturge, historique Acolyte avec Initié à la magie.
+L'étape annonçait 6 sorts mineurs (3 de classe + 1 de Thaumaturge + 2 du don), mais l'écran
+de sélection n'en proposait que 5 : le +1 de Thaumaturge manquait côté classe. Le bouton
+« suivant » restait bloqué, faute du compte attendu — **la création était impossible**.
 
-Constaté sur une fiche calculée : un magicien haut-elfe sort avec
-`cantripsKnown: ["fire-bolt", "light", "mage-hand"]`. Prestidigitation n'y est
-pas — il devrait connaître 4 sorts mineurs, la fiche en compte 3.
+**Cause** — Deux calculs concurrents. L'étape lisait `cantripQuotaOf`, qui appliquait bien
+`extraCantripsOf` ; le sélecteur lisait directement `spellcasting.cantripsKnown` du
+catalogue, qui ne l'appliquait pas.
 
-Le sort n'est pas totalement perdu : l'effet `grant.spells` est bien produit par
-`cantripTrait` (`domain/reference/species.ts`), bien collecté par
-`collectEffects` avec sa provenance `lineage`, et il ressort sur la fiche dans le
-bloc **Capacités**, comme une ligne « Prestidigitation — Haut-elfe » portant le
-badge *Octroi*. Il n'entre simplement jamais dans `spellcasting`.
+**Correction** — `classCantripsOf` extraite dans
+`front/.../builder/_internal/types/builder-lookups.ts` et lue par les deux. La divergence
+n'est plus exprimable. Régression couverte par `builder-lookups.test.ts`.
 
-**Cause** : `domain/resolution/resolve-spellcasting.ts` ne connaît que deux
-chemins, `classSpellcasting` et `featSpellcasting`. Le chemin espèce / lignée
-n'a jamais été branché.
+### ~~Le sort mineur d'une lignée ne compte pas comme un sort connu~~ — 16/08/2026
 
-**Correction retenue** : donner un troisième chemin à `resolveSpellcasting`, qui
-lit les sorts mineurs octroyés par les effets d'espèce et de lignée et les rend
-comme une origine d'incantation à part entière.
+**Symptôme** — Un magicien haut-elfe sortait avec
+`cantripsKnown: ["fire-bolt", "light", "mage-hand"]` : Prestidigitation manquait, 3 sorts
+mineurs au lieu de 4. Le sort n'était pas perdu pour autant — l'effet `grant.spells` était
+bien produit par `cantripTrait` (`domain/reference/species.ts`) et bien collecté par
+`collectEffects` avec sa provenance `lineage`, et il ressortait dans le bloc **Capacités**.
+Il n'entrait simplement jamais dans `spellcasting`.
 
-Deux manques adjacents, à traiter avec :
+**Cause** — `domain/resolution/resolve-spellcasting.ts` ne connaissait que deux chemins,
+`classSpellcasting` et `featSpellcasting`. Le chemin espèce / lignée n'avait jamais été
+branché.
 
-- La fiche n'affiche **aucun nom de sort**, quelle qu'en soit la source.
-  `cantripsKnown` et `spellsPrepared` traversent le contrat et sont jetés par la
-  vue (`shared/components/character/character-features.view.tsx`, `SpellcastingRow`,
-  qui ne rend qu'origine / DD / attaque / emplacements). Les sorts mineurs du
-  magicien lui-même sont donc invisibles.
-- La caractéristique d'incantation du sort de lignée n'est jamais demandée. Le
-  catalogue publie pourtant `spellcastingAbilityOptions: ['intelligence',
-  'wisdom', 'charisma']` pour l'elfe, le gnome et le tieffelin ; aucune étape du
-  wizard ne la consomme. Sans elle, le DD et le bonus d'attaque de ce sort ne
-  sont pas calculables.
+**Correction, back** — Troisième chemin `originSpellcasting`, qui lit les `grants.spells`
+de source `species` / `lineage` et les rend comme une origine d'incantation à part entière.
 
+**Correction, front** — L'étape Lignage demande désormais la caractéristique d'incantation
+quand l'espèce en offre le choix (elfe, gnome, tieffelin), et ne se franchit pas sans elle.
+Le choix voyage en `{source: {type: 'lineage'}, spellcastingAbility}` — le contrat le
+supportait déjà. `CharacterBuildDetailSchema` gagne `lineageSpellcastingAbility` pour que
+l'édition repeuple le champ.
 
+Vérifié dans l'application : « suivant » bloqué à l'entrée de l'étape, encore bloqué avec
+la lignée seule, franchissable une fois la caractéristique choisie.
 
+**Dette laissée** — Un personnage créé avant cette étape n'a aucune caractéristique
+enregistrée. `originAbility` retombe alors sur la première option de l'espèce
+(Intelligence), le temps qu'il soit rejoué : le sort apparaît toujours, mais son DD peut
+être faux sur un personnage ancien tant qu'il n'est pas ré-édité.

@@ -16,6 +16,7 @@ function coreFieldsOf(dto: CharacterBuildDetailDto) {
     name: dto.name,
     speciesKey: dto.speciesKey,
     lineageKey: dto.lineageKey,
+    lineageSpellcastingAbility: dto.lineageSpellcastingAbility,
     classKey: dto.classKey,
     backgroundKey: dto.backgroundKey,
     backgroundBonuses: dto.backgroundBonuses,

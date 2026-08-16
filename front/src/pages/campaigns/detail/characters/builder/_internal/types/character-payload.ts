@@ -40,9 +40,25 @@ function baseScoresOf(composition: CharacterComposition): Record<Ability, number
 function choicesOf(composition: CharacterComposition): CharacterChoice[] {
   return [
     ...speciesChoices(composition),
+    ...lineageChoices(composition),
     ...classChoices(composition),
     ...magicInitiateChoice(composition),
     ...skilledChoice(composition),
+  ];
+}
+
+/**
+ * La caractéristique d'incantation du sort mineur de lignée. Elle est portée par
+ * la lignée et non par l'espèce : c'est elle qui donne le sort.
+ */
+function lineageChoices(composition: CharacterComposition): CharacterChoice[] {
+  if (!composition.lineageKey || !composition.lineageSpellcastingAbility) return [];
+
+  return [
+    {
+      source: { type: "lineage", key: composition.lineageKey },
+      spellcastingAbility: composition.lineageSpellcastingAbility,
+    },
   ];
 }
 

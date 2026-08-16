@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type {
+  Ability,
   CatalogBackground,
   CatalogClass,
   CatalogOriginFeat,
@@ -7,6 +8,7 @@ import type {
 } from "@donjon-dragon/shared";
 import { EMPTY_COMPOSITION } from "./character-composition";
 import { cantripQuotaOf, classCantripsOf, type StepContext } from "./builder-lookups";
+import { isStepValid } from "./builder-steps";
 
 /**
  * Le scénario du bug : un clerc qui prend l'Ordre divin Thaumaturge et
@@ -98,5 +100,55 @@ describe("cantripQuotaOf", () => {
       CLERIC_CANTRIPS + THAUMATURGE_BONUS + MAGIC_INITIATE_CANTRIPS,
     );
     expect(cantripQuotaOf(context)).toBe(classCantripsOf(context) + MAGIC_INITIATE_CANTRIPS);
+  });
+});
+
+/**
+ * L'étape du lignage ne se franchit qu'une fois la caractéristique
+ * d'incantation choisie — sans elle, le sort mineur de lignée n'a ni DD ni
+ * bonus d'attaque.
+ */
+describe("étape du lignage", () => {
+  function anElfContext(
+    lineageKey: string | null,
+    lineageSpellcastingAbility: Ability | null,
+  ): StepContext {
+    return {
+      catalog: {
+        species: [
+          {
+            key: "elf",
+            name: "Elfe",
+            lineage: {
+              label: "Lignage elfique",
+              spellcastingAbilityOptions: ["intelligence", "wisdom", "charisma"],
+              options: [{ key: "high-elf", name: "Haut-elfe", description: "" }],
+            },
+          },
+        ],
+        classes: [],
+        backgrounds: [],
+        originFeats: [],
+        skillLabels: {},
+      } as unknown as DndCatalog,
+      composition: {
+        ...EMPTY_COMPOSITION,
+        speciesKey: "elf",
+        lineageKey,
+        lineageSpellcastingAbility,
+      },
+    };
+  }
+
+  it("reste bloquée tant que la caractéristique n’est pas choisie", () => {
+    expect(isStepValid("lineage", anElfContext("high-elf", null))).toBe(false);
+  });
+
+  it("se franchit une fois la lignée et la caractéristique choisies", () => {
+    expect(isStepValid("lineage", anElfContext("high-elf", "intelligence"))).toBe(true);
+  });
+
+  it("reste bloquée tant qu’aucune lignée n’est choisie", () => {
+    expect(isStepValid("lineage", anElfContext(null, "intelligence"))).toBe(false);
   });
 });

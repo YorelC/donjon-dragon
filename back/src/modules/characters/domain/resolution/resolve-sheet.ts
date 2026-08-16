@@ -94,7 +94,7 @@ export function resolveSheet(build: CharacterBuild, worn: WornEquipment): Comput
     abilityMethod: build.abilities.method,
     abilities,
     proficiencies,
-    spellcasting: resolveSpellcasting({ ...context, build }),
+    spellcasting: resolveSpellcasting({ ...context, build, effects }),
     features: resolveFeatures(effects),
     resources: resolveResources(effects, context),
   };

@@ -4,6 +4,7 @@
 
 import { describe, expect, it } from 'vitest';
 
+import type { CharacterChoice } from '../character-choices';
 import { aBuild, type BuildInput } from '../../testing/character-build.fixture';
 import { resolveSheetOf } from '../../testing/worn-equipment.fixture';
 
@@ -475,5 +476,59 @@ describe('occultiste', () => {
 
     expect(pact?.level1Slots).toBe(1);
     expect(pact?.slotsRecoverOnShortRest).toBe(true);
+  });
+});
+
+// Le sort mineur de la lignée sortait bien dans les Capacités, mais jamais dans
+// `spellcasting` : `resolveSpellcasting` ne connaissait que la classe et le don.
+describe('magicien haut-elfe', () => {
+  const buildWith = (choices: readonly CharacterChoice[]) =>
+    aBuild({
+      speciesKey: 'elf',
+      lineageKey: 'high-elf',
+      classKey: 'wizard',
+      backgroundKey: 'sage',
+      base: {
+        strength: 8,
+        dexterity: 14,
+        constitution: 13,
+        intelligence: 15,
+        wisdom: 12,
+        charisma: 10,
+      },
+      backgroundBonuses: { intelligence: 2, wisdom: 1 },
+      choices: [
+        {
+          source: { type: 'class', key: 'wizard' },
+          spells: ['fire-bolt', 'light', 'mage-hand'],
+        },
+        ...choices,
+      ],
+    });
+
+  it('compte Prestidigitation parmi les sorts connus', () => {
+    const sheet = resolveSheetOf(buildWith([]));
+    const lineage = sheet.spellcasting.find((entry) => entry.origin === 'Haut-elfe');
+
+    expect(lineage?.cantripsKnown).toEqual(['prestidigitation']);
+    expect(sheet.spellcasting.flatMap((entry) => entry.cantripsKnown)).toHaveLength(4);
+  });
+
+  it('n’octroie ni emplacement ni sort préparé', () => {
+    const lineage = resolveSheetOf(buildWith([]))
+      .spellcasting.find((entry) => entry.origin === 'Haut-elfe');
+
+    expect(lineage?.level1Slots).toBe(0);
+    expect(lineage?.spellsPrepared).toEqual([]);
+  });
+
+  it('retient la caractéristique d’incantation choisie pour la lignée', () => {
+    const sheet = resolveSheetOf(
+      buildWith([{ source: { type: 'lineage', key: 'high-elf' }, spellcastingAbility: 'charisma' }]),
+    );
+    const lineage = sheet.spellcasting.find((entry) => entry.origin === 'Haut-elfe');
+
+    expect(lineage?.ability).toBe('charisma');
+    expect(lineage?.saveDc).toBe(8 + 2 + sheet.abilities.charisma.modifier);
   });
 });

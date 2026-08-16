@@ -31,6 +31,17 @@ const always = () => true;
 const counted = (chosen: number, total: number): StepProgress => ({ chosen, total });
 
 /**
+ * L'étape du lignage porte deux choix quand l'espèce est de celles qui lancent
+ * un sort mineur : la lignée, et la caractéristique qui l'incante.
+ */
+function hasChosenLineage(context: StepContext): boolean {
+  if (context.composition.lineageKey === null) return false;
+  if (!speciesOf(context)?.lineage?.spellcastingAbilityOptions?.length) return true;
+
+  return context.composition.lineageSpellcastingAbility !== null;
+}
+
+/**
  * La table qui décrit le parcours.
  *
  * Une seule source pour trois choses : quelles étapes apparaissent, laquelle est
@@ -56,7 +67,7 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     key: "lineage",
     label: "Lignage",
     isVisible: (context) => Boolean(speciesOf(context)?.lineage),
-    isValid: ({ composition }) => composition.lineageKey !== null,
+    isValid: hasChosenLineage,
   },
   {
     key: "class",

@@ -6,6 +6,7 @@ const BASE_DTO: CharacterBuildDetailDto = {
   name: "Frodo Sacquet",
   speciesKey: "halfling",
   lineageKey: null,
+  lineageSpellcastingAbility: null,
   speciesSkills: [],
   speciesFeat: null,
   classKey: "rogue",

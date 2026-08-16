@@ -24,6 +24,7 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
     name: character.name.value,
     speciesKey: build.speciesKey,
     lineageKey: build.lineageKey,
+    ...lineageFieldsOf(choices),
     ...speciesFieldsOf(choices),
     classKey: build.classKey,
     ...classFieldsOf(choices),
@@ -63,6 +64,12 @@ function abilityFieldsOf(character: Character) {
     base: abilities.base,
     abilityRoll: rollOf(character),
   };
+}
+
+function lineageFieldsOf(choices: readonly CharacterChoice[]) {
+  const choice = choices.find((entry) => entry.source.type === 'lineage');
+
+  return { lineageSpellcastingAbility: choice?.spellcastingAbility ?? null };
 }
 
 function speciesFieldsOf(choices: readonly CharacterChoice[]) {

@@ -1,8 +1,9 @@
 import type { CharacterChoice, CharacterChoices } from '../character-choices';
 import type { Ability } from '../reference/abilities';
 import { CLASSES } from '../reference/classes';
-import type { CollectedEffect } from '../reference/effect';
+import type { CollectedEffect, EffectSource, EffectSourceType } from '../reference/effect';
 import type { ClassKey, SpellKey } from '../reference/keys';
+import { SPECIES } from '../reference/species';
 import { SPELLS } from '../reference/spells';
 import type { CharacterBuild } from './character-build';
 
@@ -25,18 +26,19 @@ export interface ResolvedSpellcasting {
 
 export interface SpellcastingInput {
   build: CharacterBuild;
+  effects: readonly CollectedEffect[];
   abilityModifiers: Record<Ability, number>;
   proficiencyBonus: number;
 }
 
 /**
- * Un personnage peut lancer des sorts par deux chemins au niveau 1 : sa classe,
- * et le don Initié à la magie. Les deux ont leur propre caractéristique et leur
- * propre liste — un barbare Initié à la magie n'a aucun emplacement mais lance
- * quand même ses sorts mineurs.
+ * Un personnage peut lancer des sorts par trois chemins au niveau 1 : sa classe,
+ * le don Initié à la magie, et son espèce ou sa lignée. Chacun a sa propre
+ * caractéristique et sa propre liste — un barbare Initié à la magie n'a aucun
+ * emplacement mais lance quand même ses sorts mineurs.
  */
 export function resolveSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
-  return [...classSpellcasting(input), ...featSpellcasting(input)];
+  return [...classSpellcasting(input), ...featSpellcasting(input), ...originSpellcasting(input)];
 }
 
 function classSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
@@ -83,6 +85,80 @@ function featSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
       slotsRecoverOnShortRest: false,
     }));
 }
+
+/**
+ * Les sorts qu'une espèce ou une lignée octroie : le Haut-elfe connaît
+ * Prestidigitation, le Gnome des forêts Illusion mineure. Ils ne sont pas
+ * choisis dans une liste — le trait les nomme — mais ils comptent comme des
+ * sorts connus, et ils avaient été oubliés ici.
+ */
+const ORIGIN_SOURCE_TYPES: readonly EffectSourceType[] = ['species', 'lineage'];
+
+function originSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
+  return [...grantedSpellsBySource(input.effects)].map(([, granted]) => {
+    const ability = originAbility(granted.source, input);
+    return {
+      ...scoresFor(ability, input),
+      origin: granted.source.label,
+      ability,
+      cantripsKnown: granted.spellKeys.filter(isCantrip),
+      spellsPrepared: granted.spellKeys.filter(isNotCantrip),
+      level1Slots: 0,
+      slotsRecoverOnShortRest: false,
+    };
+  });
+}
+
+interface GrantedByOrigin {
+  source: EffectSource;
+  spellKeys: SpellKey[];
+}
+
+/** Une entrée par origine : l'espèce et la lignée ne se mélangent pas. */
+function grantedSpellsBySource(
+  effects: readonly CollectedEffect[],
+): Map<string, GrantedByOrigin> {
+  const bySource = new Map<string, GrantedByOrigin>();
+
+  effects.filter(isOriginSpellGrant).forEach((collected) => {
+    const existing = bySource.get(collected.source.key) ?? {
+      source: collected.source,
+      spellKeys: [],
+    };
+    existing.spellKeys.push(...(collected.effect.grants?.spells ?? []).map((s) => s.spellKey));
+    bySource.set(collected.source.key, existing);
+  });
+
+  return bySource;
+}
+
+function isOriginSpellGrant(collected: CollectedEffect): boolean {
+  return (
+    ORIGIN_SOURCE_TYPES.includes(collected.source.type) &&
+    (collected.effect.grants?.spells?.length ?? 0) > 0
+  );
+}
+
+/**
+ * Le manuel fait choisir la caractéristique à la création — Intelligence,
+ * Sagesse ou Charisme. Un personnage créé avant que le wizard ne la demande n'a
+ * rien d'enregistré : on retombe alors sur la première option de l'espèce, le
+ * temps qu'il soit rejoué.
+ */
+function originAbility(source: EffectSource, input: SpellcastingInput): Ability {
+  const chosen = input.build.choices
+    .from({ type: source.type, key: source.key })
+    .find((choice) => choice.spellcastingAbility)?.spellcastingAbility;
+
+  return chosen ?? defaultOriginAbility(input.build);
+}
+
+function defaultOriginAbility(build: CharacterBuild): Ability {
+  const offered = SPECIES[build.speciesKey].lineage?.spellcastingAbilityOptions;
+  return offered?.[0] ?? FALLBACK_ORIGIN_ABILITY;
+}
+
+const FALLBACK_ORIGIN_ABILITY: Ability = 'intelligence';
 
 type MagicInitiateChoice = CharacterChoice & {
   spellcastingAbility: Ability;

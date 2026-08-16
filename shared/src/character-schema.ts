@@ -236,6 +236,8 @@ export const CharacterBuildDetailSchema = z.object({
 
   speciesKey: SpeciesKeySchema,
   lineageKey: z.string().nullable(),
+  /** Celle du sort mineur de lignée, distincte de celle d'Initié à la magie. */
+  lineageSpellcastingAbility: AbilitySchema.nullable(),
   speciesSkills: z.array(SkillNameSchema),
   speciesFeat: OriginFeatKeySchema.nullable(),
 

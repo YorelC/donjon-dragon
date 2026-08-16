@@ -40,6 +40,12 @@ export interface CharacterComposition {
 
   speciesKey: SpeciesKey | null;
   lineageKey: string | null;
+  /**
+   * La caractéristique d'incantation du sort mineur de lignée — l'elfe, le gnome
+   * et le tieffelin la choisissent. Distincte de `spellcastingAbility`, qui est
+   * celle du don Initié à la magie : un personnage peut avoir les deux.
+   */
+  lineageSpellcastingAbility: Ability | null;
   speciesSkills: SkillName[];
 
   classKey: ClassKey | null;
@@ -95,6 +101,7 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   name: "",
   speciesKey: null,
   lineageKey: null,
+  lineageSpellcastingAbility: null,
   speciesSkills: [],
   classKey: null,
   classSkills: [],
