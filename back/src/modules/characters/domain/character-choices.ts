@@ -39,9 +39,12 @@ export interface CharacterChoice {
   feature?: string;
 }
 
-export interface CharacterChoicesSnapshot {
-  choices: CharacterChoice[];
-}
+/**
+ * Le value object se persiste comme ce qu'il est : une liste. Il s'enveloppait
+ * dans un objet `{ choices: [...] }`, ce qui donnait un `build.choices.choices`
+ * en base sans que le niveau supplémentaire ne porte jamais rien.
+ */
+export type CharacterChoicesSnapshot = CharacterChoice[];
 
 export class DuplicateSkillChoiceError extends InvalidDomainError {
   constructor() {
@@ -62,7 +65,7 @@ export class CharacterChoices {
   }
 
   static restore(snapshot: CharacterChoicesSnapshot): CharacterChoices {
-    return new CharacterChoices(snapshot.choices.map(copyChoice));
+    return new CharacterChoices(snapshot.map(copyChoice));
   }
 
   get all(): readonly CharacterChoice[] {
@@ -77,7 +80,7 @@ export class CharacterChoices {
   }
 
   snapshot(): CharacterChoicesSnapshot {
-    return { choices: this.choices.map(copyChoice) };
+    return this.choices.map(copyChoice);
   }
 }
 

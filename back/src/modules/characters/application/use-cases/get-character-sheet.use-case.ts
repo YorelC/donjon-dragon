@@ -7,7 +7,9 @@ import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
+import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
 import { loadCharacter } from '../character.lookup';
+import { resolveEquipment } from '../character-equipment.mapper';
 import { toCharacterSheetDto } from '../character-sheet.mapper';
 import { NotActiveCampaignMemberError } from '../../domain/character.errors';
 import { resolveSheet } from '../../domain/resolution/resolve-sheet';
@@ -29,6 +31,7 @@ export class GetCharacterSheetUseCase {
   constructor(
     @Inject(CHARACTER_REPOSITORY)
     private readonly characterRepo: CharacterRepositoryPort,
+    @Inject(ITEM_CATALOG) private readonly itemCatalog: ItemCatalogPort,
     private readonly membership: GetCampaignMembershipUseCase,
   ) {}
 
@@ -40,7 +43,12 @@ export class GetCharacterSheetUseCase {
     if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
 
     const character = await loadCharacter(this.characterRepo, dto.characterId);
+    const equipment = await resolveEquipment(
+      this.itemCatalog,
+      character.build.equipment,
+      dto.campaignId,
+    );
 
-    return toCharacterSheetDto(resolveSheet(character.build));
+    return toCharacterSheetDto(resolveSheet(character.build, equipment.worn), equipment.resolved);
   }
 }

@@ -2,8 +2,10 @@ import { Schema } from 'mongoose';
 
 import type { AbilityAssignmentSnapshot } from '../../domain/ability-assignment';
 import type { AbilityRollSnapshot } from '../../domain/ability-roll';
-import type { CharacterChoicesSnapshot } from '../../domain/character-choices';
-import type { CharacterEquipmentSnapshot } from '../../domain/character-equipment';
+import type {
+  CarriedItemSnapshot,
+  CharacterEquipmentSnapshot,
+} from '../../domain/character-equipment';
 import type { CharacterBuildSnapshot, CharacterSnapshot } from '../../domain/character';
 
 export const CHARACTER_MODEL = 'Character';
@@ -25,13 +27,11 @@ const AbilityAssignmentSubSchema = new Schema<AbilityAssignmentSnapshot>(
   subSchema,
 );
 
-/**
- * Les choix restent en forme libre : leurs champs sont optionnels et changent
- * d'une source à l'autre. Zod les valide à l'entrée, l'agrégat les vérifie
- * contre les règles ; Mongo n'a rien à en dire de plus.
- */
-const CharacterChoicesSubSchema = new Schema<CharacterChoicesSnapshot>(
-  { choices: { type: [Object], required: true } },
+const CarriedItemSubSchema = new Schema<CarriedItemSnapshot>(
+  {
+    itemKey: { type: String, required: true },
+    quantity: { type: Number, required: true },
+  },
   subSchema,
 );
 
@@ -39,8 +39,11 @@ const CharacterEquipmentSubSchema = new Schema<CharacterEquipmentSnapshot>(
   {
     armorKey: { type: String, default: null },
     shield: { type: Boolean, required: true },
-    items: { type: [String], required: true },
+    items: { type: [CarriedItemSubSchema], required: true },
     gold: { type: Number, required: true },
+    // Nullables : les personnages créés avant les paquetages n'ont pas d'option.
+    classOptionId: { type: String, default: null },
+    backgroundOptionId: { type: String, default: null },
   },
   subSchema,
 );
@@ -52,7 +55,12 @@ const CharacterBuildSubSchema = new Schema<CharacterBuildSnapshot>(
     classKey: { type: String, required: true },
     backgroundKey: { type: String, required: true },
     abilities: { type: AbilityAssignmentSubSchema, required: true },
-    choices: { type: CharacterChoicesSubSchema, required: true },
+    /**
+     * Une liste nue, et en forme libre : les champs d'un choix sont optionnels
+     * et changent d'une source à l'autre. Zod les valide à l'entrée, l'agrégat
+     * les vérifie contre les règles ; Mongo n'a rien à en dire de plus.
+     */
+    choices: { type: [Object], required: true },
     equipment: { type: CharacterEquipmentSubSchema, required: true },
   },
   subSchema,

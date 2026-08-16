@@ -12,6 +12,7 @@
 import type { Ability } from './abilities';
 import type { BackgroundKey, ClassKey, OriginFeatKey } from './keys';
 import type { SkillName } from './skills';
+import { goldOnly, type StartingEquipment } from './starting-equipment';
 
 /**
  * Les deux répartitions autorisées des trois caractéristiques de l'historique :
@@ -26,12 +27,6 @@ export type BackgroundAbilityBonusPlan = keyof typeof BACKGROUND_ABILITY_BONUS_P
 
 export const BACKGROUND_ABILITY_COUNT = 3;
 
-export interface BackgroundEquipment {
-  description: string;
-  /** L'option B de tous les historiques : renoncer au paquetage contre de l'or. */
-  goldAlternative: number;
-}
-
 export interface Background {
   key: BackgroundKey;
   name: string;
@@ -44,11 +39,13 @@ export interface Background {
   originFeatSpellList?: ClassKey;
   skillProficiencies: readonly [SkillName, SkillName];
   toolProficiency: string;
-  equipment: BackgroundEquipment;
+  equipment: StartingEquipment;
   description: string;
 }
 
+/** L'option B de tous les historiques : renoncer au paquetage contre de l'or. */
 const GOLD_ALTERNATIVE = 50;
+const GOLD_OPTION = goldOnly('B', GOLD_ALTERNATIVE);
 
 const BACKGROUND_LIST: readonly Background[] = [
   {
@@ -60,9 +57,22 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['insight', 'religion'],
     toolProficiency: 'matériel de calligraphe',
     equipment: {
-      description:
-        'Matériel de calligraphe, livre (prières), symbole sacré, parchemin (10 feuilles), robe, 8 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            'Matériel de calligraphe, livre (prières), symbole sacré, parchemin (10 feuilles), robe, 8 po',
+          entries: [
+            { itemKey: 'materiel-de-calligraphe', quantity: 1 },
+            { itemKey: 'livre', quantity: 1 },
+            { itemKey: 'symbole-sacre', quantity: 1 },
+            { itemKey: 'parchemin', quantity: 10 },
+            { itemKey: 'robe', quantity: 1 },
+          ],
+          gold: 8,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous étiez au service d'un temple, en ville ou retiré dans un bosquet sacré. Vous y avez accompli des rites en l'honneur d'un dieu ou d'un panthéon. Vous avez servi un prêtre et étudié la religion.",
@@ -74,9 +84,22 @@ const BACKGROUND_LIST: readonly Background[] = [
     originFeat: 'crafter',
     skillProficiencies: ['investigation', 'persuasion'],
     toolProficiency: "choix d'outils d'artisan",
+    // « Outils d'artisan » désigne une catégorie de dix-sept outils, pas un
+    // objet : c'est l'étape des maîtrises qui tranche lequel. Le libellé le dit,
+    // l'inventaire ne l'invente pas.
     equipment: {
-      description: "Outils d'artisan, 2 sacoches, tenue de voyage, 32 po",
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label: "Outils d'artisan, 2 sacoches, tenue de voyage, 32 po",
+          entries: [
+            { itemKey: 'sacoche', quantity: 2 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 32,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez fait votre apprentissage dans un atelier d'artisan, apprenant à créer vos propres objets et à charmer des clients exigeants. Ce métier vous a donné un sens aigu du détail.",
@@ -89,8 +112,19 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['sleightOfHand', 'deception'],
     toolProficiency: 'matériel de contrefaçon',
     equipment: {
-      description: 'Matériel de contrefaçon, costume, beaux habits, 15 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label: 'Matériel de contrefaçon, costume, beaux habits, 15 po',
+          entries: [
+            { itemKey: 'materiel-de-contrefacon', quantity: 1 },
+            { itemKey: 'costume', quantity: 1 },
+            { itemKey: 'beaux-habits', quantity: 1 },
+          ],
+          gold: 15,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "En parcourant les auberges, vous appreniez à exploiter les malheureux en quête d'un mensonge réconfortant — peut-être une potion magique ou de faux documents généalogiques.",
@@ -103,9 +137,21 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['sleightOfHand', 'stealth'],
     toolProficiency: 'outils de voleur',
     equipment: {
-      description:
-        '2 dagues, outils de voleur, pied-de-biche, 2 sacoches, tenue de voyage, 16 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label: '2 dagues, outils de voleur, pied-de-biche, 2 sacoches, tenue de voyage, 16 po',
+          entries: [
+            { itemKey: 'dagger', quantity: 2 },
+            { itemKey: 'outils-de-voleur', quantity: 1 },
+            { itemKey: 'pied-de-biche', quantity: 1 },
+            { itemKey: 'sacoche', quantity: 2 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 16,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       'Vous gagniez péniblement votre vie dans de sombres ruelles, coupant des bourses ou cambriolant des boutiques.',
@@ -118,9 +164,21 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['acrobatics', 'performance'],
     toolProficiency: "choix d'instrument de musique",
     equipment: {
-      description:
-        'Instrument de musique, 2 costumes, miroir, parfum, tenue de voyage, 11 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label: 'Instrument de musique, 2 costumes, miroir, parfum, tenue de voyage, 11 po',
+          entries: [
+            { itemKey: 'instrument-de-musique', quantity: 1 },
+            { itemKey: 'costume', quantity: 2 },
+            { itemKey: 'miroir', quantity: 1 },
+            { itemKey: 'parfum', quantity: 1 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 11,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez suivi les fêtes foraines et les carnavals itinérants, enchaînant les petits boulots en échange de leçons. Vous vous épanouissez sous les applaudissements.",
@@ -133,9 +191,23 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['animalHandling', 'nature'],
     toolProficiency: 'outils de charpentier',
     equipment: {
-      description:
-        'Serpe, outils de charpentier, trousse de soins, pot en fer, pelle, tenue de voyage, 30 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            'Serpe, outils de charpentier, trousse de soins, pot en fer, pelle, tenue de voyage, 30 po',
+          entries: [
+            { itemKey: 'sickle', quantity: 1 },
+            { itemKey: 'outils-de-charpentier', quantity: 1 },
+            { itemKey: 'trousse-de-soins', quantity: 1 },
+            { itemKey: 'pot-en-fer', quantity: 1 },
+            { itemKey: 'pelle', quantity: 1 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 30,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Des années passées à prendre soin des animaux et à cultiver la terre vous ont procuré patience et une excellente santé.",
@@ -148,9 +220,25 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['athletics', 'perception'],
     toolProficiency: 'choix de boîte de jeux',
     equipment: {
-      description:
-        'Lance, arbalète légère, 20 carreaux, boîte de jeux, lanterne à capote, menottes, carquois, tenue de voyage, 12 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            'Lance, arbalète légère, 20 carreaux, boîte de jeux, lanterne à capote, menottes, carquois, tenue de voyage, 12 po',
+          entries: [
+            { itemKey: 'spear', quantity: 1 },
+            { itemKey: 'light-crossbow', quantity: 1 },
+            { itemKey: 'munitions', quantity: 20 },
+            { itemKey: 'boite-de-jeux', quantity: 1 },
+            { itemKey: 'lanterne-capote', quantity: 1 },
+            { itemKey: 'menottes', quantity: 1 },
+            { itemKey: 'carquois', quantity: 1 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 12,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous étiez entraîné à garder un œil sur l'extérieur des murs, guettant les maraudeurs, et l'autre sur l'intérieur, à la recherche de fauteurs de troubles.",
@@ -164,9 +252,24 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['stealth', 'survival'],
     toolProficiency: 'outils de cartographe',
     equipment: {
-      description:
-        'Arc court, 20 flèches, outils de cartographe, sac de couchage, carquois, tente, tenue de voyage, 3 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            'Arc court, 20 flèches, outils de cartographe, sac de couchage, carquois, tente, tenue de voyage, 3 po',
+          entries: [
+            { itemKey: 'shortbow', quantity: 1 },
+            { itemKey: 'munitions', quantity: 20 },
+            { itemKey: 'outils-de-cartographe', quantity: 1 },
+            { itemKey: 'sac-de-couchage', quantity: 1 },
+            { itemKey: 'carquois', quantity: 1 },
+            { itemKey: 'tente', quantity: 1 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 3,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez grandi en pleine nature. De temps à autre, vous guidiez des prêtres bienveillants qui vous enseignaient les rudiments de la canalisation de la magie sauvage.",
@@ -179,9 +282,24 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['medicine', 'religion'],
     toolProficiency: "matériel d'herboriste",
     equipment: {
-      description:
-        "Bâton de combat, matériel d'herboriste, sac de couchage, livre (philosophie), lampe, huile (3 flasques), tenue de voyage, 16 po",
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Bâton de combat, matériel d'herboriste, sac de couchage, livre (philosophie), lampe, huile (3 flasques), tenue de voyage, 16 po",
+          entries: [
+            { itemKey: 'quarterstaff', quantity: 1 },
+            { itemKey: 'materiel-herboriste', quantity: 1 },
+            { itemKey: 'sac-de-couchage', quantity: 1 },
+            { itemKey: 'livre', quantity: 1 },
+            { itemKey: 'lampe', quantity: 1 },
+            { itemKey: 'huile', quantity: 3 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 16,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez passé votre enfance reclus dans une hutte ou un monastère. Cette solitude vous permettait de méditer sur les mystères de la création.",
@@ -194,8 +312,19 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['animalHandling', 'persuasion'],
     toolProficiency: 'instruments de navigateur',
     equipment: {
-      description: 'Instruments de navigateur, 2 sacoches, tenue de voyage, 22 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label: 'Instruments de navigateur, 2 sacoches, tenue de voyage, 22 po',
+          entries: [
+            { itemKey: 'instruments-de-navigateur', quantity: 1 },
+            { itemKey: 'sacoche', quantity: 2 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 22,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez fait votre apprentissage chez un marchand ou un caravanier. Vous avez beaucoup voyagé et gagné votre vie en achetant et en vendant.",
@@ -208,8 +337,19 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['history', 'persuasion'],
     toolProficiency: 'choix de boîte de jeux',
     equipment: {
-      description: 'Boîte de jeux, beaux habits, parfum, 29 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label: 'Boîte de jeux, beaux habits, parfum, 29 po',
+          entries: [
+            { itemKey: 'boite-de-jeux', quantity: 1 },
+            { itemKey: 'beaux-habits', quantity: 1 },
+            { itemKey: 'parfum', quantity: 1 },
+          ],
+          gold: 29,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez grandi dans un château, entouré de richesse et de privilèges. Les heures passées à observer votre famille à la cour vous ont beaucoup appris sur l'autorité.",
@@ -223,9 +363,22 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['arcana', 'history'],
     toolProficiency: 'matériel de calligraphe',
     equipment: {
-      description:
-        'Bâton de combat, matériel de calligraphe, livre (histoire), parchemin (8 feuilles), robe, 8 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            'Bâton de combat, matériel de calligraphe, livre (histoire), parchemin (8 feuilles), robe, 8 po',
+          entries: [
+            { itemKey: 'quarterstaff', quantity: 1 },
+            { itemKey: 'materiel-de-calligraphe', quantity: 1 },
+            { itemKey: 'livre', quantity: 1 },
+            { itemKey: 'parchemin', quantity: 8 },
+            { itemKey: 'robe', quantity: 1 },
+          ],
+          gold: 8,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez voyagé entre manoirs et monastères en échange d'un accès à leurs bibliothèques, engrangeant des connaissances sur le multivers et des rudiments de magie.",
@@ -238,8 +391,20 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['acrobatics', 'perception'],
     toolProficiency: 'instruments de navigateur',
     equipment: {
-      description: 'Dague, instruments de navigateur, corde, tenue de voyage, 20 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label: 'Dague, instruments de navigateur, corde, tenue de voyage, 20 po',
+          entries: [
+            { itemKey: 'dagger', quantity: 1 },
+            { itemKey: 'instruments-de-navigateur', quantity: 1 },
+            { itemKey: 'corde', quantity: 1 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 20,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez vécu le vent dans le dos et le pont qui tanguait sous vos pieds, affronté de terribles tempêtes et échangé des histoires dans d'innombrables ports.",
@@ -252,9 +417,22 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['investigation', 'perception'],
     toolProficiency: 'matériel de calligraphe',
     equipment: {
-      description:
-        'Matériel de calligraphe, beaux habits, lampe, huile (3 flasques), parchemin (12 feuilles), 23 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            'Matériel de calligraphe, beaux habits, lampe, huile (3 flasques), parchemin (12 feuilles), 23 po',
+          entries: [
+            { itemKey: 'materiel-de-calligraphe', quantity: 1 },
+            { itemKey: 'beaux-habits', quantity: 1 },
+            { itemKey: 'lampe', quantity: 1 },
+            { itemKey: 'huile', quantity: 3 },
+            { itemKey: 'parchemin', quantity: 12 },
+          ],
+          gold: 23,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez appris à écrire d'une main lisible dans un scriptorium. Vous avez le souci du détail, ce qui vous évite les erreurs dans les documents que vous copiez.",
@@ -267,9 +445,24 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['athletics', 'intimidation'],
     toolProficiency: 'choix de jeu',
     equipment: {
-      description:
-        'Lance, arc court, 20 flèches, jeu, trousse de soins, carquois, tenue de voyage, 14 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            'Lance, arc court, 20 flèches, jeu, trousse de soins, carquois, tenue de voyage, 14 po',
+          entries: [
+            { itemKey: 'spear', quantity: 1 },
+            { itemKey: 'shortbow', quantity: 1 },
+            { itemKey: 'munitions', quantity: 20 },
+            { itemKey: 'boite-de-jeux', quantity: 1 },
+            { itemKey: 'trousse-de-soins', quantity: 1 },
+            { itemKey: 'carquois', quantity: 1 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 14,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous vous êtes entraîné à la guerre dès l'âge adulte. Le combat est dans votre sang, et vous avez mis cet entraînement en pratique sur le champ de bataille.",
@@ -282,9 +475,23 @@ const BACKGROUND_LIST: readonly Background[] = [
     skillProficiencies: ['stealth', 'insight'],
     toolProficiency: 'outils de voleur',
     equipment: {
-      description:
-        '2 dagues, outils de voleur, boîte de jeux, sac de couchage, 2 sacoches, tenue de voyage, 16 po',
-      goldAlternative: GOLD_ALTERNATIVE,
+      options: [
+        {
+          id: 'A',
+          label:
+            '2 dagues, outils de voleur, boîte de jeux, sac de couchage, 2 sacoches, tenue de voyage, 16 po',
+          entries: [
+            { itemKey: 'dagger', quantity: 2 },
+            { itemKey: 'outils-de-voleur', quantity: 1 },
+            { itemKey: 'boite-de-jeux', quantity: 1 },
+            { itemKey: 'sac-de-couchage', quantity: 1 },
+            { itemKey: 'sacoche', quantity: 2 },
+            { itemKey: 'tenue-de-voyage', quantity: 1 },
+          ],
+          gold: 16,
+        },
+        GOLD_OPTION,
+      ],
     },
     description:
       "Vous avez grandi dans la rue, dormant où vous pouviez. Vous n'avez jamais perdu votre fierté ni votre espoir : le destin n'a pas encore dit son dernier mot.",

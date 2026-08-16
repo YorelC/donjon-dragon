@@ -15,6 +15,7 @@ import {
   chosenCantrips,
   chosenSpells,
 } from "./builder-validity";
+import { hasChosenEquipment } from "./starting-equipment";
 import type { BuilderStep, StepProgress } from "./builder-steps";
 
 export interface StepDescriptor {
@@ -127,7 +128,14 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     isValid: (context) => chosenSpells(context.composition) >= spellQuotaOf(context),
     progress: (context) => counted(chosenSpells(context.composition), spellQuotaOf(context)),
   },
-  { key: "equipment", label: "Équipement", isVisible: always, isValid: always },
+  // L'étape bloque tant que les deux paquetages ne sont pas tranchés : un
+  // personnage sans équipement de départ n'est pas un personnage fini.
+  {
+    key: "equipment",
+    label: "Équipement",
+    isVisible: always,
+    isValid: ({ catalog, composition }) => hasChosenEquipment(catalog, composition),
+  },
   {
     key: "name",
     label: "Nom",

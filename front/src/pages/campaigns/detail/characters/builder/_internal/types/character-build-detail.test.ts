@@ -28,6 +28,13 @@ const BASE_DTO: CharacterBuildDetailDto = {
   abilityRoll: null,
   armorKey: "leather",
   shield: false,
+  items: [
+    { itemKey: "leather", quantity: 1 },
+    { itemKey: "dagger", quantity: 2 },
+  ],
+  gold: 8,
+  classOptionId: "A",
+  backgroundOptionId: "A",
 };
 
 describe("toComposition — assignment", () => {
@@ -91,5 +98,14 @@ describe("toComposition — reste des champs", () => {
     expect(composition.backgroundBonuses).toEqual(BASE_DTO.backgroundBonuses);
     expect(composition.armorKey).toBe("leather");
     expect(composition.shield).toBe(false);
+  });
+
+  // Le wizard se rouvre sur le choix, pas sur sa conséquence : l'inventaire se
+  // recalcule depuis les options au moment d'envoyer.
+  it("reprend les options de paquetage retenues", () => {
+    const composition = toComposition(BASE_DTO);
+
+    expect(composition.classEquipmentOptionId).toBe("A");
+    expect(composition.backgroundEquipmentOptionId).toBe("A");
   });
 });

@@ -4,11 +4,14 @@ import { SPECIES } from '../reference/species';
 import type { CharacterBuild } from './character-build';
 import { evaluateFormula, type FormulaContext } from './evaluate-formula';
 import type { ResolvedValue } from './resolve-armor-class';
+import type { WornEquipment } from './worn-equipment';
 
 export interface DerivedInput {
   build: CharacterBuild;
   effects: readonly CollectedEffect[];
   context: FormulaContext;
+  /** Les statistiques de ce qui est porté, résolues par la couche application. */
+  worn: WornEquipment;
 }
 
 /**

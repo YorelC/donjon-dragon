@@ -12,7 +12,8 @@
     "graph:arch": "depcruise src --output-type dot",
     "test": "vitest run",
     "test:cov": "vitest run --coverage",
-    "seed": "tsx src/scripts/seed-users.script.ts"
+    "seed": "tsx src/scripts/seed-users.script.ts",
+    "seed:items": "tsx src/scripts/seed-items.script.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.3.0",

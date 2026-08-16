@@ -9,6 +9,7 @@ import { collectEffects } from './collect-effects';
 import type { FormulaContext } from './evaluate-formula';
 import { modifiersOf, resolveAbilities, type ResolvedAbility } from './resolve-abilities';
 import { resolveArmorClass, type ResolvedValue } from './resolve-armor-class';
+import type { WornEquipment } from './worn-equipment';
 import {
   resolveInitiative,
   resolveMaxHitPoints,
@@ -71,11 +72,17 @@ export interface ComputedCharacter {
   resources: ResolvedResource[];
 }
 
-export function resolveSheet(build: CharacterBuild): ComputedCharacter {
+/**
+ * `worn` arrive de la couche application : les statistiques de l'armure et du
+ * bouclier portés sont dans une collection Mongo, et le domaine ne fait pas
+ * d'I/O. Il les reçoit résolues et ne se demande pas d'où elles viennent — c'est
+ * ce qui permet à une armure inventée par un MJ de compter comme les autres.
+ */
+export function resolveSheet(build: CharacterBuild, worn: WornEquipment): ComputedCharacter {
   const abilities = resolveAbilities(build.abilities);
   const context = contextFor(build, abilities);
   const effects = collectEffects(build);
-  const derived: DerivedInput = { build, effects, context };
+  const derived: DerivedInput = { build, effects, context, worn };
   const proficiencies = proficienciesFor(build, effects);
 
   return {
@@ -99,11 +106,11 @@ function derivedValuesOf(
   ComputedCharacter,
   'maxHitPoints' | 'armorClass' | 'initiative' | 'speed' | 'unarmedDamage'
 > {
-  const { build, effects, context } = derived;
+  const { build, effects, context, worn } = derived;
 
   return {
     maxHitPoints: resolveMaxHitPoints(derived),
-    armorClass: resolveArmorClass({ equipment: build.equipment, effects, context }),
+    armorClass: resolveArmorClass({ equipment: build.equipment, worn, effects, context }),
     initiative: resolveInitiative(derived),
     speed: resolveSpeed(derived),
     unarmedDamage: resolveUnarmedDamage(effects),

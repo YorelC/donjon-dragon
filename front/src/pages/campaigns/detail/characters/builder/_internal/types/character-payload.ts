@@ -2,6 +2,7 @@ import type {
   Ability,
   CharacterChoice,
   ClassKey,
+  DndCatalog,
   FinalizeCharacterDto,
 } from "@donjon-dragon/shared";
 import {
@@ -10,6 +11,7 @@ import {
   isFullyAssigned,
   type CharacterComposition,
 } from "./character-composition";
+import { grantedGold, grantedItems } from "./starting-equipment";
 
 /** Un score neutre tant que rien n'est réparti : l'aperçu doit répondre. */
 const UNASSIGNED_SCORE = 10;
@@ -97,7 +99,27 @@ function skilledChoice(composition: CharacterComposition): CharacterChoice[] {
   ];
 }
 
+/**
+ * L'équipement envoyé au back. `items` et `gold` ne sont pas saisis : ils se
+ * recalculent depuis les options retenues, pour que la composition n'ait qu'une
+ * seule source de vérité — le choix, pas sa conséquence.
+ */
+function equipmentOf(
+  catalog: DndCatalog,
+  composition: CharacterComposition,
+): FinalizeCharacterDto["equipment"] {
+  return {
+    armorKey: composition.armorKey,
+    shield: composition.shield,
+    items: grantedItems(catalog, composition),
+    gold: grantedGold(catalog, composition),
+    classOptionId: composition.classEquipmentOptionId,
+    backgroundOptionId: composition.backgroundEquipmentOptionId,
+  };
+}
+
 export function toPreviewPayload(
+  catalog: DndCatalog,
   composition: CharacterComposition,
 ): Omit<FinalizeCharacterDto, "name" | "abilityRoll"> | null {
   if (!composition.speciesKey || !composition.classKey || !composition.backgroundKey) {
@@ -113,12 +135,15 @@ export function toPreviewPayload(
     base: baseScoresOf(composition),
     backgroundBonuses: composition.backgroundBonuses,
     choices: choicesOf(composition),
-    equipment: { armorKey: composition.armorKey, shield: composition.shield, items: [], gold: 0 },
+    equipment: equipmentOf(catalog, composition),
   };
 }
 
-export function toFinalizePayload(composition: CharacterComposition): FinalizeCharacterDto | null {
-  const preview = toPreviewPayload(composition);
+export function toFinalizePayload(
+  catalog: DndCatalog,
+  composition: CharacterComposition,
+): FinalizeCharacterDto | null {
+  const preview = toPreviewPayload(catalog, composition);
   if (!preview || !isFullyAssigned(composition)) return null;
 
   return { ...preview, name: composition.name, abilityRoll: composition.abilityRoll };

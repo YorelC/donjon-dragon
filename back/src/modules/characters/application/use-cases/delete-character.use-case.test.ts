@@ -14,6 +14,7 @@ import {
 } from '../../domain/character.errors';
 import { aCharacterBody } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
+import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { DeleteCharacterUseCase } from './delete-character.use-case';
@@ -52,6 +53,7 @@ describe('DeleteCharacterUseCase', () => {
     create = new CreateCharacterUseCase(
       characterRepo,
       directory,
+      new InMemoryItemCatalog(),
       membership,
       new FixedClock(),
     );

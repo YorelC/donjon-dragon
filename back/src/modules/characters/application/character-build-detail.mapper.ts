@@ -31,8 +31,26 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
     ...magicInitiateFieldsOf(choices),
     ...skilledFieldsOf(choices),
     ...abilityFieldsOf(character),
-    armorKey: build.equipment.armorKey,
-    shield: build.equipment.shield,
+    ...equipmentFieldsOf(character),
+  };
+}
+
+/**
+ * Le wizard se rouvre sur les options retenues, pas sur l'inventaire : c'est
+ * l'option qui est le choix, l'inventaire n'en est que la conséquence. Il sort
+ * quand même, pour que l'étape puisse afficher ce que le personnage possède
+ * déjà sans redemander le catalogue.
+ */
+function equipmentFieldsOf(character: Character) {
+  const equipment = character.build.equipment;
+
+  return {
+    armorKey: equipment.armorKey,
+    shield: equipment.shield,
+    items: equipment.items.map((item) => ({ ...item })),
+    gold: equipment.gold,
+    classOptionId: equipment.classOptionId,
+    backgroundOptionId: equipment.backgroundOptionId,
   };
 }
 

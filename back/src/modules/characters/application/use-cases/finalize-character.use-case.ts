@@ -16,6 +16,8 @@ import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
+import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
+import { assertEquipmentIsKnown } from '../item.lookup';
 import { loadCharacter, resolveAccessContext } from '../character.lookup';
 import { toCharacterDtoResolved } from '../character.mapper';
 import { AbilityRoll } from '../../domain/ability-roll';
@@ -44,11 +46,13 @@ export class FinalizeCharacterUseCase {
     private readonly characterRepo: CharacterRepositoryPort,
     @Inject(CHARACTER_DIRECTORY)
     private readonly directory: CharacterDirectoryPort,
+    @Inject(ITEM_CATALOG) private readonly itemCatalog: ItemCatalogPort,
     private readonly membership: GetCampaignMembershipUseCase,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(dto: FinalizeCharacterDto): Promise<CharacterDto> {
+    await assertEquipmentIsKnown(this.itemCatalog, dto.equipment, dto.campaignId);
     const character = await loadCharacter(this.characterRepo, dto.characterId);
     const context = await resolveAccessContext(
       this.membership,

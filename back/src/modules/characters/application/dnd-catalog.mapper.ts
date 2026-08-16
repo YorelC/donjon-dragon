@@ -1,5 +1,4 @@
 import type {
-  CatalogArmor,
   CatalogBackground,
   CatalogClass,
   CatalogClassChoice,
@@ -9,10 +8,10 @@ import type {
   CatalogSkillChoice,
   CatalogSpecies,
   CatalogSpell,
+  CatalogStartingEquipment,
   DndCatalog,
 } from '@donjon-dragon/shared/dnd-catalog-schema';
 
-import { ARMORS, SHIELD } from '../domain/reference/armors';
 import { BACKGROUNDS, type Background } from '../domain/reference/backgrounds';
 import { CLASSES, type CharacterClass } from '../domain/reference/classes';
 import { CLASS_ORDERS } from '../domain/reference/class-orders';
@@ -21,6 +20,7 @@ import type { Feature, GrantPayload, SkillChoice } from '../domain/reference/eff
 import { ORIGIN_FEATS, type OriginFeat } from '../domain/reference/origin-feats';
 import { SKILL_LABELS } from '../domain/reference/skills';
 import { SPECIES, type Species } from '../domain/reference/species';
+import type { StartingEquipment } from '../domain/reference/starting-equipment';
 import type { Spell } from '../domain/reference/spells';
 
 /**
@@ -37,8 +37,6 @@ export function toDndCatalog(): DndCatalog {
     classes: Object.values(CLASSES).map(toCatalogClass),
     backgrounds: Object.values(BACKGROUNDS).map(toCatalogBackground),
     originFeats: Object.values(ORIGIN_FEATS).map(toCatalogOriginFeat),
-    armors: Object.values(ARMORS).map(toCatalogArmor),
-    shieldArmorClassBonus: SHIELD.armorClassBonus,
     skillLabels: { ...SKILL_LABELS },
   };
 }
@@ -85,7 +83,7 @@ function toCatalogClass(characterClass: CharacterClass): CatalogClass {
     toolProficiencies: [...characterClass.toolProficiencies],
     armorTraining: [...characterClass.armorTraining],
     weaponProficiencies: [...characterClass.weaponProficiencies],
-    startingEquipment: { ...characterClass.startingEquipment },
+    startingEquipment: toCatalogStartingEquipment(characterClass.startingEquipment),
     spellcasting: toCatalogSpellcasting(characterClass),
     level1Features: characterClass.level1Features.map(toCatalogFeature),
     expertiseCount: expertiseCountOf(characterClass.level1Features),
@@ -156,7 +154,19 @@ function toCatalogBackground(background: Background): CatalogBackground {
     originFeatSpellList: background.originFeatSpellList ?? null,
     skillProficiencies: [...background.skillProficiencies],
     toolProficiency: background.toolProficiency,
-    equipment: { ...background.equipment },
+    equipment: toCatalogStartingEquipment(background.equipment),
+  };
+}
+
+/** Copie en profondeur : rien de ce que le domaine tient ne sort par référence. */
+function toCatalogStartingEquipment(equipment: StartingEquipment): CatalogStartingEquipment {
+  return {
+    options: equipment.options.map((option) => ({
+      id: option.id,
+      label: option.label,
+      entries: option.entries.map((entry) => ({ ...entry })),
+      gold: option.gold,
+    })),
   };
 }
 
@@ -201,10 +211,6 @@ function sumOf(
   read: (grant: GrantPayload) => number | undefined,
 ): number {
   return grants.reduce((total, grant) => total + (read(grant) ?? 0), 0);
-}
-
-function toCatalogArmor(armor: (typeof ARMORS)[string]): CatalogArmor {
-  return { ...armor };
 }
 
 export function toCatalogSpell(spell: Spell): CatalogSpell {

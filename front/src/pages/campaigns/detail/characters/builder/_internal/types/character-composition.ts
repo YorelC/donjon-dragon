@@ -77,6 +77,14 @@ export interface CharacterComposition {
   /** L'achat de points fixe des scores directement, il n'y a rien à répartir. */
   pointBuyScores: Record<Ability, number>;
 
+  /**
+   * L'option de paquetage retenue, côté classe et côté historique. C'est ELLE le
+   * choix du joueur : l'inventaire et l'or n'en sont que la conséquence, et se
+   * recalculent depuis le catalogue au moment d'envoyer.
+   */
+  classEquipmentOptionId: string | null;
+  backgroundEquipmentOptionId: string | null;
+  /** Ce que le personnage PORTE, à choisir parmi ce que son paquetage lui donne. */
   armorKey: string | null;
   shield: boolean;
 }
@@ -110,6 +118,8 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   pointBuyScores: Object.fromEntries(
     ABILITIES.map((ability) => [ability, POINT_BUY_FLOOR]),
   ) as Record<Ability, number>,
+  classEquipmentOptionId: null,
+  backgroundEquipmentOptionId: null,
   armorKey: null,
   shield: false,
 };

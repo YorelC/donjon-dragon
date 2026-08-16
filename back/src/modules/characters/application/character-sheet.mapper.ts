@@ -1,4 +1,7 @@
-import type { ComputedCharacter as CharacterSheetDto } from '@donjon-dragon/shared/character-sheet-schema';
+import type {
+  ComputedCharacter as CharacterSheetDto,
+  ResolvedEquipment,
+} from '@donjon-dragon/shared/character-sheet-schema';
 
 import type { ComputedCharacter } from '../domain/resolution/resolve-sheet';
 
@@ -14,9 +17,13 @@ import type { ComputedCharacter } from '../domain/resolution/resolve-sheet';
  * Il copie plutôt qu'il ne renvoie la référence : rien de ce que le domaine a
  * produit ne doit pouvoir être modifié depuis la couche HTTP.
  */
-export function toCharacterSheetDto(sheet: ComputedCharacter): CharacterSheetDto {
+export function toCharacterSheetDto(
+  sheet: ComputedCharacter,
+  equipment: ResolvedEquipment,
+): CharacterSheetDto {
   return {
     ...sheet,
+    equipment: { ...equipment, items: equipment.items.map((item) => ({ ...item })) },
     maxHitPoints: { ...sheet.maxHitPoints, sources: [...sheet.maxHitPoints.sources] },
     armorClass: { ...sheet.armorClass, sources: [...sheet.armorClass.sources] },
     initiative: { ...sheet.initiative, sources: [...sheet.initiative.sources] },

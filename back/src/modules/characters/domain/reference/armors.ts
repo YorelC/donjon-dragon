@@ -1,5 +1,14 @@
 // Les armures de D&D 2024 et le bouclier.
 // Source : docs/characteres/equipment/armors.json
+//
+// ATTENTION : cette table n'est PLUS lue à l'exécution. Les statistiques
+// d'armure vivent maintenant dans la collection `items`, et le moteur de fiche
+// les reçoit de la couche application — c'est ce qui permet à un MJ d'inventer
+// une armure qui compte vraiment. Ce qui reste ici sert à deux choses :
+//   - la forme normalisée d'où `items.seed.json` a été produit une fois ;
+//   - les fixtures de test du moteur (`testing/worn-equipment.fixture.ts`).
+// Ce qui EST encore une règle, et le reste : `UNARMORED_BASE_ARMOR_CLASS` et
+// `CAPPED_DEXTERITY_LIMIT`. Ce ne sont pas des propriétés d'objet.
 
 import type { ArmorTraining } from './proficiencies';
 

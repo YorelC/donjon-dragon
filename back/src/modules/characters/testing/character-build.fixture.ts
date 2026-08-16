@@ -69,5 +69,7 @@ function equipmentOf(input: BuildInput): CharacterEquipment {
     shield: input.shield ?? false,
     items: [],
     gold: 0,
+    classOptionId: null,
+    backgroundOptionId: null,
   });
 }

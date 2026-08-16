@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { ComputedCharacter } from "@donjon-dragon/shared";
+import type { ComputedCharacter, DndCatalog } from "@donjon-dragon/shared";
 import { usePreviewSheet } from "../queries/use-character-creation";
 import type { CharacterComposition } from "../types/character-composition";
 import { toPreviewPayload } from "../types/character-payload";
@@ -19,10 +19,12 @@ const DEBOUNCE_MS = 350;
 export function useCharacterPreview(
   campaignId: string,
   composition: CharacterComposition,
+  catalog: DndCatalog | undefined,
 ): ComputedCharacter | null {
   const [sheet, setSheet] = useState<ComputedCharacter | null>(null);
   const request = useLatestPreview(campaignId);
-  const payload = JSON.stringify(toPreviewPayload(composition));
+  // Sans catalogue, le paquetage n'est pas résoluble : pas d'aperçu à demander.
+  const payload = JSON.stringify(catalog ? toPreviewPayload(catalog, composition) : null);
 
   useEffect(() => schedulePreview(payload, request, setSheet), [payload, request]);
 

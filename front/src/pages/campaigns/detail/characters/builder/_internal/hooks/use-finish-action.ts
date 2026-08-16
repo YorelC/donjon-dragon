@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import type { DndCatalog, FinalizeCharacterDto } from "@donjon-dragon/shared";
 import { toCampaignDetailCharacters, toCharacterSheet } from "@/shared/constants/routes";
 import type { BuilderScreen } from "../views/character-builder.view";
 import type { BuilderState } from "./use-character-builder";
@@ -17,50 +18,66 @@ type FinishAction = Pick<BuilderScreen, "isFinishing" | "finishLabel" | "onFinis
  * mutations sont montées inconditionnellement — les Rules of Hooks l'exigent —
  * et seule celle du mode courant est jamais déclenchée.
  */
-export function useFinishAction(target: BuilderTarget, builder: BuilderState): FinishAction {
+export function useFinishAction(
+  target: BuilderTarget,
+  builder: BuilderState,
+  catalog: DndCatalog | undefined,
+): FinishAction {
   const navigate = useNavigate();
   const create = useCreateCharacter(target.campaignId);
   const finalize = useFinalizeCharacter(target.campaignId, target.characterId ?? "");
+  // Sans catalogue, le paquetage n'est pas résoluble : rien à envoyer.
+  const payload = () => (catalog ? toFinalizePayload(catalog, builder.composition) : null);
 
   return target.characterId
-    ? editFinishAction(target.campaignId, builder, finalize, navigate)
-    : createFinishAction(target.campaignId, builder, create, navigate);
+    ? editFinishAction(target.campaignId, { payload, finalize }, navigate)
+    : createFinishAction(target.campaignId, { payload, create }, navigate);
+}
+
+type BuildPayload = () => FinalizeCharacterDto | null;
+
+interface CreateSubmission {
+  payload: BuildPayload;
+  create: ReturnType<typeof useCreateCharacter>;
 }
 
 function createFinishAction(
   campaignId: string,
-  builder: BuilderState,
-  create: ReturnType<typeof useCreateCharacter>,
+  submission: CreateSubmission,
   navigate: Navigate,
 ): FinishAction {
   return {
-    isFinishing: create.isPending,
+    isFinishing: submission.create.isPending,
     finishLabel: "Créer le personnage",
     onFinish: () => {
-      const payload = toFinalizePayload(builder.composition);
+      const payload = submission.payload();
       if (!payload) return;
 
-      create.mutate(payload, {
+      submission.create.mutate(payload, {
         onSuccess: (created) => navigate(toCharacterSheet(campaignId, created.id)),
       });
     },
   };
 }
 
+interface EditSubmission {
+  payload: BuildPayload;
+  finalize: ReturnType<typeof useFinalizeCharacter>;
+}
+
 function editFinishAction(
   campaignId: string,
-  builder: BuilderState,
-  finalize: ReturnType<typeof useFinalizeCharacter>,
+  submission: EditSubmission,
   navigate: Navigate,
 ): FinishAction {
   return {
-    isFinishing: finalize.isPending,
+    isFinishing: submission.finalize.isPending,
     finishLabel: "Enregistrer les modifications",
     onFinish: () => {
-      const payload = toFinalizePayload(builder.composition);
+      const payload = submission.payload();
       if (!payload) return;
 
-      finalize.mutate(payload, {
+      submission.finalize.mutate(payload, {
         onSuccess: () => navigate(toCampaignDetailCharacters(campaignId)),
       });
     },

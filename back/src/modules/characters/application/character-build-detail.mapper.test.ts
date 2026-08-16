@@ -62,7 +62,14 @@ const FULL_BUILD: CharacterBuildInput = {
       tools: ['thieves-tools'],
     },
   ],
-  equipment: { armorKey: 'leather', shield: false, items: [], gold: 8 },
+  equipment: {
+    armorKey: 'leather',
+    shield: false,
+    items: [{ itemKey: 'leather', quantity: 1 }],
+    gold: 8,
+    classOptionId: 'A',
+    backgroundOptionId: 'A',
+  },
 };
 
 describe('toCharacterBuildDetailDto', () => {

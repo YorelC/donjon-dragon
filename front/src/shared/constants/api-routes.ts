@@ -55,6 +55,9 @@ export const API_ROUTES = {
     catalog: () => `/api/dnd/catalog`,
     spells: (classKey: string) => `/api/dnd/spells/${encodeURIComponent(classKey)}`,
   },
+  items: {
+    list: () => `/api/items`,
+  },
   characters: {
     list: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,

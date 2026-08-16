@@ -9,9 +9,11 @@ import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory
 import {
   CharacterNotFoundError,
   NotEditableByActorError,
+  UnknownItemError,
 } from '../../domain/character.errors';
 import { aCharacterBody } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
+import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { FinalizeCharacterUseCase } from './finalize-character.use-case';
@@ -43,8 +45,20 @@ describe('FinalizeCharacterUseCase', () => {
     const membership = new GetCampaignMembershipUseCase(campaignRepo);
     const characterRepo = new InMemoryCharacterRepository();
     const clock = new FixedClock();
-    create = new CreateCharacterUseCase(characterRepo, directory, membership, clock);
-    useCase = new FinalizeCharacterUseCase(characterRepo, directory, membership, clock);
+    create = new CreateCharacterUseCase(
+      characterRepo,
+      directory,
+      new InMemoryItemCatalog(),
+      membership,
+      clock,
+    );
+    useCase = new FinalizeCharacterUseCase(
+      characterRepo,
+      directory,
+      new InMemoryItemCatalog(),
+      membership,
+      clock,
+    );
   });
 
   async function characterCreatedBy(creatorId: string): Promise<string> {
@@ -106,6 +120,29 @@ describe('FinalizeCharacterUseCase', () => {
         actorId: anActor(gameMasterId),
       }),
     ).rejects.toThrow(CharacterNotFoundError);
+  });
+
+  // Le catalogue d'objets vit dans une collection : le domaine ne peut pas
+  // vérifier une clé, c'est le use-case qui le fait avant de toucher l'agrégat.
+  it('refuse un objet que le catalogue ne connaît pas', async () => {
+    const characterId = await characterCreatedBy(frodoId);
+
+    await expect(
+      useCase.execute({
+        ...aCharacterBody(),
+        equipment: {
+          armorKey: 'leather',
+          shield: false,
+          items: [{ itemKey: 'epee-de-mon-invention', quantity: 1 }],
+          gold: 0,
+          classOptionId: 'A',
+          backgroundOptionId: 'A',
+        },
+        characterId,
+        campaignId,
+        actorId: anActor(frodoId),
+      }),
+    ).rejects.toThrow(UnknownItemError);
   });
 
   // Un refus d'autorisation ne doit rien laisser derrière lui : le renommage

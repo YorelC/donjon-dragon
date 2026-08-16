@@ -13,6 +13,7 @@ import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory
 import { NotActiveCampaignMemberError } from '../../domain/character.errors';
 import { aCharacterBody } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
+import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { ListCampaignCharactersUseCase } from './list-campaign-characters.use-case';
@@ -44,6 +45,7 @@ describe('ListCampaignCharactersUseCase', () => {
     const create = new CreateCharacterUseCase(
       characterRepo,
       directory,
+      new InMemoryItemCatalog(),
       membership,
       new FixedClock(),
     );

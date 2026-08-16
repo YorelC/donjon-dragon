@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import type {
   PreviewCharacterSheetDto as PreviewBody,
 } from '@donjon-dragon/shared/character-schema';
@@ -6,7 +6,9 @@ import type { ComputedCharacter } from '@donjon-dragon/shared/character-sheet-sc
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import type { ActorId } from '@kernel/domain/actor-id';
 
+import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
 import { toBuildInput } from '../character-build.mapper';
+import { resolveEquipment } from '../character-equipment.mapper';
 import { toCharacterSheetDto } from '../character-sheet.mapper';
 import { AbilityAssignment } from '../../domain/ability-assignment';
 import { CharacterChoices } from '../../domain/character-choices';
@@ -30,7 +32,10 @@ export type PreviewCharacterSheetDto = PreviewBody & {
  */
 @Injectable()
 export class PreviewCharacterSheetUseCase {
-  constructor(private readonly membership: GetCampaignMembershipUseCase) {}
+  constructor(
+    @Inject(ITEM_CATALOG) private readonly itemCatalog: ItemCatalogPort,
+    private readonly membership: GetCampaignMembershipUseCase,
+  ) {}
 
   async execute(dto: PreviewCharacterSheetDto): Promise<ComputedCharacter> {
     const role = await this.membership.execute({
@@ -39,7 +44,10 @@ export class PreviewCharacterSheetUseCase {
     });
     if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
 
-    return toCharacterSheetDto(resolveSheet(buildFrom(dto)));
+    const build = buildFrom(dto);
+    const equipment = await resolveEquipment(this.itemCatalog, build.equipment, dto.campaignId);
+
+    return toCharacterSheetDto(resolveSheet(build, equipment.worn), equipment.resolved);
   }
 }
 

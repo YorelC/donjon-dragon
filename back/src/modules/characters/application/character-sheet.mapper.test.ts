@@ -28,7 +28,7 @@ import {
 } from '../domain/reference/keys';
 import { ARMOR_TRAININGS, WEAPON_PROFICIENCIES } from '../domain/reference/proficiencies';
 import { SKILLS } from '../domain/reference/skills';
-import { resolveSheet } from '../domain/resolution/resolve-sheet';
+import { resolveSheetOf } from '../testing/worn-equipment.fixture';
 import { toCharacterSheetDto } from './character-sheet.mapper';
 
 describe('vocabulaire partagé', () => {
@@ -45,7 +45,7 @@ describe('vocabulaire partagé', () => {
 });
 
 describe('toCharacterSheetDto', () => {
-  const sheet = resolveSheet(
+  const sheet = resolveSheetOf(
     aBuild({
       speciesKey: 'dwarf',
       classKey: 'cleric',
@@ -73,12 +73,20 @@ describe('toCharacterSheetDto', () => {
     }),
   );
 
+  const EQUIPMENT = {
+    items: [{ itemKey: 'chain-shirt', name: 'Chemise de mailles', quantity: 1 }],
+    gold: 7,
+    armorName: 'Chemise de mailles',
+    shield: true,
+    stealthDisadvantage: false,
+  };
+
   it('produit une fiche que le schéma partagé accepte', () => {
-    expect(() => ComputedCharacterSchema.parse(toCharacterSheetDto(sheet))).not.toThrow();
+    expect(() => ComputedCharacterSchema.parse(toCharacterSheetDto(sheet, EQUIPMENT))).not.toThrow();
   });
 
   it('ne laisse pas le HTTP modifier ce que le domaine a produit', () => {
-    const dto = toCharacterSheetDto(sheet);
+    const dto = toCharacterSheetDto(sheet, EQUIPMENT);
     dto.armorClass.sources.push('injecté');
     dto.skills.length = 0;
 
@@ -87,7 +95,7 @@ describe('toCharacterSheetDto', () => {
   });
 
   it('reporte les valeurs dérivées sans les recalculer', () => {
-    const dto = toCharacterSheetDto(sheet);
+    const dto = toCharacterSheetDto(sheet, EQUIPMENT);
 
     expect(dto.armorClass.value).toBe(sheet.armorClass.value);
     expect(dto.spellcasting).toHaveLength(2);

@@ -1,7 +1,8 @@
 import { useMemo } from "react";
-import type { Character, ComputedCharacter, DndCatalog } from "@donjon-dragon/shared";
+import type { Character, ComputedCharacter, DndCatalog, Item } from "@donjon-dragon/shared";
 import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
 import { useClassSpells, useDndCatalog } from "@/shared/queries/use-dnd-catalog";
+import { useItemCatalog } from "@/shared/queries/use-item-catalog";
 import type { BuilderScreen } from "../views/character-builder.view";
 import type { BuilderState } from "./use-character-builder";
 import { useCharacterBuilder } from "./use-character-builder";
@@ -37,6 +38,7 @@ export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
 
   return {
     catalog,
+    items: context.items,
     builder,
     preview,
     abilities: context.abilities,
@@ -62,6 +64,7 @@ function characterNameOf(
 
 interface BuilderContext {
   catalog: DndCatalog | undefined;
+  items: Item[];
   character: Character | undefined;
   buildDetail: ReturnType<typeof useCharacterBuild>;
   builder: BuilderState;
@@ -74,6 +77,7 @@ interface BuilderContext {
 /** Tous les appels de hooks, au même endroit et dans un ordre stable. */
 function useBuilderContext(target: BuilderTarget): BuilderContext {
   const { data: catalog } = useDndCatalog();
+  const { data: items } = useItemCatalog();
   const character = useExistingCharacter(target);
   const buildDetail = useCharacterBuild(target.campaignId, target.characterId);
   const initial = useInitialComposition(buildDetail.data);
@@ -81,13 +85,14 @@ function useBuilderContext(target: BuilderTarget): BuilderContext {
 
   return {
     catalog,
+    items: items ?? [],
     character,
     buildDetail,
     builder,
-    preview: useCharacterPreview(target.campaignId, builder.composition),
+    preview: useCharacterPreview(target.campaignId, builder.composition, catalog),
     abilities: useAbilitiesStep(builder, stepContext(catalog, builder)),
     spells: useSpellsStep(stepContext(catalog, builder)),
-    finish: useFinishAction(target, builder),
+    finish: useFinishAction(target, builder, catalog),
   };
 }
 

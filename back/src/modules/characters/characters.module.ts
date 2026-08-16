@@ -3,9 +3,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { ClockModule } from '@kernel/infrastructure/clock.module';
 import { CampaignsModule } from '@modules/campaigns/campaigns.module';
+import { ItemsModule } from '@modules/items/items.module';
 import { UserModule } from '@modules/user/user.module';
 import { CHARACTER_DIRECTORY } from './application/ports/character-directory.port';
 import { CHARACTER_REPOSITORY } from './application/ports/character.repository.port';
+import { ITEM_CATALOG } from './application/ports/item-catalog.port';
 import { AssignCharacterUseCase } from './application/use-cases/assign-character.use-case';
 import { CreateCharacterUseCase } from './application/use-cases/create-character.use-case';
 import { DeleteCharacterUseCase } from './application/use-cases/delete-character.use-case';
@@ -17,6 +19,7 @@ import { GetDndCatalogUseCase } from './application/use-cases/get-dnd-catalog.us
 import { ListCampaignCharactersUseCase } from './application/use-cases/list-campaign-characters.use-case';
 import { PreviewCharacterSheetUseCase } from './application/use-cases/preview-character-sheet.use-case';
 import { UnassignCharacterUseCase } from './application/use-cases/unassign-character.use-case';
+import { ItemsItemCatalog } from './infrastructure/acl/items-item-catalog';
 import { UserCharacterDirectory } from './infrastructure/acl/user-character-directory';
 import {
   CHARACTER_MODEL,
@@ -31,12 +34,14 @@ import { DndCatalogController } from './presentation/dnd-catalog.controller';
     MongooseModule.forFeature([{ name: CHARACTER_MODEL, schema: CharacterSchema }]),
     UserModule,
     CampaignsModule,
+    ItemsModule,
     ClockModule,
   ],
   controllers: [CharacterController, DndCatalogController],
   providers: [
     { provide: CHARACTER_REPOSITORY, useClass: MongoCharacterRepository },
     { provide: CHARACTER_DIRECTORY, useClass: UserCharacterDirectory },
+    { provide: ITEM_CATALOG, useClass: ItemsItemCatalog },
     ListCampaignCharactersUseCase,
     CreateCharacterUseCase,
     FinalizeCharacterUseCase,

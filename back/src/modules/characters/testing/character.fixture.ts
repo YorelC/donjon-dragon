@@ -35,7 +35,17 @@ export const A_CHARACTER_BUILD: CharacterBuildInput = {
       expertise: ['stealth', 'perception'],
     },
   ],
-  equipment: { armorKey: 'leather', shield: false, items: [], gold: 8 },
+  equipment: {
+    armorKey: 'leather',
+    shield: false,
+    items: [
+      { itemKey: 'leather', quantity: 1 },
+      { itemKey: 'dagger', quantity: 2 },
+    ],
+    gold: 8,
+    classOptionId: 'A',
+    backgroundOptionId: 'A',
+  },
 };
 
 /**
@@ -63,7 +73,17 @@ const A_CHARACTER_BODY: FinalizeCharacterDto = {
       expertise: ['stealth', 'perception'],
     },
   ],
-  equipment: { armorKey: 'leather', shield: false, items: [], gold: 8 },
+  equipment: {
+    armorKey: 'leather',
+    shield: false,
+    items: [
+      { itemKey: 'leather', quantity: 1 },
+      { itemKey: 'dagger', quantity: 2 },
+    ],
+    gold: 8,
+    classOptionId: 'A',
+    backgroundOptionId: 'A',
+  },
   abilityRoll: {
     dice: STANDARD_ARRAY_DICE.map((roll) => [...roll]),
     totals: STANDARD_ARRAY_ROLL.totals,

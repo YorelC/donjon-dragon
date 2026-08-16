@@ -17,6 +17,7 @@ import type { Feature, SkillChoice, ToolChoice } from './effect';
 import { abilityMod, constant, sum } from './effect';
 import type { ClassKey } from './keys';
 import type { ArmorTraining, WeaponProficiency } from './proficiencies';
+import { goldOnly, type StartingEquipment } from './starting-equipment';
 import { UNARMORED_BASE_ARMOR_CLASS } from './armors';
 
 export type ClassSpellcastingKind = 'full' | 'half' | 'pact';
@@ -28,11 +29,6 @@ export interface ClassSpellcasting {
   spellsPrepared: number;
   level1Slots: number;
   focus: string;
-}
-
-export interface ClassStartingEquipment {
-  description: string;
-  goldAlternative: number;
 }
 
 export interface MulticlassPrerequisite {
@@ -52,7 +48,7 @@ export interface CharacterClass {
   armorTraining: readonly ArmorTraining[];
   toolProficiencies: readonly string[];
   toolChoice: ToolChoice | null;
-  startingEquipment: ClassStartingEquipment;
+  startingEquipment: StartingEquipment;
   spellcasting: ClassSpellcasting | null;
   level1Features: readonly Feature[];
   multiclassPrerequisites: readonly MulticlassPrerequisite[];
@@ -128,8 +124,19 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: null,
     startingEquipment: {
-      description: "Hache à deux mains, 4 hachettes, sac d'explorateur, 15 po",
-      goldAlternative: 75,
+      options: [
+        {
+          id: 'A',
+          label: "Hache à deux mains, 4 hachettes, sac d'explorateur, 15 po",
+          entries: [
+            { itemKey: 'greataxe', quantity: 1 },
+            { itemKey: 'handaxe', quantity: 4 },
+            { itemKey: 'paquetage-explorateur', quantity: 1 },
+          ],
+          gold: 15,
+        },
+        goldOnly('B', 75),
+      ],
     },
     spellcasting: null,
     level1Features: [
@@ -164,9 +171,20 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: { count: 3, options: 'any' },
     startingEquipment: {
-      description:
-        "Armure de cuir, 2 dagues, instrument de musique au choix, sac d'artiste, 19 po",
-      goldAlternative: 90,
+      options: [
+        {
+          id: 'A',
+          label: "Armure de cuir, 2 dagues, instrument de musique au choix, sac d'artiste, 19 po",
+          entries: [
+            { itemKey: 'leather', quantity: 1 },
+            { itemKey: 'dagger', quantity: 2 },
+            { itemKey: 'instrument-de-musique', quantity: 1 },
+            { itemKey: 'paquetage-artiste', quantity: 1 },
+          ],
+          gold: 19,
+        },
+        goldOnly('B', 90),
+      ],
     },
     spellcasting: {
       kind: 'full',
@@ -215,9 +233,22 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: null,
     startingEquipment: {
-      description:
-        "Chemise de mailles, bouclier, masse d'armes, symbole sacré, sac d'ecclésiastique, 7 po",
-      goldAlternative: 110,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Chemise de mailles, bouclier, masse d'armes, symbole sacré, sac d'ecclésiastique, 7 po",
+          entries: [
+            { itemKey: 'chain-shirt', quantity: 1 },
+            { itemKey: 'shield', quantity: 1 },
+            { itemKey: 'mace', quantity: 1 },
+            { itemKey: 'symbole-sacre', quantity: 1 },
+            { itemKey: 'paquetage-ecclesiastique', quantity: 1 },
+          ],
+          gold: 7,
+        },
+        goldOnly('B', 110),
+      ],
     },
     spellcasting: {
       kind: 'full',
@@ -269,9 +300,23 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: ["matériel d'herboriste"],
     toolChoice: null,
     startingEquipment: {
-      description:
-        "Armure de cuir, bouclier, serpe, focaliseur druidique, sac d'explorateur, matériel d'herboriste, 9 po",
-      goldAlternative: 50,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Armure de cuir, bouclier, serpe, focaliseur druidique, sac d'explorateur, matériel d'herboriste, 9 po",
+          entries: [
+            { itemKey: 'leather', quantity: 1 },
+            { itemKey: 'shield', quantity: 1 },
+            { itemKey: 'sickle', quantity: 1 },
+            { itemKey: 'focaliseur-druidique', quantity: 1 },
+            { itemKey: 'paquetage-explorateur', quantity: 1 },
+            { itemKey: 'materiel-herboriste', quantity: 1 },
+          ],
+          gold: 9,
+        },
+        goldOnly('B', 50),
+      ],
     },
     spellcasting: {
       kind: 'full',
@@ -330,10 +375,40 @@ const CLASS_LIST: readonly CharacterClass[] = [
     armorTraining: ['light', 'medium', 'heavy', 'shields'],
     toolProficiencies: [],
     toolChoice: null,
+    // Seule classe à trois options : la deuxième vient de docs/characteres/
+    // classes/fighter.json, que la forme en prose avait laissée de côté.
     startingEquipment: {
-      description:
-        "Cotte de mailles, épée à deux mains, fléau d'armes, 8 javelines, sac d'exploration souterraine, 4 po",
-      goldAlternative: 155,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Cotte de mailles, épée à deux mains, fléau d'armes, 8 javelines, sac d'exploration souterraine, 4 po",
+          entries: [
+            { itemKey: 'chain-mail', quantity: 1 },
+            { itemKey: 'greatsword', quantity: 1 },
+            { itemKey: 'flail', quantity: 1 },
+            { itemKey: 'javelin', quantity: 8 },
+            { itemKey: 'paquetage-exploration-souterraine', quantity: 1 },
+          ],
+          gold: 4,
+        },
+        {
+          id: 'B',
+          label:
+            "Armure de cuir clouté, cimeterre, épée courte, arc long, 20 flèches, carquois, sac d'exploration souterraine, 11 po",
+          entries: [
+            { itemKey: 'studded-leather', quantity: 1 },
+            { itemKey: 'scimitar', quantity: 1 },
+            { itemKey: 'shortsword', quantity: 1 },
+            { itemKey: 'longbow', quantity: 1 },
+            { itemKey: 'munitions', quantity: 20 },
+            { itemKey: 'carquois', quantity: 1 },
+            { itemKey: 'paquetage-exploration-souterraine', quantity: 1 },
+          ],
+          gold: 11,
+        },
+        goldOnly('C', 155),
+      ],
     },
     spellcasting: null,
     level1Features: [
@@ -376,9 +451,20 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: { count: 1, options: 'any' },
     startingEquipment: {
-      description:
-        "Lance, 5 dagues, outils d'artisan ou instrument de musique, sac d'explorateur, 11 po",
-      goldAlternative: 50,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Lance, 5 dagues, outils d'artisan ou instrument de musique, sac d'explorateur, 11 po",
+          entries: [
+            { itemKey: 'spear', quantity: 1 },
+            { itemKey: 'dagger', quantity: 5 },
+            { itemKey: 'paquetage-explorateur', quantity: 1 },
+          ],
+          gold: 11,
+        },
+        goldOnly('B', 50),
+      ],
     },
     spellcasting: null,
     level1Features: [
@@ -426,9 +512,23 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: null,
     startingEquipment: {
-      description:
-        "Cotte de mailles, bouclier, épée longue, 6 javelines, symbole sacré, sac d'ecclésiastique, 9 po",
-      goldAlternative: 150,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Cotte de mailles, bouclier, épée longue, 6 javelines, symbole sacré, sac d'ecclésiastique, 9 po",
+          entries: [
+            { itemKey: 'chain-mail', quantity: 1 },
+            { itemKey: 'shield', quantity: 1 },
+            { itemKey: 'longsword', quantity: 1 },
+            { itemKey: 'javelin', quantity: 6 },
+            { itemKey: 'symbole-sacre', quantity: 1 },
+            { itemKey: 'paquetage-ecclesiastique', quantity: 1 },
+          ],
+          gold: 9,
+        },
+        goldOnly('B', 150),
+      ],
     },
     spellcasting: {
       kind: 'half',
@@ -486,9 +586,25 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: null,
     startingEquipment: {
-      description:
-        "Armure de cuir clouté, cimeterre, épée courte, arc long, 20 flèches, carquois, focaliseur druidique, sac d'explorateur, 7 po",
-      goldAlternative: 150,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Armure de cuir clouté, cimeterre, épée courte, arc long, 20 flèches, carquois, focaliseur druidique, sac d'explorateur, 7 po",
+          entries: [
+            { itemKey: 'studded-leather', quantity: 1 },
+            { itemKey: 'scimitar', quantity: 1 },
+            { itemKey: 'shortsword', quantity: 1 },
+            { itemKey: 'longbow', quantity: 1 },
+            { itemKey: 'munitions', quantity: 20 },
+            { itemKey: 'carquois', quantity: 1 },
+            { itemKey: 'focaliseur-druidique', quantity: 1 },
+            { itemKey: 'paquetage-explorateur', quantity: 1 },
+          ],
+          gold: 7,
+        },
+        goldOnly('B', 150),
+      ],
     },
     spellcasting: {
       kind: 'half',
@@ -545,9 +661,25 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: ['outils de voleur'],
     toolChoice: null,
     startingEquipment: {
-      description:
-        "Armure de cuir, 2 dagues, épée courte, arc court, 20 flèches, carquois, outils de voleur, sac de cambrioleur, 8 po",
-      goldAlternative: 100,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Armure de cuir, 2 dagues, épée courte, arc court, 20 flèches, carquois, outils de voleur, sac de cambrioleur, 8 po",
+          entries: [
+            { itemKey: 'leather', quantity: 1 },
+            { itemKey: 'dagger', quantity: 2 },
+            { itemKey: 'shortsword', quantity: 1 },
+            { itemKey: 'shortbow', quantity: 1 },
+            { itemKey: 'munitions', quantity: 20 },
+            { itemKey: 'carquois', quantity: 1 },
+            { itemKey: 'outils-de-voleur', quantity: 1 },
+            { itemKey: 'paquetage-de-cambrioleur', quantity: 1 },
+          ],
+          gold: 8,
+        },
+        goldOnly('B', 100),
+      ],
     },
     spellcasting: null,
     level1Features: [
@@ -600,9 +732,21 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: null,
     startingEquipment: {
-      description:
-        "Lance, 2 dagues, focaliseur arcanique (cristal), sac d'exploration souterraine, 28 po",
-      goldAlternative: 50,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Lance, 2 dagues, focaliseur arcanique (cristal), sac d'exploration souterraine, 28 po",
+          entries: [
+            { itemKey: 'spear', quantity: 1 },
+            { itemKey: 'dagger', quantity: 2 },
+            { itemKey: 'focaliseur-arcanique', quantity: 1 },
+            { itemKey: 'paquetage-exploration-souterraine', quantity: 1 },
+          ],
+          gold: 28,
+        },
+        goldOnly('B', 50),
+      ],
     },
     spellcasting: {
       kind: 'full',
@@ -654,9 +798,23 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: null,
     startingEquipment: {
-      description:
-        "Armure de cuir, serpe, 2 dagues, focaliseur arcanique (orbe), livre de savoir occulte, sac d'érudit, 15 po",
-      goldAlternative: 100,
+      options: [
+        {
+          id: 'A',
+          label:
+            "Armure de cuir, serpe, 2 dagues, focaliseur arcanique (orbe), livre de savoir occulte, sac d'érudit, 15 po",
+          entries: [
+            { itemKey: 'leather', quantity: 1 },
+            { itemKey: 'sickle', quantity: 1 },
+            { itemKey: 'dagger', quantity: 2 },
+            { itemKey: 'focaliseur-arcanique', quantity: 1 },
+            { itemKey: 'livre', quantity: 1 },
+            { itemKey: 'paquetage-erudit', quantity: 1 },
+          ],
+          gold: 15,
+        },
+        goldOnly('B', 100),
+      ],
     },
     spellcasting: {
       kind: 'pact',
@@ -705,9 +863,21 @@ const CLASS_LIST: readonly CharacterClass[] = [
     toolProficiencies: [],
     toolChoice: null,
     startingEquipment: {
-      description:
-        "2 dagues, focaliseur arcanique (bâton), robe, grimoire, sac d'érudit, 5 po",
-      goldAlternative: 55,
+      options: [
+        {
+          id: 'A',
+          label: "2 dagues, focaliseur arcanique (bâton), robe, grimoire, sac d'érudit, 5 po",
+          entries: [
+            { itemKey: 'dagger', quantity: 2 },
+            { itemKey: 'focaliseur-arcanique', quantity: 1 },
+            { itemKey: 'robe', quantity: 1 },
+            { itemKey: 'grimoire', quantity: 1 },
+            { itemKey: 'paquetage-erudit', quantity: 1 },
+          ],
+          gold: 5,
+        },
+        goldOnly('B', 55),
+      ],
     },
     spellcasting: {
       kind: 'full',

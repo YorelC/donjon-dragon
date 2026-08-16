@@ -16,6 +16,8 @@ import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
+import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
+import { assertEquipmentIsKnown } from '../item.lookup';
 import { toCharacterDtoResolved } from '../character.mapper';
 import { toBuildInput } from '../character-build.mapper';
 import { AbilityRoll } from '../../domain/ability-roll';
@@ -45,6 +47,7 @@ export class CreateCharacterUseCase {
     private readonly characterRepo: CharacterRepositoryPort,
     @Inject(CHARACTER_DIRECTORY)
     private readonly directory: CharacterDirectoryPort,
+    @Inject(ITEM_CATALOG) private readonly itemCatalog: ItemCatalogPort,
     private readonly membership: GetCampaignMembershipUseCase,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
@@ -58,6 +61,7 @@ export class CreateCharacterUseCase {
     });
     if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
     if (!role.isGameMaster) await this.assertNoExistingCharacter(campaignId, actorId);
+    await assertEquipmentIsKnown(this.itemCatalog, dto.equipment, dto.campaignId);
 
     const now = this.clock.now();
     const character = Character.create(this.creationInputFor(dto, campaignId, actorId, now));

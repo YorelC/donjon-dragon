@@ -204,15 +204,27 @@ module.exports = {
       to: { path: '^src/modules/campaigns/' },
     },
     {
-      name: 'characters-is-downstream',
+      name: 'items-is-downstream',
       comment:
-        'Le dernier cran : characters connait campaigns et user (il verifie une ' +
-        "appartenance, il resout un pseudo d'assignation), aucun des trois ne " +
-        'connait characters. La regle manquait alors que la dependance existait ' +
-        "deja : rien n'empechait campaigns d'aller chercher les personnages d'une " +
-        "campagne, et le cycle ne se serait vu qu'au forwardRef.",
+        "Le catalogue d'objets connaitra campaigns le jour ou un MJ inventera un " +
+        'objet chez lui ; aucun module au-dessus ne connait items. Sans cette ' +
+        "regle, campaigns irait lire le catalogue pour afficher un butin et le " +
+        'cycle ne se verrait quau forwardRef.',
       severity: 'error',
       from: { path: '^src/modules/(user|auth|friendship|campaigns)/' },
+      to: { path: '^src/modules/items/' },
+    },
+    {
+      name: 'characters-is-downstream',
+      comment:
+        'Le dernier cran : characters connait campaigns, items et user (il verifie ' +
+        "une appartenance, il resout des cles d'objet, il resout un pseudo " +
+        "d'assignation), aucun des quatre ne connait characters. La regle manquait " +
+        "alors que la dependance existait deja : rien n'empechait campaigns d'aller " +
+        "chercher les personnages d'une campagne, et le cycle ne se serait vu qu'au " +
+        'forwardRef.',
+      severity: 'error',
+      from: { path: '^src/modules/(user|auth|friendship|campaigns|items)/' },
       to: { path: '^src/modules/characters/' },
     },
     {

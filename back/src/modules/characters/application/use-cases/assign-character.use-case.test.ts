@@ -16,6 +16,7 @@ import {
 } from '../../domain/character.errors';
 import { aCharacterBody } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
+import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
 import { AssignCharacterUseCase } from './assign-character.use-case';
 import { CreateCharacterUseCase } from './create-character.use-case';
@@ -52,7 +53,13 @@ describe('Attribution d un personnage', () => {
     const membership = new GetCampaignMembershipUseCase(campaignRepo);
     const clock = new FixedClock();
     characterRepo = new InMemoryCharacterRepository();
-    create = new CreateCharacterUseCase(characterRepo, directory, membership, clock);
+    create = new CreateCharacterUseCase(
+      characterRepo,
+      directory,
+      new InMemoryItemCatalog(),
+      membership,
+      clock,
+    );
     assign = new AssignCharacterUseCase(characterRepo, directory, membership, clock);
     unassign = new UnassignCharacterUseCase(characterRepo, directory, membership, clock);
   });

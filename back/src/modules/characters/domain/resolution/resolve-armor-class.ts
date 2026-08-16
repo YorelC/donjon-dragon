@@ -1,14 +1,12 @@
 import {
-  ARMORS,
   CAPPED_DEXTERITY_LIMIT,
-  SHIELD,
   UNARMORED_BASE_ARMOR_CLASS,
-  type Armor,
   type DexterityAllowance,
 } from '../reference/armors';
 import type { CollectedEffect, PassiveEffect } from '../reference/effect';
 import type { CharacterEquipment } from '../character-equipment';
 import { evaluateFormula, type FormulaContext } from './evaluate-formula';
+import type { WornArmor, WornEquipment } from './worn-equipment';
 
 export interface ResolvedValue {
   value: number;
@@ -17,6 +15,8 @@ export interface ResolvedValue {
 
 export interface ArmorClassInput {
   equipment: CharacterEquipment;
+  /** Les statistiques de ce qui est porté, résolues par la couche application. */
+  worn: WornEquipment;
   effects: readonly CollectedEffect[];
   context: FormulaContext;
 }
@@ -41,8 +41,8 @@ export function resolveArmorClass(input: ArmorClassInput): ResolvedValue {
   const bonus = additiveBonus(input);
 
   return {
-    value: best.value + shieldBonus(input.equipment) + bonus.value,
-    sources: [best.source, ...shieldSource(input.equipment), ...bonus.sources],
+    value: best.value + shieldBonus(input.worn) + bonus.value,
+    sources: [best.source, ...shieldSource(input.worn), ...bonus.sources],
   };
 }
 
@@ -60,10 +60,7 @@ function applicableCandidates(input: ArmorClassInput): Candidate[] {
 }
 
 function wornArmorCandidate(input: ArmorClassInput): Candidate | null {
-  const key = input.equipment.armorKey;
-  if (key === null) return null;
-
-  const armor = ARMORS[key];
+  const armor = input.worn.armor;
   if (!armor) return null;
 
   return {
@@ -78,7 +75,7 @@ const DEXTERITY_CAPS: Record<DexterityAllowance, (modifier: number) => number> =
   none: () => 0,
 };
 
-function allowedDexterity(armor: Armor, context: FormulaContext): number {
+function allowedDexterity(armor: WornArmor, context: FormulaContext): number {
   return DEXTERITY_CAPS[armor.dexterityAllowance](context.abilityModifiers.dexterity);
 }
 
@@ -142,12 +139,12 @@ function additiveBonus(input: ArmorClassInput): ResolvedValue {
   };
 }
 
-function shieldBonus(equipment: CharacterEquipment): number {
-  return equipment.shield ? SHIELD.armorClassBonus : 0;
+function shieldBonus(worn: WornEquipment): number {
+  return worn.shield?.baseArmorClass ?? 0;
 }
 
-function shieldSource(equipment: CharacterEquipment): string[] {
-  return equipment.shield ? [SHIELD.name] : [];
+function shieldSource(worn: WornEquipment): string[] {
+  return worn.shield ? [worn.shield.name] : [];
 }
 
 function highest(left: Candidate, right: Candidate): Candidate {

@@ -3,8 +3,23 @@
 import {
   ConflictDomainError,
   ForbiddenDomainError,
+  InvalidDomainError,
   NotFoundDomainError,
 } from '@kernel/domain/domain.error';
+
+/** Une clé d'objet du paquetage ne désigne rien dans le catalogue. */
+export class UnknownItemError extends InvalidDomainError {
+  constructor() {
+    super('Unknown item in equipment');
+  }
+}
+
+/** L'objet porté comme armure n'en est pas une : il ne protège de rien. */
+export class NotAnArmorError extends InvalidDomainError {
+  constructor() {
+    super('The worn item is not an armor');
+  }
+}
 
 export class CharacterNotFoundError extends NotFoundDomainError {
   constructor() {

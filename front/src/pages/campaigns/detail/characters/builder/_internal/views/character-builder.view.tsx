@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import type { ComputedCharacter, DndCatalog } from "@donjon-dragon/shared";
+import type { ComputedCharacter, DndCatalog, Item } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Card, CardContent } from "@/shared/components/atoms/card";
 import type { BuilderState } from "../hooks/use-character-builder";
@@ -21,6 +21,8 @@ import { ClassChoiceStep, LineageStep } from "./builder-choice-steps.view";
 
 export interface BuilderScreen {
   catalog: DndCatalog;
+  /** Le catalogue d'objets, pour nommer les lignes d'un paquetage. */
+  items: Item[];
   builder: BuilderState;
   abilities: AbilitiesStep;
   spells: SpellsStep;
@@ -91,7 +93,7 @@ function StepContent({ screen }: { screen: BuilderScreen }) {
     ),
     cantrips: () => <CantripsStepView {...spells} />,
     spells: () => <SpellsStepView {...spells} />,
-    equipment: () => <EquipmentStepView {...shared} />,
+    equipment: () => <EquipmentStepView {...shared} items={screen.items} />,
     name: () => <NameStepView {...shared} />,
   };
 

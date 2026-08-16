@@ -19,6 +19,8 @@ function coreFieldsOf(dto: CharacterBuildDetailDto) {
     classKey: dto.classKey,
     backgroundKey: dto.backgroundKey,
     backgroundBonuses: dto.backgroundBonuses,
+    classEquipmentOptionId: dto.classOptionId,
+    backgroundEquipmentOptionId: dto.backgroundOptionId,
     armorKey: dto.armorKey,
     shield: dto.shield,
   };

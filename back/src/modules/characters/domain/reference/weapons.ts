@@ -1,6 +1,10 @@
 // Les armes de D&D 2024, courantes et de guerre.
 // Source : docs/characteres/equipment/weapons.json
 //
+// ATTENTION : cette table n'est plus lue à l'exécution — les statistiques d'arme
+// vivent dans la collection `items`. Elle reste la forme normalisée d'où
+// `items.seed.json` a été produit, et ce que `reference.test.ts` surveille.
+//
 // Les propriétés y étaient en prose française (« Lancer (portée 6/18) ») : elles
 // sont ici un vocabulaire fermé, et la portée est un champ à part.
 
