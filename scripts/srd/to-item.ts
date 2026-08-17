@@ -22,10 +22,31 @@ const ITEM_TYPE_BY_CATEGORY: Record<string, ItemType> = {
   armor: 'armor',
   weapons: 'weapon',
   tools: 'tool',
+  'artisans-tools': 'tool',
+  'other-tools': 'tool',
+  'gaming-sets': 'tool',
+  'musical-instruments': 'tool',
 };
 
-/** L'ordre compte : un bouclier est aussi rangé dans `armor`, un paquetage dans `adventuring-gear`. */
-const CATEGORY_PRIORITY = ['equipment-packs', 'shields', 'armor', 'weapons', 'tools'] as const;
+/**
+ * L'ordre compte : un bouclier est aussi rangé dans `armor`, un paquetage dans
+ * `adventuring-gear`.
+ *
+ * Les sous-catégories d'outils sont listées séparément parce que le SRD ne les
+ * range pas toutes sous `tools` — la trousse de déguisement n'est qu'un
+ * `other-tools`.
+ */
+const CATEGORY_PRIORITY = [
+  'equipment-packs',
+  'shields',
+  'armor',
+  'weapons',
+  'tools',
+  'artisans-tools',
+  'other-tools',
+  'gaming-sets',
+  'musical-instruments',
+] as const;
 
 const DEFAULT_ITEM_TYPE: ItemType = 'gear';
 

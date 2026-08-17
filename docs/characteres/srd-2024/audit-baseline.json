@@ -113,10 +113,210 @@
   },
   {
     "domain": "items",
+    "key": "antitoxin",
+    "field": "weightInKg",
+    "project": "—",
+    "srd": "0.5",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "clothes-fine",
+    "field": "weightInKg",
+    "project": "3",
+    "srd": "1.5",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "chain",
+    "field": "weightInKg",
+    "project": "5",
+    "srd": "3",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "caltrops",
+    "field": "costInCopper",
+    "project": "100",
+    "srd": "200",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "bell",
+    "field": "weightInKg",
+    "project": "—",
+    "srd": "0.5",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "chest",
+    "field": "costInCopper",
+    "project": "500",
+    "srd": "5000",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "chest",
+    "field": "weightInKg",
+    "project": "12.5",
+    "srd": "10",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "blanket",
+    "field": "costInCopper",
+    "project": "50",
+    "srd": "500",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "alchemists-fire",
+    "field": "costInCopper",
+    "project": "5000",
+    "srd": "2500",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "climbers-kit",
+    "field": "weightInKg",
+    "project": "6",
+    "srd": "4",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "basket",
+    "field": "costInCopper",
+    "project": "40",
+    "srd": "200",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "parchment",
+    "field": "costInCopper",
+    "project": "10",
+    "srd": "300",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "spikes-iron",
+    "field": "weightInKg",
+    "project": "2.5",
+    "srd": "1",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
     "key": "robe",
     "field": "weightInKg",
     "project": "2",
     "srd": "0.5",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "sack",
+    "field": "weightInKg",
+    "project": "0.25",
+    "srd": "0.5",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "bedroll",
+    "field": "costInCopper",
+    "project": "100",
+    "srd": "200",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "bedroll",
+    "field": "weightInKg",
+    "project": "3.5",
+    "srd": "12.5",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "component-pouch",
+    "field": "costInCopper",
+    "project": "2500",
+    "srd": "200",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "component-pouch",
+    "field": "weightInKg",
+    "project": "1",
+    "srd": "0.5",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "clothes-travelers",
+    "field": "costInCopper",
+    "project": "200",
+    "srd": "500",
+    "verdict": "srd-faux"
+  },
+  {
+    "domain": "items",
+    "key": "entertainers-pack",
+    "field": "type",
+    "project": "pack",
+    "srd": "gear",
+    "verdict": "srd-incomplet"
+  },
+  {
+    "domain": "items",
+    "key": "entertainers-pack",
+    "field": "weightInKg",
+    "project": "29",
+    "srd": "—",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "burglars-pack",
+    "field": "weightInKg",
+    "project": "21",
+    "srd": "10",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "diplomat-pack",
+    "field": "weightInKg",
+    "project": "19.5",
+    "srd": "10",
+    "verdict": "non-tranche"
+  },
+  {
+    "domain": "items",
+    "key": "explorers-pack",
+    "field": "type",
+    "project": "pack",
+    "srd": "gear",
+    "verdict": "srd-incomplet"
+  },
+  {
+    "domain": "items",
+    "key": "poisoners-kit",
+    "field": "costInCopper",
+    "project": "5000",
+    "srd": "500",
     "verdict": "srd-faux"
   },
   {

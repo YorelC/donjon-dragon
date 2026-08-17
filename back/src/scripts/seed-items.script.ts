@@ -7,6 +7,7 @@ import type { ItemDocument } from '@modules/items/infrastructure/persistence/ite
 import { ItemSchema, ITEM_MODEL } from '@modules/items/infrastructure/persistence/item.schema';
 import { MongoItemRepository } from '@modules/items/infrastructure/persistence/mongo-item.repository';
 import { Item } from '@modules/items/domain/item';
+import { ItemKey } from '@modules/items/domain/item-key';
 
 /**
  * Le catalogue du manuel, en base.
@@ -48,6 +49,11 @@ async function seedItems(): Promise<void> {
   for (const item of items) {
     await repository.save(item);
   }
+
+  // Le fichier fait foi : un objet renommé laisserait sinon son ancienne clé en
+  // base, orpheline. Ce qu'une campagne a inventé n'est jamais touché.
+  const pruned = await repository.pruneReferenceItems(items.map((item) => ItemKey.create(item.key)));
+  if (pruned > 0) console.log(`🧹 ${pruned} objet(s) obsolète(s) retiré(s) du manuel\n`);
 
   console.log(summarize(items));
   console.log('\n✨ Seeding complete!');

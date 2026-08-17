@@ -24,4 +24,14 @@ export class InMemoryItemRepository implements ItemRepositoryPort {
       .filter((item): item is Item => item !== undefined);
     return Promise.resolve(found);
   }
+
+  pruneReferenceItems(keptKeys: ItemKey[]): Promise<number> {
+    const kept = new Set(keptKeys.map((key) => key.value));
+    const stale = [...this.items.values()].filter(
+      (item) => !item.isHomebrew && !kept.has(item.key),
+    );
+    for (const item of stale) this.items.delete(item.key);
+
+    return Promise.resolve(stale.length);
+  }
 }

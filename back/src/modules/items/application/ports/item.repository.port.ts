@@ -14,4 +14,11 @@ export interface ItemRepositoryPort {
   save(item: Item): Promise<void>;
   findReferenceItems(): Promise<Item[]>;
   findManyByKeys(keys: ItemKey[], campaignId: string | null): Promise<Item[]>;
+  /**
+   * Retire du manuel tout ce qui n'est plus dans la liste donnée. Le fichier de
+   * seed EST la définition du catalogue : un objet renommé y laisse sinon son
+   * ancienne clé derrière lui, invisible et jamais référencée. Ce qu'une
+   * campagne a inventé n'est jamais touché.
+   */
+  pruneReferenceItems(keptKeys: ItemKey[]): Promise<number>;
 }

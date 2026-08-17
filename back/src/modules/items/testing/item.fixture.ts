@@ -57,12 +57,12 @@ export function anArmorItem(overrides: Partial<ItemSnapshot> = {}): Item {
 export function aPackItem(overrides: Partial<ItemSnapshot> = {}): Item {
   return Item.create(
     anItemSnapshot({
-      key: 'paquetage-explorateur',
+      key: 'explorers-pack',
       name: "Paquetage d'explorateur",
       type: 'pack',
       weapon: null,
       armor: null,
-      contents: [{ itemKey: 'torche', quantity: 10 }],
+      contents: [{ itemKey: 'torch', quantity: 10 }],
       ...overrides,
     }),
   );
@@ -72,7 +72,7 @@ export function aPackItem(overrides: Partial<ItemSnapshot> = {}): Item {
 export function aGearItem(overrides: Partial<ItemSnapshot> = {}): Item {
   return Item.create(
     anItemSnapshot({
-      key: 'corde',
+      key: 'rope',
       name: 'Corde',
       type: 'gear',
       weapon: null,

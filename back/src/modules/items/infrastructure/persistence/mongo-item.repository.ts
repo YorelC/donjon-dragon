@@ -38,6 +38,15 @@ export class MongoItemRepository implements ItemRepositoryPort {
     return preferCampaignItems(found);
   }
 
+  async pruneReferenceItems(keptKeys: ItemKey[]): Promise<number> {
+    const result = await this.model.deleteMany({
+      ...REFERENCE_SCOPE,
+      key: { $nin: keptKeys.map((key) => key.value) },
+    });
+
+    return result.deletedCount;
+  }
+
   private async find(filter: Record<string, unknown>): Promise<Item[]> {
     const docs = await this.model.find(filter).sort({ key: 1 }).select('-_id').lean<ItemDocument[]>();
     return docs.map(toDomain);

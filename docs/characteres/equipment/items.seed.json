@@ -1134,7 +1134,7 @@
     "contents": null
   },
   {
-    "key": "acide",
+    "key": "acid",
     "name": "Acide",
     "type": "gear",
     "weapon": null,
@@ -1145,7 +1145,7 @@
     "contents": null
   },
   {
-    "key": "antidote",
+    "key": "antitoxin",
     "name": "Antidote",
     "type": "gear",
     "weapon": null,
@@ -1156,7 +1156,7 @@
     "contents": null
   },
   {
-    "key": "beaux-habits",
+    "key": "clothes-fine",
     "name": "Beaux habits",
     "type": "gear",
     "weapon": null,
@@ -1167,7 +1167,7 @@
     "contents": null
   },
   {
-    "key": "belier-portable",
+    "key": "ram-portable",
     "name": "Bélier portable",
     "type": "gear",
     "weapon": null,
@@ -1178,7 +1178,7 @@
     "contents": null
   },
   {
-    "key": "billes",
+    "key": "ball-bearings",
     "name": "Billes",
     "type": "gear",
     "weapon": null,
@@ -1189,7 +1189,7 @@
     "contents": null
   },
   {
-    "key": "boite-amadou",
+    "key": "tinderbox",
     "name": "Boîte à amadou",
     "type": "gear",
     "weapon": null,
@@ -1200,7 +1200,7 @@
     "contents": null
   },
   {
-    "key": "bougie",
+    "key": "candle",
     "name": "Bougie",
     "type": "gear",
     "weapon": null,
@@ -1211,7 +1211,7 @@
     "contents": null
   },
   {
-    "key": "bouteille-verre",
+    "key": "bottle-glass",
     "name": "Bouteille, verre",
     "type": "gear",
     "weapon": null,
@@ -1222,7 +1222,7 @@
     "contents": null
   },
   {
-    "key": "cadenas",
+    "key": "lock",
     "name": "Cadenas",
     "type": "gear",
     "weapon": null,
@@ -1233,7 +1233,7 @@
     "contents": null
   },
   {
-    "key": "carquois",
+    "key": "quiver",
     "name": "Carquois",
     "type": "gear",
     "weapon": null,
@@ -1244,7 +1244,7 @@
     "contents": null
   },
   {
-    "key": "carte",
+    "key": "map",
     "name": "Carte",
     "type": "gear",
     "weapon": null,
@@ -1255,7 +1255,7 @@
     "contents": null
   },
   {
-    "key": "chaine",
+    "key": "chain",
     "name": "Chaîne",
     "type": "gear",
     "weapon": null,
@@ -1266,7 +1266,7 @@
     "contents": null
   },
   {
-    "key": "chausse-trappes",
+    "key": "caltrops",
     "name": "Chausse-trappes",
     "type": "gear",
     "weapon": null,
@@ -1277,7 +1277,7 @@
     "contents": null
   },
   {
-    "key": "cloche",
+    "key": "bell",
     "name": "Cloche",
     "type": "gear",
     "weapon": null,
@@ -1288,7 +1288,7 @@
     "contents": null
   },
   {
-    "key": "coffre",
+    "key": "chest",
     "name": "Coffre",
     "type": "gear",
     "weapon": null,
@@ -1299,7 +1299,7 @@
     "contents": null
   },
   {
-    "key": "corde",
+    "key": "rope",
     "name": "Corde",
     "type": "gear",
     "weapon": null,
@@ -1321,7 +1321,7 @@
     "contents": null
   },
   {
-    "key": "couverture",
+    "key": "blanket",
     "name": "Couverture",
     "type": "gear",
     "weapon": null,
@@ -1332,7 +1332,7 @@
     "contents": null
   },
   {
-    "key": "cruche",
+    "key": "jug",
     "name": "Cruche",
     "type": "gear",
     "weapon": null,
@@ -1343,7 +1343,7 @@
     "contents": null
   },
   {
-    "key": "eau-benite",
+    "key": "holy-water",
     "name": "Eau bénite",
     "type": "gear",
     "weapon": null,
@@ -1354,7 +1354,7 @@
     "contents": null
   },
   {
-    "key": "echelle",
+    "key": "ladder",
     "name": "Échelle",
     "type": "gear",
     "weapon": null,
@@ -1365,7 +1365,7 @@
     "contents": null
   },
   {
-    "key": "encre",
+    "key": "ink",
     "name": "Encre",
     "type": "gear",
     "weapon": null,
@@ -1376,7 +1376,7 @@
     "contents": null
   },
   {
-    "key": "etui-cartes-ou-parchemins",
+    "key": "case-map-or-scroll",
     "name": "Étui à cartes ou à parchemins",
     "type": "gear",
     "weapon": null,
@@ -1387,7 +1387,7 @@
     "contents": null
   },
   {
-    "key": "etui-pour-carreaux-arbalete",
+    "key": "case-crossbow-bolt",
     "name": "Étui pour carreaux d’arbalète",
     "type": "gear",
     "weapon": null,
@@ -1398,7 +1398,7 @@
     "contents": null
   },
   {
-    "key": "feu-gregeois",
+    "key": "alchemists-fire",
     "name": "Feu grégeois",
     "type": "gear",
     "weapon": null,
@@ -1409,7 +1409,7 @@
     "contents": null
   },
   {
-    "key": "ficelle",
+    "key": "string",
     "name": "Ficelle",
     "type": "gear",
     "weapon": null,
@@ -1420,7 +1420,7 @@
     "contents": null
   },
   {
-    "key": "filet",
+    "key": "net",
     "name": "Filet",
     "type": "gear",
     "weapon": null,
@@ -1431,7 +1431,7 @@
     "contents": null
   },
   {
-    "key": "fiole",
+    "key": "vial",
     "name": "Fiole",
     "type": "gear",
     "weapon": null,
@@ -1442,7 +1442,7 @@
     "contents": null
   },
   {
-    "key": "flasque",
+    "key": "flask",
     "name": "Flasque",
     "type": "gear",
     "weapon": null,
@@ -1453,7 +1453,7 @@
     "contents": null
   },
   {
-    "key": "focaliseur-arcanique",
+    "key": "arcane-focus",
     "name": "Focaliseur arcanique",
     "type": "gear",
     "weapon": null,
@@ -1464,7 +1464,7 @@
     "contents": null
   },
   {
-    "key": "focaliseur-druidique",
+    "key": "druidic-focus",
     "name": "Focaliseur druidique",
     "type": "gear",
     "weapon": null,
@@ -1475,7 +1475,7 @@
     "contents": null
   },
   {
-    "key": "grappin",
+    "key": "grappling-hook",
     "name": "Grappin",
     "type": "gear",
     "weapon": null,
@@ -1486,7 +1486,7 @@
     "contents": null
   },
   {
-    "key": "grimoire",
+    "key": "spellbook",
     "name": "Grimoire",
     "type": "gear",
     "weapon": null,
@@ -1497,7 +1497,7 @@
     "contents": null
   },
   {
-    "key": "huile",
+    "key": "oil",
     "name": "Huile",
     "type": "gear",
     "weapon": null,
@@ -1508,7 +1508,7 @@
     "contents": null
   },
   {
-    "key": "lampe",
+    "key": "lamp",
     "name": "Lampe",
     "type": "gear",
     "weapon": null,
@@ -1519,7 +1519,7 @@
     "contents": null
   },
   {
-    "key": "lanterne-capote",
+    "key": "lantern-hooded",
     "name": "Lanterne à capote",
     "type": "gear",
     "weapon": null,
@@ -1530,7 +1530,7 @@
     "contents": null
   },
   {
-    "key": "lanterne-sourde",
+    "key": "lantern-bullseye",
     "name": "Lanterne sourde",
     "type": "gear",
     "weapon": null,
@@ -1541,7 +1541,7 @@
     "contents": null
   },
   {
-    "key": "livre",
+    "key": "book",
     "name": "Livre",
     "type": "gear",
     "weapon": null,
@@ -1552,7 +1552,7 @@
     "contents": null
   },
   {
-    "key": "longue-vue",
+    "key": "spyglass",
     "name": "Longue-vue",
     "type": "gear",
     "weapon": null,
@@ -1563,7 +1563,7 @@
     "contents": null
   },
   {
-    "key": "loupe",
+    "key": "magnifying-glass",
     "name": "Loupe",
     "type": "gear",
     "weapon": null,
@@ -1574,7 +1574,7 @@
     "contents": null
   },
   {
-    "key": "materiel-escalade",
+    "key": "climbers-kit",
     "name": "Matériel d’escalade",
     "type": "gear",
     "weapon": null,
@@ -1585,7 +1585,7 @@
     "contents": null
   },
   {
-    "key": "menottes",
+    "key": "manacles",
     "name": "Menottes",
     "type": "gear",
     "weapon": null,
@@ -1596,7 +1596,7 @@
     "contents": null
   },
   {
-    "key": "miroir",
+    "key": "mirror",
     "name": "Miroir",
     "type": "gear",
     "weapon": null,
@@ -1607,7 +1607,7 @@
     "contents": null
   },
   {
-    "key": "munitions",
+    "key": "ammunition",
     "name": "Munitions",
     "type": "gear",
     "weapon": null,
@@ -1618,7 +1618,7 @@
     "contents": null
   },
   {
-    "key": "outre-pleine",
+    "key": "waterskin",
     "name": "Outre (pleine)",
     "type": "gear",
     "weapon": null,
@@ -1629,7 +1629,7 @@
     "contents": null
   },
   {
-    "key": "palan",
+    "key": "block-and-tackle",
     "name": "Palan",
     "type": "gear",
     "weapon": null,
@@ -1640,7 +1640,7 @@
     "contents": null
   },
   {
-    "key": "panier",
+    "key": "basket",
     "name": "Panier",
     "type": "gear",
     "weapon": null,
@@ -1651,7 +1651,7 @@
     "contents": null
   },
   {
-    "key": "papier",
+    "key": "paper",
     "name": "Papier",
     "type": "gear",
     "weapon": null,
@@ -1662,7 +1662,7 @@
     "contents": null
   },
   {
-    "key": "parchemin",
+    "key": "parchment",
     "name": "Parchemin",
     "type": "gear",
     "weapon": null,
@@ -1673,7 +1673,7 @@
     "contents": null
   },
   {
-    "key": "parchemin-de-sort-1er-niveau",
+    "key": "spell-scroll-level-1",
     "name": "Parchemin de sort (1er niveau)",
     "type": "gear",
     "weapon": null,
@@ -1684,7 +1684,7 @@
     "contents": null
   },
   {
-    "key": "parchemin-de-sort-sort-mineur",
+    "key": "spell-scroll-cantrip",
     "name": "Parchemin de sort (sort mineur)",
     "type": "gear",
     "weapon": null,
@@ -1695,7 +1695,7 @@
     "contents": null
   },
   {
-    "key": "parfum",
+    "key": "perfume",
     "name": "Parfum",
     "type": "gear",
     "weapon": null,
@@ -1706,7 +1706,7 @@
     "contents": null
   },
   {
-    "key": "pelle",
+    "key": "shovel",
     "name": "Pelle",
     "type": "gear",
     "weapon": null,
@@ -1717,7 +1717,7 @@
     "contents": null
   },
   {
-    "key": "perche",
+    "key": "pole",
     "name": "Perche",
     "type": "gear",
     "weapon": null,
@@ -1728,7 +1728,7 @@
     "contents": null
   },
   {
-    "key": "pied-de-biche",
+    "key": "crowbar",
     "name": "Pied-de-biche",
     "type": "gear",
     "weapon": null,
@@ -1739,7 +1739,7 @@
     "contents": null
   },
   {
-    "key": "piege-machoires",
+    "key": "hunting-trap",
     "name": "Piège à mâchoires",
     "type": "gear",
     "weapon": null,
@@ -1750,7 +1750,7 @@
     "contents": null
   },
   {
-    "key": "pointes-en-fer",
+    "key": "spikes-iron",
     "name": "Pointes en fer",
     "type": "gear",
     "weapon": null,
@@ -1761,7 +1761,7 @@
     "contents": null
   },
   {
-    "key": "poison-standard",
+    "key": "poison-basic",
     "name": "Poison standard",
     "type": "gear",
     "weapon": null,
@@ -1772,7 +1772,7 @@
     "contents": null
   },
   {
-    "key": "porte-plume",
+    "key": "ink-pen",
     "name": "Porte-plume",
     "type": "gear",
     "weapon": null,
@@ -1783,7 +1783,7 @@
     "contents": null
   },
   {
-    "key": "pot-en-fer",
+    "key": "pot-iron",
     "name": "Pot en fer",
     "type": "gear",
     "weapon": null,
@@ -1794,7 +1794,7 @@
     "contents": null
   },
   {
-    "key": "potion-de-guerison",
+    "key": "potion-of-healing",
     "name": "Potion de guérison",
     "type": "gear",
     "weapon": null,
@@ -1827,7 +1827,7 @@
     "contents": null
   },
   {
-    "key": "sac",
+    "key": "sack",
     "name": "Sac",
     "type": "gear",
     "weapon": null,
@@ -1838,7 +1838,7 @@
     "contents": null
   },
   {
-    "key": "sac-de-couchage",
+    "key": "bedroll",
     "name": "Sac de couchage",
     "type": "gear",
     "weapon": null,
@@ -1849,7 +1849,7 @@
     "contents": null
   },
   {
-    "key": "sac-dos",
+    "key": "backpack",
     "name": "Sac à dos",
     "type": "gear",
     "weapon": null,
@@ -1860,7 +1860,7 @@
     "contents": null
   },
   {
-    "key": "sacoche",
+    "key": "pouch",
     "name": "Sacoche",
     "type": "gear",
     "weapon": null,
@@ -1871,7 +1871,7 @@
     "contents": null
   },
   {
-    "key": "sacoche-composantes",
+    "key": "component-pouch",
     "name": "Sacoche à composantes",
     "type": "gear",
     "weapon": null,
@@ -1882,7 +1882,7 @@
     "contents": null
   },
   {
-    "key": "seau",
+    "key": "bucket",
     "name": "Seau",
     "type": "gear",
     "weapon": null,
@@ -1893,7 +1893,7 @@
     "contents": null
   },
   {
-    "key": "sifflet",
+    "key": "signal-whistle",
     "name": "Sifflet",
     "type": "gear",
     "weapon": null,
@@ -1904,7 +1904,7 @@
     "contents": null
   },
   {
-    "key": "symbole-sacre",
+    "key": "holy-symbol",
     "name": "Symbole sacré",
     "type": "gear",
     "weapon": null,
@@ -1915,7 +1915,7 @@
     "contents": null
   },
   {
-    "key": "tente",
+    "key": "tent",
     "name": "Tente",
     "type": "gear",
     "weapon": null,
@@ -1926,7 +1926,7 @@
     "contents": null
   },
   {
-    "key": "tenue-de-voyage",
+    "key": "clothes-travelers",
     "name": "Tenue de voyage",
     "type": "gear",
     "weapon": null,
@@ -1937,7 +1937,7 @@
     "contents": null
   },
   {
-    "key": "tonneau",
+    "key": "barrel",
     "name": "Tonneau",
     "type": "gear",
     "weapon": null,
@@ -1948,7 +1948,7 @@
     "contents": null
   },
   {
-    "key": "torche",
+    "key": "torch",
     "name": "Torche",
     "type": "gear",
     "weapon": null,
@@ -1959,7 +1959,7 @@
     "contents": null
   },
   {
-    "key": "trousse-de-soins",
+    "key": "healers-kit",
     "name": "Trousse de soins",
     "type": "gear",
     "weapon": null,
@@ -1970,7 +1970,7 @@
     "contents": null
   },
   {
-    "key": "paquetage-artiste",
+    "key": "entertainers-pack",
     "name": "Paquetage d’artiste",
     "type": "pack",
     "weapon": null,
@@ -1980,15 +1980,15 @@
     "description": "Le paquetage d’artiste contient les objets suivants : sac à dos, boîte à amadou, cloche, 3 costumes, 8 flasques d’huile, 9 jours de rations, lanterne sourde, miroir, outre, sac de couchage.",
     "contents": [
       {
-        "itemKey": "sac-dos",
+        "itemKey": "backpack",
         "quantity": 1
       },
       {
-        "itemKey": "boite-amadou",
+        "itemKey": "tinderbox",
         "quantity": 1
       },
       {
-        "itemKey": "cloche",
+        "itemKey": "bell",
         "quantity": 1
       },
       {
@@ -1996,7 +1996,7 @@
         "quantity": 3
       },
       {
-        "itemKey": "huile",
+        "itemKey": "oil",
         "quantity": 8
       },
       {
@@ -2004,25 +2004,25 @@
         "quantity": 9
       },
       {
-        "itemKey": "lanterne-sourde",
+        "itemKey": "lantern-bullseye",
         "quantity": 1
       },
       {
-        "itemKey": "miroir",
+        "itemKey": "mirror",
         "quantity": 1
       },
       {
-        "itemKey": "outre-pleine",
+        "itemKey": "waterskin",
         "quantity": 1
       },
       {
-        "itemKey": "sac-de-couchage",
+        "itemKey": "bedroll",
         "quantity": 1
       }
     ]
   },
   {
-    "key": "paquetage-de-cambrioleur",
+    "key": "burglars-pack",
     "name": "Paquetage de cambrioleur",
     "type": "pack",
     "weapon": null,
@@ -2032,43 +2032,43 @@
     "description": "Le paquetage de cambrioleur contient les objets suivants : sac à dos, billes, boîte à amadou, 10 bougies, cloche, corde, 7 flasques d’huile, lanterne à capote, outre, pied-de-biche, 5 jours de rations.",
     "contents": [
       {
-        "itemKey": "sac-dos",
+        "itemKey": "backpack",
         "quantity": 1
       },
       {
-        "itemKey": "billes",
+        "itemKey": "ball-bearings",
         "quantity": 1
       },
       {
-        "itemKey": "boite-amadou",
+        "itemKey": "tinderbox",
         "quantity": 1
       },
       {
-        "itemKey": "bougie",
+        "itemKey": "candle",
         "quantity": 10
       },
       {
-        "itemKey": "cloche",
+        "itemKey": "bell",
         "quantity": 1
       },
       {
-        "itemKey": "corde",
+        "itemKey": "rope",
         "quantity": 1
       },
       {
-        "itemKey": "huile",
+        "itemKey": "oil",
         "quantity": 7
       },
       {
-        "itemKey": "lanterne-capote",
+        "itemKey": "lantern-hooded",
         "quantity": 1
       },
       {
-        "itemKey": "outre-pleine",
+        "itemKey": "waterskin",
         "quantity": 1
       },
       {
-        "itemKey": "pied-de-biche",
+        "itemKey": "crowbar",
         "quantity": 1
       },
       {
@@ -2078,7 +2078,7 @@
     ]
   },
   {
-    "key": "paquetage-de-diplomate",
+    "key": "diplomat-pack",
     "name": "Paquetage de diplomate",
     "type": "pack",
     "weapon": null,
@@ -2088,53 +2088,53 @@
     "description": "Le paquetage de diplomate contient les objets suivants : beaux habits, boîte à amadou, coffre, encre, 2 étuis à cartes et à parchemins, 5 feuilles de papier, 5 feuilles de parchemin, 4 flasques d’huile, lampe, 5 porte-plume, parfum.",
     "contents": [
       {
-        "itemKey": "beaux-habits",
+        "itemKey": "clothes-fine",
         "quantity": 1
       },
       {
-        "itemKey": "boite-amadou",
+        "itemKey": "tinderbox",
         "quantity": 1
       },
       {
-        "itemKey": "coffre",
+        "itemKey": "chest",
         "quantity": 1
       },
       {
-        "itemKey": "encre",
+        "itemKey": "ink",
         "quantity": 1
       },
       {
-        "itemKey": "etui-cartes-ou-parchemins",
+        "itemKey": "case-map-or-scroll",
         "quantity": 2
       },
       {
-        "itemKey": "papier",
+        "itemKey": "paper",
         "quantity": 5
       },
       {
-        "itemKey": "parchemin",
+        "itemKey": "parchment",
         "quantity": 5
       },
       {
-        "itemKey": "huile",
+        "itemKey": "oil",
         "quantity": 4
       },
       {
-        "itemKey": "lampe",
+        "itemKey": "lamp",
         "quantity": 1
       },
       {
-        "itemKey": "porte-plume",
+        "itemKey": "ink-pen",
         "quantity": 5
       },
       {
-        "itemKey": "parfum",
+        "itemKey": "perfume",
         "quantity": 1
       }
     ]
   },
   {
-    "key": "paquetage-ecclesiastique",
+    "key": "priests-pack",
     "name": "Paquetage d’ecclésiastique",
     "type": "pack",
     "weapon": null,
@@ -2144,23 +2144,23 @@
     "description": "Le paquetage d’ecclésiastique contient les objets suivants : sac à dos, boîte à amadou, couverture, eau bénite, lampe, 7 jours de rations, robe.",
     "contents": [
       {
-        "itemKey": "sac-dos",
+        "itemKey": "backpack",
         "quantity": 1
       },
       {
-        "itemKey": "boite-amadou",
+        "itemKey": "tinderbox",
         "quantity": 1
       },
       {
-        "itemKey": "couverture",
+        "itemKey": "blanket",
         "quantity": 1
       },
       {
-        "itemKey": "eau-benite",
+        "itemKey": "holy-water",
         "quantity": 1
       },
       {
-        "itemKey": "lampe",
+        "itemKey": "lamp",
         "quantity": 1
       },
       {
@@ -2174,7 +2174,7 @@
     ]
   },
   {
-    "key": "paquetage-erudit",
+    "key": "scholars-pack",
     "name": "Paquetage d’érudit",
     "type": "pack",
     "weapon": null,
@@ -2184,41 +2184,41 @@
     "description": "Le paquetage d’érudit contient les objets suivants : sac à dos, boîte à amadou, encre, lampe, livre, porte-plume, 10 flasques d’huile, 10 feuilles de parchemin.",
     "contents": [
       {
-        "itemKey": "sac-dos",
+        "itemKey": "backpack",
         "quantity": 1
       },
       {
-        "itemKey": "boite-amadou",
+        "itemKey": "tinderbox",
         "quantity": 1
       },
       {
-        "itemKey": "encre",
+        "itemKey": "ink",
         "quantity": 1
       },
       {
-        "itemKey": "lampe",
+        "itemKey": "lamp",
         "quantity": 1
       },
       {
-        "itemKey": "livre",
+        "itemKey": "book",
         "quantity": 1
       },
       {
-        "itemKey": "porte-plume",
+        "itemKey": "ink-pen",
         "quantity": 1
       },
       {
-        "itemKey": "huile",
+        "itemKey": "oil",
         "quantity": 10
       },
       {
-        "itemKey": "parchemin",
+        "itemKey": "parchment",
         "quantity": 10
       }
     ]
   },
   {
-    "key": "paquetage-explorateur",
+    "key": "explorers-pack",
     "name": "Paquetage d’explorateur",
     "type": "pack",
     "weapon": null,
@@ -2228,23 +2228,23 @@
     "description": "Le paquetage d’explorateur contient les objets suivants : sac à dos, sac de couchage, boîte à amadou, corde, 2 flasques d’huile, 10 jours de rations, outre, 10 torches.",
     "contents": [
       {
-        "itemKey": "sac-dos",
+        "itemKey": "backpack",
         "quantity": 1
       },
       {
-        "itemKey": "sac-de-couchage",
+        "itemKey": "bedroll",
         "quantity": 1
       },
       {
-        "itemKey": "boite-amadou",
+        "itemKey": "tinderbox",
         "quantity": 1
       },
       {
-        "itemKey": "corde",
+        "itemKey": "rope",
         "quantity": 1
       },
       {
-        "itemKey": "huile",
+        "itemKey": "oil",
         "quantity": 2
       },
       {
@@ -2252,17 +2252,17 @@
         "quantity": 10
       },
       {
-        "itemKey": "outre-pleine",
+        "itemKey": "waterskin",
         "quantity": 1
       },
       {
-        "itemKey": "torche",
+        "itemKey": "torch",
         "quantity": 10
       }
     ]
   },
   {
-    "key": "paquetage-exploration-souterraine",
+    "key": "dungeoneer-pack",
     "name": "Paquetage d’exploration souterraine",
     "type": "pack",
     "weapon": null,
@@ -2272,23 +2272,23 @@
     "description": "Le paquetage d’exploration souterraine contient les objets suivants : sac à dos, boîte à amadou, chausse-trappes, corde, 2 flasques d’huile, 10 jours de rations, outre, pied-de-biche, 10 torches.",
     "contents": [
       {
-        "itemKey": "sac-dos",
+        "itemKey": "backpack",
         "quantity": 1
       },
       {
-        "itemKey": "boite-amadou",
+        "itemKey": "tinderbox",
         "quantity": 1
       },
       {
-        "itemKey": "chausse-trappes",
+        "itemKey": "caltrops",
         "quantity": 1
       },
       {
-        "itemKey": "corde",
+        "itemKey": "rope",
         "quantity": 1
       },
       {
-        "itemKey": "huile",
+        "itemKey": "oil",
         "quantity": 2
       },
       {
@@ -2296,21 +2296,21 @@
         "quantity": 10
       },
       {
-        "itemKey": "outre-pleine",
+        "itemKey": "waterskin",
         "quantity": 1
       },
       {
-        "itemKey": "pied-de-biche",
+        "itemKey": "crowbar",
         "quantity": 1
       },
       {
-        "itemKey": "torche",
+        "itemKey": "torch",
         "quantity": 10
       }
     ]
   },
   {
-    "key": "accessoires-de-deguisement",
+    "key": "disguise-kit",
     "name": "Accessoires de déguisement",
     "type": "tool",
     "weapon": null,
@@ -2321,7 +2321,7 @@
     "contents": null
   },
   {
-    "key": "boite-de-jeux",
+    "key": "gaming-set",
     "name": "Boîte de jeux",
     "type": "tool",
     "weapon": null,
@@ -2332,7 +2332,7 @@
     "contents": null
   },
   {
-    "key": "instrument-de-musique",
+    "key": "musical-instrument",
     "name": "Instrument de musique",
     "type": "tool",
     "weapon": null,
@@ -2343,7 +2343,7 @@
     "contents": null
   },
   {
-    "key": "instruments-de-navigateur",
+    "key": "navigators-tools",
     "name": "Instruments de navigateur",
     "type": "tool",
     "weapon": null,
@@ -2354,7 +2354,7 @@
     "contents": null
   },
   {
-    "key": "materiel-alchimiste",
+    "key": "alchemists-supplies",
     "name": "Matériel d'alchimiste",
     "type": "tool",
     "weapon": null,
@@ -2365,7 +2365,7 @@
     "contents": null
   },
   {
-    "key": "materiel-de-brasseur",
+    "key": "brewers-supplies",
     "name": "Matériel de brasseur",
     "type": "tool",
     "weapon": null,
@@ -2376,7 +2376,7 @@
     "contents": null
   },
   {
-    "key": "materiel-de-calligraphe",
+    "key": "calligraphers-supplies",
     "name": "Matériel de calligraphe",
     "type": "tool",
     "weapon": null,
@@ -2387,7 +2387,7 @@
     "contents": null
   },
   {
-    "key": "materiel-de-contrefacon",
+    "key": "forgery-kit",
     "name": "Matériel de contrefaçon",
     "type": "tool",
     "weapon": null,
@@ -2398,7 +2398,7 @@
     "contents": null
   },
   {
-    "key": "materiel-de-peintre",
+    "key": "painters-supplies",
     "name": "Matériel de peintre",
     "type": "tool",
     "weapon": null,
@@ -2409,7 +2409,7 @@
     "contents": null
   },
   {
-    "key": "materiel-empoisonneur",
+    "key": "poisoners-kit",
     "name": "Matériel d'empoisonneur",
     "type": "tool",
     "weapon": null,
@@ -2420,7 +2420,7 @@
     "contents": null
   },
   {
-    "key": "materiel-herboriste",
+    "key": "herbalism-kit",
     "name": "Matériel d'herboriste",
     "type": "tool",
     "weapon": null,
@@ -2431,7 +2431,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-bricoleur",
+    "key": "tinkers-tools",
     "name": "Outils de bricoleur",
     "type": "tool",
     "weapon": null,
@@ -2442,7 +2442,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-cartographe",
+    "key": "cartographer-tools",
     "name": "Outils de cartographe",
     "type": "tool",
     "weapon": null,
@@ -2453,7 +2453,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-charpentier",
+    "key": "carpenters-tools",
     "name": "Outils de charpentier",
     "type": "tool",
     "weapon": null,
@@ -2464,7 +2464,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-cordonnier",
+    "key": "cobblers-tools",
     "name": "Outils de cordonnier",
     "type": "tool",
     "weapon": null,
@@ -2475,7 +2475,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-forgeron",
+    "key": "smiths-tools",
     "name": "Outils de forgeron",
     "type": "tool",
     "weapon": null,
@@ -2486,7 +2486,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-joaillier",
+    "key": "jewelers-tools",
     "name": "Outils de joaillier",
     "type": "tool",
     "weapon": null,
@@ -2497,7 +2497,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-macon",
+    "key": "masons-tools",
     "name": "Outils de maçon",
     "type": "tool",
     "weapon": null,
@@ -2508,7 +2508,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-menuisier",
+    "key": "woodcarvers-tools",
     "name": "Outils de menuisier",
     "type": "tool",
     "weapon": null,
@@ -2519,7 +2519,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-potier",
+    "key": "potters-tools",
     "name": "Outils de potier",
     "type": "tool",
     "weapon": null,
@@ -2530,7 +2530,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-souffleur-de-verre",
+    "key": "glassblowers-tools",
     "name": "Outils de souffleur de verre",
     "type": "tool",
     "weapon": null,
@@ -2541,7 +2541,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-tanneur",
+    "key": "leatherworkers-tools",
     "name": "Outils de tanneur",
     "type": "tool",
     "weapon": null,
@@ -2552,7 +2552,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-tisserand",
+    "key": "weavers-tools",
     "name": "Outils de tisserand",
     "type": "tool",
     "weapon": null,
@@ -2563,7 +2563,7 @@
     "contents": null
   },
   {
-    "key": "outils-de-voleur",
+    "key": "thieves-tools",
     "name": "Outils de voleur",
     "type": "tool",
     "weapon": null,
@@ -2574,7 +2574,7 @@
     "contents": null
   },
   {
-    "key": "ustensiles-de-cuisinier",
+    "key": "cooks-utensils",
     "name": "Ustensiles de cuisinier",
     "type": "tool",
     "weapon": null,

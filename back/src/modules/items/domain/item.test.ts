@@ -20,7 +20,7 @@ import {
 
 describe('Item — création', () => {
   it('accepte un objet du manuel sans coût ni poids : le manuel dit « variable »', () => {
-    const item = aGearItem({ key: 'boite-de-jeux', costInCopper: null, weightInKg: null });
+    const item = aGearItem({ key: 'gaming-set', costInCopper: null, weightInKg: null });
 
     expect(item.snapshot().costInCopper).toBeNull();
   });
@@ -59,14 +59,14 @@ describe('Item — création', () => {
 
 describe('Item — contenu des paquetages', () => {
   it('accepte un sac qui contient des objets', () => {
-    const pack = aPackItem({ contents: [{ itemKey: 'torche', quantity: 10 }] });
+    const pack = aPackItem({ contents: [{ itemKey: 'torch', quantity: 10 }] });
 
-    expect(pack.snapshot().contents).toEqual([{ itemKey: 'torche', quantity: 10 }]);
+    expect(pack.snapshot().contents).toEqual([{ itemKey: 'torch', quantity: 10 }]);
   });
 
   it.each([0, -1, 1.5])('refuse la quantité %s', (quantity) => {
     expect(() =>
-      aPackItem({ contents: [{ itemKey: 'torche', quantity }] }),
+      aPackItem({ contents: [{ itemKey: 'torch', quantity }] }),
     ).toThrow(InvalidItemQuantityError);
   });
 
@@ -77,12 +77,12 @@ describe('Item — contenu des paquetages', () => {
   });
 
   it('ne partage pas son contenu : le snapshot est une copie', () => {
-    const pack = aPackItem({ contents: [{ itemKey: 'torche', quantity: 10 }] });
+    const pack = aPackItem({ contents: [{ itemKey: 'torch', quantity: 10 }] });
 
     const first = pack.snapshot().contents?.[0];
     if (first) first.quantity = 99;
 
-    expect(pack.snapshot().contents).toEqual([{ itemKey: 'torche', quantity: 10 }]);
+    expect(pack.snapshot().contents).toEqual([{ itemKey: 'torch', quantity: 10 }]);
   });
 });
 
