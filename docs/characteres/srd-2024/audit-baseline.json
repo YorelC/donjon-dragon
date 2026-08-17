@@ -249,27 +249,35 @@
   },
   {
     "domain": "items",
-    "key": "entertainers-pack",
-    "field": "weightInKg",
-    "project": "29",
-    "srd": "—",
-    "verdict": "srd-incomplet"
-  },
-  {
-    "domain": "items",
     "key": "burglars-pack",
     "field": "weightInKg",
-    "project": "21",
+    "project": "—",
     "srd": "10",
-    "verdict": "srd-faux"
+    "verdict": "choix-projet"
   },
   {
     "domain": "items",
     "key": "diplomat-pack",
     "field": "weightInKg",
-    "project": "19.5",
+    "project": "—",
     "srd": "10",
-    "verdict": "srd-faux"
+    "verdict": "choix-projet"
+  },
+  {
+    "domain": "items",
+    "key": "priests-pack",
+    "field": "weightInKg",
+    "project": "—",
+    "srd": "14.5",
+    "verdict": "choix-projet"
+  },
+  {
+    "domain": "items",
+    "key": "scholars-pack",
+    "field": "weightInKg",
+    "project": "—",
+    "srd": "11",
+    "verdict": "choix-projet"
   },
   {
     "domain": "items",
@@ -278,6 +286,22 @@
     "project": "pack",
     "srd": "gear",
     "verdict": "srd-incomplet"
+  },
+  {
+    "domain": "items",
+    "key": "explorers-pack",
+    "field": "weightInKg",
+    "project": "—",
+    "srd": "27.5",
+    "verdict": "choix-projet"
+  },
+  {
+    "domain": "items",
+    "key": "dungeoneer-pack",
+    "field": "weightInKg",
+    "project": "—",
+    "srd": "27.5",
+    "verdict": "choix-projet"
   },
   {
     "domain": "items",

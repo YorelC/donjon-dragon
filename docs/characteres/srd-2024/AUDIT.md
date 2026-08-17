@@ -6,7 +6,7 @@ Généré par `scripts/srd/audit.ts`. Ne pas éditer à la main.
 
 159 côté projet, 182 côté SRD, 153 appariés.
 
-### Divergences (36)
+### Divergences (39)
 
 | clé | champ | projet | SRD |
 |---|---|---|---|
@@ -41,10 +41,13 @@ Généré par `scripts/srd/audit.ts`. Ne pas éditer à la main.
 | `component-pouch` | weightInKg | 1 | 0.5 |
 | `clothes-travelers` | costInCopper | 200 | 500 |
 | `entertainers-pack` | type | pack | gear |
-| `entertainers-pack` | weightInKg | 29 | — |
-| `burglars-pack` | weightInKg | 21 | 10 |
-| `diplomat-pack` | weightInKg | 19.5 | 10 |
+| `burglars-pack` | weightInKg | — | 10 |
+| `diplomat-pack` | weightInKg | — | 10 |
+| `priests-pack` | weightInKg | — | 14.5 |
+| `scholars-pack` | weightInKg | — | 11 |
 | `explorers-pack` | type | pack | gear |
+| `explorers-pack` | weightInKg | — | 27.5 |
+| `dungeoneer-pack` | weightInKg | — | 27.5 |
 | `poisoners-kit` | costInCopper | 5000 | 500 |
 
 ### Au projet, sans correspondance SRD (6)

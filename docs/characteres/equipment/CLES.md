@@ -51,6 +51,26 @@ anglais comme les autres.
 | `holy-symbol` | Symbole sacré | amulette, emblème, reliquaire |
 | `musical-instrument` | Instrument de musique | luth, flûte, cornemuse, viole |
 
+## Le poids d'un paquetage est `null`
+
+Un paquetage ne pèse rien par lui-même : ce qui pèse, ce sont ses lignes de `contents`.
+Six des sept paquetages y comptent déjà un `backpack` de 2,5 kg — le contenant est donc
+une ligne de contenu comme une autre, et donner en plus un poids propre au paquetage le
+compterait deux fois.
+
+| paquetage | poids porté par son contenu |
+|---|---|
+| `entertainers-pack` | 29,25 kg |
+| `explorers-pack` | 27,5 kg |
+| `dungeoneer-pack` | 27,5 kg |
+| `burglars-pack` | 21 kg |
+| `diplomat-pack` | 18 kg |
+| `priests-pack` | 14,5 kg |
+| `scholars-pack` | 11 kg |
+
+Aucun code ne somme les poids aujourd'hui. Le jour où l'encombrement sera calculé, il
+additionnera l'inventaire résolu, et les paquetages n'y ajouteront rien de fantôme.
+
 ## Le seed fait foi
 
 `back/src/scripts/seed-items.script.ts` retire de la base tout objet du manuel absent du

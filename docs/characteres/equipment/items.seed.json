@@ -1976,7 +1976,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 4000,
-    "weightInKg": 29,
+    "weightInKg": null,
     "description": "Le paquetage d’artiste contient les objets suivants : sac à dos, boîte à amadou, cloche, 3 costumes, 8 flasques d’huile, 9 jours de rations, lanterne sourde, miroir, outre, sac de couchage.",
     "contents": [
       {
@@ -2028,7 +2028,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 1600,
-    "weightInKg": 21,
+    "weightInKg": null,
     "description": "Le paquetage de cambrioleur contient les objets suivants : sac à dos, billes, boîte à amadou, 10 bougies, cloche, corde, 7 flasques d’huile, lanterne à capote, outre, pied-de-biche, 5 jours de rations.",
     "contents": [
       {
@@ -2084,7 +2084,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 3900,
-    "weightInKg": 19.5,
+    "weightInKg": null,
     "description": "Le paquetage de diplomate contient les objets suivants : beaux habits, boîte à amadou, coffre, encre, 2 étuis à cartes et à parchemins, 5 feuilles de papier, 5 feuilles de parchemin, 4 flasques d’huile, lampe, 5 porte-plume, parfum.",
     "contents": [
       {
@@ -2140,7 +2140,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 3300,
-    "weightInKg": 14.5,
+    "weightInKg": null,
     "description": "Le paquetage d’ecclésiastique contient les objets suivants : sac à dos, boîte à amadou, couverture, eau bénite, lampe, 7 jours de rations, robe.",
     "contents": [
       {
@@ -2180,7 +2180,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 4000,
-    "weightInKg": 11,
+    "weightInKg": null,
     "description": "Le paquetage d’érudit contient les objets suivants : sac à dos, boîte à amadou, encre, lampe, livre, porte-plume, 10 flasques d’huile, 10 feuilles de parchemin.",
     "contents": [
       {
@@ -2224,7 +2224,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 1000,
-    "weightInKg": 27.5,
+    "weightInKg": null,
     "description": "Le paquetage d’explorateur contient les objets suivants : sac à dos, sac de couchage, boîte à amadou, corde, 2 flasques d’huile, 10 jours de rations, outre, 10 torches.",
     "contents": [
       {
@@ -2268,7 +2268,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 1200,
-    "weightInKg": 27.5,
+    "weightInKg": null,
     "description": "Le paquetage d’exploration souterraine contient les objets suivants : sac à dos, boîte à amadou, chausse-trappes, corde, 2 flasques d’huile, 10 jours de rations, outre, pied-de-biche, 10 torches.",
     "contents": [
       {

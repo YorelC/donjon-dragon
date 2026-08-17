@@ -83,6 +83,11 @@ export const ItemSchema = z.object({
    * perdre une pièce. `null` quand le manuel dit « variable ».
    */
   costInCopper: z.number().int().nonnegative().nullable(),
+  /**
+   * `null` pour ce que le manuel ne pèse pas — et pour tout paquetage : ce qui
+   * pèse, ce sont ses lignes de `contents`, sac à dos compris. Lui donner un
+   * poids propre le compterait deux fois.
+   */
   weightInKg: z.number().nonnegative().nullable(),
   description: z.string().nullable(),
   /** Non vide pour les paquetages seuls : un sac est un objet qui en contient. */

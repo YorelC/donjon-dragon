@@ -17,9 +17,15 @@ import type { Divergence, DomainReport } from './divergence.ts';
 /**
  * `srd-faux` : le SRD affirme une valeur fausse. `srd-incomplet` : il ne dit rien
  * là où le projet dit quelque chose. `projet-faux` : c'est le projet qui a tort,
- * et il reste à corriger. `non-tranche` : personne n'a encore regardé.
+ * et il reste à corriger. `choix-projet` : les deux ont raison, le projet modélise
+ * autrement et l'assume. `non-tranche` : personne n'a encore regardé.
  */
-export type Verdict = 'srd-faux' | 'srd-incomplet' | 'projet-faux' | 'non-tranche';
+export type Verdict =
+  | 'srd-faux'
+  | 'srd-incomplet'
+  | 'projet-faux'
+  | 'choix-projet'
+  | 'non-tranche';
 
 export type BaselineEntry = Divergence & { verdict: Verdict };
 
