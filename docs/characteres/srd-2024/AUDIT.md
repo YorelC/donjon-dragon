@@ -6,7 +6,7 @@ Généré par `scripts/srd/audit.ts`. Ne pas éditer à la main.
 
 159 côté projet, 182 côté SRD, 153 appariés.
 
-### Divergences (40)
+### Divergences (36)
 
 | clé | champ | projet | SRD |
 |---|---|---|---|
@@ -25,18 +25,14 @@ Généré par `scripts/srd/audit.ts`. Ne pas éditer à la main.
 | `chain-shirt` | weightInKg | 10 | 7 |
 | `hide` | armor.training | medium | light |
 | `antitoxin` | weightInKg | — | 0.5 |
-| `clothes-fine` | weightInKg | 3 | 1.5 |
-| `chain` | weightInKg | 5 | 3 |
 | `caltrops` | costInCopper | 100 | 200 |
 | `bell` | weightInKg | — | 0.5 |
 | `chest` | costInCopper | 500 | 5000 |
 | `chest` | weightInKg | 12.5 | 10 |
 | `blanket` | costInCopper | 50 | 500 |
 | `alchemists-fire` | costInCopper | 5000 | 2500 |
-| `climbers-kit` | weightInKg | 6 | 4 |
 | `basket` | costInCopper | 40 | 200 |
 | `parchment` | costInCopper | 10 | 300 |
-| `spikes-iron` | weightInKg | 2.5 | 1 |
 | `robe` | weightInKg | 2 | 0.5 |
 | `sack` | weightInKg | 0.25 | 0.5 |
 | `bedroll` | costInCopper | 100 | 200 |

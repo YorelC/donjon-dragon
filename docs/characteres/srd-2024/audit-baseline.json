@@ -117,23 +117,7 @@
     "field": "weightInKg",
     "project": "—",
     "srd": "0.5",
-    "verdict": "non-tranche"
-  },
-  {
-    "domain": "items",
-    "key": "clothes-fine",
-    "field": "weightInKg",
-    "project": "3",
-    "srd": "1.5",
-    "verdict": "non-tranche"
-  },
-  {
-    "domain": "items",
-    "key": "chain",
-    "field": "weightInKg",
-    "project": "5",
-    "srd": "3",
-    "verdict": "non-tranche"
+    "verdict": "srd-faux"
   },
   {
     "domain": "items",
@@ -149,7 +133,7 @@
     "field": "weightInKg",
     "project": "—",
     "srd": "0.5",
-    "verdict": "non-tranche"
+    "verdict": "srd-faux"
   },
   {
     "domain": "items",
@@ -185,14 +169,6 @@
   },
   {
     "domain": "items",
-    "key": "climbers-kit",
-    "field": "weightInKg",
-    "project": "6",
-    "srd": "4",
-    "verdict": "non-tranche"
-  },
-  {
-    "domain": "items",
     "key": "basket",
     "field": "costInCopper",
     "project": "40",
@@ -209,14 +185,6 @@
   },
   {
     "domain": "items",
-    "key": "spikes-iron",
-    "field": "weightInKg",
-    "project": "2.5",
-    "srd": "1",
-    "verdict": "non-tranche"
-  },
-  {
-    "domain": "items",
     "key": "robe",
     "field": "weightInKg",
     "project": "2",
@@ -229,7 +197,7 @@
     "field": "weightInKg",
     "project": "0.25",
     "srd": "0.5",
-    "verdict": "non-tranche"
+    "verdict": "srd-faux"
   },
   {
     "domain": "items",
@@ -285,7 +253,7 @@
     "field": "weightInKg",
     "project": "29",
     "srd": "—",
-    "verdict": "non-tranche"
+    "verdict": "srd-incomplet"
   },
   {
     "domain": "items",
@@ -293,7 +261,7 @@
     "field": "weightInKg",
     "project": "21",
     "srd": "10",
-    "verdict": "non-tranche"
+    "verdict": "srd-faux"
   },
   {
     "domain": "items",
@@ -301,7 +269,7 @@
     "field": "weightInKg",
     "project": "19.5",
     "srd": "10",
-    "verdict": "non-tranche"
+    "verdict": "srd-faux"
   },
   {
     "domain": "items",

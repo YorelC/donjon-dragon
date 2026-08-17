@@ -1162,7 +1162,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 1500,
-    "weightInKg": 3,
+    "weightInKg": 1.5,
     "description": "Les beaux habits sont fabriqués dans des tissus coûteux et dotés d’ornements élaborés. Certains événements et lieux n’acceptent que les personnes portant de tels vêtements.",
     "contents": null
   },
@@ -1261,7 +1261,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 500,
-    "weightInKg": 5,
+    "weightInKg": 3,
     "description": "Par une action Utilisation, vous enroulez une chaîne autour d’une créature non consentante dans un rayon de 1,50 m subissant l’état Agrippé, Entravé ou Neutralisé pour peu que vous réussissiez un jet de Force (Athlétisme) DD 13. Si la créature a les jambes enchaînées, elle subit l’état Entravé jusqu'à ce qu’elle se libère. Se libérer de la chaîne nécessite que la créature réussisse un jet de Dextérité (Acrobaties) DD 18 au prix d’une action. Briser cette chaîne nécessite de réussir un jet de Force (Athlétisme) DD 20 au prix d’une action.",
     "contents": null
   },
@@ -1580,7 +1580,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 2500,
-    "weightInKg": 6,
+    "weightInKg": 4,
     "description": "Le matériel d’escalade comprend des crampons de chaussures, des gants, des pitons et un harnais. Par une action Utilisation, vous pouvez recourir au matériel d’escalade pour vous ancrer ; cette précaution prise, vous ne pouvez pas tomber à plus de 7,50 m du point d’ancrage, et vous ne pouvez pas vous en éloigner de plus de 7,50 m sans défaire préalablement l’ancrage par une action Bonus.",
     "contents": null
   },
@@ -1756,7 +1756,7 @@
     "weapon": null,
     "armor": null,
     "costInCopper": 100,
-    "weightInKg": 2.5,
+    "weightInKg": 1,
     "description": "Les pointes en fer sont vendues par paquets de dix. Par une action Utilisation, vous pouvez recourir à un objet contondant, par exemple un marteau léger, pour enfoncer une pointe dans du bois, de la terre ou tout matériau similaire. Faire ainsi permet de bloquer une porte ou d’attacher une corde ou une chaîne à la pointe.",
     "contents": null
   },
