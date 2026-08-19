@@ -1,64 +1,88 @@
 # Doctrine de granularité — la chaîne de traçabilité
 
-Objectif : un découpage si fin que l'exécution devient mécanique — les agents ne peuvent pas se tromper parce qu'à aucun moment ils n'ont à interpréter. Corollaire économique : plus les tickets sont atomiques, plus ils sont exécutables par `ouvrier` (Qwen) au lieu de `dev-senior` (Claude).
+Objectif : découper le travail assez finement pour que chaque étape soit explicite,
+testable et exécutable sans interprétation implicite.
 
-## 1. La chaîne (chaque maillon référence le précédent par son ID)
+## 1. La chaîne
 
+```text
+Décision produit
+  ↓
+Exigence atomique : un comportement observable
+  ↓
+Invariant de contrat : schéma Zod ou port du domaine
+  ↓
+Étape du plan : un fichier et une action
+  ↓
+Tâche d'implémentation
+  ↓
+Test portant le comportement attendu
+  ↓
+Commit : type(scope): sujet
 ```
-R-NNN     Réponse de Charly à une question de Margarette (Discord, dans le ticket [SPEC])
-  ▼
-UA-NNN    Unité Atomique de spec (l'analyste) : UN comportement observable, en EARS + Gherkin + table de valeurs
-  ▼
-INV-NNN   Invariant de contrat (architecte) : schéma Zod / port du domaine, avec mapping UA → INV
-  ▼
-E-NNN     Étape du plan d'implémentation (architecte) : un fichier, une action, dans l'ordre
-  ▼
-t_xxxx    Ticket Kanban (orchestrateur) : 1 ticket = 1 à 3 UA, jamais plus
-  ▼
-Test      1 UA = au moins 1 test dont le NOM contient l'ID : it("UA-012: rejette un jet à 0 dé")
-  ▼
-Commit    type(scope): sujet [t_xxxx][UA-012]
-```
 
-Le `revieweur` vérifie la chaîne par les IDs : toute UA sans test = revue refusée ; tout code sans UA = refactor non demandé = refusé.
+Le revieweur vérifie la chaîne par son contenu : toute exigence doit être couverte par
+un test pertinent et toute modification de code doit répondre à une exigence ou à une
+correction explicitement demandée.
 
-## 2. L'Unité Atomique (UA) — définition stricte
+Les anciens identifiants de tickets et d'unités atomiques peuvent subsister dans
+l'historique. Ils ne sont plus exigés et ne doivent pas être ajoutés aux nouveaux
+documents, tests ou commits.
 
-Une UA est bonne si elle passe ces 5 tests :
-1. **Un seul comportement observable** — si la phrase contient « et », découpe.
-2. **EARS** : « Quand \<déclencheur\>, [si \<condition\>,] le système doit \<réponse mesurable\> ». Pas de « devrait », pas de « rapidement », pas de « convivial » : chiffres et valeurs exactes.
-3. **Table de valeurs** : entrées exactes → sorties exactes, y compris les erreurs (code, message exact).
-4. **Testable sans interprétation** : un modèle faible doit pouvoir écrire le test sans poser de question.
-5. **Indépendante ou à dépendance déclarée** : `dépend de : UA-008`.
+## 2. L'exigence atomique
 
-Exemple (moteur de dés) :
+Une exigence est correctement découpée si elle respecte ces cinq critères :
+
+1. **Un seul comportement observable** — si la phrase contient plusieurs résultats
+   indépendants, elle est découpée.
+2. **Formulation mesurable** — « Quand <déclencheur>, si <condition>, le système doit
+   <réponse mesurable> ».
+3. **Valeurs explicites** — les entrées, sorties et erreurs attendues sont précisées.
+4. **Testable sans interprétation** — le test peut être écrit sans décision produit
+   supplémentaire.
+5. **Dépendances déclarées** — les prérequis entre exigences sont écrits en toutes
+   lettres.
+
+Exemple :
+
 ```markdown
-### UA-012 — Rejet d'un jet à zéro dé   [source: R-004] [dépend de: UA-010]
-QUAND un joueur soumet un jet, SI le nombre de dés est < 1,
-le système DOIT rejeter avec l'erreur DICE_COUNT_INVALID sans émettre d'événement.
-| entrée (notation) | sortie |
+### Rejet d'un jet à zéro dé
+
+Quand un joueur soumet un jet dont le nombre de dés est inférieur à 1, le système doit
+rejeter la commande avec l'erreur `DICE_COUNT_INVALID` sans émettre d'événement.
+
+| Entrée | Sortie |
 |---|---|
-| "0d6"  | erreur DICE_COUNT_INVALID, message "Le nombre de dés doit être entre 1 et 20." |
-| "-1d6" | erreur DICE_COUNT_INVALID (même message) |
-| "1d6"  | jet accepté (cas frontière → couvert par UA-010) |
+| `0d6` | erreur `DICE_COUNT_INVALID` |
+| `-1d6` | erreur `DICE_COUNT_INVALID` |
+| `1d6` | jet accepté |
 ```
 
-## 3. Tailles maximales (draconien = chiffré)
+## 3. Limites de découpage
 
 | Objet | Limite | Si dépassée |
 |---|---|---|
-| Ticket [SPEC] | 1 capacité utilisateur (« lancer un dé », pas « le système de combat ») | Margarette découpe en plusieurs [SPEC] |
-| Spec de l'analyste | ≤ 15 UA par spec | scinder en spec-partie-1/2 avec dépendances |
-| Ticket de code | 1 à 3 UA, diff attendu ≤ ~80 lignes, 1 seule couche hexagonale (domaine OU application OU infra OU front) | l'orchestrateur redécoupe |
-| Ticket [TEST] | les UA d'UN ticket de code miroir | idem |
-| Plan de l'architecte (mode dégradé) | 1 étape E-NNN = 1 fichier, ≤ 20 lignes modifiées | redécouper le plan |
+| Spécification | Une capacité utilisateur cohérente | Scinder en plusieurs documents reliés |
+| Exigence | Un comportement observable | Découper les résultats indépendants |
+| Tâche de code | Petit ensemble cohérent, diff attendu d'environ 80 lignes, une seule couche hexagonale | Redécouper la tâche |
+| Tâche de test | Comportements d'une seule tâche de code | Redécouper la tâche |
+| Étape de plan | Un fichier et une action | Redécouper le plan |
 
-**Droit de refus** : un dev qui reçoit un ticket portant plus de 3 UA, plusieurs couches, ou une UA ambiguë (échoue à un des 5 tests) DOIT bloquer : `kanban_block(reason="dependency: ticket à redécouper — <motif>")`. Refuser est un succès, pas un échec.
+Un agent bloque une tâche ambiguë, trop large ou couvrant plusieurs couches avec le
+motif `dependency: tâche à redécouper — <motif>`. Refuser une tâche mal découpée est un
+résultat valide.
 
-## 4. Le filet anti-couture : le ticket [INTEG]
+## 4. Le filet d'intégration
 
-Le risque de l'hyper-granularité n'est pas dans les briques mais dans les jointures (chaque pièce correcte, l'ensemble faux). Parade : chaque feature se termine par UN ticket `[INTEG][M]` (assigné à `testeur`, parent = tous les FEAT de la feature) qui écrit les tests de bout en bout traversant TOUTES les couches (front → API → domaine → Mongo/Redis → WS retour), en suivant les parcours Gherkin de la spec — pas les UA une à une. Le ticket [REVIEW] a le [INTEG] en parent.
+Chaque fonctionnalité se termine par une tâche d'intégration qui vérifie les parcours
+de bout en bout à travers les couches concernées. La revue finale dépend de cette
+validation afin d'éviter que des composants corrects isolément produisent un ensemble
+incorrect.
 
 ## 5. Coût assumé de la granularité
 
-Plus de tickets = plus de passages d'orchestrateur et de handoffs (tokens DeepSeek flash, négligeable) contre moins d'erreurs d'interprétation et moins de quota Claude (les tickets 1-UA en couche unique passent presque tous à `ouvrier`). Nouveau routage attendu : `dev-senior` ne garde que les UA marquées ALGO (logique non triviale : calculs de règles D&D, concurrence Redis, protocole WS) et le débogage. Si l'orchestrateur constate qu'une feature génère > 25 tickets, il le signale dans le ticket [INTEG] de la feature : c'est le signe d'une spec à re-scinder en deux features.
+Un découpage fin augmente le nombre de passages et de transmissions, mais réduit les
+erreurs d'interprétation. Les calculs D&D non triviaux, les problèmes de concurrence et
+les protocoles temps réel restent confiés aux agents capables de traiter ces risques.
+Si une fonctionnalité exige trop de tâches, elle doit être scindée en plusieurs
+fonctionnalités cohérentes.
