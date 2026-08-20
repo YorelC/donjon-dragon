@@ -10,3 +10,5 @@ front/dist/
 # n'ont pas a etre partages. `.claude/settings.json` et `.claude/rules/`, eux,
 # sont versionnes a dessein.
 .claude/settings.local.json
+
+docs/books/*
