@@ -79,7 +79,7 @@ La tâche suit ensuite cette séquence :
 | B04 | Fiche et état d'aventure | Valeurs dérivées et états mutables ont une source et un cycle de vie précis |
 | B05 | Moteur de combat commun | Initiative, tours, actions, mouvement, réactions, dégâts, mort et états sont couverts |
 | B06 | Sorts et effets magiques | Chaque sort et exception exploitable possède une représentation testable |
-| B07 | Équipement, objets et maîtrises | Armes, armures, outils, propriétés, charges et objets personnalisés sont couverts |
+| B07 | Équipement, objets, maîtrises et bottes d'armes | Armes, armures, outils, propriétés, charges et objets personnalisés sont couverts |
 | B08 | Monstres, PNJ et créatures invoquées | Profils, actions, ressources, renforts et contrôle sont couverts |
 | B09 | Règles produit autour de la partie | Validation MJ, repos collectif, butin, investigation et corrections sont reliés aux règles D&D |
 
@@ -87,6 +87,12 @@ Les blocs sont fonctionnels. Les choix de schéma MongoDB, API, Socket.IO ou sto
 appartiennent à la Phase 5 et ne doivent pas être décidés ici.
 
 ## B01 — Création complète niveau 1
+
+### Statut
+
+**Spécification validée par le propriétaire le 20 août 2026.** Les 85 règles et les
+écarts d'implémentation sont inventoriés dans le livrable B01. Aucun passage à la
+planification ou au code n'est inclus dans cette validation.
 
 ### Périmètre
 
@@ -110,9 +116,15 @@ Le bloc couvre :
 La tâche B01 doit vérifier et intégrer au minimum les constats suivants :
 
 - le référentiel contient neuf espèces et ne contient pas l'Aasimar ;
-- le dataset contient 390 sorts alors que l'inventaire PHB en annonce 391 ;
+- le dataset contient 390 sorts ; le contrôle du PHB p. 331 identifie Télépathie
+  (`telepathy`) comme seule entrée absente ;
 - la sélection des deux langues standards manque ;
-- le choix de catégorie de taille n'est pas persisté ;
+- le choix de catégorie de taille de l'Aasimar, de l'Humain et du Tieffelin n'est pas
+  persisté ; les données fixent notamment à tort l'Humain et le Tieffelin à M ;
+- certaines données d'espèce sont incorrectes ou non structurées : durée de création
+  de l'appareil du Gnome des roches et traits du Halfelin ; l'écart initialement
+  attribué à Forte carrure du Goliath est annulé par l'errata officiel, qui impose un
+  test de caractéristique ;
 - plusieurs choix d'outils, de maîtrises d'armes et de dons sont absents ;
 - la Manifestation occulte de niveau 1 n'est pas choisie ;
 - le grimoire initial du Magicien n'est pas distingué des sorts préparés ;
@@ -133,63 +145,220 @@ Ces constats sont des points de départ, pas une matrice exhaustive.
 - la catégorie de taille D&D est distincte et limitée aux options de l'espèce ;
 - la description physique est facultative ;
 - une babiole de départ est facultative ;
-- chaque babiole possède une valeur ; sa sélection soustrait automatiquement cette
-  valeur à l'or de départ ;
+- les cent babioles du PHB sont gratuites ; leur sélection ne modifie pas l'or de
+  départ ;
 - aucun catalogue d'achat d'équipement n'est proposé pendant la création ;
 - aucun autre achat d'équipement n'est permis pendant la création.
 
-### Livrable prévu
+### Livrable validé
 
-Le bloc validé sera écrit dans :
+Le bloc validé est écrit dans :
 
 `docs/rules/dnd-2024/B01-LEVEL-ONE-CREATION.md`
 
-Les exigences transverses resteront dans `REQUIREMENTS.md` et seront liées, pas
-dupliquées.
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
 
-## Blocs suivants
+## B02 — Progression niveaux 2 à 20
 
-### B02 — Progression niveaux 2 à 20
+### Statut
 
-Progression de chaque classe, sous-classes, dons, améliorations de caractéristiques,
-sorts, ressources, remplacement des choix, déverrouillage MJ et absence de repos ou de
-soin implicite.
+**Spécification validée par le propriétaire le 20 août 2026.** Les 82 règles et les
+écarts d'implémentation sont inventoriés dans le livrable B02. Aucun passage à la
+planification ou au code n'est inclus dans cette validation.
 
-### B03 — Multiclassage et respécialisation
+### Périmètre
 
-Prérequis, niveau total, dés de vie, maîtrises acquises, emplacements multiclasses,
-capacités non cumulables, reconstruction complète et règles de conservation de l'état.
+Le bloc couvre la progression mono-classe de chaque classe, les 48 sous-classes, les
+dons, les améliorations de caractéristiques, les sorts, les ressources, le remplacement
+des choix, le déverrouillage individuel ou groupé par le MJ et l'absence de repos ou de
+soin implicite. Le multiclassage et la respécialisation sont couverts par B03.
 
-### B04 — Fiche et état d'aventure
+### Livrable validé
 
-PV, PV temporaires, dés de vie, ressources, inspiration, conditions, épuisement,
-concentration, harmonisation, inventaire, monnaie, mort et corrections du MJ.
+Le bloc validé est écrit dans :
 
-### B05 — Moteur de combat commun
+`docs/rules/dnd-2024/B02-LEVELS-TWO-TO-TWENTY.md`
 
-Préparation, initiative, tours, économie d'actions, mouvement continu en mètres,
-obstacles, visibilité, couverture, ciblage, attaques, sauvegardes, dégâts, soins,
-réactions, interruptions, états, renforts et persistance.
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
 
-### B06 — Sorts et effets magiques
+## B03 — Multiclassage et respécialisation
 
-Inventaire des sorts, listes, préparation, composants, portée, zones, concentration,
-rituels, surclassement, durée, dissipation, invocations et exceptions de géométrie.
+### Statut
 
-### B07 — Équipement, objets et maîtrises
+**Spécification validée par le propriétaire le 20 août 2026.** Les 79 règles et les
+écarts d'implémentation sont inventoriés dans le livrable B03. Les décisions
+`DR-B03-01` à `DR-B03-05` sont résolues. Aucun passage à la planification ou au code
+n'est inclus dans cette validation.
 
-Armes, armures, boucliers, outils, paquets, propriétés, bottes d'armes, consommables,
-charges, harmonisation, port, contenance et objets personnalisés versionnés.
+### Périmètre
 
-### B08 — Monstres, PNJ et créatures invoquées
+Le bloc couvre les prérequis des douze classes, le niveau total et les niveaux de
+classe, les PV et dés de vie, les traits reçus à l'entrée, les capacités non cumulables,
+les emplacements multiclasses, Magie de pacte et la reconstruction complète. Il fixe
+aussi le déverrouillage MJ, la conservation de l'ancienne fiche jusqu'à acceptation,
+l'absence de nouveau tirage et la transformation exhaustive de l'état d'aventure.
 
-Profils, actions, réactions, capacités, ressources, rechargements, contrôle MJ,
-invocations, entrée en combat, visibilité cachée et calcul des récompenses.
+### Livrable validé
 
-### B09 — Règles produit autour de la partie
+Le bloc validé est écrit dans :
 
-Validation de fiche, jets libres, repos collectif, butin concurrent, investigation
-privée, réserve MJ, corrections compensatoires et audit fonctionnel.
+`docs/rules/dnd-2024/B03-MULTICLASSING-AND-RESPECIALIZATION.md`
+
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
+
+## B04 — Fiche et état d'aventure
+
+### Statut
+
+**Spécification validée par le propriétaire le 20 août 2026.** Les 91 règles et les
+écarts d'implémentation sont inventoriés dans le livrable B04. Les décisions
+`DR-B04-01` à `DR-B04-03` sont résolues. Aucun passage à la planification ou au code
+n'est inclus dans cette validation.
+
+### Périmètre
+
+Le bloc couvre les valeurs dérivées et courantes de la fiche, les PV, PV temporaires,
+dés de vie, repos, mort, ressources, inspiration, concentration, quinze conditions,
+épuisement, inventaire actif, cinq monnaies, harmonisation et corrections du MJ. Il
+fixe la provenance, les transitions et les invariants de chaque état sans décider de
+leur représentation technique.
+
+### Livrable validé
+
+Le bloc validé est écrit dans :
+
+`docs/rules/dnd-2024/B04-CHARACTER-SHEET-AND-ADVENTURE-STATE.md`
+
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
+
+## B05 — Moteur de combat commun
+
+### Statut
+
+**Spécification validée par le propriétaire le 20 août 2026.** Les 114 règles et les
+écarts d'implémentation sont inventoriés dans le livrable B05. Les décisions
+`DR-B05-01` à `DR-B05-07` sont résolues. Aucun passage à la planification ou au code
+n'est inclus dans cette validation.
+
+### Périmètre
+
+Le bloc couvre préparation, initiative, tours, douze actions communes, économie
+d'actions, mouvement continu, empreintes circulaires, altitude numérique, obstacles,
+visibilité, couverture, zones, ciblage, attaques, sauvegardes, dégâts, dangers,
+Réactions, renforts et persistance. Il fixe aussi la conversion métrique, la mort des
+monstres, les fenêtres de Réaction et l'information qualitative des PV ennemis.
+
+### Livrable validé
+
+Le bloc validé est écrit dans :
+
+`docs/rules/dnd-2024/B05-COMMON-COMBAT-ENGINE.md`
+
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
+
+## B06 — Sorts et effets magiques
+
+### Statut
+
+**Spécification validée par le propriétaire le 20 août 2026.** Les 82 règles communes,
+les 391 profils et les écarts d'implémentation sont inventoriés dans le livrable B06.
+Les décisions `DR-B06-01` à `DR-B06-05` sont résolues. Aucun passage à la planification
+ou au code n'est inclus dans cette validation.
+
+### Périmètre
+
+Le bloc couvre les 391 sorts, leurs listes et provenances, préparation, emplacements,
+rituels, surclassement, économie d'action, composantes, portée, zones, ciblage,
+concentration, durées, cumul, dégâts, soins, conditions, invocations, transformations,
+téléportations, résurrections, illusions, divinations et effets durables. Il fixe aussi
+l'automatisation hybride, le temps fictionnel, les composants matériels et le registre
+persistant des effets.
+
+### Livrable validé
+
+Le bloc validé est écrit dans :
+
+`docs/rules/dnd-2024/B06-SPELLS-AND-MAGICAL-EFFECTS.md`
+
+Le registre individuel associé est écrit dans :
+
+`docs/rules/dnd-2024/B06-SPELL-REGISTRY.md`
+
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
+
+## B07 — Équipement, objets, maîtrises et bottes d'armes
+
+### Statut
+
+**Spécification validée par le propriétaire le 20 août 2026.** Les 116 règles
+communes, les 10 constats d'implémentation et le catalogue magique A–Z sont couverts
+par le livrable B07. Les décisions `DR-B07-01` à `DR-B07-05` sont résolues. Aucun
+passage à la planification ou au code n'est inclus dans cette validation.
+
+### Périmètre
+
+Le bloc couvre catalogue et exemplaires, possession et transferts consentis, charge
+optionnelle, contenants, mains, port, armes, propriétés, maîtrise et bottes d'armes,
+armures, boucliers, outils, matériel, consommables, objets de scène, identification,
+harmonisation, charges, malédictions, artefacts, objets conscients, profils magiques
+A–Z et objets personnalisés versionnés. Il fixe aussi la conversion du poids, les
+variantes laissées au MJ et l'absence de boutique ou de fabrication automatisée au
+MVP.
+
+### Livrable validé
+
+Le bloc validé est écrit dans :
+
+`docs/rules/dnd-2024/B07-EQUIPMENT-ITEMS-AND-PROFICIENCIES.md`
+
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
+
+## B08 — Monstres, PNJ et créatures invoquées
+
+### Statut
+
+**Spécification validée par le propriétaire le 20 août 2026.** Les 91 règles, les 10
+constats d'implémentation, 503 profils XMM et 15 profils PHB paramétrés sont couverts.
+Les décisions `DR-B08-01` à `DR-B08-05` et `DONNÉE-B08-01` sont résolues dans
+`DEC-013`. Aucun passage à la planification ou au code n'est inclus dans cette
+validation.
+
+### Périmètre
+
+Le bloc couvre catalogue et provenance, contenu exécutable, instances, cycle de vie,
+actions, ressources, recharges, contrôle, PNJ, invocations, compagnons, montures,
+préparation, renforts, visibilité, budget de difficulté et préférences de trésor. La
+référence XMM est 5e.tools `v2.33.3`, avec priorité aux errata officiels.
+
+### Livrable validé
+
+Le bloc validé est écrit dans :
+
+`docs/rules/dnd-2024/B08-MONSTERS-NPCS-AND-SUMMONED-CREATURES.md`
+
+Le registre individuel associé est écrit dans :
+
+`docs/rules/dnd-2024/B08-CREATURE-PROFILE-REGISTRY.md`
+
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
+
+## B09 — Règles produit autour de la partie
+
+### Statut
+
+**Spécification validée par le propriétaire le 20 août 2026.** Les 90 règles couvrent
+validation de fiche, jets libres, repos collectif, butin concurrent, investigation
+privée, réserve MJ, corrections compensatoires et audit fonctionnel. Les décisions
+`DR-B09-01` à `DR-B09-07` sont résolues dans `DEC-014`. Aucun passage à la
+planification ou au code n'est inclus dans cette validation.
+
+### Livrable validé
+
+Le bloc validé est écrit dans :
+
+`docs/rules/dnd-2024/B09-GAME-SURROUNDING-PRODUCT-RULES.md`
+
+Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dupliquées.
 
 ## Définition de terminé d'un bloc
 

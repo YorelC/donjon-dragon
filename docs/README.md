@@ -1,7 +1,7 @@
 # Documentation de référence
 
 Ce dossier consolide la vision produit, la cible fonctionnelle, l'état vérifié du
-repository et les décisions validées avec le propriétaire du produit au 19 août
+repository et les décisions validées avec le propriétaire du produit au 20 août
 2026.
 
 Le code existant n'est jamais considéré automatiquement comme la spécification.
@@ -60,7 +60,7 @@ la spécification ou le registre des décisions sans devoir consulter l'archive.
 | 2 — audit du repository | Terminée, lecture seule | `CURRENT-STATE.md` |
 | 3 — analyse des écarts | Terminée | `GAP-ANALYSIS.md` |
 | 4 — spécifications fonctionnelles système | Validées | `REQUIREMENTS.md` |
-| 4 — matrice exhaustive des règles D&D 2024 | Planifiée, B01 à produire | `DND-2024-COMPLIANCE-PLAN.md` |
+| 4 — matrice exhaustive des règles D&D 2024 | Terminée : B01 à B09 validés | `DND-2024-COMPLIANCE-PLAN.md` |
 | 5 — spécifications techniques cibles | Non commencée | Architecture, données, API, sécurité et tests cibles |
 | 6 — documentation dans le repository | En cours | Présents documents |
 

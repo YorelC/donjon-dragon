@@ -116,6 +116,12 @@ La création couvre au minimum :
 - description physique, facultative ;
 - portrait téléversé, facultatif.
 
+Le détail normatif de ces choix, catalogues, quotas et dérivés est inventorié dans
+[`B01-LEVEL-ONE-CREATION.md`](rules/dnd-2024/B01-LEVEL-ONE-CREATION.md), pointé sur le
+*Player's Handbook 2024*. Une création de niveau 1 commence à 0 PX avec un bonus de
+maîtrise de +2. Les décisions produit documentées ci-dessous prévalent lorsqu'elles
+dérogent explicitement au livre.
+
 L'alignement est obligatoire. Après validation par le MJ, il ne peut plus être
 modifié.
 
@@ -124,10 +130,10 @@ maximale par espèce ; le MJ contrôle la cohérence. La taille physique est exp
 centimètres et le poids en kilogrammes. La catégorie de taille D&D est une donnée
 distincte, limitée aux options autorisées par l'espèce.
 
-Le joueur peut sélectionner une babiole facultative, dotée d'une valeur déterminée.
-Sa sélection ajoute la babiole au personnage et soustrait automatiquement sa valeur de
-l'or de départ. Le solde d'or ne peut pas devenir négatif. Aucun magasin, catalogue ni
-autre achat d'équipement n'est proposé pendant la création.
+Le joueur peut sélectionner une babiole facultative et gratuite parmi les cent entrées
+du *Player's Handbook 2024*. Sa sélection ajoute la babiole au personnage sans modifier
+l'or de départ. Aucun magasin, catalogue ni autre achat d'équipement n'est proposé
+pendant la création.
 
 Sans portrait téléversé, l'application emploie un portrait générique : fond blanc et
 silhouette de tête grise. Le même portrait est utilisé sur la fiche et en combat.
@@ -137,13 +143,23 @@ choix invalides sont empêchés et leur indisponibilité est brièvement justifi
 
 ### Validation
 
+La revue d'une fiche distingue `BROUILLON`, `SOUMISE`, `REFUSÉE` et `ACCEPTÉE`, sans
+confondre cet état avec l'attribution du personnage ou son état d'aventure. La
+soumission fige une version à examiner ; elle ne peut plus être modifiée silencieusement
+pendant la revue.
+
 1. Le joueur soumet sa fiche au MJ.
 2. La fiche reste inutilisable en combat tant qu'elle n'est pas acceptée.
-3. Un refus du MJ comporte un motif.
-4. Une fiche créée directement par un MJ peut être validée immédiatement.
-5. Il n'existe pas de période de modification libre jusqu'au premier combat : la
+3. Tout MJ actif de la campagne peut accepter ou refuser seul une fiche.
+4. Un refus comporte un motif visible du créateur.
+5. Le créateur corrige la fiche refusée puis la resoumet. La nouvelle soumission
+   remplace la version à examiner ; le dernier motif et l'historique des décisions de
+   validation restent conservés.
+6. Une fiche créée directement par un MJ peut être validée immédiatement, y compris
+   par son créateur.
+7. Il n'existe pas de période de modification libre jusqu'au premier combat : la
    validation du MJ engage le joueur sur ses choix.
-6. Aucune sauvegarde automatique de brouillon supplémentaire n'est exigée ; le
+8. Aucune sauvegarde automatique de brouillon supplémentaire n'est exigée ; le
    processus actuel de création complète est acceptable.
 
 ### Modifications après validation
@@ -168,29 +184,79 @@ Restent modifiables :
 La classe et les caractéristiques peuvent changer uniquement par une
 respécialisation complète :
 
-1. la reconstruction recommence au niveau 1 ;
-2. tous les niveaux jusqu'au niveau total actuel sont rejoués ;
-3. le niveau total est conservé ;
-4. le multiclassage est permis ;
-5. la nouvelle construction doit de nouveau être validée par un MJ ;
-6. la respécialisation est interdite pendant un combat ;
-7. l'inventaire est conservé et aucun nouvel équipement de départ n'est accordé ;
-8. toutes les maîtrises sont recalculées : une arme ou armure conservée peut devenir
-   non maîtrisée, avec toutes les conséquences prévues par les règles ;
-9. les anciennes ressources de classe disparaissent et les ressources de la nouvelle
-   construction commencent pleines ;
-10. états persistants, conditions et épuisement sont conservés ;
-11. les PV actuels deviennent `min(anciens PV actuels, nouveaux PV maximaux)` : une
+1. un MJ actif déverrouille la respécialisation d'un personnage accepté et assigné ;
+2. seul le joueur assigné reconstruit et soumet le candidat ;
+3. la reconstruction recommence au niveau total 1 et rejoue exactement tous les
+   niveaux jusqu'au niveau total actuel, qui est conservé ;
+4. classe initiale, ordre des classes, sous-classes, dons, sorts, améliorations et choix
+   de progression peuvent changer ; le multiclassage est permis ;
+5. la méthode et les six valeurs de caractéristiques de base d'origine sont conservées
+   et réassignables ; bonus et améliorations sont rejoués, sans nouveau tirage ;
+6. nom, alignement, espèce, lignée ou héritage, historique, taille physique et catégorie
+   de taille restent immuables ;
+7. le MJ peut déverrouiller à tout moment, mais le joueur ne peut commencer, reprendre
+   ou soumettre pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN` ; le candidat ne peut alors
+   être accepté ni activé ;
+8. l'ancienne fiche acceptée reste active pendant la reconstruction et la revue ; un
+   refus motivé laisse le candidat corrigeable et resoumissible ;
+9. un MJ actif peut accepter seul le candidat ; son activation et la transformation
+   d'état forment une seule opération fonctionnelle ;
+10. aucun équipement ni or de départ n'est rejoué ; objets, monnaie, port, conteneurs
+    et harmonisations sont conservés ;
+11. toutes les maîtrises sont recalculées : une arme ou armure conservée peut devenir
+    non maîtrisée, avec toutes les conséquences prévues par les règles ;
+12. conditions, épuisement, PV temporaires, inspiration, concentration et état relatif
+    à la mort sont conservés ;
+13. les anciens dés de vie, emplacements et ressources de classe disparaissent ; les
+    pools du nouveau build commencent pleins ;
+14. les PV actuels deviennent `min(anciens PV actuels, nouveaux PV maximaux)` : une
     hausse du maximum ne soigne pas le personnage.
+
+Le détail normatif et les transformations avant/après sont inventoriés dans
+[`B03-MULTICLASSING-AND-RESPECIALIZATION.md`](rules/dnd-2024/B03-MULTICLASSING-AND-RESPECIALIZATION.md).
 
 ### Progression
 
+Le détail normatif des niveaux 2 à 20, des douze classes, de leurs sous-classes, des
+dons, des sorts et des traits progressifs est inventorié dans
+[`B02-LEVELS-TWO-TO-TWENTY.md`](rules/dnd-2024/B02-LEVELS-TWO-TO-TWENTY.md). B02 couvre
+la progression dans la classe courante. L'ajout d'une nouvelle classe, ses prérequis,
+maîtrises, cumuls et emplacements sont inventoriés dans la
+[`matrice B03`](rules/dnd-2024/B03-MULTICLASSING-AND-RESPECIALIZATION.md).
+
 - L'expérience n'est pas gérée.
-- Un MJ déverrouille explicitement le niveau suivant d'un personnage.
-- Il peut aussi lancer une action groupée pour les personnages assignés aux joueurs.
-- Un seul niveau est acquis à la fois, jusqu'au niveau 20.
-- La montée de niveau n'entraîne ni soin complet ni repos implicite.
-- Le multiclassage fait partie du périmètre obligatoire.
+- Un MJ actif de la campagne déverrouille explicitement le niveau suivant d'un
+  personnage accepté et assigné à un joueur.
+- L'action groupée cible automatiquement tous les personnages acceptés et assignés aux
+  joueurs de la campagne. Chaque personnage éligible reçoit exactement un niveau en
+  attente ; un niveau 20 ou un niveau déjà en attente est signalé sans bloquer les
+  autres.
+- L'action individuelle reste disponible pour un personnage précis.
+- Un déverrouillage porte uniquement sur le niveau suivant, ne se cumule pas et ne
+  dépasse jamais le niveau 20.
+- Seul le joueur assigné complète et finalise la progression ; aucun second accord du
+  MJ n'est requis.
+- Le MJ peut déverrouiller à tout moment. Le joueur ne peut ni commencer ni finaliser
+  pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN` ; il le peut hors combat et pendant la
+  préparation du combat.
+- Le MJ peut révoquer un niveau en attente uniquement avant le premier choix ou jet de
+  PV persisté. Une progression commencée ne peut plus être révoquée.
+- La montée de niveau n'entraîne ni soin, ni repos, ni récupération implicite d'une
+  ressource dépensée.
+- Le niveau total est la somme des niveaux de classe et pilote le bonus de maîtrise et
+  les effets qui le citent ; chaque capacité de classe emploie son niveau de classe.
+- Entrer dans une nouvelle classe exige 13 dans ses caractéristiques principales et
+  celles de toutes les classes déjà présentes. Le Guerrier accepte Force ou Dextérité ;
+  le Moine, le Paladin et le Rôdeur exigent leurs deux caractéristiques.
+- La classe initiale accorde tous ses traits de départ. Une classe ajoutée accorde
+  seulement son profil multiclassé et ses capacités de niveau 1, jamais son équipement,
+  son or ou ses maîtrises de sauvegarde initiales.
+- Les formules alternatives de CA et les capacités Attaque supplémentaire ne se
+  cumulent pas. Les sorts sont préparés séparément par classe et conservent leur source.
+- Le niveau effectif d'emplacements arrondit séparément chaque classe fractionnaire :
+  `ceil(Paladin/2) + ceil(Rôdeur/2) + floor(Chevalier occulte/3) +
+  floor(Arnaqueur arcanique/3)`, en plus des niveaux complets. Magie de pacte reste un
+  pool séparé mais interopérable pour lancer les sorts préparés.
 
 ### Sorts préparés
 
@@ -199,7 +265,21 @@ tant qu'aucun combat n'a commencé depuis ce repos. Plusieurs modifications sont
 possibles dans cette fenêtre. Les exceptions explicites des classes, dons et autres
 règles prévalent. Montée de niveau et respécialisation suivent leurs propres règles.
 
+La différence nette de la liste dans cette fenêtre respecte le *Player's Handbook
+2024* : Clerc, Druide et Magicien peuvent remplacer tout leur quota ; Paladin et
+Rôdeur un seul sort. Les sauvegardes successives de l'interface ne réinitialisent pas
+ce quota. Barde, Ensorceleur et Occultiste changent au plus un sort au gain de niveau,
+sauf exception explicite.
+
+Le catalogue, la préparation, le lancement et les exceptions des 391 sorts sont
+inventoriés dans
+[`B06-SPELLS-AND-MAGICAL-EFFECTS.md`](rules/dnd-2024/B06-SPELLS-AND-MAGICAL-EFFECTS.md).
+
 ### État d'aventure
+
+Le détail normatif des valeurs courantes, de leur provenance et de leur cycle de vie est
+inventorié dans
+[`B04-CHARACTER-SHEET-AND-ADVENTURE-STATE.md`](rules/dnd-2024/B04-CHARACTER-SHEET-AND-ADVENTURE-STATE.md).
 
 La fiche persistée porte notamment :
 
@@ -215,6 +295,43 @@ La fiche persistée porte notamment :
 Le serveur calcule les valeurs dérivées et peut exposer leurs sources. Toute correction
 manuelle d'un MJ conserve l'ancienne valeur, la nouvelle, l'auteur, la date et le motif.
 
+Les pièces de cuivre, d'argent, d'électrum, d'or et de platine sont conservées dans
+leurs dénominations respectives, sans conversion automatique. Une valeur totale peut
+être dérivée ; convertir des pièces reste une action explicite.
+
+Tout MJ actif peut corriger l'état à tout moment, y compris pendant un combat, avec un
+motif obligatoire. La correction respecte les invariants, ne supprime aucun événement
+et applique automatiquement les mêmes transitions que toute autre mutation. Corriger
+l'intention et ses conséquences dépendantes forme une seule opération fonctionnelle.
+
+### Équipement, possessions et objets magiques
+
+Le catalogue, les exemplaires, le port, les armes, armures, outils, consommables et
+objets magiques sont inventoriés dans
+[`B07-EQUIPMENT-ITEMS-AND-PROFICIENCIES.md`](rules/dnd-2024/B07-EQUIPMENT-ITEMS-AND-PROFICIENCIES.md).
+
+- Une définition officielle ou personnalisée et chaque exemplaire détenu sont
+  distincts ; l'exemplaire conserve sa version, sa provenance, son emplacement et son
+  état mutable.
+- Le poids emploie `1 lb = 0,5 kg` en conservant la valeur PHB source. La capacité de
+  port est désactivée par défaut et configurable par campagne ; active, elle avertit
+  puis bloque un dépassement sans altérer un état déjà excédentaire.
+- La variante de taille d'équipement et son coût ne sont pas automatisés au MVP ; le
+  MJ les arbitre par correction auditée.
+- Le joueur assigné peut organiser, équiper, utiliser et déposer ses possessions. Un
+  transfert à un autre personnage actif exige le consentement de son joueur assigné.
+- Le MVP ne comporte ni boutique ni workflow de commerce, fabrication, service,
+  monture ou véhicule. Le MJ arbitre acquisitions et dépenses ; les conséquences
+  déterministes d'un objet effectivement détenu restent automatisées.
+- La maîtrise d'une arme ajoute le bonus de maîtrise au jet d'attaque. Une botte
+  d'arme est un déverrouillage distinct pour un type d'arme ; elle se greffe à une
+  attaque selon son déclencheur et ne constitue pas une Action autonome.
+- Les objets magiques respectent catégorie, rareté, identification, harmonisation,
+  charges, prochaine aube, malédiction, résilience, activation, artefacts, conscience
+  et chaque profil individuel du catalogue A–Z du DMG.
+- Apparence, propriétés découvertes, compteur autorisé, malédiction et texte MJ sont
+  des projections distinctes ; aucune réponse ou diffusion ne révèle un secret.
+
 ### Critères d'acceptation essentiels
 
 - Chaque combinaison valide de niveau 1 des trois livres de base peut être soumise.
@@ -223,8 +340,16 @@ manuelle d'un MJ conserve l'ancienne valeur, la nouvelle, l'auteur, la date et l
 - Une fiche non validée ne peut pas participer à un combat.
 - Un changement d'âge ne déverrouille pas les champs immuables.
 - Une respécialisation conserve l'inventaire mais recalcule les maîtrises.
+- Un déverrouillage groupé accorde un niveau en attente à chaque personnage joueur
+  éligible sans exiger d'action individuelle du MJ.
+- Un autre joueur ou un MJ ne peut pas finaliser la progression à la place du joueur
+  assigné.
+- Une progression ne peut être commencée ou finalisée pendant `EN_COURS`, `EN_PAUSE`
+  ou `BUTIN`, et un niveau commencé ne peut plus être révoqué.
 - Une montée de niveau ne modifie pas implicitement les PV actuels ni les ressources
   dépensées, sauf règle explicite du choix de niveau.
+- Un transfert refusé, expiré ou non consenti ne déplace aucun objet et ne révèle aucun
+  contenu privé.
 
 ## SF-003 — Préparation, lancement et reprise d'un combat
 
@@ -232,6 +357,14 @@ manuelle d'un MJ conserve l'ancienne valeur, la nouvelle, l'auteur, la date et l
 
 Permettre au MJ de préparer à l'avance un affrontement, de le lancer rapidement et de
 le reprendre exactement après une fermeture de navigateur ou un redémarrage serveur.
+
+Le cycle, l'autorité, la persistance, l'initiative, les renforts et les critères
+détaillés sont inventoriés dans la
+[`matrice B05`](rules/dnd-2024/B05-COMMON-COMBAT-ENGINE.md).
+Le catalogue, les profils, instances, contrôleurs, PNJ, invocations et budgets de
+rencontre sont inventoriés dans la
+[`matrice B08`](rules/dnd-2024/B08-MONSTERS-NPCS-AND-SUMMONED-CREATURES.md) et son
+[`registre de profils`](rules/dnd-2024/B08-CREATURE-PROFILE-REGISTRY.md).
 
 ### Cycle de vie
 
@@ -265,6 +398,17 @@ Le MJ peut les exclure. Une préparation valide contient au moins un personnage 
 et un adversaire. Les monstres utilisent leurs PV moyens par défaut ; le MJ peut
 demander un jet serveur propre à chaque instance.
 
+Chaque créature préparée fixe profil et version, paramètres, contrôleur, camp,
+attitude, visibilité et ressources propres. Le système calcule le budget et la
+difficulté de rencontre selon le DMG, avertit les compositions inhabituelles sans
+retirer l'arbitrage du MJ et n'attribue jamais les PX aux personnages. Les profils
+incomplets ou absents sont refusés avant lancement.
+
+Un monstre meurt immédiatement à 0 PV par défaut. Le MJ peut marquer une instance à la
+préparation pour lui appliquer les règles des personnages. Si une instance non marquée
+atteint 0 PV, une courte décision privée permet encore au MJ de choisir cette exception
+avant révélation ; sans réponse, la mort immédiate s'applique.
+
 ### Lancement et persistance
 
 - Aucun bouton « prêt » des joueurs n'est requis ; le MJ lance le combat.
@@ -289,17 +433,29 @@ demander un jet serveur propre à chaque instance.
 
 ## SF-004 — Carte, tours et résolution des actions
 
+Le moteur commun de combat, ses règles D&D 2024, ses critères et ses limites avec les
+sorts, objets et monstres sont inventoriés dans la
+[`matrice B05`](rules/dnd-2024/B05-COMMON-COMBAT-ENGINE.md).
+Les options propres aux créatures, leur contrôle et leurs recharges sont détaillés
+dans la [`matrice B08`](rules/dnd-2024/B08-MONSTERS-NPCS-AND-SUMMONED-CREATURES.md).
+
 ### Carte et déplacement
 
 - Toutes les distances sont affichées en mètres, avec des décimales lorsque nécessaire
   (par exemple `1,5 m`).
+- La conversion fonctionnelle vaut `1 pied = 0,3 m`, sans conversion SI intermédiaire.
 - Le positionnement est continu, sans grille, et limité à un plan horizontal.
+- Un pion peut porter une altitude métrique visible. Les distances combinent leurs
+  composantes horizontale et verticale sans introduire de caméra 2,5D ou 3D.
 - Chaque client peut déplacer sa caméra, zoomer et recentrer sans déplacer la caméra
   des autres utilisateurs.
 - Un outil de mesure libre est accessible aux participants.
 - Un pion porte le portrait, le nom, le camp et la taille de la créature.
-- L'occupation et les distances sont calculées depuis les limites physiques des pions,
-  selon leur catégorie de taille.
+- Les pions ont une empreinte circulaire. Leur diamètre fonctionnel vaut `0,75 m` pour
+  Minuscule, `1,5 m` pour Petite ou Moyenne, `3 m` pour Grande, `4,5 m` pour Très grande
+  et au moins `6 m` pour Gigantesque.
+- Occupation, adjacence et distances euclidiennes sont calculées depuis les périmètres
+  physiques de ces empreintes, jamais depuis leur centre.
 - Un joueur déplace son personnage ; le MJ contrôle ses créatures et peut corriger
   n'importe quel pion.
 - Avant confirmation, l'interface montre le chemin, sa distance, son coût, le mouvement
@@ -365,7 +521,8 @@ consomme pas deux fois une ressource ou n'applique pas deux fois les dégâts.
 
 - Une attaque couvre modificateurs, jet d'attaque, classe d'armure, critique,
   dégâts, résistances, immunités, vulnérabilités et états produits.
-- Les attaques multiples, propriétés d'armes et maîtrises sont prises en charge.
+- Les attaques multiples, propriétés d'armes, maîtrises d'armes et bottes d'armes sont
+  prises en charge comme mécanismes distincts.
 - Les sorts contrôlent connaissance ou préparation, emplacement ou ressource, niveau
   choisi, temps d'incantation, concentration, ciblage, zones, sauvegardes, effets et
   surclassement.
@@ -376,10 +533,22 @@ consomme pas deux fois une ressource ou n'applique pas deux fois les dégâts.
 - Les ressources ne sont consommées qu'après validation de l'action. Elles restent
   dépensées lorsqu'une action valide échoue normalement, par exemple une attaque ratée.
 
+Toute conséquence déterministe d'un sort est automatisée. Une clause subjective ou
+narrative ouvre, après validation et dépense normales, une résolution privée et auditée
+du MJ. En combat, rounds et tours font avancer les durées ; hors combat, le MJ avance
+explicitement le temps fictionnel, jamais l'horloge réelle.
+
+Une sacoche à composantes ou un focaliseur autorisé abstrait les composants génériques,
+gratuits et non consommés. Un composant tarifé, consommé ou désigné comme objet précis
+doit être détenu. Les effets durables sont rattachés dans un registre de campagne à une
+créature, un objet ou un lieu nommé, sans exiger une carte mondiale.
+
 ### Réactions et interruptions
 
-- Une réaction ouvre une fenêtre courte configurable ; elle peut être désactivée dans
-  les réglages de la campagne.
+- Une Réaction optionnelle ouvre une fenêtre de 15 secondes par défaut, configurable
+  par campagne entre 5 et 60 secondes. Le MJ peut prolonger ou clore une fenêtre.
+- « Réactions désactivées » désactive uniquement le compte à rebours : les Réactions et
+  fenêtres subsistent et le MJ les résout manuellement sans expiration automatique.
 - L'action déclenchante reste suspendue jusqu'à la réponse, l'expiration ou la décision
   du MJ.
 - L'absence de réponse vaut refus.
@@ -388,39 +557,57 @@ consomme pas deux fois une ressource ou n'applique pas deux fois les dégâts.
 ### Information présentée
 
 - Les alliés voient les PV actuels et maximaux exacts entre eux.
-- Les ennemis affichent par défaut une barre qualitative sans nombres ; le MJ peut
-  révéler les valeurs.
+- Les ennemis affichent sans nombres : `Indemne` au maximum, `Blessé` sous le maximum
+  et au-dessus de la moitié, `Sanglant` à la moitié ou moins, puis `À terre` ou `Mort`
+  seulement si cet état est visible. Le MJ peut révéler les valeurs exactes.
 - Un joueur ne peut annuler une action après révélation du jet ou de ses conséquences.
 - Le MJ corrige par une opération compensatoire journalisée, jamais par suppression de
   l'historique.
 
 ## SF-005 — Dés, repos, mort et butin
 
+Le détail normatif des parcours de cette section, de leurs permissions et de leur audit
+est inventorié dans
+[`B09-GAME-SURROUNDING-PRODUCT-RULES.md`](rules/dnd-2024/B09-GAME-SURROUNDING-PRODUCT-RULES.md).
+Les états et bénéfices individuels du repos restent définis par B04.
+
 ### Jets de dés
 
 - Tout jet ayant une conséquence de partie est produit et enregistré par le serveur.
 - Seuls les jets de caractéristiques utilisés pendant la création peuvent rester
   provisoirement non autoritaires côté client.
+- Pour un test hors combat, le joueur décrit d'abord son intention ; le MJ décide si
+  un test est requis et fixe caractéristique, compétence ou outil et éventuel DD.
 - Depuis la fiche, un joueur peut lancer un test de compétence en mode normal, avec
   avantage ou avec désavantage ; le bonus est appliqué automatiquement.
 - Un plateau libre permet de combiner d4, d6, d8, d10, d12, d20 et d100.
-- Les jets des joueurs sont publics dans la campagne.
-- Les jets du MJ sont secrets par défaut, avec possibilité de révélation.
+- Les jets des joueurs sont publics par défaut. Avant le tirage, le joueur peut rendre
+  un jet privé entre lui et les MJ.
+- Les jets du MJ sont secrets par défaut ; le MJ peut les rendre publics avant le
+  tirage. Une règle imposant une audience plus restrictive prévaut toujours.
+- L'audience est figée avant le tirage et ne change jamais selon le résultat.
 - Animation 3D, son et suspense ne déterminent jamais le résultat : ils représentent
   visuellement un résultat déjà fixé. Fermer l'animation ne relance pas les dés.
 
 ### Repos collectif
 
 1. Un MJ propose un repos court ou long hors combat en cours ou en phase de butin.
-2. Tous les personnages joués et assignés sont inclus par défaut.
-3. Les joueurs connectés indiquent qu'ils sont prêts et effectuent leurs choix.
-4. Un joueur déconnecté ne bloque pas indéfiniment le groupe : le MJ peut confirmer son
-   inclusion ou l'exclure explicitement.
+2. Tous les personnages acceptés, vivants, joués et assignés sont inclus par défaut.
+3. Les joueurs indiquent qu'ils sont prêts et effectuent leurs choix. Un MJ peut
+   répondre à la place de tout joueur inclus, connecté ou non ; les choix conservent le
+   MJ comme auteur effectif dans l'audit.
+4. Un joueur déconnecté ne bloque pas indéfiniment le groupe : le MJ peut répondre à sa
+   place ou l'exclure explicitement.
 5. Le MJ valide finalement le repos ; les effets sont appliqués ensemble et persistés.
 
 Le repos court permet les choix de dés de vie avant application. Le repos long applique
 les règles complètes et ouvre la fenêtre de modification des sorts préparés décrite dans
 SF-002.
+
+Un repos long interrompu après au moins 1 heure devient une étape de repos court à
+finaliser. Les joueurs ou le MJ agissant à leur place effectuent les choix admissibles,
+puis le MJ valide ces bénéfices. Une éventuelle reprise du repos long reste une étape
+distincte et ajoute l'heure requise par l'interruption.
 
 ### Mort
 
@@ -429,20 +616,32 @@ peut être ressuscité selon les règles ou archivé par un MJ.
 
 ### Génération et consultation du butin
 
-- Le butin d'une créature est généré une seule fois à partir des objets garantis,
-  tables aléatoires, monnaie, objets cachés et objets imposés par la campagne.
-- Le résultat est persisté et ne change pas à la reconnexion.
+- Le FP et la préférence de trésor versionnés du profil sélectionnent les tables
+  applicables ; ils n'accordent jamais un objet absent des tables ou de la préparation.
+- Les objets que le MJ impose à une créature et ses possessions récupérables sont figés
+  avec l'instance au lancement. Ils rejoignent toujours son contenant si la créature
+  laisse une source récupérable.
+- Tables aléatoires, paramètres, visibilité et mode moyenne ou dés sont préparés sans
+  être résolus. À la première ouverture autorisée, le serveur réunit les objets figés
+  et résout toutes les sources aléatoires, visibles ou cachées, exactement une fois.
+- Le résultat complet est persisté avant projection et ne change pas à la reconnexion,
+  à la réouverture ou lors d'une investigation.
 - Après la fin du combat, un joueur participant clique sur le portrait d'une créature
   vaincue pour ouvrir son butin, à la manière de Baldur's Gate 3.
 - Plusieurs joueurs peuvent ouvrir simultanément le même contenant.
 - La fenêtre partagée se met à jour en temps réel lorsqu'un objet visible est pris.
 - La première attribution validée par le serveur gagne ; la récupération partielle
   d'une pile est possible.
+- Chaque dénomination monétaire forme une pile récupérable partiellement comme un
+  objet. Il n'existe ni bourse de groupe, ni partage égal, ni conversion automatique.
 - Seuls les joueurs dont le personnage participait au combat peuvent récupérer le
   butin.
 
 ### Investigation et objets cachés
 
+- La recherche ciblée d'un butin sur une dépouille utilise Intelligence
+  (Investigation). Cette dérogation produit est limitée à ce parcours et ne remplace
+  pas les compétences D&D applicables aux recherches génériques.
 - Un personnage dispose d'une tentative d'investigation par cadavre, sauf remise à
   zéro explicite par le MJ.
 - Le jet et la découverte sont visibles uniquement par l'investigateur et les MJ.
@@ -453,10 +652,22 @@ peut être ressuscité selon les règles ou archivé par un MJ.
 
 ### Clôture du butin
 
-Le MJ ferme explicitement la phase de butin. Tous les objets non récupérés sont alors
-transférés dans une réserve de campagne gérée par les MJ, avec leur provenance : combat,
-créature et objet. Le butin clos n'est pas rouvert ; un MJ peut attribuer ultérieurement
-un objet de la réserve à n'importe quel personnage actif de la campagne.
+Le MJ ferme explicitement la phase de butin. Tous les objets et toutes les monnaies non
+récupérés sont alors transférés dans une réserve de campagne gérée par les MJ, avec leur
+provenance : combat, créature et objet ou dénomination. Le butin clos n'est pas rouvert ;
+un MJ peut attribuer ultérieurement tout ou partie d'une entrée de réserve à n'importe
+quel personnage actif de la campagne.
+
+### Audit fonctionnel
+
+- Toute décision ou mutation acceptée est persistée avant sa diffusion et conserve
+  acteur, rôle effectif, date, action, version et conséquences pertinentes.
+- Les conflits et refus de règle utiles à l'arbitrage sont consultables par les MJ ;
+  leur rétention plus courte sera définie pendant la phase technique.
+- Les refus d'autorisation et traces de sécurité appartiennent à un journal technique
+  distinct.
+- Les secrets sont filtrés côté serveur selon l'audience de l'action ; ils ne sont
+  jamais envoyés puis masqués dans le client.
 
 ## SF-006 — Invitations, courriels et contenu personnalisé
 

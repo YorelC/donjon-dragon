@@ -15,10 +15,10 @@ en centimètres et le poids en kilogrammes. La catégorie de taille D&D reste di
 et ne propose que les valeurs permises par l'espèce. La description physique est
 facultative.
 
-Une babiole de départ est facultative et possède une valeur déterminée. Sa sélection
-ajoute la babiole au personnage et soustrait automatiquement sa valeur de l'or de
-départ. Le solde ne peut pas devenir négatif. Le parcours ne propose aucun magasin,
-catalogue ni autre achat d'équipement pendant la création.
+Une babiole de départ est facultative et gratuite, conformément au *Player's Handbook
+2024*. Sa sélection ajoute la babiole au personnage sans modifier l'or de départ. Le
+parcours ne propose aucun magasin, catalogue ni autre achat d'équipement pendant la
+création.
 
 ## Conséquences
 
@@ -26,6 +26,6 @@ catalogue ni autre achat d'équipement pendant la création.
 - Taille physique et catégorie de taille ne doivent pas partager le même champ.
 - La validation fonctionnelle des données physiques appartient au backend ; le MJ
   reste l'arbitre de leur vraisemblance narrative.
-- La valeur de la babiole appartient aux données de référence et le backend garantit
-  la déduction correspondante.
+- Les données de référence identifient les cent babioles du PHB sans prix ; le backend
+  garantit que leur sélection ne modifie pas l'or.
 - Aucun catalogue d'achat ni calcul de panier n'entre dans le bloc B01.

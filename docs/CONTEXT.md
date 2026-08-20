@@ -83,9 +83,10 @@ Six groupes de spécifications ont été validés :
 - SF-005 : dés, repos, mort, butin et réserve MJ ;
 - SF-006 : notifications, objets personnalisés et fonctions futures.
 
-La couverture système est validée. Il reste à produire une matrice règle par règle pour
-que « toutes les règles D&D 2024 » soit vérifiable pour chaque classe, sort, capacité,
-objet et monstre.
+La couverture système et les matrices règle par règle B01 à B09 sont validées. B08
+contient 91 règles, 10 constats et un registre de 503 profils XMM plus 15 profils PHB.
+La source XMM est 5e.tools `v2.33.3`, désignée par le propriétaire avec priorité aux
+errata officiels.
 
 ## Jalons et contraintes
 
