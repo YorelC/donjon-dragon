@@ -171,7 +171,8 @@ planification ou au code n'est inclus dans cette validation.
 Le bloc couvre la progression mono-classe de chaque classe, les 48 sous-classes, les
 dons, les améliorations de caractéristiques, les sorts, les ressources, le remplacement
 des choix, le déverrouillage individuel ou groupé par le MJ et l'absence de repos ou de
-soin implicite. Le multiclassage et la respécialisation sont couverts par B03.
+soin implicite. La décision DR-B02-05 du 21 août 2026 interdit sa coexistence avec une
+respécialisation ouverte. Le multiclassage et la respécialisation sont couverts par B03.
 
 ### Livrable validé
 
@@ -187,14 +188,15 @@ Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dup
 
 **Spécification validée par le propriétaire le 20 août 2026.** Les 79 règles et les
 écarts d'implémentation sont inventoriés dans le livrable B03. Les décisions
-`DR-B03-01` à `DR-B03-05` sont résolues. Aucun passage à la planification ou au code
+`DR-B03-01` à `DR-B03-06` sont résolues. Aucun passage à la planification ou au code
 n'est inclus dans cette validation.
 
 ### Périmètre
 
 Le bloc couvre les prérequis des douze classes, le niveau total et les niveaux de
 classe, les PV et dés de vie, les traits reçus à l'entrée, les capacités non cumulables,
-les emplacements multiclasses, Magie de pacte et la reconstruction complète. Il fixe
+la fermeture auditée d'une respécialisation abandonnée par le joueur assigné ou un MJ
+actif, les emplacements multiclasses, Magie de pacte et la reconstruction complète. Il fixe
 aussi le déverrouillage MJ, la conservation de l'ancienne fiche jusqu'à acceptation,
 l'absence de nouveau tirage et la transformation exhaustive de l'état d'aventure.
 
@@ -235,7 +237,8 @@ Les exigences transverses restent dans `REQUIREMENTS.md` et sont liées, pas dup
 
 ### Statut
 
-**Spécification validée par le propriétaire le 20 août 2026.** Les 114 règles et les
+**Spécification validée par le propriétaire le 20 août 2026, puis précisée en Phase
+5B le 21 août 2026.** Les 115 règles et les
 écarts d'implémentation sont inventoriés dans le livrable B05. Les décisions
 `DR-B05-01` à `DR-B05-07` sont résolues. Aucun passage à la planification ou au code
 n'est inclus dans cette validation.

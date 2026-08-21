@@ -19,14 +19,16 @@ qu'ils sont prêts et effectuent leurs choix ; un déconnecté ne bloque pas le 
 repos long ouvre la fenêtre de préparation des sorts jusqu'au prochain combat, sous
 réserve des exceptions de règles.
 
-Le butin d'un monstre vaincu est généré et persisté une fois. Les participants ouvrent
-le même contenant en cliquant sur son portrait et voient les prises visibles en temps
-réel. Une investigation réussie reste privée entre l'investigateur et les MJ. À la
-fermeture décidée par le MJ, les objets non pris rejoignent une réserve MJ avec la
-provenance combat, monstre et objet.
+Le butin d'un monstre vaincu est généré et persisté une fois. Un seul participant à la
+fois fouille le contenant depuis son portrait. Le premier accès serveur valide acquiert
+un verrou temporaire ; les autres voient l'identité du fouilleur et ne peuvent ni
+ouvrir ni prendre jusqu'à libération ou expiration du verrou. Une investigation réussie
+reste privée entre l'investigateur et les MJ. À la fermeture décidée par le MJ, les
+objets non pris rejoignent une réserve MJ avec la provenance combat, monstre et objet.
 
 ## Conséquences
 
-Les récupérations concurrentes doivent être arbitrées atomiquement par le serveur. Une
-information cachée ne doit jamais être incluse dans les événements envoyés aux clients
-non autorisés.
+Le verrou n'est pas une transaction maintenue pendant l'interaction utilisateur : il
+est un bail persistant acquis et renouvelé atomiquement, afin qu'une déconnexion ne
+bloque pas le contenant. Une information cachée ne doit jamais être incluse dans les
+événements envoyés aux clients non autorisés.

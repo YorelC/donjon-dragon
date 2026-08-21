@@ -1,7 +1,7 @@
 # Documentation de référence
 
 Ce dossier consolide la vision produit, la cible fonctionnelle, l'état vérifié du
-repository et les décisions validées avec le propriétaire du produit au 20 août
+repository et les décisions validées avec le propriétaire du produit au 21 août
 2026.
 
 Le code existant n'est jamais considéré automatiquement comme la spécification.
@@ -26,6 +26,10 @@ sont classés dans [`HISTORY/`](./HISTORY/) et ne font pas partie de la lecture 
 Les documents techniques existants restent applicables dans leur périmètre :
 
 - [`architecture-back.md`](./architecture-back.md) décrit l'architecture backend actuelle ;
+- [`TECHNICAL-ARCHITECTURE-5A.md`](./TECHNICAL-ARCHITECTURE-5A.md) décrit la cible
+  logique validée ;
+- [`TECHNICAL-PERSISTENCE-5B.md`](./TECHNICAL-PERSISTENCE-5B.md) décrit le modèle
+  MongoDB et la stratégie de persistance cibles ;
 - [`pipeline-hermes.md`](./pipeline-hermes.md) décrit le pipeline de développement ;
 - [`adr/`](./adr/) contient les ADR techniques historiques ;
 - [`.claude/rules/`](../.claude/rules/) contient les règles opérationnelles par couche.
@@ -61,7 +65,9 @@ la spécification ou le registre des décisions sans devoir consulter l'archive.
 | 3 — analyse des écarts | Terminée | `GAP-ANALYSIS.md` |
 | 4 — spécifications fonctionnelles système | Validées | `REQUIREMENTS.md` |
 | 4 — matrice exhaustive des règles D&D 2024 | Terminée : B01 à B09 validés | `DND-2024-COMPLIANCE-PLAN.md` |
-| 5 — spécifications techniques cibles | Non commencée | Architecture, données, API, sécurité et tests cibles |
+| 5A — architecture et modèle de calcul | Validée | `TECHNICAL-ARCHITECTURE-5A.md`, `DEC-015` |
+| 5B — données et persistance MongoDB | Validée | `TECHNICAL-PERSISTENCE-5B.md`, `DEC-016` |
+| 5C+ — contrats, sécurité détaillée et tests | Non commencée | API, temps réel, stockage binaire et stratégie de tests |
 | 6 — documentation dans le repository | En cours | Présents documents |
 
 ## Règle de maintenance

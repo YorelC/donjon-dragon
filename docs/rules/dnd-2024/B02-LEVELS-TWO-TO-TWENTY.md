@@ -8,7 +8,7 @@ Ce document inventorie les règles fonctionnelles du bloc B02 défini dans
 [`DND-2024-COMPLIANCE-PLAN.md`](../../DND-2024-COMPLIANCE-PLAN.md). Il décrit la
 cible et les écarts observés ; il n'autorise aucune implémentation.
 
-Les 82 règles et les décisions `DR-B02-01` à `DR-B02-04` sont validées. Cette
+Les 82 règles et les décisions `DR-B02-01` à `DR-B02-05` sont validées. Cette
 validation clôt la spécification fonctionnelle B02 ; elle ne modifie ni le code, ni les
 tests, ni les données de jeu.
 
@@ -99,18 +99,18 @@ ticket ou test futur n'est inventé dans cette spécification.
 | ID | Source | Cible | État actuel / qualification | Acteurs et données | Critères d'acceptation | Décision / trace |
 |---|---|---|---|---|---|---|
 | B02-PRG-001 | SF-002, DEC-003 | Les PX ne sont ni saisis, ni calculés, ni persistés. Seul un MJ actif de la campagne déverrouille le niveau suivant d'un personnage accepté. | Aucun niveau déverrouillable ; le build renvoie toujours `LEVEL_ONE`. **Manquant**. | MJ, système ; personnage, campagne, niveau courant. | Refus d'un joueur, d'un MJ extérieur ou d'une fiche non acceptée ; aucun seuil de PX n'intervient. | DEC-003 ; SF-002. |
-| B02-PRG-002 | SF-002 | Un déverrouillage porte exactement sur `niveau actuel + 1`, ne peut pas dépasser 20 et ne se cumule pas avec un niveau déjà en attente. | Aucun état de progression en attente. **Manquant**. | MJ, système ; niveau courant, niveau autorisé. | Depuis N, seul N+1 est proposé ; refus au niveau 20 et refus d'un second déverrouillage en attente. | SF-002. |
-| B02-PRG-003 | SF-002, DEC-003 | Le MJ peut déverrouiller individuellement le niveau suivant d'un personnage accepté assigné à un joueur. L'action groupée cible automatiquement tous les personnages acceptés et assignés aux joueurs de la campagne, sans sélection unitaire. | Action groupée absente. **Manquant**. | MJ ; campagne et personnages éligibles. | Chaque personnage éligible reçoit exactement un niveau en attente. Un personnage au niveau 20 ou ayant déjà un niveau en attente est signalé et ne bloque pas les autres ; aucun personnage extérieur, non assigné, refusé ou en brouillon n'est modifié. | `DR-B02-03` résolue ; SF-002. |
+| B02-PRG-002 | SF-002, DEC-003 | Un déverrouillage porte exactement sur `niveau actuel + 1`, ne peut pas dépasser 20, ne se cumule pas avec un niveau déjà en attente et est refusé pendant toute respécialisation ouverte. | Aucun état de progression en attente. **Manquant**. | MJ, système ; niveau courant, niveau autorisé et changement de build ouvert. | Depuis N, seul N+1 est proposé ; refus au niveau 20, d'un second niveau ou si une respécialisation est déverrouillée, en reconstruction, soumise ou refusée. | `DR-B02-05` résolue ; SF-002. |
+| B02-PRG-003 | SF-002, DEC-003 | Le MJ peut déverrouiller individuellement le niveau suivant d'un personnage accepté assigné à un joueur. L'action groupée cible automatiquement tous les personnages acceptés et assignés aux joueurs de la campagne, sans sélection unitaire. | Action groupée absente. **Manquant**. | MJ ; campagne et personnages éligibles. | Chaque personnage éligible reçoit exactement un niveau en attente. Un personnage au niveau 20, ayant déjà un niveau ou ayant une respécialisation ouverte est signalé et ne bloque pas les autres ; aucun personnage extérieur, non assigné, refusé ou en brouillon n'est modifié. | `DR-B02-03` et `DR-B02-05` résolues ; SF-002. |
 | B02-PRG-004 | PHB24 p. 42, limites B02/B03 | Le parcours B02 conserve la classe courante. L'option « nouvelle classe » bascule vers le parcours B03 et ne peut pas être finalisée avec les seules règles B02. | Une seule clé de classe est persistée et librement remplaçable par l'édition actuelle ; aucune progression. **Manquant / contraire à la cible future**. | Joueur, système ; classe et historique de niveaux. | Une progression mono-classe ajoute un niveau à la classe courante ; une nouvelle classe exige le validateur B03. | B03 ; SF-002. |
 | B02-PRG-005 | PHB24 p. 42, SF-005 | Pour les PV gagnés, le joueur choisit avant révélation soit la valeur fixe de classe, soit un jet du dé de vie produit par le serveur. Le résultat minimum après modificateur de Constitution est 1. | Aucun parcours ni jet de PV de niveau. **Manquant**. | Joueur, système ; méthode, dé, résultat, modificateur. | Le choix précède le jet ; un jet révélé ne peut pas être remplacé par la valeur fixe ; dé et valeur fixe correspondent à la classe ; résultat final au moins 1. | Autorité serveur de SF-005. |
 | B02-PRG-006 | PHB24 p. 42, SF-002 | La montée ajoute un dé de vie non dépensé du type de la classe et augmente les PV maximaux. Les PV actuels restent inchangés : ce gain de maximum n'est pas un soin. | Aucun état d'aventure ni pool de dés de vie. **Manquant**. | Système ; PV max/actuels, dés disponibles/dépensés. | `PV max` augmente exactement ; `PV actuels` est identique avant/après ; les dés déjà dépensés le restent et le nouveau dé est disponible. | SF-002 ; futur lien B04. |
 | B02-PRG-007 | PHB24 p. 42, SF-002 | Une hausse du modificateur de Constitution augmente rétroactivement les PV max de 1 par niveau total pour chaque point de modificateur gagné. Elle ne soigne pas. | Le moteur recalcule des PV de niveau 1 seulement. **Manquant au-delà du niveau 1**. | Système ; score et modificateur de Constitution, niveau total. | Le delta rétroactif est exact, y compris quand un don augmente la Constitution ; PV actuels inchangés. | SF-002 ; futur lien B04. |
 | B02-PRG-008 | SF-002, DEC-003 | La montée n'accorde ni repos court/long, ni récupération d'emplacements, ni recharge d'une ressource déjà dépensée. Une capacité nouvellement acquise existe avec son maximum normal ; une hausse de maximum ne reconstitue pas les unités déjà dépensées. | Ressources d'aventure non persistées. **Manquant**. | Système ; maxima et valeurs courantes des ressources. | Comparaison avant/après de chaque ressource ; aucun compteur dépensé n'augmente sans texte explicite de la capacité acquise. | SF-002 ; futur lien B04. |
-| B02-PRG-009 | PHB24 p. 41–43 | La montée applique en une transaction fonctionnelle le niveau, les PV max, le dé de vie, les capacités, les choix, les sorts, les ressources maximales et tous les dérivés ; un échec ne laisse aucun gain partiel. | Aucun agrégat de progression. **Manquant**. | Système ; version complète du build. | Une entrée invalide ne modifie rien ; une réussite produit un build intégralement recalculable et cohérent. | Choix de transaction technique reporté à la Phase 5 ; SF-002. |
+| B02-PRG-009 | PHB24 p. 41–43 | La montée applique en une transaction fonctionnelle le niveau, les PV max, le dé de vie, les capacités, les choix, les sorts, les ressources maximales et tous les dérivés ; un échec ne laisse aucun gain partiel. | Aucun agrégat de progression. **Manquant**. | Système ; version complète du build. | Une entrée invalide ne modifie rien ; une réussite produit un build intégralement recalculable et cohérent. | Transaction Mongo validée par DEC-015 ; modèle proposé en Phase 5B ; SF-002. |
 | B02-PRG-010 | SF-002 | Chaque choix impossible est masqué ou désactivé avec une raison courte ; le serveur revalide quotas, catalogues, prérequis et provenance sans faire confiance à l'interface. | Validations limitées aux choix de niveau 1. **Manquant**. | Joueur, système ; choix de niveau. | Un client modifié ne peut envoyer une sous-classe, un don, un sort ou une option inéligible ; le refus désigne la cause. | SF-002. |
 | B02-PRG-011 | SF-001, SF-002 | Seul le joueur assigné complète et finalise sa progression après déverrouillage ; aucun second accord du MJ n'est requis. Le joueur assigné et les MJ autorisés peuvent en consulter le détail. | Visibilité générale des fiches déjà qualifiée partielle ; aucun workflow de niveau. **Manquant / partiel**. | Joueur, MJ ; progression en attente. | Un autre joueur ne peut ni consulter ni finaliser la progression, même avec l'identifiant ; un MJ peut la consulter, mais pas la finaliser à la place du joueur. | `DR-B02-01` résolue ; SF-001, SF-002. |
-| B02-PRG-012 | SF-002 | L'historique fonctionnel conserve, par niveau, classe, choix, remplacements, méthode et résultat de PV, valeurs avant/après et auteur de finalisation. | Le build courant remplace l'ancien et ne porte pas d'historique de niveaux. **Manquant**. | Système ; journal de construction. | La fiche de niveau N peut expliquer chaque gain et chaque valeur sans reconstituer une version perdue. | Phase 5 pour le modèle ; SF-002. |
-| B02-PRG-013 | SF-002, DEC-003 | Le MJ peut déverrouiller un niveau à tout moment. Le joueur ne peut ni commencer ni finaliser sa progression pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN` ; il le peut hors combat et pendant la préparation du combat. | Aucun verrou de progression. **Manquant**. | Joueur, MJ ; état de campagne/combat. | Le déverrouillage reste possible dans chaque état ; le début et la finalisation sont refusés dans les trois états interdits et autorisés dans les autres. | `DR-B02-02` résolue ; SF-002. |
+| B02-PRG-012 | SF-002 | L'historique fonctionnel conserve, par niveau, classe, choix, remplacements, méthode et résultat de PV, valeurs avant/après et auteur de finalisation. | Le build courant remplace l'ancien et ne porte pas d'historique de niveaux. **Manquant**. | Système ; journal de construction. | La fiche de niveau N peut expliquer chaque gain et chaque valeur sans reconstituer une version perdue. | Modèle proposé en Phase 5B ; SF-002. |
+| B02-PRG-013 | SF-002, DEC-003 | Le MJ peut déverrouiller un niveau dans tout état de jeu sous réserve qu'aucune respécialisation ne soit ouverte. Le joueur ne peut ni commencer ni finaliser sa progression pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN` ; il le peut hors combat et pendant la préparation du combat. | Aucun verrou de progression. **Manquant**. | Joueur, MJ ; état de campagne/combat et changement de build ouvert. | En l'absence de respécialisation, le déverrouillage reste possible dans chaque état ; le début et la finalisation sont refusés dans les trois états interdits et autorisés dans les autres. | `DR-B02-02` et `DR-B02-05` résolues ; SF-002. |
 | B02-PRG-014 | SF-002, DEC-003 | Le MJ peut révoquer un niveau en attente uniquement avant que le joueur commence la progression. Le premier choix ou jet de PV persisté engage définitivement le déverrouillage. | État absent. **Manquant**. | MJ, joueur ; autorisation en attente, progression commencée. | Révocation acceptée avant tout choix ou jet persisté, refusée ensuite ; toute tentative et son résultat sont notifiés et audités. | `DR-B02-04` résolue ; SF-002. |
 
 ## Matrice — progressions transverses de niveau de personnage
@@ -235,9 +235,10 @@ du MJ n'est requis. Le journal B02-PRG-012 conserve tous les choix.
 
 ### DR-B02-02 — Progression pendant un combat ou le butin
 
-**Résolue le 20 août 2026 :** le MJ peut déverrouiller un niveau à tout moment, mais le
-joueur ne peut ni commencer ni finaliser le parcours pendant `EN_COURS`, `EN_PAUSE` ou
-`BUTIN`. Le parcours reste disponible hors combat et pendant la préparation du combat.
+**Résolue le 20 août 2026, précisée le 21 août 2026 :** le MJ peut déverrouiller un
+niveau dans tout état de jeu si aucune respécialisation n'est ouverte. Le joueur ne
+peut ni commencer ni finaliser le parcours pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN`.
+Le parcours reste disponible hors combat et pendant la préparation du combat.
 
 ### DR-B02-03 — Sémantique du déverrouillage groupé
 
@@ -253,13 +254,22 @@ L'action individuelle reste disponible pour un personnage précis.
 joueur n'a pas commencé le parcours. Dès le premier choix ou jet de PV persisté, le
 déverrouillage est engagé et ne peut plus être retiré.
 
+### DR-B02-05 — Exclusion avec une respécialisation
+
+**Résolue le 21 août 2026 :** un niveau ne peut pas être déverrouillé tant qu'une
+respécialisation est ouverte. Elle doit être acceptée, activée et verrouillée avant le
+déverrouillage suivant. Réciproquement, le niveau en attente ou commencé bloque le
+déverrouillage d'une respécialisation jusqu'à sa finalisation et son verrouillage, ou
+jusqu'à sa révocation lorsqu'elle est encore autorisée. Les deux workflows ne
+coexistent jamais.
+
 ## Vérification du bloc
 
 Le bloc est validé le 20 août 2026 :
 
 - les 82 règles ont une source, une cible, un état actuel et des critères
   d'acceptation ;
-- les quatre décisions du bloc sont résolues et intégrées ;
+- les cinq décisions du bloc sont résolues et intégrées ;
 - le propriétaire a confirmé le périmètre mono-classe de B02 et le renvoi à B03 ;
 - le propriétaire a validé explicitement l'ensemble de la matrice ;
 - `REQUIREMENTS.md`, `GAP-ANALYSIS.md`, `TRACEABILITY.md` et le plan de conformité sont

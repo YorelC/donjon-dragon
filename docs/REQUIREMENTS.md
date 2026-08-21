@@ -48,8 +48,9 @@ données privées ni confondre propriété, maîtrise du jeu et contrôle d'un p
 5. Le propriétaire peut nommer un joueur MJ ou faire repasser un co-MJ joueur.
 6. Le propriétaire est une responsabilité distincte du rôle actif : il peut jouer,
    mais la campagne doit conserver au moins un MJ.
-7. Un propriétaire qui quitte doit d'abord transférer la propriété à un MJ actif ;
-   transfert et départ forment une opération indivisible.
+7. Un propriétaire qui quitte volontairement doit d'abord transférer la propriété à
+   un MJ actif ; transfert et départ forment une opération indivisible. La purge
+   définitive d'un compte suit le vote de succession décrit plus bas.
 8. Un utilisateur non invité ne peut ni découvrir ni consulter une campagne.
 9. Toutes les autorisations sont vérifiées côté serveur et toutes les ressources
    chargées doivent appartenir à la campagne présente dans la requête.
@@ -88,6 +89,58 @@ données privées ni confondre propriété, maîtrise du jeu et contrôle d'un p
 - Le départ du propriétaire sans transfert valide est rejeté.
 - Il est impossible de retirer le dernier MJ actif.
 - Les changements de rôle prennent effet immédiatement sur les API déjà ouvertes.
+- Deux demandes d'amitié inverses ne produisent jamais deux relations ; la première
+  acceptation clôt les deux intentions.
+- Une purge de compte désassigne ses personnages dans les campagnes conservées sans les
+  supprimer.
+- Une campagne possédée sans autre membre est entièrement purgée avec ses personnages.
+- Une campagne possédée avec d'autres membres ne perd pas son propriétaire avant un
+  résultat de vote valide.
+
+### Suppression et conservation
+
+- La suppression ordinaire d'un compte ou d'une campagne est toujours logique : la
+  donnée est marquée supprimée et devient inaccessible aux parcours normaux, sans
+  effacer son historique ni rompre ses références.
+- Les données métier durables et l'historique fonctionnel hors étapes détaillées d'un
+  combat ne sont jamais effacés automatiquement. Les données de reprise d'un combat
+  suivent leur clôture métier définie en SF-003 et SF-005.
+- Une suppression physique définitive n'est permise qu'après une demande explicite de
+  l'utilisateur adressée au responsable de la plateforme.
+- Cette responsabilité opérationnelle n'accorde pas automatiquement l'accès au contenu
+  des campagnes et ne crée pas un rôle durable dans les jetons d'authentification.
+- La purge supprime physiquement le compte, ses justificatifs d'authentification, ses
+  sessions, ses médias, ses amitiés et toute donnée qui ne concerne que lui.
+- Dans une campagne qu'il ne possède pas, son adhésion est supprimée et son personnage
+  est désassigné, mais ce personnage reste dans le vivier disponible aux MJ.
+- Dans une campagne qu'il possède et qui conserve d'autres membres, la propriété est
+  transférée à un membre actif désigné par un vote avant la purge. Le nouveau
+  propriétaire devient MJ si cela est nécessaire pour préserver au moins un MJ actif.
+- Si aucun autre membre actif ne reste dans une campagne possédée, la campagne et
+  toutes ses données propres, notamment personnages, contenus personnalisés, combats,
+  butins et historiques, sont définitivement supprimées.
+- Les faits partagés nécessaires à une campagne conservée ne gardent aucun lien vers
+  le compte effacé : l'auteur devient un acteur anonyme irréversible. Aucun registre
+  ne permet de retrouver l'identité supprimée.
+- Les sauvegardes contenant les données purgées sont détruites après création et
+  vérification d'une sauvegarde post-purge ; elles ne peuvent pas réintroduire le
+  compte lors d'une restauration.
+- La demande exige une session authentifiée, une confirmation par l'adresse vérifiée
+  et une validation manuelle du responsable de plateforme. La preuve finale ne
+  conserve qu'un identifiant de procédure, sa date, son résultat et des compteurs non
+  identifiants.
+
+> **DÉCISION REQUISE — vote de succession.** Il reste à fixer les électeurs, les
+> candidats admissibles, le quorum, la règle de majorité, le traitement des égalités
+> et l'issue d'un vote sans résultat. La purge ne peut pas retirer le propriétaire
+> tant que ce vote n'a pas produit un successeur valide.
+
+### Amitiés
+
+- Une paire non ordonnée d'utilisateurs ne possède qu'une seule relation d'amitié.
+- Deux demandes envoyées en sens inverse restent rattachées à cette même relation.
+- La première acceptation valide rend les deux utilisateurs amis et clôt toute demande
+  inverse encore ouverte ; aucune seconde amitié ni demande résiduelle n'est créée.
 
 ## SF-002 — Création, validation et évolution d'un personnage
 
@@ -185,6 +238,7 @@ La classe et les caractéristiques peuvent changer uniquement par une
 respécialisation complète :
 
 1. un MJ actif déverrouille la respécialisation d'un personnage accepté et assigné ;
+   ce déverrouillage est refusé tant qu'un niveau est en attente ou commencé ;
 2. seul le joueur assigné reconstruit et soumet le candidat ;
 3. la reconstruction recommence au niveau total 1 et rejoue exactement tous les
    niveaux jusqu'au niveau total actuel, qui est conservé ;
@@ -194,9 +248,10 @@ respécialisation complète :
    et réassignables ; bonus et améliorations sont rejoués, sans nouveau tirage ;
 6. nom, alignement, espèce, lignée ou héritage, historique, taille physique et catégorie
    de taille restent immuables ;
-7. le MJ peut déverrouiller à tout moment, mais le joueur ne peut commencer, reprendre
-   ou soumettre pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN` ; le candidat ne peut alors
-   être accepté ni activé ;
+7. le MJ peut déverrouiller dans tout état de jeu si aucun niveau n'est en attente ou
+   commencé, mais le joueur ne peut commencer, reprendre ou soumettre pendant
+   `EN_COURS`, `EN_PAUSE` ou `BUTIN` ; le candidat ne peut alors être accepté ni
+   activé ;
 8. l'ancienne fiche acceptée reste active pendant la reconstruction et la revue ; un
    refus motivé laisse le candidat corrigeable et resoumissible ;
 9. un MJ actif peut accepter seul le candidat ; son activation et la transformation
@@ -212,6 +267,14 @@ respécialisation complète :
 14. les PV actuels deviennent `min(anciens PV actuels, nouveaux PV maximaux)` : une
     hausse du maximum ne soigne pas le personnage.
 
+Une respécialisation déverrouillée, en reconstruction, soumise ou refusée interdit le
+déverrouillage d'un niveau. Elle doit être acceptée, activée et verrouillée avant que
+le MJ puisse déverrouiller le niveau suivant. Elle peut aussi être abandonnée :
+l'ancien build actif, l'état d'aventure et l'inventaire restent inchangés, le candidat
+n'est jamais activé et le workflow fermé ne bloque plus un niveau. L'abandon est
+audité et ne supprime ni le candidat ni ses versions. Le joueur assigné et tout MJ
+actif peuvent l'abandonner.
+
 Le détail normatif et les transformations avant/après sont inventoriés dans
 [`B03-MULTICLASSING-AND-RESPECIALIZATION.md`](rules/dnd-2024/B03-MULTICLASSING-AND-RESPECIALIZATION.md).
 
@@ -226,7 +289,8 @@ maîtrises, cumuls et emplacements sont inventoriés dans la
 
 - L'expérience n'est pas gérée.
 - Un MJ actif de la campagne déverrouille explicitement le niveau suivant d'un
-  personnage accepté et assigné à un joueur.
+  personnage accepté et assigné à un joueur, à condition qu'aucune respécialisation
+  ne soit déverrouillée pour ce personnage.
 - L'action groupée cible automatiquement tous les personnages acceptés et assignés aux
   joueurs de la campagne. Chaque personnage éligible reçoit exactement un niveau en
   attente ; un niveau 20 ou un niveau déjà en attente est signalé sans bloquer les
@@ -236,9 +300,9 @@ maîtrises, cumuls et emplacements sont inventoriés dans la
   dépasse jamais le niveau 20.
 - Seul le joueur assigné complète et finalise la progression ; aucun second accord du
   MJ n'est requis.
-- Le MJ peut déverrouiller à tout moment. Le joueur ne peut ni commencer ni finaliser
-  pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN` ; il le peut hors combat et pendant la
-  préparation du combat.
+- Le MJ peut déverrouiller dans tout état de jeu si aucune respécialisation n'est
+  ouverte. Le joueur ne peut ni commencer ni finaliser pendant `EN_COURS`, `EN_PAUSE`
+  ou `BUTIN` ; il le peut hors combat et pendant la préparation du combat.
 - Le MJ peut révoquer un niveau en attente uniquement avant le premier choix ou jet de
   PV persisté. Une progression commencée ne peut plus être révoquée.
 - La montée de niveau n'entraîne ni soin, ni repos, ni récupération implicite d'une
@@ -340,6 +404,8 @@ objets magiques sont inventoriés dans
 - Une fiche non validée ne peut pas participer à un combat.
 - Un changement d'âge ne déverrouille pas les champs immuables.
 - Une respécialisation conserve l'inventaire mais recalcule les maîtrises.
+- Un niveau déverrouillé et une respécialisation déverrouillée ne coexistent jamais :
+  chacun interdit le déverrouillage de l'autre jusqu'à sa fermeture valide.
 - Un déverrouillage groupé accorde un niveau en attente à chaque personnage joueur
   éligible sans exiger d'action individuelle du MJ.
 - Un autre joueur ou un MJ ne peut pas finaliser la progression à la place du joueur
@@ -414,7 +480,13 @@ avant révélation ; sans réponse, la mort immédiate s'applique.
 - Aucun bouton « prêt » des joueurs n'est requis ; le MJ lance le combat.
 - Le lancement crée un instantané de l'affrontement, tout en reliant l'état courant des
   personnages aux conséquences persistantes.
+- Cet instantané fixe les versions immuables des personnages, PNJ, créatures, objets,
+  règles et paramètres sélectionnés à l'instant du lancement. Il ne copie pas à chaque
+  interaction les données mécaniques qui ne changent pas.
 - Chaque action validée est persistée avant la diffusion de son résultat.
+- Chaque interaction acceptée conserve sa transition, ses jets et les variables
+  modifiées. Tant que le combat ou sa phase de butin reste ouvert, le snapshot courant
+  et ces interactions permettent une reprise exacte et un historique complet.
 - Une reconnexion ou un redémarrage serveur restaure exactement l'ordre, le tour,
   positions, PV, ressources, effets, concentration, visibilité et historique utiles.
 - La fermeture du navigateur d'un participant ne met pas automatiquement en pause.
@@ -628,10 +700,14 @@ peut être ressuscité selon les règles ou archivé par un MJ.
   à la réouverture ou lors d'une investigation.
 - Après la fin du combat, un joueur participant clique sur le portrait d'une créature
   vaincue pour ouvrir son butin, à la manière de Baldur's Gate 3.
-- Plusieurs joueurs peuvent ouvrir simultanément le même contenant.
-- La fenêtre partagée se met à jour en temps réel lorsqu'un objet visible est pris.
-- La première attribution validée par le serveur gagne ; la récupération partielle
-  d'une pile est possible.
+- Un seul joueur peut fouiller un même contenant à la fois. Le premier accès validé
+  acquiert un verrou fonctionnel temporaire ; les autres joueurs voient qui fouille et
+  ne peuvent ni ouvrir ni prendre dans ce contenant tant que le verrou est actif.
+- Le verrou est libéré à la fermeture de la fouille ou après une période d'inactivité,
+  afin qu'une déconnexion ne bloque pas définitivement le butin. La durée exacte et
+  le signal de renouvellement appartiennent aux futurs contrats temps réel.
+- Dans la session de fouille autorisée, la récupération partielle d'une pile est
+  possible. Toute prise reste validée atomiquement par le serveur.
 - Chaque dénomination monétaire forme une pile récupérable partiellement comme un
   objet. Il n'existe ni bourse de groupe, ni partage égal, ni conversion automatique.
 - Seuls les joueurs dont le personnage participait au combat peuvent récupérer le
@@ -658,14 +734,20 @@ provenance : combat, créature et objet ou dénomination. Le butin clos n'est pa
 un MJ peut attribuer ultérieurement tout ou partie d'une entrée de réserve à n'importe
 quel personnage actif de la campagne.
 
+Lorsque ce transfert est terminé et que le combat passe à `TERMINÉ`, toutes les
+sauvegardes détaillées des interactions et tous les états de reprise propres au combat
+sont supprimés. Restent seulement les conséquences durables appliquées aux agrégats
+propriétaires, la provenance des butins transférés et un résumé terminal non
+identifiant le détail de chaque étape.
+
 ### Audit fonctionnel
 
 - Toute décision ou mutation acceptée est persistée avant sa diffusion et conserve
   acteur, rôle effectif, date, action, version et conséquences pertinentes.
 - Les conflits et refus de règle utiles à l'arbitrage sont consultables par les MJ ;
-  leur rétention plus courte sera définie pendant la phase technique.
+  ils n'ont pas de TTL hors étapes détaillées d'un combat nettoyées à sa clôture.
 - Les refus d'autorisation et traces de sécurité appartiennent à un journal technique
-  distinct.
+  distinct, minimisé, réservé au responsable de plateforme et conservé douze mois.
 - Les secrets sont filtrés côté serveur selon l'audience de l'action ; ils ne sont
   jamais envoyés puis masqués dans le client.
 

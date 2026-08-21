@@ -20,6 +20,13 @@ Le serveur valide et persiste une action avant de diffuser son événement. Mong
 la source de vérité. Socket.IO est la cible pour les échanges bidirectionnels en temps
 réel ; un webhook n'est pas adapté au combat interactif.
 
+Au lancement, le combat fixe les versions immuables de ses participants et contenus.
+Chaque interaction acceptée conserve les variables modifiées, jets et transition
+nécessaires à une reprise exacte, sans recopier les profils mécaniques inchangés. Après
+fermeture complète du butin, ces sauvegardes détaillées et l'état de reprise du combat
+sont supprimés ; seules les conséquences durables, les provenances transférées et un
+résumé terminal restent conservés.
+
 Une créature invoquée suit sa règle propre. Un PNJ ou renfort ajouté après le lancement
 effectue son initiative et rejoint l'ordre sans modifier l'ordre relatif existant. Si
 sa place est déjà passée, il agit au round suivant.

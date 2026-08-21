@@ -42,8 +42,9 @@ elle reste limitée à ce parcours. Les recherches génériques et l'étude d'au
 conservent leurs compétences D&D normales.
 
 Les conflits et refus de règle utiles à l'arbitrage des MJ sont conservés dans l'audit
-fonctionnel. Leur durée de rétention sera fixée en Phase 5. Les refus d'autorisation et
-traces de sécurité appartiennent à un journal technique distinct.
+fonctionnel sans TTL, hors étapes détaillées d'un combat supprimées après clôture du
+butin. Les refus d'autorisation et traces de sécurité appartiennent à un journal
+technique distinct, minimisé et conservé douze mois selon DEC-016.
 
 ## Conséquences
 

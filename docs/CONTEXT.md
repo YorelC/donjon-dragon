@@ -115,6 +115,23 @@ errata officiels.
 ## État courant
 
 La documentation produit et fonctionnelle peut désormais être utilisée comme référence.
-Les spécifications techniques cibles — architecture du combat, modèle de données, API,
-Socket.IO, stockage des images, sécurité, observabilité et déploiement — restent à
-construire en Phase 5.
+La Phase 5A, validée par le propriétaire le 21 août 2026, définit l'architecture
+logique, les frontières d'agrégats, le modèle de calcul, la cohérence et les
+projections de sécurité dans
+[`TECHNICAL-ARCHITECTURE-5A.md`](TECHNICAL-ARCHITECTURE-5A.md) et DEC-015.
+
+La Phase 5B, validée par le propriétaire le 21 août 2026, définit le modèle MongoDB,
+les collections, versions, transactions, index, rétentions et initialisation propre dans
+[`TECHNICAL-PERSISTENCE-5B.md`](TECHNICAL-PERSISTENCE-5B.md) et DEC-016. Elle intègre
+la décision validée de ne jamais faire coexister un niveau déverrouillé et une
+respécialisation déverrouillée, permet l'abandon d'une respécialisation et impose le
+soft delete des comptes et campagnes. Les données métier ne sont supprimées
+physiquement qu'après une demande explicite de l'utilisateur au responsable de la
+plateforme, ou lorsqu'un combat terminal nettoie ses seules données de reprise. La base
+actuelle est un reliquat non migré. Les combats ouverts conservent une transition par
+interaction ; le butin emploie un bail exclusif, et le journal de sécurité est séparé
+avec une rétention de douze mois.
+
+Les contrats HTTP et Socket.IO, le stockage des images, la stratégie de tests,
+l'observabilité et le déploiement détaillé restent à construire dans les phases
+techniques suivantes.

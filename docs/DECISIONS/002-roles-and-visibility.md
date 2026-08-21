@@ -20,8 +20,15 @@
   fiches. Le combat expose seulement le résumé public prévu par la spécification.
 - Toutes les ressources sont isolées par campagne côté serveur.
 
+Lors d'une purge définitive de compte, une campagne possédée qui conserve des membres
+transfère sa propriété à un membre actif désigné par vote. Une campagne sans autre
+membre est purgée avec toutes ses données. Dans les autres campagnes, l'adhésion du
+compte disparaît et son personnage reste désassigné dans le vivier des MJ.
+
 ## Conséquences
 
 L'autorisation ne peut reposer ni sur l'interface ni sur la seule connaissance d'un
 identifiant. Chaque lecture et mutation doit vérifier simultanément l'appartenance de
 l'utilisateur, son rôle et l'appartenance de la ressource à la campagne.
+
+Les modalités de vote restent une **DÉCISION REQUISE** avant le contrat correspondant.

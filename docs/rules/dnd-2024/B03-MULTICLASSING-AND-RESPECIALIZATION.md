@@ -8,7 +8,7 @@ Ce document inventorie les règles fonctionnelles du bloc B03 défini dans
 [`DND-2024-COMPLIANCE-PLAN.md`](../../DND-2024-COMPLIANCE-PLAN.md). Il décrit la
 cible et les écarts observés ; il n'autorise aucune implémentation.
 
-Les 79 règles et les décisions `DR-B03-01` à `DR-B03-05` sont validées. Cette
+Les 79 règles et les décisions `DR-B03-01` à `DR-B03-06` sont validées. Cette
 validation clôt la spécification fonctionnelle B03 ; elle ne modifie ni le code, ni les
 tests, ni les données de jeu.
 
@@ -190,8 +190,8 @@ décrite par le PHB. Le PHB redevient normatif pour valider chaque niveau rejou�
 
 | ID | Source | Cible | État actuel / qualification | Acteurs et données | Critères d'acceptation | Décision / trace |
 |---|---|---|---|---|---|---|
-| B03-RSP-001 | SF-002, DEC-003, DR-B03-01 | Un MJ actif déverrouille la respécialisation d'un personnage accepté et assigné. Seul le joueur assigné reconstruit et soumet le candidat ; le workflow reste distinct d'une montée et d'une édition ordinaire. | L'édition actuelle remplace librement la classe unique sans workflow. **Contraire à la cible**. | MJ, joueur ; autorisation et candidat. | Refus d'un joueur, d'un MJ extérieur, d'une fiche non acceptée ou non assignée ; aucune requête d'édition générale ne change classe ou caractéristiques. | `DR-B03-01` résolue. |
-| B03-RSP-002 | SF-002, DEC-003, DR-B03-02 | Le MJ peut déverrouiller à tout moment. Le joueur ne peut commencer, reprendre ou soumettre pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN`; le candidat ne peut alors être accepté ni activé. Ces actions sont permises hors combat et en `PRÉPARATION`. | Aucun combat ni verrou. **Manquant**. | Joueur, MJ ; état de campagne/combat. | Le déverrouillage reste possible dans chaque état ; les trois actions du joueur et l'acceptation/activation sont refusées dans les états interdits et autorisées dans les autres. | `DR-B03-02` résolue. |
+| B03-RSP-001 | SF-002, DEC-003, DR-B03-01, DR-B03-06 | Un MJ actif déverrouille la respécialisation d'un personnage accepté et assigné uniquement lorsqu'aucun niveau n'est en attente ou commencé. Seul le joueur assigné reconstruit et soumet le candidat ; le workflow reste distinct d'une montée et d'une édition ordinaire. | L'édition actuelle remplace librement la classe unique sans workflow. **Contraire à la cible**. | MJ, joueur ; autorisation, candidat et changement de build ouvert. | Refus d'un joueur, d'un MJ extérieur, d'une fiche non acceptée ou non assignée, ou d'un personnage ayant un niveau déverrouillé ; aucune requête d'édition générale ne change classe ou caractéristiques. | `DR-B03-01` et `DR-B03-06` résolues. |
+| B03-RSP-002 | SF-002, DEC-003, DR-B03-02, DR-B03-06 | Le MJ peut déverrouiller dans tout état de jeu si aucun niveau n'est ouvert. Le joueur ne peut commencer, reprendre ou soumettre pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN`; le candidat ne peut alors être accepté ni activé. Ces actions sont permises hors combat et en `PRÉPARATION`. | Aucun combat ni verrou. **Manquant**. | Joueur, MJ ; état de campagne/combat et changement de build ouvert. | Sans niveau ouvert, le déverrouillage reste possible dans chaque état ; les trois actions du joueur et l'acceptation/activation sont refusées dans les états interdits et autorisées dans les autres. | `DR-B03-02` et `DR-B03-06` résolues. |
 | B03-RSP-003 | SF-002, DEC-003 | La reconstruction repart du niveau total 1 et rejoue exactement le nombre de niveaux total actuel. Le total final ne peut ni augmenter ni diminuer. | Aucun historique de niveaux. **Manquant**. | Joueur, système ; séquence complète. | Un personnage N12 soumet exactement douze niveaux valides ; aucune respécialisation ne consomme ou ne crée un déverrouillage. | SF-002. |
 | B03-RSP-004 | SF-002, DEC-003, DEC-008 | Nom, alignement, espèce, lignée/héritage, historique, taille physique et catégorie de taille restent immuables. Portrait, description, âge et poids ne font pas partie du build rejoué et suivent leur édition ordinaire. | Plusieurs champs sont encore absents ; édition non verrouillée par validation. **Manquant / partiel**. | Joueur, système ; identité et origine. | La charge utile de respécialisation ne peut remplacer aucun champ immuable, même par un client modifié. | B01 ; SF-002. |
 | B03-RSP-005 | SF-002, DEC-003 | La classe initiale, la répartition et l'ordre des classes, sous-classes, dons de progression, améliorations de caractéristiques, sorts et tous les choix de classe des niveaux rejoués peuvent changer, sous réserve des règles B01/B02/B03. | Ces choix au-delà du niveau 1 n'existent pas. **Manquant**. | Joueur, système ; nouveau build complet. | Une ancienne option n'est conservée que si elle est rechoisie ou accordée par une source immuable. | B01/B02. |
@@ -207,8 +207,8 @@ décrite par le PHB. Le PHB redevient normatif pour valider chaque niveau rejou�
 | B03-RSP-015 | SF-002, DR-B03-04 | PV temporaires, inspiration, concentration et état relatif à la mort sont conservés exactement. Dés de vie, emplacements et ressources de classe suivent le remplacement plein de B03-RSP-012 ; harmonisation et port suivent B03-RSP-009. | Ces états sont absents ou incomplets. **Manquant**. | Système ; état d'aventure complet. | Chaque champ possède une valeur avant/après explicite ; une concentration ou un état de mort ne disparaît pas du seul fait de la respécialisation. | `DR-B03-04` résolue ; B04/B06. |
 | B03-RSP-016 | SF-002, DEC-003, DR-B03-02 | L'ancienne fiche acceptée reste l'unique fiche active pendant la reconstruction, la revue et les corrections après refus. Le candidat ne devient actif qu'à son acceptation atomique. | Aucun brouillon, version ou acceptation. **Manquant**. | Joueur, MJ ; build actif et candidat. | Toute lecture ou action de jeu utilise l'ancien build jusqu'à l'acceptation ; aucun brouillon ou candidat refusé n'alimente la fiche. | `DR-B03-02` résolue. |
 | B03-RSP-017 | SF-002, DEC-003, DR-B03-02 | Le candidat complet est soumis à un MJ actif, qui l'accepte ou le refuse avec les mêmes garanties de motif et d'audit que la validation initiale. Un refus conserve l'ancienne fiche active et laisse le candidat corrigeable ; aucun second MJ n'est exigé. | Workflow de validation absent. **Manquant**. | Joueur, MJ ; soumission, motif et décision. | Un joueur ne s'auto-accepte pas ; un MJ actif peut décider seul ; après refus, le joueur corrige et resoumet sans perdre l'ancien build actif. | B01-VAL ; `DR-B03-02` résolue. |
-| B03-RSP-018 | SF-002 | L'activation acceptée remplace fonctionnellement le build en une seule opération avec la transformation d'état. Un échec ne laisse ni niveaux, ni ressources, ni PV partiellement remplacés. | Aucun agrégat de respécialisation. **Manquant**. | Système ; build, état et version. | Toute validation échoue sans mutation ou réussit avec un avant/après complet. | Choix transactionnel technique reporté à la Phase 5. |
-| B03-RSP-019 | SF-002, DEC-003 | L'historique conserve ancien et nouveau build, initiateur, auteur de soumission, décisionnaire, dates, motifs, transformation de chaque état et version active. | Le build courant remplace l'ancien ; aucun historique. **Manquant**. | Système, joueur, MJ ; audit. | La fiche active et chaque respécialisation passée sont explicables sans reconstituer une version écrasée. | Phase 5 pour le modèle. |
+| B03-RSP-018 | SF-002 | L'activation acceptée remplace fonctionnellement le build en une seule opération avec la transformation d'état. Un échec ne laisse ni niveaux, ni ressources, ni PV partiellement remplacés. | Aucun agrégat de respécialisation. **Manquant**. | Système ; build, état et version. | Toute validation échoue sans mutation ou réussit avec un avant/après complet. | Transaction Mongo validée par DEC-015 ; modèle proposé en Phase 5B. |
+| B03-RSP-019 | SF-002, DEC-003 | L'historique conserve ancien et nouveau build, initiateur, auteur de soumission, décisionnaire, dates, motifs, transformation de chaque état et version active. | Le build courant remplace l'ancien ; aucun historique. **Manquant**. | Système, joueur, MJ ; audit. | La fiche active et chaque respécialisation passée sont explicables sans reconstituer une version écrasée. | Modèle proposé en Phase 5B. |
 
 ## Matrice — synthèse de l'état actuel
 
@@ -233,7 +233,8 @@ seul un MJ actif l'accepte ou le refuse.
 
 ### DR-B03-02 — Fenêtre et fiche active pendant la reconstruction
 
-**Résolue le 20 août 2026 :** le MJ peut déverrouiller à tout moment. Le joueur ne peut
+**Résolue le 20 août 2026, précisée le 21 août 2026 :** le MJ peut déverrouiller dans
+tout état de jeu si aucun niveau n'est en attente ou commencé. Le joueur ne peut
 commencer, reprendre ou soumettre le candidat pendant `EN_COURS`, `EN_PAUSE` ou
 `BUTIN`; le candidat ne peut alors être accepté ni activé. Ces actions sont permises
 hors combat et en `PRÉPARATION`. L'ancienne fiche acceptée reste active jusqu'à
@@ -262,15 +263,28 @@ floor(Arnaqueur arcanique/3)`. Aucun regroupement préalable par catégorie n'es
 Les cas discriminants retenus sont Paladin 1/Rôdeur 1 et Chevalier occulte 4/Arnaqueur
 arcanique 5.
 
+### DR-B03-06 — Exclusion avec une montée de niveau
+
+**Résolue le 21 août 2026 :** une respécialisation ne peut pas être déverrouillée tant
+qu'un niveau est en attente ou commencé. Le niveau doit être finalisé, activé et
+verrouillé, ou révoqué tant que cette révocation est permise. Une respécialisation
+ouverte bloque réciproquement tout nouveau niveau jusqu'à son acceptation, son
+activation et son verrouillage. Les deux workflows ne coexistent jamais.
+
+Une respécialisation peut être abandonnée. L'abandon ferme son changement sans activer
+le candidat ni modifier le build actif, l'état d'aventure ou l'inventaire. Il conserve
+les versions et l'audit, puis permet un futur déverrouillage de niveau. Le joueur
+assigné et tout MJ actif peuvent déclencher cet abandon.
+
 ## Vérification du bloc
 
 Le bloc est validé le 20 août 2026 :
 
 - les 79 règles ont une source, une cible, un état actuel et des critères
   d'acceptation ;
-- les cinq décisions du bloc sont résolues et intégrées ;
+- les six décisions du bloc sont résolues et intégrées ;
 - le propriétaire a validé explicitement les recommandations `DR-B03-01` à
-  `DR-B03-05` ;
+  `DR-B03-06` ;
 - `REQUIREMENTS.md`, `DEC-003`, `GAP-ANALYSIS.md`, `TRACEABILITY.md` et le plan de
   conformité sont synchronisés ;
 - aucun code, test, seed, migration, dépendance ou CI n'a été modifié.

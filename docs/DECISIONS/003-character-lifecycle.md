@@ -31,6 +31,16 @@ conservées mais réassignables ; aucun nouveau tirage n'est permis. L'ancienne 
 acceptée reste active jusqu'à l'acceptation atomique de la nouvelle. Un refus motivé
 laisse le candidat corrigeable et resoumissible.
 
+Une respécialisation ne peut pas être déverrouillée tant qu'un niveau est en attente
+ou commencé. Réciproquement, une respécialisation déverrouillée, en reconstruction,
+soumise ou refusée interdit tout déverrouillage de niveau jusqu'à son acceptation, son
+activation et son verrouillage. Les deux workflows ne coexistent jamais.
+
+Une respécialisation peut être abandonnée. L'abandon ferme le changement sans activer
+le candidat ni modifier le build actif, l'état d'aventure ou l'inventaire. Il est
+audité et conserve le candidat et ses versions historiques. Le personnage peut ensuite
+recevoir un niveau. Le joueur assigné et tout MJ actif peuvent l'abandonner.
+
 Le joueur ne peut commencer, reprendre ou soumettre la reconstruction pendant
 `EN_COURS`, `EN_PAUSE` ou `BUTIN`, et le candidat ne peut alors être accepté ni activé.
 Possessions et états externes au build sont conservés, notamment port, monnaie,
@@ -46,8 +56,9 @@ aux joueurs de la campagne ; chaque personnage éligible reçoit un niveau en at
 et un personnage inéligible est signalé sans bloquer les autres.
 
 Le joueur assigné complète et finalise seul la progression, sans seconde approbation
-du MJ. Le MJ peut déverrouiller à tout moment, mais le joueur ne peut ni commencer ni
-finaliser pendant `EN_COURS`, `EN_PAUSE` ou `BUTIN`.
+du MJ. Le MJ peut déverrouiller dans tout état de jeu si aucune respécialisation n'est
+ouverte, mais le joueur ne peut ni commencer ni finaliser pendant `EN_COURS`,
+`EN_PAUSE` ou `BUTIN`.
 
 Le MJ peut révoquer un niveau en attente avant le premier choix ou jet de PV persisté.
 Dès que la progression a commencé, le déverrouillage est irrévocable. Une montée de
@@ -67,3 +78,9 @@ Le 20 août 2026, la validation du bloc B03 a précisé l'autorisation, la fenê
 caractéristiques, la fiche active et la conservation d'état d'une respécialisation.
 Elle a aussi fixé l'arrondi séparé de chaque classe fractionnaire pour les emplacements
 multiclasses. Ces précisions complètent la reconstruction complète décidée ci-dessus.
+
+Le 21 août 2026, le propriétaire a interdit toute coexistence entre un niveau
+déverrouillé et une respécialisation déverrouillée. Cette précision remplace
+l'ambiguïté laissée ouverte par la Phase 5A. Le même jour, il a validé la possibilité
+d'abandonner une respécialisation sans altérer la fiche active, ainsi que son
+déclenchement par le joueur assigné ou tout MJ actif.

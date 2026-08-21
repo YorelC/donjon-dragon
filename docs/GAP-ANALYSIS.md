@@ -30,7 +30,7 @@ une autorisation de corriger automatiquement le code.
 | Portrait | Téléversement et défaut générique | Champs et parcours cibles absents | Fonctionnalité manquante |
 | Progression mono-classe | Niveaux 2 à 20 conformes à la matrice B02 : gains de classe et sous-classe, dons, sorts, ressources et remplacements | Niveau forcé à 1 ; sous-classes, dons de progression, sorts supérieurs et ressources sans représentation active complète | Fonctionnalité manquante malgré des données partielles |
 | Déverrouillage de niveau | Action individuelle ou groupée par le MJ, niveau en attente unique, finalisation par le joueur assigné et révocation avant commencement seulement | Aucun état ni parcours de progression ; aucune action groupée | Fonctionnalité manquante |
-| Progression et état de partie | Déverrouillage possible à tout moment, mais début et finalisation interdits pendant `EN_COURS`, `EN_PAUSE` et `BUTIN` ; aucun soin ou repos implicite | Aucun verrou de progression ni état d'aventure suffisant pour prouver la conservation des ressources | Fonctionnalité manquante |
+| Progression et état de partie | Déverrouillage possible dans tout état de jeu hors respécialisation ouverte, mais début et finalisation interdits pendant `EN_COURS`, `EN_PAUSE` et `BUTIN` ; aucun soin ou repos implicite | Aucun verrou de progression ni état d'aventure suffisant pour prouver la conservation des ressources | Fonctionnalité manquante |
 | Composition multiclassée | Séquence de niveaux, classe initiale, niveaux par classe, profils d'entrée et historique déterministes selon B03 | Une seule `classKey`, niveau forcé à 1 et aucun profil multiclassé | Fonctionnalité manquante |
 | Prérequis multiclasses | Score 13 dans les caractéristiques principales de la nouvelle classe et de toutes les classes présentes, avec Force **ou** Dextérité pour le Guerrier | Métadonnées dormantes non validées ; le Guerrier encode à tort Force **et** Dextérité | Fonctionnalité manquante et donnée incorrecte |
 | Incantation multiclassée | Préparations séparées, provenance par classe, table d'emplacements 1–20, arrondi séparé des classes fractionnaires et Magie de pacte distincte | Sorts limités aux niveaux 0–1, `level1Slots`, aucune sous-classe active ni table multiclassée | Fonctionnalité manquante malgré un socle niveau 1 |
@@ -51,7 +51,7 @@ une autorisation de corriger automatiquement le code.
 | Temps réel | Socket bidirectionnel après persistance | Annoncé seulement dans le README | Dette documentaire et fonctionnalité manquante |
 | Redis | Absent du MVP monolithique | Déclaré sans utilisation | Configuration probablement obsolète |
 | Repos | Décision collective, choix par le joueur ou par un MJ à sa place, conversion d'un repos long interrompu et validation indivisible | Aucun état, choix, déclencheur ou parcours de repos | Fonctionnalité manquante |
-| Butin | Objets imposés figés, aléatoire résolu une fois à la première ouverture, contenant partagé, piles monétaires concurrentes et réserve MJ | Aucun contenant, exemplaire, génération, provenance ou réserve | Fonctionnalité manquante majeure |
+| Butin | Objets imposés figés, aléatoire résolu une fois, bail de fouille exclusif par contenant, prises atomiques, piles monétaires et réserve MJ | Aucun contenant, exemplaire, génération, provenance, bail ou réserve | Fonctionnalité manquante majeure |
 | Investigation de butin | Intelligence (Investigation), une tentative par personnage et dépouille, résultat et découverte privés | Aucun compteur, jet, connaissance privée ou projection filtrée | Fonctionnalité manquante et risque de fuite |
 | Audit fonctionnel | Mutations, arbitrages, conflits et refus de règle utiles persistés avec acteur, version, motifs et projections autorisées | Horodatages d'agrégats seulement ; aucun événement, avant/après ou historique consultable | Fonctionnalité manquante majeure |
 | Objets personnalisés | Création limitée à la campagne, identité sans collision, versions mécaniques immuables, migration, archivage, attribution et texte privé selon B07 | Domaine et lecture partiels ; une clé de campagne peut masquer l'officielle ; écriture, versionnement, migration et archivage absents | Fonctionnalité partielle et comportement actuel contraire à la cible |
@@ -88,11 +88,11 @@ une autorisation de corriger automatiquement le code.
 Les décisions produit recensées dans la conversation ont été validées. Les sujets
 suivants ne doivent cependant pas être inventés pendant l'implémentation :
 
-> **DÉCISION REQUISE — Modèle transactionnel MongoDB**
+> **DÉCISION VALIDÉE — Modèle transactionnel MongoDB**
 >
-> Déterminer quelles opérations exigent une transaction MongoDB, notamment transfert
-> de propriété, lancement d'un combat, résolution atomique d'une action et transfert
-> du butin. L'usage de transactions appartient explicitement au propriétaire du projet.
+> DEC-015 impose une enveloppe transactionnelle pour chaque commande mutante :
+> état, reçu d'idempotence, audit et outbox sont commis ensemble, avec révisions
+> optimistes. Le propriétaire a validé ce choix le 21 août 2026.
 
 > **DÉCISION REQUISE — Protocole temps réel détaillé**
 >
@@ -104,10 +104,39 @@ suivants ne doivent cependant pas être inventés pendant l'implémentation :
 > Choisir le stockage local initial, les limites de taille et formats, puis la cible
 > hébergée. Cette décision influence sécurité, sauvegardes et déploiement.
 
-> **DÉCISION REQUISE — Modèle de calcul des règles**
+> **DÉCISION VALIDÉE — Modèle de calcul des règles**
 >
-> Définir la représentation versionnée des règles D&D, des exceptions et des effets
-> structurés afin d'éviter une accumulation de conditions propres à chaque contenu.
+> DEC-015 impose des releases immuables, un vocabulaire fermé de primitives typées
+> et des handlers TypeScript purs réservés aux exceptions officielles. Le contenu de
+> campagne reste déclaratif et n'exécute aucun code. Le propriétaire a validé ce choix
+> le 21 août 2026.
+
+> **DÉCISION VALIDÉE — Exclusion progression et respécialisation**
+>
+> Le propriétaire a décidé le 21 août 2026 qu'un niveau déverrouillé et une
+> respécialisation déverrouillée ne coexistent jamais. Une respécialisation ouverte
+> doit être acceptée, activée et verrouillée avant un nouveau niveau. Un niveau en
+> attente ou commencé doit être finalisé et verrouillé, ou révoqué tant que cela reste
+> permis, avant une respécialisation. La représentation cible est précisée en Phase 5B.
+> Le joueur assigné et tout MJ actif peuvent abandonner une respécialisation. Cet
+> abandon ferme le changement sans activer le candidat ni modifier la fiche active.
+
+> **DÉCISION VALIDÉE — Suppression et conservation**
+>
+> Le propriétaire a décidé le 21 août 2026 que la suppression ordinaire d'un compte ou
+> d'une campagne est un soft delete. Les données métier et l'historique fonctionnel ne
+> sont jamais supprimés physiquement hors demande explicite de l'utilisateur adressée
+> au responsable de la plateforme. Cette purge efface toutes les données propres au
+> compte, retire ses amitiés et adhésions, désassigne ses personnages dans les campagnes
+> conservées, transfère par vote les campagnes encore peuplées et purge entièrement une
+> campagne sans autre membre. Seules les modalités fonctionnelles du vote restent à
+> décider.
+
+> **DÉCISION VALIDÉE — Base propre**
+>
+> Les collections actuelles sont des reliquats sans valeur de migration. La cible est
+> initialisée vide depuis les spécifications et datasets validés ; aucun document
+> `characters`, `items`, `monsters` ou autre n'est converti ni relu par compatibilité.
 
 > **DÉCISION REQUISE — Hébergement et modèle économique**
 >
