@@ -1,0 +1,22 @@
+meta {
+  name: 27 - Refuse second invitation
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations/refuse
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{secondRefuseKey}}
+}
+
+tests {
+  test('refuse le second cycle', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

@@ -7,6 +7,7 @@ import type { UserSummary } from '@donjon-dragon/shared/user-schema';
 import type { UserId } from '@kernel/domain/user-id';
 
 import type { Campaign } from '../domain/campaign';
+import type { CampaignInvitation as InvitationAggregate } from '../domain/campaign-invitation';
 import type { DirectoryUser } from './ports/campaign-directory.port';
 import type { CampaignCreationResult } from './ports/campaign.repository.port';
 
@@ -50,11 +51,12 @@ export function creationResultToSummary(
  * montrer. Le mapper, lui, ne branche sur rien.
  */
 export function toCampaignInvitation(
+  invitation: InvitationAggregate,
   campaign: Campaign,
   inviter: DirectoryUser,
 ): CampaignInvitation {
   return {
-    campaignId: campaign.id.value,
+    campaignId: invitation.campaignId.value,
     name: campaign.name.value,
     invitedBy: { displayName: inviter.displayName },
   };
@@ -67,11 +69,15 @@ export function toCampaignInvitation(
  * `isOwner` est calculé côté serveur et non déduit d'une comparaison de pseudos
  * par le client : c'est un droit, pas un affichage.
  */
-export function toCampaignDetail(
-  campaign: Campaign,
-  viewerId: UserId,
-  directory: DirectoryUser[],
-): CampaignDetail {
+interface CampaignDetailProjection {
+  campaign: Campaign;
+  viewerId: UserId;
+  directory: DirectoryUser[];
+  pendingInvitees: UserId[];
+}
+
+export function toCampaignDetail(projection: CampaignDetailProjection): CampaignDetail {
+  const { campaign, viewerId, directory, pendingInvitees } = projection;
   const byId = new Map(directory.map((user) => [user.id, user]));
 
   return {
@@ -82,17 +88,17 @@ export function toCampaignDetail(
     owner: toSummary(campaign.ownerId, byId),
     gameMasters: toSummaries(campaign.gameMasters(), byId),
     players: toSummaries(campaign.players(), byId),
-    pendingInvitees: toSummaries(campaign.pendingInvitees(), byId),
+    pendingInvitees: toSummaries(pendingInvitees, byId),
   };
 }
 
 /** Les identifiants à résoudre pour afficher une campagne, sans doublon. */
-export function everyoneIn(campaign: Campaign): string[] {
+export function everyoneIn(campaign: Campaign, pendingInvitees: UserId[]): string[] {
   const userIds = [
     campaign.ownerId,
     ...campaign.gameMasters(),
     ...campaign.players(),
-    ...campaign.pendingInvitees(),
+    ...pendingInvitees,
   ];
 
   return [...new Set(userIds.map((userId) => userId.value))];

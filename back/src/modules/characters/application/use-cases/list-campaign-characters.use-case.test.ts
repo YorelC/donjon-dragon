@@ -6,7 +6,6 @@ import { FixedClock } from '@kernel/testing/fixed-clock';
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import {
   aCampaign,
-  withPendingInvitee,
   withPlayer,
 } from '@modules/campaigns/testing/campaign.fixture';
 import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory-campaign.repository';
@@ -33,7 +32,6 @@ describe('ListCampaignCharactersUseCase', () => {
   beforeEach(async () => {
     const campaignRepo = new InMemoryCampaignRepository();
     const campaign = withPlayer(aCampaign(gameMasterId), gameMasterId, frodoId);
-    withPendingInvitee(campaign, gameMasterId, inviteeId);
     await campaignRepo.save(campaign);
     campaignId = campaign.id.value;
 

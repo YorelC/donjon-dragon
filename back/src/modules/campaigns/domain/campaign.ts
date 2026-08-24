@@ -19,7 +19,6 @@ import {
   CannotTransferToSelfError,
   CampaignNotFoundError,
   MemberNotFoundError,
-  NoPendingCampaignInvitationError,
   NotAGameMasterError,
   NotCampaignGameMasterError,
   NotCampaignMemberError,
@@ -43,10 +42,6 @@ export interface CampaignSnapshot {
 
 /**
  * Aggregate root d'une campagne.
- *
- * L'agrégat représente encore une invitation par un participant `pending`. Cette
- * vue métier lui permet de porter seul les règles d'appartenance, indépendamment
- * du découpage physique choisi par la persistance.
  *
  * Deux axes indépendants s'y croisent. Le RÔLE dit ce qu'on fait dans la partie ;
  * la PROPRIÉTÉ dit à qui appartient la campagne. Le propriétaire peut n'être que
@@ -109,29 +104,16 @@ export class Campaign {
     return this.currentRevision;
   }
 
-  /** Seul un maître du jeu invite. L'amitié, elle, se vérifie hors de l'agrégat. */
-  invite(inviterId: UserId, inviteeId: UserId, now: Date): void {
+  assertCanInvite(inviterId: UserId, inviteeId: UserId): void {
     this.assertIsGameMaster(inviterId);
     if (inviterId.equals(inviteeId)) throw new CannotInviteSelfError();
     if (this.memberFor(inviteeId)) throw new AlreadyCampaignMemberError();
-
-    const invitee = CampaignMember.invited(inviteeId, inviterId);
-    this.commit([...this.currentMembers, invitee], now);
   }
 
-  acceptInvitation(userId: UserId, now: Date): void {
-    const invitation = this.pendingInvitationFor(userId);
-    const members = this.currentMembers.map((member) =>
-      member === invitation ? member.activated() : member,
-    );
-
-    this.commit(members, now);
-  }
-
-  /** Un refus ne laisse rien : le membre `pending` disparaît, réinvitation possible. */
-  refuseInvitation(userId: UserId, now: Date): void {
-    const invitation = this.pendingInvitationFor(userId);
-    this.commit(this.without(invitation), now);
+  joinFromInvitation(userId: UserId, invitedBy: UserId, now: Date): void {
+    if (this.memberFor(userId)) throw new AlreadyCampaignMemberError();
+    const member = CampaignMember.joined(userId, invitedBy);
+    this.commit([...this.currentMembers, member], now);
   }
 
   promote(actorId: UserId, targetId: UserId, now: Date): void {
@@ -247,20 +229,6 @@ export class Campaign {
       .map((member) => member.userId);
   }
 
-  pendingInvitees(): UserId[] {
-    return this.currentMembers
-      .filter((member) => member.isPending())
-      .map((member) => member.userId);
-  }
-
-  /** L'invitation d'un utilisateur, pour en lire l'inviteur. Lève si elle n'existe pas. */
-  pendingInvitationFor(userId: UserId): CampaignMember {
-    const member = this.memberFor(userId);
-    if (!member?.isPending()) throw new NoPendingCampaignInvitationError();
-
-    return member;
-  }
-
   snapshot(): CampaignSnapshot {
     return {
       id: this.id.value,
@@ -292,7 +260,6 @@ export class Campaign {
     return this.currentMembers.find((member) => member.is(userId));
   }
 
-  /** Un invité qui n'a pas répondu n'est pas encore membre : il ne peut rien faire. */
   private activeMemberFor(userId: UserId): CampaignMember {
     const member = this.memberFor(userId);
     if (!member?.isActive()) throw new NotCampaignMemberError();

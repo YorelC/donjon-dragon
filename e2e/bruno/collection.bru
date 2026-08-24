@@ -3,7 +3,17 @@ auth {
 }
 
 script:pre-request {
-  if (!bru.hasVar('idempotencyKey')) {
-    bru.setVar('idempotencyKey', bru.interpolate('{{$randomUUID}}'));
-  }
+  const keys = [
+    'creationKey',
+    'firstInviteKey',
+    'thirdAcceptKey',
+    'firstAcceptKey',
+    'secondInviteKey',
+    'secondRefuseKey',
+    'thirdInviteKey',
+    'thirdCancelKey',
+  ];
+  keys.forEach((key) => {
+    if (!bru.hasVar(key)) bru.setVar(key, bru.interpolate('{{$randomUUID}}'));
+  });
 }

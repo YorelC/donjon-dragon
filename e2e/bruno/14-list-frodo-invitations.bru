@@ -1,0 +1,22 @@
+meta {
+  name: 14 - List Frodo invitations
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/campaigns/invitations
+  body: none
+  auth: none
+}
+
+tests {
+  test('liste une seule invitation ouverte', function() {
+    const matches = res.getBody().filter(
+      (item) => item.campaignId === bru.getVar('campaignId'),
+    );
+    expect(res.getStatus()).to.equal(200);
+    expect(matches).to.have.lengthOf(1);
+    expect(matches[0].invitedBy.displayName).to.equal('Gandalf');
+  });
+}

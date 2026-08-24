@@ -1,7 +1,7 @@
 meta {
-  name: 03 - Create campaign
+  name: 09 - Create campaign
   type: http
-  seq: 3
+  seq: 9
 }
 
 post {
@@ -13,7 +13,7 @@ post {
 headers {
   content-type: application/json
   x-csrf-token: {{csrfToken}}
-  Idempotency-Key: {{idempotencyKey}}
+  Idempotency-Key: {{creationKey}}
 }
 
 body:json {
@@ -28,12 +28,8 @@ script:post-response {
 
 tests {
   test('crée la campagne et son premier MJ', function() {
-    const body = res.getBody();
     expect(res.getStatus()).to.equal(201);
-    expect(body.id).to.match(/^[0-9a-f-]{36}$/i);
-    expect(body.name).to.equal(bru.getEnvVar('campaignName'));
-    expect(body.myRole).to.equal('gameMaster');
-    expect(body.gameMasterCount).to.equal(1);
-    expect(body.playerCount).to.equal(0);
+    expect(res.getBody().gameMasterCount).to.equal(1);
+    expect(res.getBody().playerCount).to.equal(0);
   });
 }

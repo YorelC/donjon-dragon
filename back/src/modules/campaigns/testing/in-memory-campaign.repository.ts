@@ -37,16 +37,6 @@ export class InMemoryCampaignRepository implements CampaignRepositoryPort {
     );
   }
 
-  async listPendingForUser(userId: UserId): Promise<Campaign[]> {
-    return this.all().filter((campaign) =>
-      contains(campaign.pendingInvitees(), userId),
-    );
-  }
-
-  async countPendingForUser(userId: UserId): Promise<number> {
-    return (await this.listPendingForUser(userId)).length;
-  }
-
   async deleteById(id: CampaignId): Promise<void> {
     this.campaigns.delete(id.value);
   }

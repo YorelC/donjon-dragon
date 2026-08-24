@@ -1,7 +1,7 @@
 meta {
-  name: 08 - Hide campaign from unrelated viewer
+  name: 17 - Hide campaign from third party
   type: http
-  seq: 8
+  seq: 17
 }
 
 get {
@@ -11,7 +11,7 @@ get {
 }
 
 tests {
-  test('répond comme si la campagne était absente', function() {
+  test('masque la campagne au tiers', function() {
     expect(res.getStatus()).to.equal(404);
     expect(res.getBody().message).to.equal('Campaign not found');
   });

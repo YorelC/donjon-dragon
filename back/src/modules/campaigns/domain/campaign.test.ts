@@ -18,7 +18,6 @@ import {
   CannotSelfDemoteAsLastGameMasterError,
   CannotTransferToSelfError,
   MemberNotFoundError,
-  NoPendingCampaignInvitationError,
   NotAGameMasterError,
   NotCampaignGameMasterError,
   NotCampaignMemberError,
@@ -41,17 +40,10 @@ function aCampaign(): Campaign {
 
 const idsOf = (userIds: UserId[]): string[] => userIds.map((userId) => userId.value);
 
-/** Campagne où frodo a été invité mais n'a pas encore répondu. */
-function withPendingFrodo(): Campaign {
-  const campaign = aCampaign();
-  campaign.invite(gandalf, frodo, NOW);
-  return campaign;
-}
-
 /** Campagne où frodo est joueur actif. */
 function withFrodoAsPlayer(): Campaign {
-  const campaign = withPendingFrodo();
-  campaign.acceptInvitation(frodo, NOW);
+  const campaign = aCampaign();
+  campaign.joinFromInvitation(frodo, gandalf, NOW);
   return campaign;
 }
 
@@ -84,97 +76,50 @@ describe('Campaign.create', () => {
   });
 });
 
-describe('Campaign.invite', () => {
-  it('ajoute l invité comme joueur en attente, jamais comme maître du jeu', () => {
-    const campaign = withPendingFrodo();
-
-    expect(idsOf(campaign.pendingInvitees())).toEqual([frodo.value]);
-    expect(campaign.players()).toHaveLength(0);
-    expect(campaign.pendingInvitationFor(frodo).invitedBy?.value).toBe(gandalf.value);
-  });
-
-  it('date la campagne de l instant de l invitation', () => {
-    const campaign = aCampaign();
-
-    campaign.invite(gandalf, frodo, LATER);
-
-    expect(campaign.updatedAt).toBe(LATER.toISOString());
-  });
-
+describe('Campaign.assertCanInvite', () => {
   it('refuse un invitant qui n est pas maître du jeu', () => {
     const campaign = withFrodoAsPlayer();
 
-    expect(() => campaign.invite(frodo, sam, NOW)).toThrow(NotCampaignGameMasterError);
+    expect(() => campaign.assertCanInvite(frodo, sam)).toThrow(NotCampaignGameMasterError);
   });
 
   it('refuse un invitant étranger à la campagne', () => {
-    expect(() => aCampaign().invite(sam, frodo, NOW)).toThrow(NotCampaignMemberError);
+    expect(() => aCampaign().assertCanInvite(sam, frodo)).toThrow(NotCampaignMemberError);
   });
 
   it('refuse de s inviter soi-même', () => {
-    expect(() => aCampaign().invite(gandalf, gandalf, NOW)).toThrow(CannotInviteSelfError);
+    expect(() => aCampaign().assertCanInvite(gandalf, gandalf)).toThrow(CannotInviteSelfError);
   });
 
   it('refuse un invité déjà membre actif', () => {
     const campaign = withFrodoAsPlayer();
 
-    expect(() => campaign.invite(gandalf, frodo, NOW)).toThrow(AlreadyCampaignMemberError);
+    expect(() => campaign.assertCanInvite(gandalf, frodo)).toThrow(
+      AlreadyCampaignMemberError,
+    );
   });
 
-  it('refuse un invité déjà invité et sans réponse', () => {
-    const campaign = withPendingFrodo();
-
-    expect(() => campaign.invite(gandalf, frodo, NOW)).toThrow(AlreadyCampaignMemberError);
+  it('autorise un ami qui n est pas encore membre', () => {
+    expect(() => aCampaign().assertCanInvite(gandalf, frodo)).not.toThrow();
   });
 });
 
-describe('Campaign.acceptInvitation', () => {
-  it('fait passer l invité de en attente à joueur actif', () => {
-    const campaign = withFrodoAsPlayer();
+describe('Campaign.joinFromInvitation', () => {
+  it('crée une adhésion joueur active et conserve l invitant', () => {
+    const campaign = aCampaign();
+    campaign.joinFromInvitation(frodo, gandalf, LATER);
+    const member = campaign.snapshot().members.find((item) => item.userId === frodo.value);
 
-    expect(campaign.pendingInvitees()).toHaveLength(0);
     expect(idsOf(campaign.players())).toEqual([frodo.value]);
+    expect(member).toMatchObject({ status: 'active', invitedBy: gandalf.value });
+    expect(campaign.updatedAt).toBe(LATER.toISOString());
   });
 
-  it('refuse un utilisateur sans invitation en attente', () => {
-    const campaign = aCampaign();
-
-    expect(() => campaign.acceptInvitation(sam, NOW)).toThrow(
-      NoPendingCampaignInvitationError,
-    );
-  });
-
-  it('refuse une seconde acceptation', () => {
+  it('refuse de créer une seconde adhésion', () => {
     const campaign = withFrodoAsPlayer();
 
-    expect(() => campaign.acceptInvitation(frodo, NOW)).toThrow(
-      NoPendingCampaignInvitationError,
-    );
-  });
-});
-
-describe('Campaign.refuseInvitation', () => {
-  it('ne laisse rien : l invité redevient inconnu de la campagne', () => {
-    const campaign = withPendingFrodo();
-
-    campaign.refuseInvitation(frodo, NOW);
-
-    expect(campaign.pendingInvitees()).toHaveLength(0);
-    expect(campaign.snapshot().members).toHaveLength(1);
-  });
-
-  it('laisse le maître du jeu réinviter aussitôt', () => {
-    const campaign = withPendingFrodo();
-    campaign.refuseInvitation(frodo, NOW);
-
-    expect(() => campaign.invite(gandalf, frodo, NOW)).not.toThrow();
-  });
-
-  it('refuse un utilisateur sans invitation en attente', () => {
-    const campaign = aCampaign();
-
-    expect(() => campaign.refuseInvitation(sam, NOW)).toThrow(
-      NoPendingCampaignInvitationError,
+    expect(() => campaign.joinFromInvitation(frodo, gandalf, NOW)).toThrow(
+      AlreadyCampaignMemberError,
     );
   });
 });
@@ -203,10 +148,10 @@ describe('Campaign.leave', () => {
     );
   });
 
-  it('refuse le départ d un invité qui n a pas répondu', () => {
-    const campaign = withPendingFrodo();
-
-    expect(() => campaign.leave(frodo, null, NOW)).toThrow(NotCampaignMemberError);
+  it('refuse le départ d un utilisateur sans adhésion', () => {
+    expect(() => aCampaign().leave(frodo, null, NOW)).toThrow(
+      NotCampaignMemberError,
+    );
   });
 
   it('refuse le départ d un étranger', () => {
@@ -275,10 +220,10 @@ describe('Campaign.promote', () => {
     );
   });
 
-  it('refuse de promouvoir un invité qui n a pas répondu', () => {
-    const campaign = withPendingFrodo();
-
-    expect(() => campaign.promote(gandalf, frodo, NOW)).toThrow(MemberNotFoundError);
+  it('refuse de promouvoir un utilisateur sans adhésion', () => {
+    expect(() => aCampaign().promote(gandalf, frodo, NOW)).toThrow(
+      MemberNotFoundError,
+    );
   });
 
   it('refuse de promouvoir un étranger', () => {
@@ -306,8 +251,7 @@ describe('Campaign.demote', () => {
     // Le propriétaire doit être quelqu'un d'autre, sinon c'est la protection du
     // propriétaire qui répondrait — elle est vérifiée avant.
     const campaign = withTwoGameMasters();
-    campaign.invite(gandalf, sam, NOW);
-    campaign.acceptInvitation(sam, NOW);
+    campaign.joinFromInvitation(sam, gandalf, NOW);
     campaign.transferOwnership(gandalf, sam, NOW);
     campaign.demote(gandalf, frodo, NOW);
 
@@ -388,14 +332,6 @@ describe('Campaign.removeMember', () => {
     campaign.removeMember(gandalf, frodo, NOW);
 
     expect(campaign.snapshot().members).toHaveLength(1);
-  });
-
-  it('annule une invitation encore sans réponse', () => {
-    const campaign = withPendingFrodo();
-
-    campaign.removeMember(gandalf, frodo, NOW);
-
-    expect(campaign.pendingInvitees()).toHaveLength(0);
   });
 
   it('refuse de retirer un maître du jeu : on le rétrograde d abord', () => {
@@ -481,10 +417,8 @@ describe('Campaign.transferOwnership', () => {
     );
   });
 
-  it('refuse un successeur qui n a pas encore accepté son invitation', () => {
-    const campaign = withPendingFrodo();
-
-    expect(() => campaign.transferOwnership(gandalf, frodo, NOW)).toThrow(
+  it('refuse un successeur sans adhésion active', () => {
+    expect(() => aCampaign().transferOwnership(gandalf, frodo, NOW)).toThrow(
       MemberNotFoundError,
     );
   });
@@ -509,7 +443,7 @@ describe('Campaign — propriété à la réhydratation', () => {
   });
 });
 
-describe('Campaign.pendingInvitationFor', () => {
+describe('Campaign — origine des adhésions', () => {
   it("garde l'inviteur attaché au membre une fois l'invitation acceptée", () => {
     const campaign = withFrodoAsPlayer();
     const frodoMember = campaign.snapshot().members.find((m) => m.userId === frodo.value);
@@ -523,11 +457,6 @@ describe('Campaign.pendingInvitationFor', () => {
     expect(founder?.invitedBy).toBeNull();
   });
 
-  it('lève quand il n y a pas d invitation en attente', () => {
-    expect(() => aCampaign().pendingInvitationFor(sam)).toThrow(
-      NoPendingCampaignInvitationError,
-    );
-  });
 });
 
 describe('Campaign.roleOf', () => {
@@ -538,9 +467,7 @@ describe('Campaign.roleOf', () => {
     expect(campaign.roleOf(frodo)).toBe('player');
   });
 
-  it('refuse un invité en attente, qui n est pas encore membre', () => {
-    const campaign = withPendingFrodo();
-
-    expect(() => campaign.roleOf(frodo)).toThrow(NotCampaignMemberError);
+  it('refuse un utilisateur sans adhésion active', () => {
+    expect(() => aCampaign().roleOf(frodo)).toThrow(NotCampaignMemberError);
   });
 });

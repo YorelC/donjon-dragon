@@ -1,0 +1,32 @@
+meta {
+  name: 13 - Login invitee for reads
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "email": "{{inviteeEmail}}",
+    "password": "{{inviteePassword}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('csrfToken', bru.cookies.get('csrf_token'));
+}
+
+tests {
+  test('ouvre la session du destinataire', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

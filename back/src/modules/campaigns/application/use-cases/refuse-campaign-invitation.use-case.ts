@@ -4,34 +4,49 @@ import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
 import {
-  CAMPAIGN_REPOSITORY,
-  type CampaignRepositoryPort,
-} from '../ports/campaign.repository.port';
+  CAMPAIGN_INVITATION_REPOSITORY,
+  type CampaignInvitationRepositoryPort,
+} from '../ports/campaign-invitation.repository.port';
 import { CampaignId } from '../../domain/campaign-id';
-import { CampaignNotFoundError } from '../../domain/campaign.errors';
+import { NoPendingCampaignInvitationError } from '../../domain/campaign.errors';
+import { hashInvitationRefusal } from '../campaign-intent';
+import {
+  assertSameInvitationIntent,
+  wasInvitationReplayed,
+} from '../campaign-invitation-replay';
 
 export interface RefuseCampaignInvitationDto {
   campaignId: string;
   userId: ActorId;
+  idempotencyKey: string;
 }
 
 @Injectable()
 export class RefuseCampaignInvitationUseCase {
   constructor(
-    @Inject(CAMPAIGN_REPOSITORY)
-    private readonly campaignRepo: CampaignRepositoryPort,
+    @Inject(CAMPAIGN_INVITATION_REPOSITORY)
+    private readonly invitationRepo: CampaignInvitationRepositoryPort,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(dto: RefuseCampaignInvitationDto): Promise<void> {
-    const campaign = await this.campaignRepo.findById(
-      CampaignId.create(dto.campaignId),
-    );
-    if (!campaign) throw new CampaignNotFoundError();
-
-    // Un refus ne laisse rien : le membre disparaît, le maître du jeu peut
-    // réinviter aussitôt.
-    campaign.refuseInvitation(UserId.create(dto.userId), this.clock.now());
-    await this.campaignRepo.save(campaign);
+    const principalId = UserId.create(dto.userId);
+    const intentHash = hashInvitationRefusal(dto.campaignId);
+    const replay = { principalId, idempotencyKey: dto.idempotencyKey, intentHash };
+    if (await wasInvitationReplayed(this.invitationRepo, replay)) return;
+    const campaignId = CampaignId.create(dto.campaignId);
+    const invitation = await this.invitationRepo.findOpen(campaignId, principalId);
+    if (!invitation) throw new NoPendingCampaignInvitationError();
+    const occurredAt = this.clock.now();
+    invitation.refuse(principalId, occurredAt);
+    const receipt = await this.invitationRepo.refuse({
+      invitation,
+      principalId,
+      idempotencyKey: dto.idempotencyKey,
+      intentHash,
+      occurredAt,
+      effectiveRole: null,
+    });
+    assertSameInvitationIntent(receipt, intentHash);
   }
 }

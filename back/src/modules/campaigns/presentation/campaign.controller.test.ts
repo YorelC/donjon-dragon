@@ -1,11 +1,14 @@
 import { randomUUID } from 'crypto';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Test, type TestingModule } from '@nestjs/testing';
+import type { ExecutionContext } from '@nestjs/common';
+import { ROUTE_ARGS_METADATA } from '@nestjs/common/constants';
 import type { AuthenticatedActor } from '@kernel/domain/actor-id';
 import { anActor } from '@kernel/testing/actor.fixture';
 import { IS_PUBLIC_KEY } from '@common/decorators/public.decorator';
 
 import { AcceptCampaignInvitationUseCase } from '../application/use-cases/accept-campaign-invitation.use-case';
+import { CancelCampaignInvitationUseCase } from '../application/use-cases/cancel-campaign-invitation.use-case';
 import { CountCampaignInvitationsUseCase } from '../application/use-cases/count-campaign-invitations.use-case';
 import { CreateCampaignUseCase } from '../application/use-cases/create-campaign.use-case';
 import { DeleteCampaignUseCase } from '../application/use-cases/delete-campaign.use-case';
@@ -46,6 +49,7 @@ const USE_CASES = [
   InviteToCampaignUseCase,
   AcceptCampaignInvitationUseCase,
   RefuseCampaignInvitationUseCase,
+  CancelCampaignInvitationUseCase,
   PromoteCampaignMemberUseCase,
   DemoteCampaignMemberUseCase,
   RemoveCampaignMemberUseCase,
@@ -125,12 +129,19 @@ describe('CampaignController', () => {
     const campaignId = randomUUID();
     const invite = module.get(InviteToCampaignUseCase);
 
-    await controller.inviteToCampaign(caller, campaignId, { displayName: 'Frodon' });
+    const idempotencyKey = randomUUID();
+    await controller.inviteToCampaign(
+      caller,
+      campaignId,
+      { displayName: 'Frodon' },
+      idempotencyKey,
+    );
 
     expect(invite.execute).toHaveBeenCalledWith({
       campaignId,
       displayName: 'Frodon',
       inviterId: caller.userId,
+      idempotencyKey,
     });
   });
 
@@ -140,12 +151,35 @@ describe('CampaignController', () => {
   ])('répond à une invitation au nom de l appelant (%s)', async (route, useCase) => {
     const caller = user(randomUUID());
     const campaignId = randomUUID();
+    const idempotencyKey = randomUUID();
 
-    await controller[route](caller, campaignId);
+    await controller[route](caller, campaignId, idempotencyKey);
 
     expect(module.get(useCase).execute).toHaveBeenCalledWith({
       campaignId,
       userId: caller.userId,
+      idempotencyKey,
+    });
+  });
+
+  it('annule une invitation au nom du MJ avec une clé idempotente', async () => {
+    const caller = user(randomUUID());
+    const campaignId = randomUUID();
+    const idempotencyKey = randomUUID();
+    const cancel = module.get(CancelCampaignInvitationUseCase);
+
+    await controller.cancelCampaignInvitation(
+      caller,
+      campaignId,
+      'Frodon',
+      idempotencyKey,
+    );
+
+    expect(cancel.execute).toHaveBeenCalledWith({
+      campaignId,
+      displayName: 'Frodon',
+      actorId: caller.userId,
+      idempotencyKey,
     });
   });
 
@@ -249,6 +283,7 @@ describe('CampaignController — protection des routes', () => {
     'inviteToCampaign',
     'acceptCampaignInvitation',
     'refuseCampaignInvitation',
+    'cancelCampaignInvitation',
     'promoteCampaignMember',
     'demoteCampaignMember',
     'removeCampaignMember',
@@ -277,3 +312,49 @@ describe('CampaignController — protection des routes', () => {
     expect(handlers.sort()).toEqual([...ROUTES].sort());
   });
 });
+
+describe('CampaignController — Idempotency-Key', () => {
+  const MUTATIONS = [
+    ['inviteToCampaign', 3],
+    ['acceptCampaignInvitation', 2],
+    ['refuseCampaignInvitation', 2],
+    ['cancelCampaignInvitation', 3],
+  ] as const;
+
+  it.each(MUTATIONS)('valide un UUID sur %s', (route, parameterIndex) => {
+    const key = randomUUID();
+    const factory = headerFactory(route, parameterIndex);
+
+    expect(factory(undefined, headerContext(key))).toBe(key);
+    expect(() => factory(undefined, headerContext('commande-42'))).toThrow();
+  });
+});
+
+interface RouteArgumentMetadata {
+  index: number;
+  factory?: (data: unknown, context: ExecutionContext) => unknown;
+}
+
+function headerFactory(
+  route: string,
+  parameterIndex: number,
+): NonNullable<RouteArgumentMetadata['factory']> {
+  const metadata = Reflect.getMetadata(
+    ROUTE_ARGS_METADATA,
+    CampaignController,
+    route,
+  ) as Record<string, RouteArgumentMetadata>;
+  const argument = Object.values(metadata).find(
+    (item) => item.index === parameterIndex && item.factory,
+  );
+  if (!argument?.factory) throw new Error('Missing Idempotency-Key decorator');
+  return argument.factory;
+}
+
+function headerContext(value: string): ExecutionContext {
+  return {
+    switchToHttp: () => ({
+      getRequest: () => ({ headers: { 'idempotency-key': value } }),
+    }),
+  } as unknown as ExecutionContext;
+}

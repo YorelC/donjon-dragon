@@ -27,6 +27,18 @@ export class CampaignRevisionConflictError extends ConflictDomainError {
   }
 }
 
+export class CampaignInvitationRevisionConflictError extends ConflictDomainError {
+  constructor() {
+    super('The campaign invitation was modified by another command');
+  }
+}
+
+export class AlreadyOpenCampaignInvitationError extends ConflictDomainError {
+  constructor() {
+    super('This user already has an open invitation to this campaign');
+  }
+}
+
 export class InviteeNotFoundError extends NotFoundDomainError {
   constructor() {
     super('No user found with this display name');

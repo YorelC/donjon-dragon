@@ -4,9 +4,9 @@ import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
 import {
-  CAMPAIGN_REPOSITORY,
-  type CampaignRepositoryPort,
-} from '../ports/campaign.repository.port';
+  CAMPAIGN_INVITATION_REPOSITORY,
+  type CampaignInvitationRepositoryPort,
+} from '../ports/campaign-invitation.repository.port';
 
 export interface CountCampaignInvitationsDto {
   userId: ActorId;
@@ -20,14 +20,14 @@ export interface CountCampaignInvitationsDto {
 @Injectable()
 export class CountCampaignInvitationsUseCase {
   constructor(
-    @Inject(CAMPAIGN_REPOSITORY)
-    private readonly campaignRepo: CampaignRepositoryPort,
+    @Inject(CAMPAIGN_INVITATION_REPOSITORY)
+    private readonly invitationRepo: CampaignInvitationRepositoryPort,
   ) {}
 
   async execute(
     dto: CountCampaignInvitationsDto,
   ): Promise<PendingCampaignInvitationCount> {
-    const count = await this.campaignRepo.countPendingForUser(
+    const count = await this.invitationRepo.countOpenForTarget(
       UserId.create(dto.userId),
     );
 

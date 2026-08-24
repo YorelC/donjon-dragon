@@ -1,0 +1,26 @@
+meta {
+  name: 02 - Request Frodo friendship
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/friends/request/{{inviteeDisplayName}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+}
+
+script:post-response {
+  bru.setVar('frodoFriendshipId', res.getBody().id);
+}
+
+tests {
+  test('crée la demande d amitié avec Frodo', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().status).to.equal('pending');
+  });
+}

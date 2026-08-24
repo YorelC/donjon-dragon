@@ -70,7 +70,7 @@ describe('énumérations', () => {
   });
 
   it("n'a pas de statut 'refused' : un refus ne laisse rien", () => {
-    expect(MembershipStatusEnum.options).toEqual(['pending', 'active']);
+    expect(MembershipStatusEnum.options).toEqual(['active']);
   });
 });
 

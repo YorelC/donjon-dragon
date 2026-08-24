@@ -1,0 +1,22 @@
+meta {
+  name: 07 - Accept Legolas friendship
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/friends/accept/{{legolasFriendshipId}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+}
+
+tests {
+  test('établit l amitié avec Legolas', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().status).to.equal('accepted');
+  });
+}

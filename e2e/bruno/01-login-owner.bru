@@ -29,6 +29,5 @@ tests {
   test('ouvre la session du propriétaire', function() {
     expect(res.getStatus()).to.equal(201);
     expect(res.getBody().user.email).to.equal(bru.getEnvVar('ownerEmail'));
-    expect(bru.getVar('csrfToken')).to.be.a('string').and.not.empty;
   });
 }

@@ -18,7 +18,6 @@ import { InMemoryCampaignDirectory } from '../../testing/in-memory-campaign-dire
 import { InMemoryCampaignRepository } from '../../testing/in-memory-campaign.repository';
 import {
   aCampaign,
-  withPendingInvitee,
   withPlayer,
 } from '../../testing/campaign.fixture';
 import { DemoteCampaignMemberUseCase } from './demote-campaign-member.use-case';
@@ -153,20 +152,6 @@ describe('gestion des membres d une campagne', () => {
 
       const saved = await reload(campaign);
       expect(saved?.players()).toHaveLength(0);
-    });
-
-    it('annule une invitation encore sans réponse', async () => {
-      const campaign = withPendingInvitee(aCampaign(gandalfId), gandalfId, frodoId);
-      await campaignRepo.save(campaign);
-
-      await remove.execute({
-        campaignId: campaign.id.value,
-        displayName: FRODO,
-        actorId: anActor(gandalfId),
-      });
-
-      const saved = await reload(campaign);
-      expect(saved?.pendingInvitees()).toHaveLength(0);
     });
 
     it('refuse de retirer le propriétaire', async () => {

@@ -1,0 +1,21 @@
+meta {
+  name: 28 - Verify no membership after refusal
+  type: http
+  seq: 28
+}
+
+get {
+  url: {{baseUrl}}/campaigns
+  body: none
+  auth: none
+}
+
+tests {
+  test('ne crée aucune adhésion après refus', function() {
+    const matches = res.getBody().filter(
+      (item) => item.id === bru.getVar('campaignId'),
+    );
+    expect(res.getStatus()).to.equal(200);
+    expect(matches).to.have.lengthOf(0);
+  });
+}

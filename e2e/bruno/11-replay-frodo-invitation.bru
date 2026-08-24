@@ -1,0 +1,29 @@
+meta {
+  name: 11 - Replay Frodo invitation
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{firstInviteKey}}
+}
+
+body:json {
+  {
+    "displayName": "{{inviteeDisplayName}}"
+  }
+}
+
+tests {
+  test('rejoue sans créer de doublon', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

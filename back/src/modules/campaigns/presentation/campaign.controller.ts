@@ -20,13 +20,16 @@ import {
   type TransferOwnershipDto as TransferOwnershipBody,
 } from '@donjon-dragon/shared/campaign-schema';
 import type { AuthenticatedActor } from '@kernel/domain/actor-id';
+import { displayNameField } from '@donjon-dragon/shared/user-schema';
 
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import {
   ZodBody,
   ZodHeader,
+  ZodParam,
 } from '@common/decorators/zod-validated.decorator';
 import { AcceptCampaignInvitationUseCase } from '../application/use-cases/accept-campaign-invitation.use-case';
+import { CancelCampaignInvitationUseCase } from '../application/use-cases/cancel-campaign-invitation.use-case';
 import { CountCampaignInvitationsUseCase } from '../application/use-cases/count-campaign-invitations.use-case';
 import { CreateCampaignUseCase } from '../application/use-cases/create-campaign.use-case';
 import { DeleteCampaignUseCase } from '../application/use-cases/delete-campaign.use-case';
@@ -66,6 +69,7 @@ export class CampaignController {
     @Inject(InviteToCampaignUseCase) private invite: InviteToCampaignUseCase,
     @Inject(AcceptCampaignInvitationUseCase) private acceptInvitation: AcceptCampaignInvitationUseCase,
     @Inject(RefuseCampaignInvitationUseCase) private refuseInvitation: RefuseCampaignInvitationUseCase,
+    @Inject(CancelCampaignInvitationUseCase) private cancelInvitation: CancelCampaignInvitationUseCase,
     @Inject(PromoteCampaignMemberUseCase) private promote: PromoteCampaignMemberUseCase,
     @Inject(DemoteCampaignMemberUseCase) private demote: DemoteCampaignMemberUseCase,
     @Inject(RemoveCampaignMemberUseCase) private removeMember: RemoveCampaignMemberUseCase,
@@ -122,11 +126,14 @@ export class CampaignController {
     @CurrentUser() user: AuthenticatedActor,
     @Param('campaignId') campaignId: string,
     @ZodBody(InviteToCampaignSchema) body: InviteToCampaignBody,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
     await this.invite.execute({
       campaignId,
       displayName: body.displayName,
       inviterId: user.userId,
+      idempotencyKey,
     });
   }
 
@@ -135,10 +142,13 @@ export class CampaignController {
   async acceptCampaignInvitation(
     @CurrentUser() user: AuthenticatedActor,
     @Param('campaignId') campaignId: string,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
     await this.acceptInvitation.execute({
       campaignId,
       userId: user.userId,
+      idempotencyKey,
     });
   }
 
@@ -147,10 +157,30 @@ export class CampaignController {
   async refuseCampaignInvitation(
     @CurrentUser() user: AuthenticatedActor,
     @Param('campaignId') campaignId: string,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
     await this.refuseInvitation.execute({
       campaignId,
       userId: user.userId,
+      idempotencyKey,
+    });
+  }
+
+  @HttpCode(204)
+  @Delete(':campaignId/invitations/:displayName')
+  async cancelCampaignInvitation(
+    @CurrentUser() user: AuthenticatedActor,
+    @Param('campaignId') campaignId: string,
+    @ZodParam('displayName', displayNameField()) displayName: string,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
+  ) {
+    await this.cancelInvitation.execute({
+      campaignId,
+      displayName,
+      actorId: user.userId,
+      idempotencyKey,
     });
   }
 

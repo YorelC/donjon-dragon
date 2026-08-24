@@ -1,0 +1,32 @@
+meta {
+  name: 24 - Login owner for second cycle
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "email": "{{ownerEmail}}",
+    "password": "{{ownerPassword}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('csrfToken', bru.cookies.get('csrf_token'));
+}
+
+tests {
+  test('rouvre la session du MJ', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

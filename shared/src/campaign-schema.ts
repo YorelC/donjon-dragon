@@ -31,11 +31,7 @@ export const campaignNameField = () =>
  */
 export const CampaignRoleEnum = z.enum(['gameMaster', 'player']);
 
-/**
- * Une invitation en attente n'est pas une collection à part : c'est un membre
- * `pending`. L'acceptation le passe en `active`, le refus le retire.
- */
-export const MembershipStatusEnum = z.enum(['pending', 'active']);
+export const MembershipStatusEnum = z.enum(['active']);
 
 export const CreateCampaignSchema = z.object({
   name: campaignNameField(),

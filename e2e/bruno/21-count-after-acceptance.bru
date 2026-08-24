@@ -1,0 +1,18 @@
+meta {
+  name: 21 - Count after acceptance
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{baseUrl}}/campaigns/invitations/count
+  body: none
+  auth: none
+}
+
+tests {
+  test('retombe à zéro après acceptation', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().count).to.equal(0);
+  });
+}

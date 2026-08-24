@@ -1,0 +1,22 @@
+meta {
+  name: 18 - Reject third-party acceptance
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations/accept
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{thirdAcceptKey}}
+}
+
+tests {
+  test('ne révèle ni n accepte l invitation d autrui', function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

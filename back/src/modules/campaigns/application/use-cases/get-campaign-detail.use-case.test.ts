@@ -2,14 +2,16 @@ import { randomUUID } from 'crypto';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { anActor } from '@kernel/testing/actor.fixture';
 import { UserId } from '@kernel/domain/user-id';
+import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
 
 import { CampaignNotFoundError } from '../../domain/campaign.errors';
 import { InMemoryCampaignDirectory } from '../../testing/in-memory-campaign-directory';
+import { InMemoryCampaignInvitationRepository } from '../../testing/in-memory-campaign-invitation.repository';
 import { InMemoryCampaignRepository } from '../../testing/in-memory-campaign.repository';
 import {
   A_CAMPAIGN_NAME,
   aCampaign,
-  withPendingInvitee,
+  anInvitation,
   withPlayer,
 } from '../../testing/campaign.fixture';
 import { GetCampaignDetailUseCase } from './get-campaign-detail.use-case';
@@ -17,6 +19,7 @@ import { GetCampaignDetailUseCase } from './get-campaign-detail.use-case';
 describe('GetCampaignDetailUseCase', () => {
   let useCase: GetCampaignDetailUseCase;
   let campaignRepo: InMemoryCampaignRepository;
+  let invitationRepo: InMemoryCampaignInvitationRepository;
   let directory: InMemoryCampaignDirectory;
   let gandalfId: string;
   let frodoId: string;
@@ -24,8 +27,9 @@ describe('GetCampaignDetailUseCase', () => {
 
   beforeEach(() => {
     campaignRepo = new InMemoryCampaignRepository();
+    invitationRepo = new InMemoryCampaignInvitationRepository(campaignRepo);
     directory = new InMemoryCampaignDirectory();
-    useCase = new GetCampaignDetailUseCase(campaignRepo, directory);
+    useCase = new GetCampaignDetailUseCase(campaignRepo, invitationRepo, directory);
     gandalfId = randomUUID();
     frodoId = randomUUID();
     samId = randomUUID();
@@ -35,12 +39,16 @@ describe('GetCampaignDetailUseCase', () => {
   });
 
   async function aFullCampaign() {
-    const campaign = withPendingInvitee(
-      withPlayer(aCampaign(gandalfId), gandalfId, frodoId),
-      gandalfId,
-      samId,
-    );
+    const campaign = withPlayer(aCampaign(gandalfId), gandalfId, frodoId);
     await campaignRepo.save(campaign);
+    await invitationRepo.create({
+      invitation: anInvitation(campaign, gandalfId, samId),
+      principalId: UserId.create(gandalfId),
+      idempotencyKey: randomUUID(),
+      intentHash: randomUUID(),
+      occurredAt: TEST_INSTANT,
+      effectiveRole: 'gameMaster',
+    });
     return campaign;
   }
 

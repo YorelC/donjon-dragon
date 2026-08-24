@@ -1,0 +1,22 @@
+meta {
+  name: 05 - Accept Frodo friendship
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/friends/accept/{{frodoFriendshipId}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+}
+
+tests {
+  test('établit l amitié avec Frodo', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().status).to.equal('accepted');
+  });
+}

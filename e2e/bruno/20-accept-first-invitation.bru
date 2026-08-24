@@ -1,0 +1,22 @@
+meta {
+  name: 20 - Accept first invitation
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations/accept
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{firstAcceptKey}}
+}
+
+tests {
+  test('accepte le premier cycle', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

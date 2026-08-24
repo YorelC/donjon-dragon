@@ -5,7 +5,6 @@ import { anActor } from '@kernel/testing/actor.fixture';
 import { InMemoryCampaignRepository } from '../../testing/in-memory-campaign.repository';
 import {
   aCampaign,
-  withPendingInvitee,
   withPlayer,
 } from '../../testing/campaign.fixture';
 import { ListMyCampaignsUseCase } from './list-my-campaigns.use-case';
@@ -38,7 +37,7 @@ describe('ListMyCampaignsUseCase', () => {
   });
 
   it('ignore une campagne où je suis seulement invité', async () => {
-    await campaignRepo.save(withPendingInvitee(aCampaign(gandalfId), gandalfId, frodoId));
+    await campaignRepo.save(aCampaign(gandalfId));
 
     expect(await useCase.execute({ userId: anActor(frodoId) })).toHaveLength(0);
   });
@@ -52,11 +51,7 @@ describe('ListMyCampaignsUseCase', () => {
   });
 
   it('compte séparément maîtres du jeu et joueurs actifs', async () => {
-    const campaign = withPendingInvitee(
-      withPlayer(aCampaign(gandalfId), gandalfId, frodoId),
-      gandalfId,
-      randomUUID(),
-    );
+    const campaign = withPlayer(aCampaign(gandalfId), gandalfId, frodoId);
     await campaignRepo.save(campaign);
 
     const [summary] = await useCase.execute({ userId: anActor(gandalfId) });

@@ -1,0 +1,26 @@
+meta {
+  name: 03 - Request Legolas friendship
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/friends/request/{{thirdDisplayName}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+}
+
+script:post-response {
+  bru.setVar('legolasFriendshipId', res.getBody().id);
+}
+
+tests {
+  test('crée la demande d amitié avec Legolas', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().status).to.equal('pending');
+  });
+}

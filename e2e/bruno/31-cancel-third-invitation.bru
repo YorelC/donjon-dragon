@@ -1,0 +1,22 @@
+meta {
+  name: 31 - Cancel third invitation
+  type: http
+  seq: 31
+}
+
+delete {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations/{{thirdDisplayName}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{thirdCancelKey}}
+}
+
+tests {
+  test('annule le troisième cycle', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

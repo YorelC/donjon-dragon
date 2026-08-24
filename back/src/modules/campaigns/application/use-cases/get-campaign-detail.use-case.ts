@@ -8,6 +8,10 @@ import {
   type CampaignDirectoryPort,
 } from '../ports/campaign-directory.port';
 import {
+  CAMPAIGN_INVITATION_REPOSITORY,
+  type CampaignInvitationRepositoryPort,
+} from '../ports/campaign-invitation.repository.port';
+import {
   CAMPAIGN_REPOSITORY,
   type CampaignRepositoryPort,
 } from '../ports/campaign.repository.port';
@@ -24,6 +28,8 @@ export class GetCampaignDetailUseCase {
   constructor(
     @Inject(CAMPAIGN_REPOSITORY)
     private readonly campaignRepo: CampaignRepositoryPort,
+    @Inject(CAMPAIGN_INVITATION_REPOSITORY)
+    private readonly invitationRepo: CampaignInvitationRepositoryPort,
     @Inject(CAMPAIGN_DIRECTORY)
     private readonly directory: CampaignDirectoryPort,
   ) {}
@@ -36,7 +42,11 @@ export class GetCampaignDetailUseCase {
     // l'existence d'une campagne privée.
     campaign.assertIsVisibleTo(viewerId);
 
-    const directory = await this.directory.findManyByIds(everyoneIn(campaign));
-    return toCampaignDetail(campaign, viewerId, directory);
+    const invitations = await this.invitationRepo.listOpenForCampaign(campaign.id);
+    const pendingInvitees = invitations.map((item) => item.targetUserId);
+    const directory = await this.directory.findManyByIds(
+      everyoneIn(campaign, pendingInvitees),
+    );
+    return toCampaignDetail({ campaign, viewerId, directory, pendingInvitees });
   }
 }

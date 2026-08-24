@@ -48,14 +48,6 @@ export class MongoCampaignRepository implements CampaignRepositoryPort {
     return this.campaigns.listForUser(userId, MEMBERSHIP_STATUS.active);
   }
 
-  listPendingForUser(userId: UserId): Promise<Campaign[]> {
-    return this.campaigns.listForUser(userId, MEMBERSHIP_STATUS.pending);
-  }
-
-  countPendingForUser(userId: UserId): Promise<number> {
-    return this.campaigns.countForUser(userId, MEMBERSHIP_STATUS.pending);
-  }
-
   deleteById(id: CampaignId): Promise<void> {
     return this.campaigns.deleteById(id);
   }

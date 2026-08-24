@@ -1,0 +1,29 @@
+meta {
+  name: 30 - Reinvite Legolas third cycle
+  type: http
+  seq: 30
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{thirdInviteKey}}
+}
+
+body:json {
+  {
+    "displayName": "{{thirdDisplayName}}"
+  }
+}
+
+tests {
+  test('réinvite après le cycle terminal', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

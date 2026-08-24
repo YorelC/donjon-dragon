@@ -3,6 +3,7 @@ import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
 
 import { Campaign } from '../domain/campaign';
 import { CampaignName } from '../domain/campaign-name';
+import { CampaignInvitation } from '../domain/campaign-invitation';
 
 /**
  * Fabriques pour les tests. Elles gardent une signature en `string` : un test
@@ -18,23 +19,28 @@ export function aCampaign(
   return Campaign.create(CampaignName.create(name), UserId.create(founderId), now);
 }
 
-/** Invite puis fait accepter : mute et renvoie la même instance. */
 export function withPlayer(
   campaign: Campaign,
   gameMasterId: string,
   playerId: string,
 ): Campaign {
-  campaign.invite(UserId.create(gameMasterId), UserId.create(playerId), TEST_INSTANT);
-  campaign.acceptInvitation(UserId.create(playerId), TEST_INSTANT);
+  campaign.joinFromInvitation(
+    UserId.create(playerId),
+    UserId.create(gameMasterId),
+    TEST_INSTANT,
+  );
   return campaign;
 }
 
-/** Invite sans faire répondre : le joueur reste en attente. */
-export function withPendingInvitee(
+export function anInvitation(
   campaign: Campaign,
   gameMasterId: string,
   inviteeId: string,
-): Campaign {
-  campaign.invite(UserId.create(gameMasterId), UserId.create(inviteeId), TEST_INSTANT);
-  return campaign;
+): CampaignInvitation {
+  return CampaignInvitation.create({
+    campaignId: campaign.id,
+    targetUserId: UserId.create(inviteeId),
+    invitedByUserId: UserId.create(gameMasterId),
+    now: TEST_INSTANT,
+  });
 }

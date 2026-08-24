@@ -30,10 +30,6 @@ export interface CampaignCreationReceipt {
  * Le port parle l'agrégat, pas le document : c'est l'adapter qui traduit.
  * `save` ne renvoie rien — l'appelant tient déjà l'instance à jour.
  *
- * Les deux listes sont disjointes et le resteront : `listActiveForUser` rend les
- * campagnes dont l'utilisateur est membre actif, `listPendingForUser` celles où
- * il n'a qu'une invitation. C'est exactement la coupure des deux onglets.
- *
  * `findById` charge sans recevoir l'appelant : l'application applique ensuite la
  * politique de visibilité sans mêler l'autorisation à la requête Mongo.
  */
@@ -42,7 +38,5 @@ export interface CampaignRepositoryPort {
   save(campaign: Campaign): Promise<void>;
   findById(id: CampaignId): Promise<Campaign | null>;
   listActiveForUser(userId: UserId): Promise<Campaign[]>;
-  listPendingForUser(userId: UserId): Promise<Campaign[]>;
-  countPendingForUser(userId: UserId): Promise<number>;
   deleteById(id: CampaignId): Promise<void>;
 }

@@ -1,0 +1,22 @@
+meta {
+  name: 23 - Detail single active membership
+  type: http
+  seq: 23
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test('contient exactement une adhésion active pour Frodo', function() {
+    const players = res.getBody().players.filter(
+      (item) => item.displayName === bru.getEnvVar('inviteeDisplayName'),
+    );
+    expect(res.getStatus()).to.equal(200);
+    expect(players).to.have.lengthOf(1);
+    expect(res.getBody().pendingInvitees).to.have.lengthOf(0);
+  });
+}

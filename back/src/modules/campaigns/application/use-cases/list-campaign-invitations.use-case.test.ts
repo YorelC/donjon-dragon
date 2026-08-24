@@ -1,110 +1,101 @@
 import { randomUUID } from 'crypto';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { anActor } from '@kernel/testing/actor.fixture';
+import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
+import { UserId } from '@kernel/domain/user-id';
 
 import { InMemoryCampaignDirectory } from '../../testing/in-memory-campaign-directory';
+import { InMemoryCampaignInvitationRepository } from '../../testing/in-memory-campaign-invitation.repository';
 import { InMemoryCampaignRepository } from '../../testing/in-memory-campaign.repository';
-import {
-  A_CAMPAIGN_NAME,
-  aCampaign,
-  withPendingInvitee,
-  withPlayer,
-} from '../../testing/campaign.fixture';
+import { A_CAMPAIGN_NAME, aCampaign, anInvitation } from '../../testing/campaign.fixture';
 import { CountCampaignInvitationsUseCase } from './count-campaign-invitations.use-case';
 import { ListCampaignInvitationsUseCase } from './list-campaign-invitations.use-case';
 
-describe('demandes de campagne reçues', () => {
+describe('lectures des invitations ouvertes', () => {
   let list: ListCampaignInvitationsUseCase;
   let count: CountCampaignInvitationsUseCase;
-  let campaignRepo: InMemoryCampaignRepository;
+  let campaigns: InMemoryCampaignRepository;
+  let invitations: InMemoryCampaignInvitationRepository;
   let directory: InMemoryCampaignDirectory;
   let gandalfId: string;
   let frodoId: string;
 
   beforeEach(() => {
-    campaignRepo = new InMemoryCampaignRepository();
+    campaigns = new InMemoryCampaignRepository();
+    invitations = new InMemoryCampaignInvitationRepository(campaigns);
     directory = new InMemoryCampaignDirectory();
-    list = new ListCampaignInvitationsUseCase(campaignRepo, directory);
-    count = new CountCampaignInvitationsUseCase(campaignRepo);
+    list = new ListCampaignInvitationsUseCase(campaigns, invitations, directory);
+    count = new CountCampaignInvitationsUseCase(invitations);
     gandalfId = randomUUID();
     frodoId = randomUUID();
     directory.save({ id: gandalfId, displayName: 'Gandalf' });
-    directory.save({ id: frodoId, displayName: 'Frodon' });
   });
 
-  it('rend la campagne et l ami qui a invité', async () => {
-    const campaign = withPendingInvitee(aCampaign(gandalfId), gandalfId, frodoId);
-    await campaignRepo.save(campaign);
+  async function storeOpenInvitation() {
+    const campaign = aCampaign(gandalfId);
+    const invitation = anInvitation(campaign, gandalfId, frodoId);
+    await campaigns.save(campaign);
+    await invitations.create({
+      invitation,
+      principalId: UserId.create(gandalfId),
+      idempotencyKey: randomUUID(),
+      intentHash: randomUUID(),
+      occurredAt: TEST_INSTANT,
+      effectiveRole: 'gameMaster',
+    });
+    return { campaign, invitation };
+  }
 
-    const invitations = await list.execute({ userId: anActor(frodoId) });
+  it('rend la campagne et l ami qui a invité sans identifiant utilisateur', async () => {
+    const { campaign } = await storeOpenInvitation();
 
-    expect(invitations).toEqual([
+    const result = await list.execute({ userId: anActor(frodoId) });
+
+    expect(result).toEqual([
       {
         campaignId: campaign.id.value,
         name: A_CAMPAIGN_NAME,
         invitedBy: { displayName: 'Gandalf' },
       },
     ]);
+    expect(JSON.stringify(result)).not.toContain(gandalfId);
+    expect(JSON.stringify(result)).not.toContain(frodoId);
   });
 
-  it('ne laisse fuir aucun identifiant d utilisateur', async () => {
-    await campaignRepo.save(
-      withPendingInvitee(aCampaign(gandalfId), gandalfId, frodoId),
-    );
+  it('ignore une invitation destinée à un autre utilisateur', async () => {
+    await storeOpenInvitation();
 
-    const invitations = await list.execute({ userId: anActor(frodoId) });
-
-    expect(JSON.stringify(invitations)).not.toContain(gandalfId);
-    expect(JSON.stringify(invitations)).not.toContain(frodoId);
+    expect(await list.execute({ userId: anActor(randomUUID()) })).toHaveLength(0);
   });
 
-  it('ignore les campagnes dont je suis déjà membre actif', async () => {
-    await campaignRepo.save(withPlayer(aCampaign(gandalfId), gandalfId, frodoId));
+  it('masque une invitation dont l invitant a disparu', async () => {
+    directory = new InMemoryCampaignDirectory();
+    list = new ListCampaignInvitationsUseCase(campaigns, invitations, directory);
+    await storeOpenInvitation();
 
     expect(await list.execute({ userId: anActor(frodoId) })).toHaveLength(0);
   });
 
-  it('ignore les invitations envoyées à quelqu un d autre', async () => {
-    await campaignRepo.save(
-      withPendingInvitee(aCampaign(gandalfId), gandalfId, randomUUID()),
-    );
-
-    expect(await list.execute({ userId: anActor(frodoId) })).toHaveLength(0);
-  });
-
-  it('masque une invitation dont l inviteur a disparu de l annuaire', async () => {
-    const orphanId = randomUUID();
-    await campaignRepo.save(
-      withPendingInvitee(aCampaign(orphanId), orphanId, frodoId),
-    );
-
-    expect(await list.execute({ userId: anActor(frodoId) })).toHaveLength(0);
-  });
-
-  it('compte les invitations en attente', async () => {
-    await campaignRepo.save(
-      withPendingInvitee(aCampaign(gandalfId), gandalfId, frodoId),
-    );
-    await campaignRepo.save(
-      withPendingInvitee(aCampaign(gandalfId), gandalfId, frodoId),
-    );
-
-    expect(await count.execute({ userId: anActor(frodoId) })).toEqual({ count: 2 });
-  });
-
-  it('compte zéro quand il n y a rien', async () => {
-    expect(await count.execute({ userId: anActor(frodoId) })).toEqual({ count: 0 });
-  });
-
-  it('compte même les invitations dont l inviteur a disparu', async () => {
-    // Le compteur ne résout pas les inviteurs : il ne peut donc pas les masquer
-    // comme la liste. Divergence assumée — un badge à 1 pour une liste vide vaut
-    // mieux que payer N lectures d'annuaire à chaque rafraîchissement.
-    const orphanId = randomUUID();
-    await campaignRepo.save(
-      withPendingInvitee(aCampaign(orphanId), orphanId, frodoId),
-    );
+  it('compte les invitations ouvertes', async () => {
+    await storeOpenInvitation();
 
     expect(await count.execute({ userId: anActor(frodoId) })).toEqual({ count: 1 });
+  });
+
+  it('exclut des lectures un cycle terminal conservé', async () => {
+    const { invitation } = await storeOpenInvitation();
+    invitation.refuse(invitation.targetUserId, TEST_INSTANT);
+    await invitations.refuse({
+      invitation,
+      principalId: invitation.targetUserId,
+      idempotencyKey: randomUUID(),
+      intentHash: randomUUID(),
+      occurredAt: TEST_INSTANT,
+      effectiveRole: null,
+    });
+
+    expect(await list.execute({ userId: anActor(frodoId) })).toHaveLength(0);
+    expect(await count.execute({ userId: anActor(frodoId) })).toEqual({ count: 0 });
+    expect(invitations.snapshots()).toHaveLength(1);
   });
 });
