@@ -12,3 +12,4 @@ front/dist/
 .claude/settings.local.json
 
 docs/books/*
+docs/ui-design/*

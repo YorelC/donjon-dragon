@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 2,
+            "activePatchIndex": 3,
             "patches": [
                 {
                     "date": 1784557219367,
@@ -16,6 +16,10 @@
                 {
                     "date": 1787240315339,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,5 +10,5 @@\n # n'ont pas a etre partages. `.claude/settings.json` et `.claude/rules/`, eux,\r\n # sont versionnes a dessein.\r\n .claude/settings.local.json\r\n \r\n-books/*\n\\ No newline at end of file\n+docs/books/*\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1787401363917,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,5 +10,6 @@\n # n'ont pas a etre partages. `.claude/settings.json` et `.claude/rules/`, eux,\r\n # sont versionnes a dessein.\r\n .claude/settings.local.json\r\n \r\n-docs/books/*\n\\ No newline at end of file\n+docs/books/*\r\n+docs/ui-design/*\n\\ No newline at end of file\n"
                 }
             ],
             "date": 1784557219367,
