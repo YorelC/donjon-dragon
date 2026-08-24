@@ -42,6 +42,7 @@ une autorisation de corriger automatiquement le code.
 | Profils de créatures exécutables | Statistiques, attaques, sauvegardes, dégâts, usages, recharges, sorts, actions légendaires, repaires et préférences de trésor structurés selon B08 | La majorité des mécanismes reste en chaînes libres ; aucune primitive d'action de profil n'est exécutable | Données non exécutables et fonctionnalité manquante majeure |
 | Instances, PNJ et invocations | Instances versionnées, états indépendants, contrôle MJ ou prévu par la source, projections privées, compagnons, montures et neuf esprits paramétrés selon B08 | Aucun modèle d'instance non joueur, contrôleur, PNJ, invocation, ressource ou écran de préparation | Fonctionnalité manquante majeure et risque d'exposition du bestiaire |
 | Combat | Cycle, initiative, tours, douze actions, Réactions, attaques, dégâts, mort et reprise exacte selon B05 | Aucun contrat, module, route, page ou test de combat ; seulement un port de dés et des effets latents non exécutables | Fonctionnalité manquante majeure malgré un socle descriptif partiel |
+| Moteur de règles exécutable | Principes validés : moteur pur, déterministe, versionné, sans scripts utilisateur ni I/O ou hasard caché ; détails 5C provisoires | Aucun compilateur, évaluateur, registre de handlers, continuation ou trace structurée | Principes 5C validés ; conception détaillée à éprouver, implémentation entièrement manquante |
 | Carte | Géométrie B05 : 2D continue, empreintes circulaires, altitude numérique, distances euclidiennes métriques, obstacles, visibilité, couverture et zones | Carte, positions, empreintes, altitude, terrain, obstacles et visibilité absents | Fonctionnalité manquante majeure |
 | Projections de combat | Alliés exacts ; ennemis en états discrets sans nombres ; entités cachées filtrées côté serveur | Aucune projection de combat et visibilité actuelle de fiche trop large | Fonctionnalité manquante et risque d'exposition critique |
 | Réactions | Fenêtre 15 s configurable 5–60 s, résolution MJ possible et désactivation limitée au chronomètre | Aucun déclencheur, coût réactif exécutable, suspension ou reprise | Fonctionnalité manquante majeure |
@@ -110,6 +111,19 @@ suivants ne doivent cependant pas être inventés pendant l'implémentation :
 > et des handlers TypeScript purs réservés aux exceptions officielles. Le contenu de
 > campagne reste déclaratif et n'exécute aucun code. Le propriétaire a validé ce choix
 > le 21 août 2026.
+
+> **DÉCISION VALIDÉE SUR SES PRINCIPES — Modèle exécutable des règles**
+>
+> DEC-017 valide un moteur pur, déterministe et versionné, sans scripts utilisateur,
+> hasard interne, lecture MongoDB ou horloge cachée. Les formes TypeScript, le pipeline
+> exact, le catalogue détaillé des primitives, les traces et les continuations restent
+> provisoires et seront confirmés incrémentalement par l'implémentation.
+
+> **DÉCISION VALIDÉE — Sous-ensemble des objets personnalisés**
+>
+> DR-5C-01 retient l'option 1 : sous-ensemble prudent sans handler, remplacement de
+> règle officielle, interruption personnalisée, invocation ni transformation. Une
+> mécanique hors liste reste manuelle jusqu'à nouvelle décision explicite.
 
 > **DÉCISION VALIDÉE — Exclusion progression et respécialisation**
 >

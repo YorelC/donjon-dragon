@@ -132,6 +132,24 @@ actuelle est un reliquat non migré. Les combats ouverts conservent une transiti
 interaction ; le butin emploie un bail exclusif, et le journal de sécurité est séparé
 avec une rétention de douze mois.
 
-Les contrats HTTP et Socket.IO, le stockage des images, la stratégie de tests,
-l'observabilité et le déploiement détaillé restent à construire dans les phases
+Les contrats HTTP et Socket.IO, le stockage des images, l'implémentation des suites de
+tests, l'observabilité et le déploiement détaillé restent à construire dans les phases
 techniques suivantes.
+
+La Phase 5C définit désormais le modèle exécutable, typé et versionné des règles dans
+[`TECHNICAL-RULE-MODEL-5C.md`](TECHNICAL-RULE-MODEL-5C.md) et DEC-017. Elle définit le
+manifeste fermé d'une release, les profils et primitives, la règle de spécificité sans
+priorité numérique, les handlers officiels purs, les continuations de Réaction,
+l'injection du temps et des dés, les traces filtrables, les erreurs, les errata et la
+preuve exhaustive B01–B09. Aucun contrat de transport n'en découle encore.
+
+Le propriétaire a validé le 23 août 2026 les principes structurants : moteur pur,
+déterministe et versionné, sans scripts utilisateur, hasard interne, lecture MongoDB
+ou horloge cachée. Il a aussi validé **DR-5C-01, option 1** : les objets personnalisés
+emploient un sous-ensemble prudent sans handler, remplacement de règle officielle,
+interruption personnalisée, invocation ni transformation.
+
+Les formes TypeScript/Zod, le pipeline exact, le catalogue détaillé des primitives,
+les traces et les continuations restent provisoires. Ils seront confirmés
+incrémentalement par des tranches d'implémentation et leurs preuves ; tout écart de
+comportement retourne à `SPEC` avant fusion.

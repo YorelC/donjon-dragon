@@ -1,7 +1,7 @@
 # Documentation de référence
 
 Ce dossier consolide la vision produit, la cible fonctionnelle, l'état vérifié du
-repository et les décisions validées avec le propriétaire du produit au 21 août
+repository et les décisions validées avec le propriétaire du produit au 23 août
 2026.
 
 Le code existant n'est jamais considéré automatiquement comme la spécification.
@@ -30,6 +30,8 @@ Les documents techniques existants restent applicables dans leur périmètre :
   logique validée ;
 - [`TECHNICAL-PERSISTENCE-5B.md`](./TECHNICAL-PERSISTENCE-5B.md) décrit le modèle
   MongoDB et la stratégie de persistance cibles ;
+- [`TECHNICAL-RULE-MODEL-5C.md`](./TECHNICAL-RULE-MODEL-5C.md) fixe les principes
+  validés et la conception détaillée provisoire du moteur de règles ;
 - [`pipeline-hermes.md`](./pipeline-hermes.md) décrit le pipeline de développement ;
 - [`adr/`](./adr/) contient les ADR techniques historiques ;
 - [`.claude/rules/`](../.claude/rules/) contient les règles opérationnelles par couche.
@@ -67,7 +69,8 @@ la spécification ou le registre des décisions sans devoir consulter l'archive.
 | 4 — matrice exhaustive des règles D&D 2024 | Terminée : B01 à B09 validés | `DND-2024-COMPLIANCE-PLAN.md` |
 | 5A — architecture et modèle de calcul | Validée | `TECHNICAL-ARCHITECTURE-5A.md`, `DEC-015` |
 | 5B — données et persistance MongoDB | Validée | `TECHNICAL-PERSISTENCE-5B.md`, `DEC-016` |
-| 5C+ — contrats, sécurité détaillée et tests | Non commencée | API, temps réel, stockage binaire et stratégie de tests |
+| 5C — modèle exécutable des règles | Principes et DR-5C-01 validés ; détails provisoires | `TECHNICAL-RULE-MODEL-5C.md`, `DEC-017` |
+| 5D+ — contrats et infrastructure détaillés | Non commencée | API, temps réel, stockage binaire, observabilité et déploiement |
 | 6 — documentation dans le repository | En cours | Présents documents |
 
 ## Règle de maintenance
