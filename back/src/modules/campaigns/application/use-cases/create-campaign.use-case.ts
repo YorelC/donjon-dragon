@@ -10,11 +10,14 @@ import {
 } from '../ports/campaign.repository.port';
 import { Campaign } from '../../domain/campaign';
 import { CampaignName } from '../../domain/campaign-name';
-import { toCampaignSummary } from '../campaign.mapper';
+import { CampaignCommandConflictError } from '../../domain/campaign.errors';
+import { hashCampaignCreation } from '../campaign-intent';
+import { creationResultToSummary } from '../campaign.mapper';
 
 export interface CreateCampaignDto {
   name: string;
   founderId: ActorId;
+  idempotencyKey: string;
 }
 
 @Injectable()
@@ -27,15 +30,18 @@ export class CreateCampaignUseCase {
 
   async execute(dto: CreateCampaignDto): Promise<CampaignSummary> {
     const founderId = UserId.create(dto.founderId);
+    const occurredAt = this.clock.now();
+    const campaign = Campaign.create(CampaignName.create(dto.name), founderId, occurredAt);
+    const intentHash = hashCampaignCreation(campaign.name.value);
+    const receipt = await this.campaignRepo.create({
+      campaign,
+      principalId: founderId,
+      idempotencyKey: dto.idempotencyKey,
+      intentHash,
+      occurredAt,
+    });
+    if (receipt.intentHash !== intentHash) throw new CampaignCommandConflictError();
 
-    // L'agrégat porte la règle : le créateur en est le premier maître du jeu.
-    const campaign = Campaign.create(
-      CampaignName.create(dto.name),
-      founderId,
-      this.clock.now(),
-    );
-    await this.campaignRepo.save(campaign);
-
-    return toCampaignSummary(campaign, founderId);
+    return creationResultToSummary(receipt.result, founderId);
   }
 }

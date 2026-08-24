@@ -3,10 +3,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { anActor } from '@kernel/testing/actor.fixture';
 import { UserId } from '@kernel/domain/user-id';
 
-import {
-  CampaignNotFoundError,
-  NotCampaignMemberError,
-} from '../../domain/campaign.errors';
+import { CampaignNotFoundError } from '../../domain/campaign.errors';
 import { InMemoryCampaignDirectory } from '../../testing/in-memory-campaign-directory';
 import { InMemoryCampaignRepository } from '../../testing/in-memory-campaign.repository';
 import {
@@ -121,7 +118,7 @@ describe('GetCampaignDetailUseCase', () => {
     ).rejects.toThrow(CampaignNotFoundError);
   });
 
-  it('refuse un étranger : « pas à toi », et non « pas trouvé »', async () => {
+  it('ne révèle pas la campagne à un étranger', async () => {
     const campaign = await aFullCampaign();
 
     await expect(
@@ -129,15 +126,15 @@ describe('GetCampaignDetailUseCase', () => {
         campaignId: campaign.id.value,
         userId: anActor(randomUUID()),
       }),
-    ).rejects.toThrow(NotCampaignMemberError);
+    ).rejects.toThrow(CampaignNotFoundError);
   });
 
-  it('refuse un invité qui n a pas encore répondu', async () => {
+  it('ne révèle pas la campagne à un invité encore inactif', async () => {
     const campaign = await aFullCampaign();
 
     await expect(
       useCase.execute({ campaignId: campaign.id.value, userId: anActor(samId) }),
-    ).rejects.toThrow(NotCampaignMemberError);
+    ).rejects.toThrow(CampaignNotFoundError);
   });
 
   it('garde sa place à un membre absent de l annuaire, sans fausser la liste', async () => {

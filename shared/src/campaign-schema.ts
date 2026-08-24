@@ -41,6 +41,9 @@ export const CreateCampaignSchema = z.object({
   name: campaignNameField(),
 });
 
+export const IDEMPOTENCY_KEY_HEADER = 'Idempotency-Key';
+export const IdempotencyKeySchema = z.string().uuid();
+
 /**
  * Ce que le client reçoit dans l'onglet « Mes campagnes en cours ».
  *

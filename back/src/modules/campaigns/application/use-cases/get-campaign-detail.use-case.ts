@@ -32,9 +32,9 @@ export class GetCampaignDetailUseCase {
     const campaign = await loadCampaign(this.campaignRepo, dto.campaignId);
     const viewerId = UserId.create(dto.userId);
 
-    // Charge PUIS vérifie : filtrer l'appartenance dans la requête Mongo
-    // répondrait « pas trouvé » là où il fallait dire « pas à toi ».
-    campaign.assertIsActiveMember(viewerId);
+    // Une seule erreur couvre l'absence et l'invisibilité pour ne pas révéler
+    // l'existence d'une campagne privée.
+    campaign.assertIsVisibleTo(viewerId);
 
     const directory = await this.directory.findManyByIds(everyoneIn(campaign));
     return toCampaignDetail(campaign, viewerId, directory);

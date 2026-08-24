@@ -8,6 +8,7 @@ import {
   CampaignSummarySchema,
   CreateCampaignSchema,
   InviteToCampaignSchema,
+  IdempotencyKeySchema,
   LeaveCampaignSchema,
   MembershipStatusEnum,
   PendingCampaignInvitationCountSchema,
@@ -48,6 +49,18 @@ describe('CreateCampaignSchema', () => {
       const messages = result.error.issues.map((issue) => issue.message).join(' ');
       expect(messages).toContain('au moins');
     }
+  });
+});
+
+describe('IdempotencyKeySchema', () => {
+  it('accepte une clé UUID', () => {
+    const key = '3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8';
+
+    expect(IdempotencyKeySchema.parse(key)).toBe(key);
+  });
+
+  it('refuse une clé arbitraire', () => {
+    expect(IdempotencyKeySchema.safeParse('commande-42').success).toBe(false);
   });
 });
 

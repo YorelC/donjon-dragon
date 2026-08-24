@@ -7,12 +7,14 @@
     "lint": "pnpm -r lint && pnpm lint:rules",
     "lint:rules": "node scripts/check-rules-coverage.mjs",
     "test": "pnpm -r test",
+    "test:e2e:api": "cd e2e/bruno && bru run --env Local --tests-only --bail",
     "seed": "pnpm --filter back seed",
     "seed:items": "pnpm --filter back seed:items",
     "seed:monsters": "pnpm --filter back seed:monsters"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@usebruno/cli": "4.0.0",
     "eslint": "^10.8.0",
     "globals": "^17.8.0",
     "typescript-eslint": "^8.65.0"

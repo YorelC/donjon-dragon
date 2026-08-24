@@ -2,6 +2,18 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ClockModule } from '@kernel/infrastructure/clock.module';
+import {
+  COMMAND_RECEIPT_MODEL,
+  CommandReceiptSchema,
+} from '@kernel/infrastructure/command-receipt.schema';
+import {
+  FUNCTIONAL_AUDIT_ENTRY_MODEL,
+  FunctionalAuditEntrySchema,
+} from '@kernel/infrastructure/functional-audit-entry.schema';
+import {
+  OUTBOX_MESSAGE_MODEL,
+  OutboxMessageSchema,
+} from '@kernel/infrastructure/outbox-message.schema';
 import { FriendshipModule } from '@modules/friendship/friendship.module';
 import { UserModule } from '@modules/user/user.module';
 import { CAMPAIGN_DIRECTORY } from './application/ports/campaign-directory.port';
@@ -27,15 +39,27 @@ import { TransferCampaignOwnershipUseCase } from './application/use-cases/transf
 import { FriendshipChecker } from './infrastructure/acl/friendship-checker';
 import { UserCampaignDirectory } from './infrastructure/acl/user-campaign-directory';
 import {
+  CAMPAIGN_MEMBERSHIP_MODEL,
+  CampaignMembershipSchema,
+} from './infrastructure/persistence/campaign-membership.schema';
+import {
   CAMPAIGN_MODEL,
   CampaignSchema,
 } from './infrastructure/persistence/campaign.schema';
+import { MongoCampaignEnvelopeRepository } from './infrastructure/persistence/mongo-campaign-envelope.repository';
 import { MongoCampaignRepository } from './infrastructure/persistence/mongo-campaign.repository';
+import { MongoCampaignPersistenceRepository } from './infrastructure/persistence/mongo-campaign-persistence.repository';
 import { CampaignController } from './presentation/campaign.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: CAMPAIGN_MODEL, schema: CampaignSchema }]),
+    MongooseModule.forFeature([
+      { name: CAMPAIGN_MODEL, schema: CampaignSchema },
+      { name: CAMPAIGN_MEMBERSHIP_MODEL, schema: CampaignMembershipSchema },
+      { name: COMMAND_RECEIPT_MODEL, schema: CommandReceiptSchema },
+      { name: FUNCTIONAL_AUDIT_ENTRY_MODEL, schema: FunctionalAuditEntrySchema },
+      { name: OUTBOX_MESSAGE_MODEL, schema: OutboxMessageSchema },
+    ]),
     UserModule,
     FriendshipModule,
     ClockModule,
@@ -43,6 +67,8 @@ import { CampaignController } from './presentation/campaign.controller';
   controllers: [CampaignController],
   providers: [
     { provide: CAMPAIGN_REPOSITORY, useClass: MongoCampaignRepository },
+    MongoCampaignPersistenceRepository,
+    MongoCampaignEnvelopeRepository,
     // Les deux seuls providers qui traversent vers un module voisin.
     { provide: CAMPAIGN_DIRECTORY, useClass: UserCampaignDirectory },
     { provide: FRIENDSHIP_CHECKER, useClass: FriendshipChecker },

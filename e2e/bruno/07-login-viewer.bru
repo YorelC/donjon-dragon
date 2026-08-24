@@ -1,0 +1,29 @@
+meta {
+  name: 07 - Login unrelated viewer
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "email": "{{viewerEmail}}",
+    "password": "{{viewerPassword}}"
+  }
+}
+
+tests {
+  test('remplace la session par celle d’un utilisateur étranger', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().user.email).to.equal(bru.getEnvVar('viewerEmail'));
+  });
+}

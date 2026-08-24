@@ -8,6 +8,7 @@ import type { UserId } from '@kernel/domain/user-id';
 
 import type { Campaign } from '../domain/campaign';
 import type { DirectoryUser } from './ports/campaign-directory.port';
+import type { CampaignCreationResult } from './ports/campaign.repository.port';
 
 /**
  * Agrégat → contrat HTTP. Aucun `userId` n'en sort : le client n'a pas à connaître
@@ -27,6 +28,19 @@ export function toCampaignSummary(
     myRole: campaign.roleOf(viewerId),
     gameMasterCount: campaign.gameMasters().length,
     playerCount: campaign.players().length,
+  };
+}
+
+export function creationResultToSummary(
+  result: CampaignCreationResult,
+  viewerId: UserId,
+): CampaignSummary {
+  return {
+    id: result.campaignId,
+    name: result.name,
+    myRole: result.ownerUserId === viewerId.value ? 'gameMaster' : 'player',
+    gameMasterCount: result.gameMasterCount,
+    playerCount: result.playerCount,
   };
 }
 

@@ -3,15 +3,19 @@ version: '3.8'
 services:
   mongo:
     image: mongo:7
+    command: ['mongod', '--replSet', 'donjonDragon', '--bind_ip_all']
     ports:
       - '27017:27017'
     volumes:
       - mongo-data:/data/db
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
-      interval: 10s
+      test: >-
+        echo "try { rs.status().ok } catch (error) {
+        rs.initiate({_id:'donjonDragon',members:[{_id:0,host:'mongo:27017'}]}).ok
+        }" | mongosh --quiet
+      interval: 5s
       timeout: 5s
-      retries: 3
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -31,7 +35,7 @@ services:
       - '3000:3000'
     environment:
       NODE_ENV: development
-      MONGODB_URI: mongodb://mongo:27017/donjon-dragon
+      MONGODB_URI: mongodb://mongo:27017/donjon-dragon?replicaSet=donjonDragon&directConnection=true
       JWT_SECRET: dev-secret-change-in-production
       CORS_ORIGIN: http://localhost:5173
     depends_on:

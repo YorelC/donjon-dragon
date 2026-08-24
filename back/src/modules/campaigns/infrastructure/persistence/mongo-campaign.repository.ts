@@ -1,73 +1,106 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import type { FilterQuery, Model } from 'mongoose';
+import type { ClientSession } from 'mongoose';
 import type { UserId } from '@kernel/domain/user-id';
 
-import type { CampaignRepositoryPort } from '../../application/ports/campaign.repository.port';
+import type {
+  CampaignCreationCommand,
+  CampaignCreationReceipt,
+  CampaignCreationResult,
+  CampaignRepositoryPort,
+} from '../../application/ports/campaign.repository.port';
 import type { Campaign } from '../../domain/campaign';
 import type { CampaignId } from '../../domain/campaign-id';
-import {
-  MEMBERSHIP_STATUS,
-  type MembershipStatus,
-} from '../../domain/membership-status';
-import { toDomain, toPersistence, type CampaignDocument } from './campaign.mapper';
-import { CAMPAIGN_MODEL } from './campaign.schema';
+import { MEMBERSHIP_STATUS } from '../../domain/membership-status';
+import { MongoCampaignEnvelopeRepository } from './mongo-campaign-envelope.repository';
+import { MongoCampaignPersistenceRepository } from './mongo-campaign-persistence.repository';
+
+const DUPLICATE_KEY_ERROR = 11000;
 
 @Injectable()
 export class MongoCampaignRepository implements CampaignRepositoryPort {
   constructor(
-    @InjectModel(CAMPAIGN_MODEL) private readonly model: Model<CampaignDocument>,
+    private readonly campaigns: MongoCampaignPersistenceRepository,
+    private readonly envelopes: MongoCampaignEnvelopeRepository,
   ) {}
 
-  async save(campaign: Campaign): Promise<void> {
-    const document = toPersistence(campaign);
-    await this.model.findOneAndUpdate({ id: document.id }, document, { upsert: true });
+  async create(command: CampaignCreationCommand): Promise<CampaignCreationReceipt> {
+    const existing = await this.findReceipt(command);
+    if (existing) return existing;
+
+    try {
+      return await this.campaigns.transaction((session) =>
+        this.persistCreation(command, session),
+      );
+    } catch (error) {
+      return this.recoverConcurrentReplay(command, error);
+    }
   }
 
-  async findById(id: CampaignId): Promise<Campaign | null> {
-    const doc = await this.model
-      .findOne({ id: id.value })
-      .select('-_id')
-      .lean<CampaignDocument>();
-
-    return doc ? toDomain(doc) : null;
+  save(campaign: Campaign): Promise<void> {
+    return this.campaigns.transaction((session) => this.campaigns.save(campaign, session));
   }
 
-  async listActiveForUser(userId: UserId): Promise<Campaign[]> {
-    return this.findMany(membership(userId, MEMBERSHIP_STATUS.active));
+  findById(id: CampaignId): Promise<Campaign | null> {
+    return this.campaigns.findById(id);
   }
 
-  async listPendingForUser(userId: UserId): Promise<Campaign[]> {
-    return this.findMany(membership(userId, MEMBERSHIP_STATUS.pending));
+  listActiveForUser(userId: UserId): Promise<Campaign[]> {
+    return this.campaigns.listForUser(userId, MEMBERSHIP_STATUS.active);
   }
 
-  async countPendingForUser(userId: UserId): Promise<number> {
-    return this.model.countDocuments(membership(userId, MEMBERSHIP_STATUS.pending));
+  listPendingForUser(userId: UserId): Promise<Campaign[]> {
+    return this.campaigns.listForUser(userId, MEMBERSHIP_STATUS.pending);
   }
 
-  async deleteById(id: CampaignId): Promise<void> {
-    await this.model.deleteOne({ id: id.value });
+  countPendingForUser(userId: UserId): Promise<number> {
+    return this.campaigns.countForUser(userId, MEMBERSHIP_STATUS.pending);
   }
 
-  private async findMany(filter: FilterQuery<CampaignDocument>): Promise<Campaign[]> {
-    const docs = await this.model
-      .find(filter)
-      .select('-_id')
-      .lean<CampaignDocument[]>();
+  deleteById(id: CampaignId): Promise<void> {
+    return this.campaigns.deleteById(id);
+  }
 
-    return docs.map(toDomain);
+  private async persistCreation(
+    command: CampaignCreationCommand,
+    session: ClientSession,
+  ): Promise<CampaignCreationReceipt> {
+    const result = creationResult(command.campaign);
+    await this.envelopes.write(command, result, session);
+    await this.campaigns.save(command.campaign, session);
+    return { intentHash: command.intentHash, result };
+  }
+
+  private findReceipt(
+    command: CampaignCreationCommand,
+  ): Promise<CampaignCreationReceipt | null> {
+    return this.envelopes.findReceipt(
+      command.principalId.value,
+      command.idempotencyKey,
+    );
+  }
+
+  private async recoverConcurrentReplay(
+    command: CampaignCreationCommand,
+    error: unknown,
+  ): Promise<CampaignCreationReceipt> {
+    if (!isDuplicateKey(error)) throw error;
+    const receipt = await this.findReceipt(command);
+    if (!receipt) throw error;
+    return receipt;
   }
 }
 
-/**
- * $elemMatch, et non deux clés pointées : sans lui, un utilisateur invité à une
- * campagne où quelqu'un d'AUTRE est actif satisferait un filtre
- * { 'members.userId': moi, 'members.status': 'active' }, les deux conditions
- * pouvant tomber sur deux éléments différents du tableau.
- */
-function membership(
-  userId: UserId,
-  status: MembershipStatus,
-): FilterQuery<CampaignDocument> {
-  return { members: { $elemMatch: { userId: userId.value, status } } };
+function creationResult(campaign: Campaign): CampaignCreationResult {
+  return {
+    campaignId: campaign.id.value,
+    name: campaign.name.value,
+    ownerUserId: campaign.ownerId.value,
+    gameMasterCount: campaign.gameMasters().length,
+    playerCount: campaign.players().length,
+  };
+}
+
+function isDuplicateKey(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+  return 'code' in error && error.code === DUPLICATE_KEY_ERROR;
 }

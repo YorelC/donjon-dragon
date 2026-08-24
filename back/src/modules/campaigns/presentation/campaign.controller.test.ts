@@ -74,14 +74,20 @@ describe('CampaignController', () => {
 
   it('crée la campagne au nom de l APPELANT, jamais d un id reçu du client', async () => {
     const caller = user(randomUUID());
+    const idempotencyKey = randomUUID();
     const createCampaign = module.get(CreateCampaignUseCase);
     vi.mocked(createCampaign.execute).mockResolvedValue(aSummary());
 
-    await controller.createCampaign(caller, { name: 'La Malédiction de Strahd' });
+    await controller.createCampaign(
+      caller,
+      { name: 'La Malédiction de Strahd' },
+      idempotencyKey,
+    );
 
     expect(createCampaign.execute).toHaveBeenCalledWith({
       name: 'La Malédiction de Strahd',
       founderId: caller.userId,
+      idempotencyKey,
     });
   });
 

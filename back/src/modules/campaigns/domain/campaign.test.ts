@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { UserId } from '@kernel/domain/user-id';
 import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
 
-import { Campaign, type CampaignSnapshot } from './campaign';
+import { Campaign } from './campaign';
 import { CampaignName } from './campaign-name';
 import {
   AlreadyCampaignMemberError,
@@ -221,11 +221,13 @@ describe('Campaign.leave', () => {
 
   it('passe la main et part, en une seule opération', () => {
     const campaign = withTwoGameMasters();
+    const revisionBefore = campaign.revision;
 
     campaign.leave(gandalf, frodo, NOW);
 
     expect(campaign.ownerId.equals(frodo)).toBe(true);
     expect(campaign.snapshot().members).toHaveLength(1);
+    expect(campaign.revision).toBe(revisionBefore + 1);
   });
 
   it('ne laisse pas partir le propriétaire en désignant un absent', () => {
@@ -498,13 +500,12 @@ describe('Campaign — propriété à la réhydratation', () => {
     expect(restored.ownerId.equals(frodo)).toBe(true);
   });
 
-  it('retombe sur le premier maître du jeu quand le document est antérieur', () => {
-    // Compatibilité : les campagnes créées avant la propriété n'ont pas d'ownerId.
-    const { ownerId: _ownerId, ...legacy } = withFrodoAsPlayer().snapshot();
+  it('conserve la révision du snapshot', () => {
+    const campaign = withFrodoAsPlayer();
 
-    const restored = Campaign.restore(legacy as CampaignSnapshot);
+    const restored = Campaign.restore(campaign.snapshot());
 
-    expect(restored.ownerId.equals(gandalf)).toBe(true);
+    expect(restored.revision).toBe(campaign.revision);
   });
 });
 

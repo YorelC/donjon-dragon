@@ -1,0 +1,30 @@
+meta {
+  name: 04 - Replay campaign creation
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/campaigns
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{idempotencyKey}}
+}
+
+body:json {
+  {
+    "name": "{{campaignName}}"
+  }
+}
+
+tests {
+  test('relit le résultat autoritaire sans dupliquer', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().id).to.equal(bru.getVar('campaignId'));
+  });
+}

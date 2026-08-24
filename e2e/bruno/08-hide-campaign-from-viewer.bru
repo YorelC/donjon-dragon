@@ -1,0 +1,18 @@
+meta {
+  name: 08 - Hide campaign from unrelated viewer
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test('répond comme si la campagne était absente', function() {
+    expect(res.getStatus()).to.equal(404);
+    expect(res.getBody().message).to.equal('Campaign not found');
+  });
+}

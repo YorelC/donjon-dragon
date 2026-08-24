@@ -1,26 +1,44 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { CampaignSchema } from './campaign.schema';
+import {
+  CAMPAIGN_MEMBERSHIP_COLLECTION,
+  CampaignMembershipSchema,
+} from './campaign-membership.schema';
+import { CAMPAIGN_COLLECTION, CampaignSchema } from './campaign.schema';
 
-describe('CampaignSchema — indexes', () => {
-  it("définit l'index { 'members.userId': 1, 'members.status': 1 }", () => {
-    const hasIndex = CampaignSchema.indexes().some(([fields]) => {
-      const keys = Object.keys(fields);
-      return (
-        keys.length === 2 &&
-        fields['members.userId'] === 1 &&
-        fields['members.status'] === 1
-      );
-    });
-
-    expect(hasIndex).toBe(true);
+describe('Campaign persistence schemas', () => {
+  it('nomme explicitement les deux collections', () => {
+    expect(CampaignSchema.get('collection')).toBe(CAMPAIGN_COLLECTION);
+    expect(CampaignMembershipSchema.get('collection')).toBe(
+      CAMPAIGN_MEMBERSHIP_COLLECTION,
+    );
   });
 
-  it('rend le tableau de membres sans _id de sous-document', () => {
-    // Le .select('-_id') du repository ne porte que sur la racine : un _id de
-    // sous-document remonterait jusqu'au snapshot, qui n'a pas ce champ.
-    const memberSchema = CampaignSchema.path('members');
+  it('ne persiste plus les membres dans la racine campagne', () => {
+    expect(CampaignSchema.path('members')).toBeUndefined();
+    expect(CampaignSchema.path('revision')).toBeDefined();
+    expect(CampaignSchema.path('schemaVersion')).toBeDefined();
+  });
 
-    expect(memberSchema.schema?.options._id).toBe(false);
+  it('garantit une adhésion unique par campagne et utilisateur', () => {
+    expect(hasUniqueMembershipIndex()).toBe(true);
+  });
+
+  it('indexe les lectures par utilisateur, statut, campagne et rôle', () => {
+    expect(hasIndex({ userId: 1, status: 1 })).toBe(true);
+    expect(hasIndex({ campaignId: 1, role: 1, status: 1 })).toBe(true);
   });
 });
+
+function hasUniqueMembershipIndex(): boolean {
+  return CampaignMembershipSchema.indexes().some(
+    ([fields, options]) =>
+      fields.campaignId === 1 && fields.userId === 1 && options.unique === true,
+  );
+}
+
+function hasIndex(expected: Record<string, number>): boolean {
+  return CampaignMembershipSchema.indexes().some(([fields]) =>
+    Object.entries(expected).every(([key, value]) => fields[key] === value),
+  );
+}

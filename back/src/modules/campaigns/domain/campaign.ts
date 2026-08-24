@@ -17,6 +17,7 @@ import {
   CannotRemoveSelfError,
   CannotSelfDemoteAsLastGameMasterError,
   CannotTransferToSelfError,
+  CampaignNotFoundError,
   MemberNotFoundError,
   NoPendingCampaignInvitationError,
   NotAGameMasterError,
@@ -35,6 +36,7 @@ export interface CampaignSnapshot {
   name: string;
   ownerId: string;
   members: CampaignMemberSnapshot[];
+  revision: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -42,10 +44,9 @@ export interface CampaignSnapshot {
 /**
  * Aggregate root d'une campagne.
  *
- * Les invitations ne sont pas une collection à part : un invité est un membre
- * `pending` du même document. C'est ce qui permet à l'agrégat de porter seul les
- * règles d'appartenance — qui peut inviter, qui peut répondre, qui peut partir —
- * sans dépendre de la cohérence entre deux documents.
+ * L'agrégat représente encore une invitation par un participant `pending`. Cette
+ * vue métier lui permet de porter seul les règles d'appartenance, indépendamment
+ * du découpage physique choisi par la persistance.
  *
  * Deux axes indépendants s'y croisent. Le RÔLE dit ce qu'on fait dans la partie ;
  * la PROPRIÉTÉ dit à qui appartient la campagne. Le propriétaire peut n'être que
@@ -60,6 +61,7 @@ export class Campaign {
     readonly name: CampaignName,
     private currentOwnerId: UserId,
     private currentMembers: readonly CampaignMember[],
+    private currentRevision: number,
     readonly createdAt: string,
     private currentUpdatedAt: string,
   ) {}
@@ -72,6 +74,7 @@ export class Campaign {
       name,
       founderId,
       [CampaignMember.founder(founderId)],
+      INITIAL_REVISION,
       createdAt,
       createdAt,
     );
@@ -82,8 +85,9 @@ export class Campaign {
     return new Campaign(
       CampaignId.create(snapshot.id),
       CampaignName.create(snapshot.name),
-      ownerIdOf(snapshot),
+      UserId.create(snapshot.ownerId),
       snapshot.members.map((member) => CampaignMember.restore(member)),
+      snapshot.revision,
       snapshot.createdAt,
       snapshot.updatedAt,
     );
@@ -99,6 +103,10 @@ export class Campaign {
 
   get updatedAt(): string {
     return this.currentUpdatedAt;
+  }
+
+  get revision(): number {
+    return this.currentRevision;
   }
 
   /** Seul un maître du jeu invite. L'amitié, elle, se vérifie hors de l'agrégat. */
@@ -194,7 +202,7 @@ export class Campaign {
     if (member.isGameMaster() && this.gameMasters().length === ONLY_ONE) {
       throw new CannotLeaveAsLastGameMasterError();
     }
-    if (this.isOwner(actorId)) this.handOver(actorId, successorId, now);
+    if (this.isOwner(actorId)) this.handOver(actorId, successorId);
 
     this.commit(this.without(member), now);
   }
@@ -212,6 +220,11 @@ export class Campaign {
   /** Charge puis vérifie : lire une campagne suppose d'y appartenir. */
   assertIsActiveMember(userId: UserId): void {
     this.activeMemberFor(userId);
+  }
+
+  assertIsVisibleTo(userId: UserId): void {
+    const member = this.memberFor(userId);
+    if (!member?.isActive()) throw new CampaignNotFoundError();
   }
 
   isOwner(userId: UserId): boolean {
@@ -254,6 +267,7 @@ export class Campaign {
       name: this.name.value,
       ownerId: this.currentOwnerId.value,
       members: this.currentMembers.map((member) => member.snapshot()),
+      revision: this.currentRevision,
       createdAt: this.createdAt,
       updatedAt: this.currentUpdatedAt,
     };
@@ -263,11 +277,11 @@ export class Campaign {
   private handOver(
     actorId: UserId,
     successorId: UserId | null,
-    now: Date,
   ): void {
     if (!successorId) throw new SuccessorRequiredError();
-
-    this.transferOwnership(actorId, successorId, now);
+    if (actorId.equals(successorId)) throw new CannotTransferToSelfError();
+    this.activeTarget(successorId);
+    this.currentOwnerId = successorId;
   }
 
   private activeMembers(): CampaignMember[] {
@@ -327,26 +341,11 @@ export class Campaign {
   }
 
   private touch(now: Date): void {
+    this.currentRevision += REVISION_INCREMENT;
     this.currentUpdatedAt = now.toISOString();
   }
 }
 
 const ONLY_ONE = 1;
-
-/**
- * Compatibilité de lecture, pas une règle du domaine : les campagnes créées avant
- * la notion de propriétaire n'ont pas d'`ownerId` en base. Le fondateur étant le
- * premier maître du jeu, c'est lui qu'on retrouve.
- */
-function ownerIdOf(snapshot: CampaignSnapshot): UserId {
-  return UserId.create(snapshot.ownerId ?? firstGameMasterId(snapshot.members));
-}
-
-function firstGameMasterId(members: CampaignMemberSnapshot[]): string {
-  const gameMaster = members.find(
-    (member) => member.role === CAMPAIGN_ROLE.gameMaster,
-  );
-
-  // Aucun maître du jeu : le document est corrompu, UserId.create le dira.
-  return gameMaster?.userId ?? '';
-}
+const INITIAL_REVISION = 0;
+const REVISION_INCREMENT = 1;

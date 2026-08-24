@@ -4,6 +4,7 @@ import { anActor } from '@kernel/testing/actor.fixture';
 import { FixedClock, TEST_INSTANT } from '@kernel/testing/fixed-clock';
 import { UserId } from '@kernel/domain/user-id';
 
+import { CampaignCommandConflictError } from '../../domain/campaign.errors';
 import { InvalidCampaignNameError } from '../../domain/campaign-name';
 import { InMemoryCampaignRepository } from '../../testing/in-memory-campaign.repository';
 import { A_CAMPAIGN_NAME } from '../../testing/campaign.fixture';
@@ -22,11 +23,11 @@ describe('CreateCampaignUseCase', () => {
     gandalfId = randomUUID();
   });
 
+  const create = (name: string = A_CAMPAIGN_NAME, idempotencyKey = randomUUID()) =>
+    useCase.execute({ name, founderId: anActor(gandalfId), idempotencyKey });
+
   it('fait du créateur le maître du jeu de sa campagne', async () => {
-    const summary = await useCase.execute({
-      name: A_CAMPAIGN_NAME,
-      founderId: anActor(gandalfId),
-    });
+    const summary = await create();
 
     expect(summary.myRole).toBe('gameMaster');
     expect(summary.gameMasterCount).toBe(1);
@@ -35,10 +36,7 @@ describe('CreateCampaignUseCase', () => {
   });
 
   it('persiste la campagne, retrouvable par son créateur', async () => {
-    const summary = await useCase.execute({
-      name: A_CAMPAIGN_NAME,
-      founderId: anActor(gandalfId),
-    });
+    const summary = await create();
 
     const stored = await campaignRepo.listActiveForUser(UserId.create(gandalfId));
 
@@ -46,7 +44,7 @@ describe('CreateCampaignUseCase', () => {
   });
 
   it('date la campagne de l horloge, jamais de l heure réelle', async () => {
-    await useCase.execute({ name: A_CAMPAIGN_NAME, founderId: anActor(gandalfId) });
+    await create();
 
     const [campaign] = await campaignRepo.listActiveForUser(UserId.create(gandalfId));
 
@@ -55,7 +53,7 @@ describe('CreateCampaignUseCase', () => {
 
   it('refuse un nom hors bornes et ne persiste rien', async () => {
     await expect(
-      useCase.execute({ name: 'court', founderId: anActor(gandalfId) }),
+      create('court'),
     ).rejects.toThrow(InvalidCampaignNameError);
 
     expect(await campaignRepo.listActiveForUser(UserId.create(gandalfId))).toHaveLength(
@@ -64,15 +62,30 @@ describe('CreateCampaignUseCase', () => {
   });
 
   it('deux campagnes homonymes coexistent, distinguées par leur id', async () => {
-    const first = await useCase.execute({
-      name: A_CAMPAIGN_NAME,
-      founderId: anActor(gandalfId),
-    });
-    const second = await useCase.execute({
-      name: A_CAMPAIGN_NAME,
-      founderId: anActor(gandalfId),
-    });
+    const first = await create();
+    const second = await create();
 
     expect(second.id).not.toBe(first.id);
+  });
+
+  it('rejoue une même intention sans créer une seconde campagne', async () => {
+    const idempotencyKey = randomUUID();
+
+    const first = await create(A_CAMPAIGN_NAME, idempotencyKey);
+    const replay = await create(` ${A_CAMPAIGN_NAME} `, idempotencyKey);
+
+    expect(replay).toEqual(first);
+    expect(await campaignRepo.listActiveForUser(UserId.create(gandalfId))).toHaveLength(
+      1,
+    );
+  });
+
+  it('refuse de réutiliser une clé pour une autre intention', async () => {
+    const idempotencyKey = randomUUID();
+    await create(A_CAMPAIGN_NAME, idempotencyKey);
+
+    await expect(create('Les Brumes de Ravenloft', idempotencyKey)).rejects.toThrow(
+      CampaignCommandConflictError,
+    );
   });
 });

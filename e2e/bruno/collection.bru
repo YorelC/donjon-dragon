@@ -1,0 +1,9 @@
+auth {
+  mode: none
+}
+
+script:pre-request {
+  if (!bru.hasVar('idempotencyKey')) {
+    bru.setVar('idempotencyKey', bru.interpolate('{{$randomUUID}}'));
+  }
+}

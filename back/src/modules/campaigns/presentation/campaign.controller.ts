@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import {
   CreateCampaignSchema,
+  IDEMPOTENCY_KEY_HEADER,
+  IdempotencyKeySchema,
   InviteToCampaignSchema,
   LeaveCampaignSchema,
   TransferOwnershipSchema,
@@ -20,7 +22,10 @@ import {
 import type { AuthenticatedActor } from '@kernel/domain/actor-id';
 
 import { CurrentUser } from '@common/decorators/current-user.decorator';
-import { ZodBody } from '@common/decorators/zod-validated.decorator';
+import {
+  ZodBody,
+  ZodHeader,
+} from '@common/decorators/zod-validated.decorator';
 import { AcceptCampaignInvitationUseCase } from '../application/use-cases/accept-campaign-invitation.use-case';
 import { CountCampaignInvitationsUseCase } from '../application/use-cases/count-campaign-invitations.use-case';
 import { CreateCampaignUseCase } from '../application/use-cases/create-campaign.use-case';
@@ -75,10 +80,13 @@ export class CampaignController {
   async createCampaign(
     @CurrentUser() user: AuthenticatedActor,
     @ZodBody(CreateCampaignSchema) body: CreateCampaignBody,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
     return this.create.execute({
       name: body.name,
       founderId: user.userId,
+      idempotencyKey,
     });
   }
 

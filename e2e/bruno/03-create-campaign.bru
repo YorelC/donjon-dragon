@@ -1,0 +1,39 @@
+meta {
+  name: 03 - Create campaign
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/campaigns
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{idempotencyKey}}
+}
+
+body:json {
+  {
+    "name": "{{campaignName}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('campaignId', res.getBody().id);
+}
+
+tests {
+  test('crée la campagne et son premier MJ', function() {
+    const body = res.getBody();
+    expect(res.getStatus()).to.equal(201);
+    expect(body.id).to.match(/^[0-9a-f-]{36}$/i);
+    expect(body.name).to.equal(bru.getEnvVar('campaignName'));
+    expect(body.myRole).to.equal('gameMaster');
+    expect(body.gameMasterCount).to.equal(1);
+    expect(body.playerCount).to.equal(0);
+  });
+}

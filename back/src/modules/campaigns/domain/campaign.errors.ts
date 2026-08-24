@@ -15,6 +15,18 @@ export class CampaignNotFoundError extends NotFoundDomainError {
   }
 }
 
+export class CampaignCommandConflictError extends ConflictDomainError {
+  constructor() {
+    super('This idempotency key is already bound to another command');
+  }
+}
+
+export class CampaignRevisionConflictError extends ConflictDomainError {
+  constructor() {
+    super('The campaign was modified by another command');
+  }
+}
+
 export class InviteeNotFoundError extends NotFoundDomainError {
   constructor() {
     super('No user found with this display name');

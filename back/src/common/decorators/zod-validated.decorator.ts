@@ -1,4 +1,10 @@
-import { Body, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Param,
+  Query,
+  createParamDecorator,
+  type ExecutionContext,
+} from '@nestjs/common';
 import type { ZodType } from 'zod';
 
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe';
@@ -12,6 +18,20 @@ export const ZodBody = <T>(schema: ZodType<T>) => Body(new ZodValidationPipe(sch
 
 /** Idem pour la query string, qui est tout autant une entrée externe. */
 export const ZodQuery = <T>(schema: ZodType<T>) => Query(new ZodValidationPipe(schema));
+
+/** Idem pour un en-tête HTTP nommé. */
+export function ZodHeader<T>(property: string, schema: ZodType<T>): ParameterDecorator {
+  const header = createParamDecorator((_data: unknown, context: ExecutionContext) => {
+    const request = context.switchToHttp().getRequest<HeaderRequest>();
+    const value = request.headers[property.toLowerCase()];
+    return new ZodValidationPipe(schema).transform(value);
+  });
+  return header();
+}
+
+interface HeaderRequest {
+  headers: Record<string, unknown>;
+}
 
 /**
  * Idem pour un segment d'URL dont le vocabulaire est fermé — une clé de classe,

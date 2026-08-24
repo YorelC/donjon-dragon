@@ -1,0 +1,28 @@
+meta {
+  name: 02 - Reject missing idempotency key
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/campaigns
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+}
+
+body:json {
+  {
+    "name": "{{campaignName}}"
+  }
+}
+
+tests {
+  test('refuse une création sans clé idempotente', function() {
+    expect(res.getStatus()).to.equal(400);
+  });
+}

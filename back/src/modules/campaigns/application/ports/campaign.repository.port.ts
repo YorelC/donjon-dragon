@@ -5,6 +5,27 @@ import type { CampaignId } from '../../domain/campaign-id';
 
 export const CAMPAIGN_REPOSITORY = Symbol('CAMPAIGN_REPOSITORY');
 
+export interface CampaignCreationCommand {
+  campaign: Campaign;
+  principalId: UserId;
+  idempotencyKey: string;
+  intentHash: string;
+  occurredAt: Date;
+}
+
+export interface CampaignCreationResult {
+  campaignId: string;
+  name: string;
+  ownerUserId: string;
+  gameMasterCount: number;
+  playerCount: number;
+}
+
+export interface CampaignCreationReceipt {
+  intentHash: string;
+  result: CampaignCreationResult;
+}
+
 /**
  * Le port parle l'agrégat, pas le document : c'est l'adapter qui traduit.
  * `save` ne renvoie rien — l'appelant tient déjà l'instance à jour.
@@ -13,11 +34,11 @@ export const CAMPAIGN_REPOSITORY = Symbol('CAMPAIGN_REPOSITORY');
  * campagnes dont l'utilisateur est membre actif, `listPendingForUser` celles où
  * il n'a qu'une invitation. C'est exactement la coupure des deux onglets.
  *
- * `findById` charge sans filtrer sur l'appelant : l'autorisation se vérifie sur
- * l'agrégat chargé, pas dans la requête Mongo — sinon « pas à toi » devient
- * « pas trouvé » et la règle disparaît.
+ * `findById` charge sans recevoir l'appelant : l'application applique ensuite la
+ * politique de visibilité sans mêler l'autorisation à la requête Mongo.
  */
 export interface CampaignRepositoryPort {
+  create(command: CampaignCreationCommand): Promise<CampaignCreationReceipt>;
   save(campaign: Campaign): Promise<void>;
   findById(id: CampaignId): Promise<Campaign | null>;
   listActiveForUser(userId: UserId): Promise<Campaign[]>;

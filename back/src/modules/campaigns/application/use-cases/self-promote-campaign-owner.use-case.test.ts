@@ -22,6 +22,7 @@ describe('SelfPromoteCampaignOwnerUseCase', () => {
     await new CreateCampaignUseCase(campaignRepo, new FixedClock()).execute({
       name: A_CAMPAIGN_NAME,
       founderId: anActor(gandalfId),
+      idempotencyKey: randomUUID(),
     });
   });
 
