@@ -4,9 +4,23 @@ import type { FriendshipRepositoryPort } from '../application/ports/friendship.r
 import type { Friendship } from '../domain/friendship';
 import type { FriendshipId } from '../domain/friendship-id';
 import { FRIENDSHIP_STATUS } from '../domain/friendship-status';
+import {
+  AlreadyFriendsError,
+  FriendRequestAlreadyExistsError,
+} from '../domain/friendship.errors';
 
 export class InMemoryFriendshipRepository implements FriendshipRepositoryPort {
   private readonly friendships = new Map<string, Friendship>();
+
+  async create(friendship: Friendship): Promise<void> {
+    const existing = this.findBetweenNow(
+      friendship.requesterId,
+      friendship.recipientId,
+    );
+    this.assertReplaceable(existing);
+    if (existing) this.friendships.delete(existing.id.value);
+    this.friendships.set(friendship.id.value, friendship);
+  }
 
   async save(friendship: Friendship): Promise<void> {
     this.friendships.set(friendship.id.value, friendship);
@@ -17,11 +31,7 @@ export class InMemoryFriendshipRepository implements FriendshipRepositoryPort {
   }
 
   async findBetween(userAId: UserId, userBId: UserId): Promise<Friendship | null> {
-    return (
-      this.all().find(
-        (f) => f.involves(userAId) && f.involves(userBId),
-      ) ?? null
-    );
+    return this.findBetweenNow(userAId, userBId);
   }
 
   async listAcceptedForUser(userId: UserId): Promise<Friendship[]> {
@@ -52,5 +62,20 @@ export class InMemoryFriendshipRepository implements FriendshipRepositoryPort {
 
   private all(): Friendship[] {
     return [...this.friendships.values()];
+  }
+
+  private findBetweenNow(userAId: UserId, userBId: UserId): Friendship | null {
+    return this.all().find(
+      (friendship) => friendship.involves(userAId) && friendship.involves(userBId),
+    ) ?? null;
+  }
+
+  private assertReplaceable(existing: Friendship | null): void {
+    if (existing?.status === FRIENDSHIP_STATUS.pending) {
+      throw new FriendRequestAlreadyExistsError();
+    }
+    if (existing?.status === FRIENDSHIP_STATUS.accepted) {
+      throw new AlreadyFriendsError();
+    }
   }
 }

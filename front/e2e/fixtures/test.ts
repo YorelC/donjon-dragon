@@ -7,10 +7,12 @@ import type { Account } from './accounts';
 import { STORAGE_STATE } from './storage-state';
 import { LoginPage } from '../pages/login.page';
 import { FriendsPage } from '../pages/friends.page';
+import { RegisterPage } from '../pages/register.page';
 
 interface Fixtures {
   loginPage: LoginPage;
   friendsPage: FriendsPage;
+  registerPage: RegisterPage;
   /**
    * Connecte le compte demandé par l'INTERFACE.
    *
@@ -42,6 +44,9 @@ export const test = base.extend<Fixtures>({
   },
   friendsPage: async ({ page }, use) => {
     await use(new FriendsPage(page));
+  },
+  registerPage: async ({ page }, use) => {
+    await use(new RegisterPage(page));
   },
   loginAs: async ({ loginPage }, use) => {
     await use((account: Account) => loginPage.loginAs(account));

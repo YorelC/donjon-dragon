@@ -54,10 +54,13 @@ e2e/
 
 ## L'état partagé, et pourquoi il y a du nettoyage partout
 
-Ces tests ne peuvent pas créer leurs propres comptes : l'inscription exige une
-vérification par email, et il n'y a pas de boîte mail à cliquer. Ils travaillent
-donc sur les comptes du seed, **et une demande d'ami créée par un test survit au
-test** — au second passage, le serveur répond 409.
+Les parcours ordinaires travaillent sur les comptes du seed. Le scénario
+d'inscription utilise un transport réservé à `NODE_ENV=test` : le back écrit le lien
+de vérification dans un fichier temporaire lu par Playwright, sans endpoint de test ni
+secret exposé par l'API. Les comptes ainsi créés portent un email et un pseudo uniques.
+
+Une demande d'ami créée par un test survit au test : au second passage, le serveur
+répondrait 409 sans nettoyage.
 
 D'où `clearAllRelations(page)` dans les `beforeEach` : chaque scénario ramène la base
 à un état connu, puis pose sa propre précondition. Les préconditions passent par

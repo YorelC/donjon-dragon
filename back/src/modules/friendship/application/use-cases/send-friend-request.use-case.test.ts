@@ -130,6 +130,24 @@ describe('SendFriendRequestUseCase', () => {
 
     expect(req2.status).toBe('pending');
     expect(req2.id).not.toBe(req1.id);
+    await expect(
+      friendshipRepo.findById(FriendshipId.create(req1.id)),
+    ).resolves.toBeNull();
+  });
+
+  it('ne crée qu une demande lors de deux envois simultanés', async () => {
+    const command = {
+      requesterId: anActor(alice.id.value),
+      displayName: 'bob',
+    };
+
+    const results = await Promise.allSettled([
+      useCase.execute(command),
+      useCase.execute(command),
+    ]);
+
+    expect(results.filter(({ status }) => status === 'fulfilled')).toHaveLength(1);
+    expect(results.filter(({ status }) => status === 'rejected')).toHaveLength(1);
   });
 
   async function stored(friendshipId: string) {

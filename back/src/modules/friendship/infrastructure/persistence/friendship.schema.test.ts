@@ -15,15 +15,11 @@ describe('FriendshipSchema — indexes', () => {
     expect(hasIndex).toBe(true);
   });
 
-  it('définit l\'index { requesterId: 1, recipientId: 1 }', () => {
+  it('définit un index unique sur la paire canonique', () => {
     const indexes = FriendshipSchema.indexes();
-    const hasIndex = indexes.some(([fields]) => {
+    const hasIndex = indexes.some(([fields, options]) => {
       const keys = Object.keys(fields);
-      return (
-        keys.length === 2 &&
-        fields.requesterId === 1 &&
-        fields.recipientId === 1
-      );
+      return keys.length === 1 && fields.pairKey === 1 && options.unique === true;
     });
     expect(hasIndex).toBe(true);
   });

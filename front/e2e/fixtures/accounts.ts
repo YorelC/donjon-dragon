@@ -1,10 +1,9 @@
 /**
  * Comptes du seed (`pnpm seed`), source unique pour toute la suite.
  *
- * Ces tests ne peuvent PAS créer leurs propres comptes : l'inscription exige une
- * vérification d'email, et il n'y a pas de boîte mail à cliquer dans un test. On
- * travaille donc sur des comptes préexistants et déjà vérifiés — ce qui impose
- * qu'un test nettoie derrière lui (voir `fixtures/api.ts`).
+ * Les parcours qui ne testent pas l'inscription travaillent sur des comptes
+ * préexistants et déjà vérifiés — ce qui impose qu'un test nettoie derrière lui
+ * (voir `fixtures/api.ts`).
  *
  * Une convention pour éviter que deux specs se marchent sur les pieds : chaque
  * spec s'approprie un compte « acteur » et n'utilise les autres que comme cibles.

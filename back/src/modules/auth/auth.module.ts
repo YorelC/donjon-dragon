@@ -19,6 +19,7 @@ import { RefreshTokensUseCase } from './application/use-cases/refresh-tokens.use
 import { LogoutUseCase } from './application/use-cases/logout.use-case';
 import { BcryptPasswordHasher } from './infrastructure/crypto/bcrypt-password-hasher';
 import { NodemailerEmailSender } from './infrastructure/mail/nodemailer-email-sender';
+import { CapturedEmailSender } from './infrastructure/mail/captured-email-sender';
 import {
   EMAIL_VERIFICATION_TOKEN_MODEL,
   EmailVerificationTokenSchema,
@@ -70,7 +71,13 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
         new BcryptPasswordHasher(config.getOrThrow<number>('security.bcryptRounds')),
       inject: [ConfigService],
     },
-    { provide: EMAIL_SENDER, useClass: NodemailerEmailSender },
+    NodemailerEmailSender,
+    CapturedEmailSender,
+    {
+      provide: EMAIL_SENDER,
+      inject: [ConfigService, NodemailerEmailSender, CapturedEmailSender],
+      useFactory: selectEmailSender,
+    },
     { provide: REFRESH_TOKEN_REPOSITORY, useClass: MongoRefreshTokenRepository },
     {
       provide: EMAIL_VERIFICATION_TOKEN_REPOSITORY,
@@ -84,3 +91,11 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
   ],
 })
 export class AuthModule {}
+
+function selectEmailSender(
+  config: ConfigService,
+  smtp: NodemailerEmailSender,
+  captured: CapturedEmailSender,
+) {
+  return config.get<string>('mail.capturePath') ? captured : smtp;
+}

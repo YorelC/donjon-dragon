@@ -7,6 +7,8 @@ import type { FriendshipRepositoryPort } from '../../application/ports/friendshi
 import type { Friendship } from '../../domain/friendship';
 import type { FriendshipId } from '../../domain/friendship-id';
 import { FRIENDSHIP_STATUS } from '../../domain/friendship-status';
+import { FriendRequestAlreadyExistsError } from '../../domain/friendship.errors';
+import { friendshipPairKey } from '../../domain/friendship-pair-key';
 import {
   toDomain,
   toPersistence,
@@ -20,6 +22,26 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
     @InjectModel(FRIENDSHIP_MODEL) private readonly model: Model<FriendshipDocument>,
   ) {}
 
+  async create(friendship: Friendship): Promise<void> {
+    const document = toPersistence(friendship);
+    try {
+      await this.model.findOneAndReplace(
+        {
+          ...friendshipParticipantsFilter(
+            friendship.requesterId,
+            friendship.recipientId,
+          ),
+          status: FRIENDSHIP_STATUS.refused,
+        },
+        document,
+        { upsert: true },
+      );
+    } catch (error: unknown) {
+      if (isDuplicateKeyError(error)) throw new FriendRequestAlreadyExistsError();
+      throw error;
+    }
+  }
+
   async save(friendship: Friendship): Promise<void> {
     const document = toPersistence(friendship);
     await this.model.findOneAndUpdate({ id: document.id }, document, { upsert: true });
@@ -30,12 +52,7 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
   }
 
   async findBetween(userAId: UserId, userBId: UserId): Promise<Friendship | null> {
-    return this.findOne({
-      $or: [
-        { requesterId: userAId.value, recipientId: userBId.value },
-        { requesterId: userBId.value, recipientId: userAId.value },
-      ],
-    });
+    return this.findOne(friendshipParticipantsFilter(userAId, userBId));
   }
 
   async listAcceptedForUser(userId: UserId): Promise<Friendship[]> {
@@ -89,4 +106,21 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
 
     return docs.map(toDomain);
   }
+}
+
+const DUPLICATE_KEY_ERROR_CODE = 11_000;
+
+function isDuplicateKeyError(error: unknown): error is { code: number } {
+  if (typeof error !== 'object' || error === null) return false;
+  return 'code' in error && error.code === DUPLICATE_KEY_ERROR_CODE;
+}
+
+function friendshipParticipantsFilter(userAId: UserId, userBId: UserId) {
+  return {
+    $or: [
+      { pairKey: friendshipPairKey(userAId, userBId) },
+      { requesterId: userAId.value, recipientId: userBId.value },
+      { requesterId: userBId.value, recipientId: userAId.value },
+    ],
+  };
 }

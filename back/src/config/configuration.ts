@@ -40,6 +40,7 @@ export const mailConfig = registerAs('mail', () => {
   return {
     user: env.EMAIL_USER,
     appPassword: env.EMAIL_APP_PASSWORD,
+    capturePath: env.EMAIL_CAPTURE_PATH,
   };
 });
 

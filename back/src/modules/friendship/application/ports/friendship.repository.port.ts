@@ -10,6 +10,7 @@ export const FRIENDSHIP_REPOSITORY = Symbol('FRIENDSHIP_REPOSITORY');
  * `save` ne renvoie rien — l'appelant tient déjà l'instance à jour.
  */
 export interface FriendshipRepositoryPort {
+  create(friendship: Friendship): Promise<void>;
   save(friendship: Friendship): Promise<void>;
   findById(id: FriendshipId): Promise<Friendship | null>;
 

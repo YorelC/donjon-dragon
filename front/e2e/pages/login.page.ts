@@ -17,7 +17,7 @@ export class LoginPage {
 
   constructor(private readonly page: Page) {
     this.email = page.getByLabel('Adresse email');
-    this.password = page.getByLabel('Mot de passe');
+    this.password = page.getByLabel('Mot de passe', { exact: true });
     this.submit = page.getByRole('button', { name: 'Se connecter' });
     this.error = page.locator('.alert-error');
   }

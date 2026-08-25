@@ -43,7 +43,7 @@ export class SendFriendRequestUseCase {
     const friendship = Friendship.request(requesterId, recipientId, this.clock.now());
     await this.assertNoExistingRelation(requesterId, recipientId);
 
-    await this.friendshipRepo.save(friendship);
+    await this.friendshipRepo.create(friendship);
 
     return toFriendRequestResponse(friendship);
   }

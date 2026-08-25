@@ -27,6 +27,7 @@ const EnvSchema = z.object({
 
   EMAIL_USER: z.string().min(1),
   EMAIL_APP_PASSWORD: z.string().min(1),
+  EMAIL_CAPTURE_PATH: z.string().min(1).optional(),
 
   /**
    * Origines autorisees, separees par des virgules.
@@ -41,6 +42,13 @@ const EnvSchema = z.object({
     .min(1)
     .default('http://localhost:5173')
     .transform((value) => value.split(',').map((origin) => origin.trim())),
+}).superRefine((env, context) => {
+  if (!env.EMAIL_CAPTURE_PATH || env.NODE_ENV === 'test') return;
+  context.addIssue({
+    code: z.ZodIssueCode.custom,
+    path: ['EMAIL_CAPTURE_PATH'],
+    message: 'EMAIL_CAPTURE_PATH est réservé aux tests',
+  });
 });
 
 type Env = z.infer<typeof EnvSchema>;

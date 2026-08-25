@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { EMAIL_CAPTURE_PATH } from './e2e/fixtures/email-capture';
 
 /**
  * Un seul etage de tests, pour une seule chose : ce qu'un VRAI navigateur prouve
@@ -49,6 +50,11 @@ export default defineConfig({
       // repertoire COURANT. Lance ailleurs, le back demarre sans configuration et
       // meurt sur la validation Zod — ce qui est le bon comportement, mais pas ici.
       cwd: '../back',
+      env: {
+        ...process.env,
+        NODE_ENV: 'test',
+        EMAIL_CAPTURE_PATH,
+      },
       port: 3000,
       reuseExistingServer: !process.env.CI,
       timeout: 120_000,
