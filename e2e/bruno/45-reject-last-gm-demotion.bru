@@ -1,0 +1,27 @@
+meta {
+  name: 45 - Reject last GM demotion
+  type: http
+  seq: 45
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{ownerDisplayName}}/demote
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{lastGameMasterKey}}
+}
+
+body:json {
+  { "expectedRevision": {{campaignRevision}} }
+}
+
+tests {
+  test('refuse de retirer le dernier MJ actif', function() {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

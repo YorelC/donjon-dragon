@@ -1,0 +1,27 @@
+meta {
+  name: 78 - Reject last GM exclusion
+  type: http
+  seq: 78
+}
+
+delete {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{ownerDisplayName}}
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{lastGameMasterExclusionKey}}
+}
+
+body:json {
+  { "expectedRevision": {{campaignRevision}} }
+}
+
+tests {
+  test('refuse d exclure le dernier MJ actif', function() {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

@@ -1,0 +1,23 @@
+meta {
+  name: 69 - Detail after player exclusion
+  type: http
+  seq: 69
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test('retire immédiatement le joueur des adhésions actives', function() {
+    const members = [
+      ...res.getBody().gameMasters,
+      ...res.getBody().players,
+    ].map((member) => member.displayName);
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(9);
+    expect(members).not.to.include(bru.getEnvVar('inviteeDisplayName'));
+  });
+}

@@ -1,0 +1,22 @@
+meta {
+  name: 75 - Detail before GM exclusion
+  type: http
+  seq: 75
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}
+  body: none
+  auth: none
+}
+
+script:post-response {
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('relit la révision après acceptation de Gandalf', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(10);
+  });
+}

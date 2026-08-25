@@ -46,6 +46,12 @@ export class PlayerAlreadyHasCharacterError extends ConflictDomainError {
   }
 }
 
+export class CharacterRevisionConflictError extends ConflictDomainError {
+  constructor() {
+    super('The character was modified by another command');
+  }
+}
+
 /**
  * Refus d'édition/suppression : l'appelant n'est ni le créateur, ni le joueur
  * assigné, ni un maître du jeu habilité (attribué, ou propriétaire face à un

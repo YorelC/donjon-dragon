@@ -1,0 +1,27 @@
+meta {
+  name: 73 - Reject exclusion by non owner
+  type: http
+  seq: 73
+}
+
+delete {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{thirdDisplayName}}
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{unauthorizedExcludeKey}}
+}
+
+body:json {
+  { "expectedRevision": 10 }
+}
+
+tests {
+  test('réserve l exclusion au propriétaire', function() {
+    expect(res.getStatus()).to.equal(403);
+  });
+}

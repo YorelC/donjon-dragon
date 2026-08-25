@@ -1,0 +1,39 @@
+meta {
+  name: 52 - Transfer owner to Legolas
+  type: http
+  seq: 52
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/owner
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{transferToLegolasKey}}
+}
+
+body:json {
+  {
+    "displayName": "{{thirdDisplayName}}",
+    "expectedRevision": {{campaignRevision}}
+  }
+}
+
+script:post-response {
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('transfère la propriété sans changer les rôles', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(6);
+    expect(res.getBody().actor.role).to.equal('gameMaster');
+    expect(res.getBody().actor.isOwner).to.equal(false);
+    expect(res.getBody().target.isOwner).to.equal(true);
+    expect(res.getBody().target.role).to.equal('gameMaster');
+  });
+}

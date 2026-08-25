@@ -1,0 +1,21 @@
+meta {
+  name: 64 - Final character pool
+  type: http
+  seq: 64
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters
+  body: none
+  auth: none
+}
+
+tests {
+  test('conserve le personnage désassigné dans le vivier', function() {
+    const character = res.getBody().find(
+      (item) => item.id === bru.getVar('characterId'),
+    );
+    expect(res.getStatus()).to.equal(200);
+    expect(character.assignedTo).to.equal(null);
+  });
+}

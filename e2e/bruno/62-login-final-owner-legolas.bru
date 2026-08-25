@@ -1,0 +1,32 @@
+meta {
+  name: 62 - Login final owner Legolas
+  type: http
+  seq: 62
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "email": "{{thirdEmail}}",
+    "password": "{{thirdPassword}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('csrfToken', bru.cookies.get('csrf_token'));
+}
+
+tests {
+  test('ouvre la session du propriétaire final', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

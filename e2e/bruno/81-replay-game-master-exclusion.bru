@@ -1,0 +1,28 @@
+meta {
+  name: 81 - Replay game master exclusion
+  type: http
+  seq: 81
+}
+
+delete {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{ownerDisplayName}}
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{excludeGandalfKey}}
+}
+
+body:json {
+  { "expectedRevision": 13 }
+}
+
+tests {
+  test('rejoue l exclusion du MJ sans doublon', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody()).to.deep.equal(JSON.parse(bru.getVar('excludeGandalfResult')));
+  });
+}

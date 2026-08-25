@@ -1,0 +1,33 @@
+meta {
+  name: 51 - Promote Legolas
+  type: http
+  seq: 51
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{thirdDisplayName}}/promote
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{promoteLegolasKey}}
+}
+
+body:json {
+  { "expectedRevision": {{campaignRevision}} }
+}
+
+script:post-response {
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('prépare un successeur MJ actif', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(5);
+    expect(res.getBody().target.role).to.equal('gameMaster');
+  });
+}

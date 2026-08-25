@@ -9,15 +9,13 @@ import {
   AlreadyCampaignMemberError,
   AlreadyGameMasterError,
   CannotDemoteLastGameMasterError,
-  CannotDemoteOwnerError,
+  CannotExcludeLastGameMasterError,
+  CannotExcludeOwnerError,
   CannotInviteSelfError,
   CannotLeaveAsLastGameMasterError,
-  CannotRemoveGameMasterError,
-  CannotRemoveOwnerError,
-  CannotRemoveSelfError,
-  CannotSelfDemoteAsLastGameMasterError,
   CannotTransferToSelfError,
   CampaignNotFoundError,
+  CampaignRevisionConflictError,
   MemberNotFoundError,
   NotAGameMasterError,
   NotCampaignGameMasterError,
@@ -117,7 +115,7 @@ export class Campaign {
   }
 
   promote(actorId: UserId, targetId: UserId, now: Date): void {
-    this.assertIsGameMaster(actorId);
+    this.assertIsOwner(actorId);
     const target = this.activeTarget(targetId);
     if (target.isGameMaster()) throw new AlreadyGameMasterError();
 
@@ -125,10 +123,9 @@ export class Campaign {
   }
 
   demote(actorId: UserId, targetId: UserId, now: Date): void {
-    this.assertIsGameMaster(actorId);
+    this.assertIsOwner(actorId);
     const target = this.activeTarget(targetId);
     if (!target.isGameMaster()) throw new NotAGameMasterError();
-    if (this.isOwner(targetId)) throw new CannotDemoteOwnerError();
     if (this.gameMasters().length === ONLY_ONE) {
       throw new CannotDemoteLastGameMasterError();
     }
@@ -136,35 +133,13 @@ export class Campaign {
     this.replace(target, target.withRole(CAMPAIGN_ROLE.player), now);
   }
 
-  /** Le propriétaire s'auto-promeut : `promote` exige un acteur déjà MJ. */
-  selfPromoteAsOwner(actorId: UserId, now: Date): void {
+  exclude(actorId: UserId, targetId: UserId, now: Date): void {
     this.assertIsOwner(actorId);
-    const target = this.activeTarget(actorId);
-    if (target.isGameMaster()) throw new AlreadyGameMasterError();
-
-    this.replace(target, target.withRole(CAMPAIGN_ROLE.gameMaster), now);
-  }
-
-  /** Le propriétaire repasse joueur : `demote` interdit de le viser. */
-  selfDemoteAsOwner(actorId: UserId, now: Date): void {
-    this.assertIsOwner(actorId);
-    const target = this.activeTarget(actorId);
-    if (!target.isGameMaster()) throw new NotAGameMasterError();
-    if (this.gameMasters().length === ONLY_ONE) {
-      throw new CannotSelfDemoteAsLastGameMasterError();
+    const target = this.activeTarget(targetId);
+    if (this.isOwner(targetId)) throw new CannotExcludeOwnerError();
+    if (target.isGameMaster() && this.gameMasters().length === ONLY_ONE) {
+      throw new CannotExcludeLastGameMasterError();
     }
-
-    this.replace(target, target.withRole(CAMPAIGN_ROLE.player), now);
-  }
-
-  /** Retire un joueur ou annule son invitation — les deux sont le même geste. */
-  removeMember(actorId: UserId, targetId: UserId, now: Date): void {
-    this.assertIsGameMaster(actorId);
-    if (actorId.equals(targetId)) throw new CannotRemoveSelfError();
-
-    const target = this.memberTarget(targetId);
-    if (this.isOwner(targetId)) throw new CannotRemoveOwnerError();
-    if (target.isGameMaster()) throw new CannotRemoveGameMasterError();
 
     this.commit(this.without(target), now);
   }
@@ -173,7 +148,8 @@ export class Campaign {
   transferOwnership(actorId: UserId, newOwnerId: UserId, now: Date): void {
     this.assertIsOwner(actorId);
     if (actorId.equals(newOwnerId)) throw new CannotTransferToSelfError();
-    this.activeTarget(newOwnerId);
+    const successor = this.activeTarget(newOwnerId);
+    if (!successor.isGameMaster()) throw new NotAGameMasterError();
 
     this.currentOwnerId = newOwnerId;
     this.touch(now);
@@ -197,6 +173,12 @@ export class Campaign {
 
   assertIsOwner(userId: UserId): void {
     if (!this.isOwner(userId)) throw new NotCampaignOwnerError();
+  }
+
+  assertRevision(expectedRevision: number): void {
+    if (this.currentRevision !== expectedRevision) {
+      throw new CampaignRevisionConflictError();
+    }
   }
 
   /** Charge puis vérifie : lire une campagne suppose d'y appartenir. */
@@ -248,7 +230,8 @@ export class Campaign {
   ): void {
     if (!successorId) throw new SuccessorRequiredError();
     if (actorId.equals(successorId)) throw new CannotTransferToSelfError();
-    this.activeTarget(successorId);
+    const successor = this.activeTarget(successorId);
+    if (!successor.isGameMaster()) throw new NotAGameMasterError();
     this.currentOwnerId = successorId;
   }
 

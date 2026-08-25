@@ -1,0 +1,36 @@
+meta {
+  name: 71 - Login Gandalf for exclusion check
+  type: http
+  seq: 71
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+script:pre-request {
+  await bru.sleep(61000);
+}
+
+body:json {
+  {
+    "email": "{{ownerEmail}}",
+    "password": "{{ownerPassword}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('csrfToken', bru.cookies.get('csrf_token'));
+}
+
+tests {
+  test('ouvre la session du membre réinvité', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

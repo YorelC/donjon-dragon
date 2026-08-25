@@ -78,6 +78,7 @@ export const CharacterSchema = new Schema<CharacterSnapshot>(
     build: { type: CharacterBuildSubSchema, required: true },
     createdBy: { type: String, required: true },
     assignedTo: { type: String, default: null },
+    revision: { type: Number, required: true, min: 0 },
     createdAt: { type: String, required: true },
     updatedAt: { type: String, required: true },
   },
@@ -86,4 +87,7 @@ export const CharacterSchema = new Schema<CharacterSnapshot>(
 
 /** Les deux lectures du module : toute la campagne, et « qui a ce joueur ». */
 CharacterSchema.index({ campaignId: 1 });
-CharacterSchema.index({ campaignId: 1, assignedTo: 1 });
+CharacterSchema.index(
+  { campaignId: 1, assignedTo: 1 },
+  { unique: true, partialFilterExpression: { assignedTo: { $type: 'string' } } },
+);

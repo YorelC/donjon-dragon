@@ -1,0 +1,39 @@
+meta {
+  name: 66 - Exclude player with character
+  type: http
+  seq: 66
+}
+
+delete {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{inviteeDisplayName}}
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{excludeFrodoKey}}
+}
+
+body:json {
+  { "expectedRevision": {{campaignRevision}} }
+}
+
+script:post-response {
+  bru.setVar('excludeFrodoResult', JSON.stringify(res.getBody()));
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('exclut le joueur avec un résultat autoritaire', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(9);
+    expect(res.getBody().target).to.deep.equal({
+      displayName: bru.getEnvVar('inviteeDisplayName'),
+      membership: 'left',
+      role: null,
+      isOwner: false,
+    });
+  });
+}

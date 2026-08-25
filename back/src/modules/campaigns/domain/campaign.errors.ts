@@ -74,17 +74,16 @@ export class CannotTransferToSelfError extends InvalidDomainError {
   }
 }
 
-/** Un maître du jeu qui veut se retirer quitte la campagne, ou la supprime. */
-export class CannotRemoveSelfError extends InvalidDomainError {
-  constructor() {
-    super('Use leave to remove yourself from a campaign');
-  }
-}
-
 /** Le propriétaire qui part passe la main : la campagne ne reste jamais sans. */
 export class SuccessorRequiredError extends InvalidDomainError {
   constructor() {
     super('The owner must designate a successor before leaving');
+  }
+}
+
+export class UnexpectedSuccessorError extends InvalidDomainError {
+  constructor() {
+    super('Only the owner can designate a successor when leaving');
   }
 }
 
@@ -160,26 +159,14 @@ export class CannotDemoteOwnerError extends ConflictDomainError {
   }
 }
 
-export class CannotRemoveOwnerError extends ConflictDomainError {
+export class CannotExcludeOwnerError extends ConflictDomainError {
   constructor() {
-    super('The owner cannot be removed from the campaign');
+    super('The owner cannot be excluded from the campaign');
   }
 }
 
-/** On rétrograde un maître du jeu avant de le retirer : deux gestes, deux décisions. */
-export class CannotRemoveGameMasterError extends ConflictDomainError {
+export class CannotExcludeLastGameMasterError extends ConflictDomainError {
   constructor() {
-    super('Demote this game master before removing them');
-  }
-}
-
-/**
- * Le propriétaire peut redevenir joueur, mais pas au prix de laisser la
- * campagne sans aucun maître du jeu — même garde que pour un départ ou une
- * rétrogradation ordinaire.
- */
-export class CannotSelfDemoteAsLastGameMasterError extends ConflictDomainError {
-  constructor() {
-    super('The owner cannot step down as the last game master');
+    super('The last game master cannot be excluded from the campaign');
   }
 }

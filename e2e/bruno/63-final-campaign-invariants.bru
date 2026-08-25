@@ -1,0 +1,29 @@
+meta {
+  name: 63 - Final campaign invariants
+  type: http
+  seq: 63
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test('conserve un propriétaire unique et au moins un MJ actif', function() {
+    const gameMasters = res.getBody().gameMasters.map((member) => member.displayName);
+    const players = res.getBody().players.map((member) => member.displayName);
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(8);
+    expect(res.getBody().owner.displayName).to.equal(
+      bru.getEnvVar('thirdDisplayName'),
+    );
+    expect(res.getBody().isOwner).to.equal(true);
+    expect(gameMasters).to.include(bru.getEnvVar('thirdDisplayName'));
+    expect(gameMasters).to.have.length.greaterThan(0);
+    expect(players).to.include(bru.getEnvVar('inviteeDisplayName'));
+    expect(gameMasters).not.to.include(bru.getEnvVar('ownerDisplayName'));
+    expect(players).not.to.include(bru.getEnvVar('ownerDisplayName'));
+  });
+}

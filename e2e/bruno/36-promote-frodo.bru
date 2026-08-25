@@ -1,0 +1,34 @@
+meta {
+  name: 36 - Promote Frodo
+  type: http
+  seq: 36
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{inviteeDisplayName}}/promote
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{promoteFrodoKey}}
+}
+
+body:json {
+  { "expectedRevision": {{campaignRevision}} }
+}
+
+script:post-response {
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('promeut le joueur et rend un résultat autoritaire', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(2);
+    expect(res.getBody().target.role).to.equal('gameMaster');
+    expect(res.getBody().target.membership).to.equal('active');
+  });
+}

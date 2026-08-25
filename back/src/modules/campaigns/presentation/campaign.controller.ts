@@ -8,15 +8,16 @@ import {
   Post,
 } from '@nestjs/common';
 import {
+  CampaignIdSchema,
+  CampaignRoleCommandSchema,
   CreateCampaignSchema,
   IDEMPOTENCY_KEY_HEADER,
   IdempotencyKeySchema,
   InviteToCampaignSchema,
-  LeaveCampaignSchema,
   TransferOwnershipSchema,
+  type CampaignRoleCommandDto as CampaignRoleCommandBody,
   type CreateCampaignDto as CreateCampaignBody,
   type InviteToCampaignDto as InviteToCampaignBody,
-  type LeaveCampaignDto as LeaveCampaignBody,
   type TransferOwnershipDto as TransferOwnershipBody,
 } from '@donjon-dragon/shared/campaign-schema';
 import type { AuthenticatedActor } from '@kernel/domain/actor-id';
@@ -36,14 +37,9 @@ import { DeleteCampaignUseCase } from '../application/use-cases/delete-campaign.
 import { DemoteCampaignMemberUseCase } from '../application/use-cases/demote-campaign-member.use-case';
 import { GetCampaignDetailUseCase } from '../application/use-cases/get-campaign-detail.use-case';
 import { InviteToCampaignUseCase } from '../application/use-cases/invite-to-campaign.use-case';
-import { LeaveCampaignUseCase } from '../application/use-cases/leave-campaign.use-case';
 import { ListCampaignInvitationsUseCase } from '../application/use-cases/list-campaign-invitations.use-case';
 import { ListMyCampaignsUseCase } from '../application/use-cases/list-my-campaigns.use-case';
-import { PromoteCampaignMemberUseCase } from '../application/use-cases/promote-campaign-member.use-case';
 import { RefuseCampaignInvitationUseCase } from '../application/use-cases/refuse-campaign-invitation.use-case';
-import { RemoveCampaignMemberUseCase } from '../application/use-cases/remove-campaign-member.use-case';
-import { SelfDemoteCampaignOwnerUseCase } from '../application/use-cases/self-demote-campaign-owner.use-case';
-import { SelfPromoteCampaignOwnerUseCase } from '../application/use-cases/self-promote-campaign-owner.use-case';
 import { TransferCampaignOwnershipUseCase } from '../application/use-cases/transfer-campaign-ownership.use-case';
 
 /**
@@ -70,13 +66,8 @@ export class CampaignController {
     @Inject(AcceptCampaignInvitationUseCase) private acceptInvitation: AcceptCampaignInvitationUseCase,
     @Inject(RefuseCampaignInvitationUseCase) private refuseInvitation: RefuseCampaignInvitationUseCase,
     @Inject(CancelCampaignInvitationUseCase) private cancelInvitation: CancelCampaignInvitationUseCase,
-    @Inject(PromoteCampaignMemberUseCase) private promote: PromoteCampaignMemberUseCase,
     @Inject(DemoteCampaignMemberUseCase) private demote: DemoteCampaignMemberUseCase,
-    @Inject(RemoveCampaignMemberUseCase) private removeMember: RemoveCampaignMemberUseCase,
-    @Inject(SelfPromoteCampaignOwnerUseCase) private selfPromote: SelfPromoteCampaignOwnerUseCase,
-    @Inject(SelfDemoteCampaignOwnerUseCase) private selfDemote: SelfDemoteCampaignOwnerUseCase,
     @Inject(TransferCampaignOwnershipUseCase) private transferOwnership: TransferCampaignOwnershipUseCase,
-    @Inject(LeaveCampaignUseCase) private leave: LeaveCampaignUseCase,
     @Inject(DeleteCampaignUseCase) private remove: DeleteCampaignUseCase,
   ) {}
 
@@ -184,91 +175,40 @@ export class CampaignController {
     });
   }
 
-  @HttpCode(204)
-  @Post(':campaignId/members/:displayName/promote')
-  async promoteCampaignMember(
-    @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('displayName') displayName: string,
-  ) {
-    await this.promote.execute({
-      campaignId,
-      displayName,
-      actorId: user.userId,
-    });
-  }
-
-  @HttpCode(204)
+  @HttpCode(200)
   @Post(':campaignId/members/:displayName/demote')
-  async demoteCampaignMember(
+  demoteCampaignMember(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('displayName') displayName: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodParam('displayName', displayNameField()) displayName: string,
+    @ZodBody(CampaignRoleCommandSchema) body: CampaignRoleCommandBody,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
-    await this.demote.execute({
+    return this.demote.execute({
       campaignId,
       displayName,
+      expectedRevision: body.expectedRevision,
       actorId: user.userId,
+      idempotencyKey,
     });
   }
 
-  @HttpCode(204)
-  @Delete(':campaignId/members/:displayName')
-  async removeCampaignMember(
-    @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('displayName') displayName: string,
-  ) {
-    await this.removeMember.execute({
-      campaignId,
-      displayName,
-      actorId: user.userId,
-    });
-  }
-
-  @HttpCode(204)
-  @Post(':campaignId/owner/promote')
-  async selfPromoteCampaignOwner(
-    @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-  ) {
-    await this.selfPromote.execute({ campaignId, actorId: user.userId });
-  }
-
-  @HttpCode(204)
-  @Post(':campaignId/owner/demote')
-  async selfDemoteCampaignOwner(
-    @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-  ) {
-    await this.selfDemote.execute({ campaignId, actorId: user.userId });
-  }
-
-  @HttpCode(204)
+  @HttpCode(200)
   @Post(':campaignId/owner')
-  async transferCampaignOwnership(
+  transferCampaignOwnership(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
     @ZodBody(TransferOwnershipSchema) body: TransferOwnershipBody,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
-    await this.transferOwnership.execute({
+    return this.transferOwnership.execute({
       campaignId,
       displayName: body.displayName,
+      expectedRevision: body.expectedRevision,
       actorId: user.userId,
-    });
-  }
-
-  @HttpCode(204)
-  @Post(':campaignId/leave')
-  async leaveCampaign(
-    @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @ZodBody(LeaveCampaignSchema) body: LeaveCampaignBody,
-  ) {
-    await this.leave.execute({
-      campaignId,
-      successorDisplayName: body.successorDisplayName,
-      actorId: user.userId,
+      idempotencyKey,
     });
   }
 

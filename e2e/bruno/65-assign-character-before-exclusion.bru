@@ -1,0 +1,29 @@
+meta {
+  name: 65 - Assign character before exclusion
+  type: http
+  seq: 65
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{characterId}}/assign
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+}
+
+body:json {
+  { "playerDisplayName": "{{inviteeDisplayName}}" }
+}
+
+tests {
+  test('réattribue le personnage au joueur avant son exclusion', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().assignedTo.displayName).to.equal(
+      bru.getEnvVar('inviteeDisplayName'),
+    );
+  });
+}

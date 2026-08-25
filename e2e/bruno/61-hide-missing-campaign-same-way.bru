@@ -1,0 +1,17 @@
+meta {
+  name: 61 - Hide missing campaign same way
+  type: http
+  seq: 61
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{missingCampaignId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test('rend le même statut pour une campagne absente', function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

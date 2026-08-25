@@ -3,6 +3,8 @@ import { describe, it, expect } from 'vitest';
 import {
   CAMPAIGN_NAME_RULES,
   CampaignDetailSchema,
+  CampaignCommandResultSchema,
+  CampaignRoleCommandSchema,
   CampaignInvitationSchema,
   CampaignRoleEnum,
   CampaignSummarySchema,
@@ -146,6 +148,7 @@ describe('CampaignInvitationSchema', () => {
 describe('CampaignDetailSchema', () => {
   const valid = {
     id: '3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8',
+    revision: 3,
     name: shortest,
     myRole: 'player',
     isOwner: false,
@@ -180,6 +183,10 @@ describe('CampaignDetailSchema', () => {
     expect(CampaignDetailSchema.safeParse(incomplete).success).toBe(false);
   });
 
+  it('expose la révision à fournir aux commandes suivantes', () => {
+    expect(CampaignDetailSchema.parse(valid).revision).toBe(3);
+  });
+
   it('accepte une campagne dont le propriétaire n est que joueur', () => {
     const ownerIsPlayer = {
       ...valid,
@@ -192,10 +199,11 @@ describe('CampaignDetailSchema', () => {
 });
 
 describe('TransferOwnershipSchema', () => {
-  it('accepte un pseudo de successeur', () => {
-    expect(TransferOwnershipSchema.safeParse({ displayName: 'Frodon' }).success).toBe(
-      true,
-    );
+  it('accepte un pseudo et une révision attendue', () => {
+    expect(TransferOwnershipSchema.safeParse({
+      displayName: 'Frodon',
+      expectedRevision: 2,
+    }).success).toBe(true);
   });
 
   it('exige un successeur : transférer à personne n a pas de sens', () => {
@@ -205,19 +213,59 @@ describe('TransferOwnershipSchema', () => {
 
 describe('LeaveCampaignSchema', () => {
   it('accepte un départ sans successeur : tout le monde n est pas propriétaire', () => {
-    expect(LeaveCampaignSchema.safeParse({}).success).toBe(true);
+    expect(LeaveCampaignSchema.safeParse({ expectedRevision: 2 }).success).toBe(true);
   });
 
   it('accepte un départ avec successeur', () => {
-    const parsed = LeaveCampaignSchema.parse({ successorDisplayName: 'Frodon' });
+    const parsed = LeaveCampaignSchema.parse({
+      successorDisplayName: 'Frodon',
+      expectedRevision: 2,
+    });
 
     expect(parsed.successorDisplayName).toBe('Frodon');
   });
 
   it('refuse un successeur vide plutôt que de le traiter comme absent', () => {
     expect(
-      LeaveCampaignSchema.safeParse({ successorDisplayName: '' }).success,
+      LeaveCampaignSchema.safeParse({ successorDisplayName: '', expectedRevision: 2 })
+        .success,
     ).toBe(false);
+  });
+});
+
+describe('CampaignRoleCommandSchema', () => {
+  it('exige une révision entière positive ou nulle', () => {
+    expect(CampaignRoleCommandSchema.safeParse({ expectedRevision: 0 }).success)
+      .toBe(true);
+    expect(CampaignRoleCommandSchema.safeParse({ expectedRevision: -1 }).success)
+      .toBe(false);
+    expect(CampaignRoleCommandSchema.safeParse({}).success).toBe(false);
+  });
+});
+
+describe('CampaignCommandResultSchema', () => {
+  it('valide un résultat de départ autoritaire', () => {
+    expect(CampaignCommandResultSchema.safeParse({
+      campaignId: crypto.randomUUID(),
+      revision: 4,
+      actor: { membership: 'left', role: null, isOwner: false },
+      target: {
+        displayName: 'Frodon',
+        membership: 'active',
+        role: 'gameMaster',
+        isOwner: true,
+      },
+    }).success).toBe(true);
+  });
+
+  it('refuse un membre parti qui conserve un rôle', () => {
+    const result = {
+      campaignId: crypto.randomUUID(),
+      revision: 4,
+      actor: { membership: 'left', role: 'player', isOwner: false },
+      target: null,
+    };
+    expect(CampaignCommandResultSchema.safeParse(result).success).toBe(false);
   });
 });
 

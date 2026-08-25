@@ -1,0 +1,17 @@
+meta {
+  name: 60 - Hide campaign from departed owner
+  type: http
+  seq: 60
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test('masque la campagne au propriétaire sorti', function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

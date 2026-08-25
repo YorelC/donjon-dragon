@@ -28,6 +28,7 @@ const FRIENDS: CampaignFriend[] = [
 function aCampaign(overrides: Partial<CampaignDetail> = {}): CampaignDetail {
   return {
     id: CAMPAIGN_ID,
+    revision: 0,
     name: "La Malédiction de Strahd",
     myRole: "gameMaster",
     isOwner: true,

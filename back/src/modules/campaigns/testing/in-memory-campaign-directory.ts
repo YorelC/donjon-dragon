@@ -5,6 +5,7 @@ import type {
 
 export class InMemoryCampaignDirectory implements CampaignDirectoryPort {
   private readonly users = new Map<string, DirectoryUser>();
+  displayNameLookups = 0;
 
   /** Commodité de test absente du port : le vrai annuaire est en lecture seule. */
   save(user: DirectoryUser): void {
@@ -16,6 +17,7 @@ export class InMemoryCampaignDirectory implements CampaignDirectoryPort {
   }
 
   async findByDisplayName(displayName: string): Promise<DirectoryUser | null> {
+    this.displayNameLookups += 1;
     return (
       [...this.users.values()].find((user) => user.displayName === displayName) ?? null
     );

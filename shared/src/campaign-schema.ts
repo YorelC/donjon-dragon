@@ -39,6 +39,8 @@ export const CreateCampaignSchema = z.object({
 
 export const IDEMPOTENCY_KEY_HEADER = 'Idempotency-Key';
 export const IdempotencyKeySchema = z.string().uuid();
+export const CampaignIdSchema = z.string().uuid();
+export const CampaignRevisionSchema = z.number().int().min(0);
 
 /**
  * Ce que le client reçoit dans l'onglet « Mes campagnes en cours ».
@@ -68,6 +70,7 @@ export const CampaignSummarySchema = z.object({
  */
 export const CampaignDetailSchema = z.object({
   id: z.string().uuid(),
+  revision: CampaignRevisionSchema,
   name: campaignNameField(),
   myRole: CampaignRoleEnum,
   isOwner: z.boolean(),
@@ -106,9 +109,14 @@ export const PendingCampaignInvitationCountSchema = z.object({
 
 // ── Propriété et départ ─────────────────────────────────────────────────────
 
+export const CampaignRoleCommandSchema = z.object({
+  expectedRevision: CampaignRevisionSchema,
+});
+
 /** Le successeur est désigné par son pseudo, comme tout membre côté client. */
 export const TransferOwnershipSchema = z.object({
   displayName: displayNameField(),
+  expectedRevision: CampaignRevisionSchema,
 });
 
 /**
@@ -122,6 +130,38 @@ export const TransferOwnershipSchema = z.object({
  */
 export const LeaveCampaignSchema = z.object({
   successorDisplayName: displayNameField().optional(),
+  expectedRevision: CampaignRevisionSchema,
+});
+
+export const CampaignMembershipOutcomeEnum = z.enum(['active', 'left']);
+
+const ActiveCampaignCommandActorSchema = z.object({
+  membership: z.literal('active'),
+  role: CampaignRoleEnum,
+  isOwner: z.boolean(),
+});
+
+const LeftCampaignCommandActorSchema = z.object({
+  membership: z.literal('left'),
+  role: z.null(),
+  isOwner: z.literal(false),
+});
+
+export const CampaignCommandActorSchema = z.discriminatedUnion('membership', [
+  ActiveCampaignCommandActorSchema,
+  LeftCampaignCommandActorSchema,
+]);
+
+export const CampaignCommandTargetSchema = z.discriminatedUnion('membership', [
+  ActiveCampaignCommandActorSchema.extend({ displayName: displayNameField() }),
+  LeftCampaignCommandActorSchema.extend({ displayName: displayNameField() }),
+]);
+
+export const CampaignCommandResultSchema = z.object({
+  campaignId: CampaignIdSchema,
+  revision: CampaignRevisionSchema,
+  actor: CampaignCommandActorSchema,
+  target: CampaignCommandTargetSchema.nullable(),
 });
 
 export type CampaignRole = z.infer<typeof CampaignRoleEnum>;
@@ -134,5 +174,7 @@ export type CampaignInvitation = z.infer<typeof CampaignInvitationSchema>;
 export type PendingCampaignInvitationCount = z.infer<
   typeof PendingCampaignInvitationCountSchema
 >;
+export type CampaignRoleCommandDto = z.infer<typeof CampaignRoleCommandSchema>;
 export type TransferOwnershipDto = z.infer<typeof TransferOwnershipSchema>;
 export type LeaveCampaignDto = z.infer<typeof LeaveCampaignSchema>;
+export type CampaignCommandResult = z.infer<typeof CampaignCommandResultSchema>;

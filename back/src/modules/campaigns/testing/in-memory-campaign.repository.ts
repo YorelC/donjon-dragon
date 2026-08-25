@@ -5,7 +5,7 @@ import type {
   CampaignCreationReceipt,
   CampaignRepositoryPort,
 } from '../application/ports/campaign.repository.port';
-import type { Campaign } from '../domain/campaign';
+import { Campaign } from '../domain/campaign';
 import type { CampaignId } from '../domain/campaign-id';
 
 export class InMemoryCampaignRepository implements CampaignRepositoryPort {
@@ -24,11 +24,12 @@ export class InMemoryCampaignRepository implements CampaignRepositoryPort {
   }
 
   async save(campaign: Campaign): Promise<void> {
-    this.campaigns.set(campaign.id.value, campaign);
+    this.campaigns.set(campaign.id.value, clone(campaign));
   }
 
   async findById(id: CampaignId): Promise<Campaign | null> {
-    return this.campaigns.get(id.value) ?? null;
+    const campaign = this.campaigns.get(id.value);
+    return campaign ? clone(campaign) : null;
   }
 
   async listActiveForUser(userId: UserId): Promise<Campaign[]> {
@@ -42,7 +43,7 @@ export class InMemoryCampaignRepository implements CampaignRepositoryPort {
   }
 
   private all(): Campaign[] {
-    return [...this.campaigns.values()];
+    return [...this.campaigns.values()].map(clone);
   }
 }
 
@@ -66,3 +67,7 @@ function toReceipt(command: CampaignCreationCommand): CampaignCreationReceipt {
 
 const contains = (userIds: UserId[], userId: UserId): boolean =>
   userIds.some((candidate) => candidate.equals(userId));
+
+function clone(campaign: Campaign): Campaign {
+  return Campaign.restore(campaign.snapshot());
+}

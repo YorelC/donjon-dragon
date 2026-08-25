@@ -15,14 +15,9 @@ import { DeleteCampaignUseCase } from '../application/use-cases/delete-campaign.
 import { DemoteCampaignMemberUseCase } from '../application/use-cases/demote-campaign-member.use-case';
 import { GetCampaignDetailUseCase } from '../application/use-cases/get-campaign-detail.use-case';
 import { InviteToCampaignUseCase } from '../application/use-cases/invite-to-campaign.use-case';
-import { LeaveCampaignUseCase } from '../application/use-cases/leave-campaign.use-case';
 import { ListCampaignInvitationsUseCase } from '../application/use-cases/list-campaign-invitations.use-case';
 import { ListMyCampaignsUseCase } from '../application/use-cases/list-my-campaigns.use-case';
-import { PromoteCampaignMemberUseCase } from '../application/use-cases/promote-campaign-member.use-case';
 import { RefuseCampaignInvitationUseCase } from '../application/use-cases/refuse-campaign-invitation.use-case';
-import { RemoveCampaignMemberUseCase } from '../application/use-cases/remove-campaign-member.use-case';
-import { SelfDemoteCampaignOwnerUseCase } from '../application/use-cases/self-demote-campaign-owner.use-case';
-import { SelfPromoteCampaignOwnerUseCase } from '../application/use-cases/self-promote-campaign-owner.use-case';
 import { TransferCampaignOwnershipUseCase } from '../application/use-cases/transfer-campaign-ownership.use-case';
 import { CampaignController } from './campaign.controller';
 
@@ -50,13 +45,8 @@ const USE_CASES = [
   AcceptCampaignInvitationUseCase,
   RefuseCampaignInvitationUseCase,
   CancelCampaignInvitationUseCase,
-  PromoteCampaignMemberUseCase,
   DemoteCampaignMemberUseCase,
-  RemoveCampaignMemberUseCase,
-  SelfPromoteCampaignOwnerUseCase,
-  SelfDemoteCampaignOwnerUseCase,
   TransferCampaignOwnershipUseCase,
-  LeaveCampaignUseCase,
   DeleteCampaignUseCase,
 ];
 
@@ -196,66 +186,46 @@ describe('CampaignController', () => {
     });
   });
 
-  it.each([
-    ['promoteCampaignMember' as const, PromoteCampaignMemberUseCase],
-    ['demoteCampaignMember' as const, DemoteCampaignMemberUseCase],
-    ['removeCampaignMember' as const, RemoveCampaignMemberUseCase],
-  ])('agit sur le membre nommé dans l URL (%s)', async (route, useCase) => {
+  it('rétrograde le membre avec révision et clé de commande', async () => {
     const caller = user(randomUUID());
     const campaignId = randomUUID();
+    const idempotencyKey = randomUUID();
+    const demote = module.get(DemoteCampaignMemberUseCase);
 
-    await controller[route](caller, campaignId, 'Frodon');
+    await controller.demoteCampaignMember(
+      caller,
+      campaignId,
+      'Frodon',
+      { expectedRevision: 3 },
+      idempotencyKey,
+    );
 
-    expect(module.get(useCase).execute).toHaveBeenCalledWith({
+    expect(demote.execute).toHaveBeenCalledWith({
       campaignId,
       displayName: 'Frodon',
+      expectedRevision: 3,
       actorId: caller.userId,
+      idempotencyKey,
     });
   });
 
   it('transfère la propriété au successeur nommé dans le corps', async () => {
     const caller = user(randomUUID());
     const campaignId = randomUUID();
+    const idempotencyKey = randomUUID();
     const transfer = module.get(TransferCampaignOwnershipUseCase);
 
     await controller.transferCampaignOwnership(caller, campaignId, {
       displayName: 'Frodon',
-    });
+      expectedRevision: 3,
+    }, idempotencyKey);
 
     expect(transfer.execute).toHaveBeenCalledWith({
       campaignId,
       displayName: 'Frodon',
+      expectedRevision: 3,
       actorId: caller.userId,
-    });
-  });
-
-  it('transmet le successeur au départ, quand il y en a un', async () => {
-    const caller = user(randomUUID());
-    const campaignId = randomUUID();
-    const leave = module.get(LeaveCampaignUseCase);
-
-    await controller.leaveCampaign(caller, campaignId, {
-      successorDisplayName: 'Frodon',
-    });
-
-    expect(leave.execute).toHaveBeenCalledWith({
-      campaignId,
-      successorDisplayName: 'Frodon',
-      actorId: caller.userId,
-    });
-  });
-
-  it('laisse partir sans successeur : tout le monde n est pas propriétaire', async () => {
-    const caller = user(randomUUID());
-    const campaignId = randomUUID();
-    const leave = module.get(LeaveCampaignUseCase);
-
-    await controller.leaveCampaign(caller, campaignId, {});
-
-    expect(leave.execute).toHaveBeenCalledWith({
-      campaignId,
-      successorDisplayName: undefined,
-      actorId: caller.userId,
+      idempotencyKey,
     });
   });
 
@@ -284,13 +254,8 @@ describe('CampaignController — protection des routes', () => {
     'acceptCampaignInvitation',
     'refuseCampaignInvitation',
     'cancelCampaignInvitation',
-    'promoteCampaignMember',
     'demoteCampaignMember',
-    'removeCampaignMember',
-    'selfPromoteCampaignOwner',
-    'selfDemoteCampaignOwner',
     'transferCampaignOwnership',
-    'leaveCampaign',
     'deleteCampaign',
   ] as const;
 
@@ -319,6 +284,8 @@ describe('CampaignController — Idempotency-Key', () => {
     ['acceptCampaignInvitation', 2],
     ['refuseCampaignInvitation', 2],
     ['cancelCampaignInvitation', 3],
+    ['demoteCampaignMember', 4],
+    ['transferCampaignOwnership', 3],
   ] as const;
 
   it.each(MUTATIONS)('valide un UUID sur %s', (route, parameterIndex) => {

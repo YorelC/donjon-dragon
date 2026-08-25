@@ -1,0 +1,27 @@
+meta {
+  name: 35 - Invite Legolas for permission check
+  type: http
+  seq: 35
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{permissionInviteKey}}
+}
+
+body:json {
+  { "displayName": "{{thirdDisplayName}}" }
+}
+
+tests {
+  test('prépare une invitation que le nouveau MJ pourra annuler', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

@@ -1,0 +1,34 @@
+meta {
+  name: 41 - Demote Frodo
+  type: http
+  seq: 41
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{inviteeDisplayName}}/demote
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{demoteFrodoKey}}
+}
+
+body:json {
+  { "expectedRevision": {{campaignRevision}} }
+}
+
+script:post-response {
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('rétrograde le co-MJ sans supprimer son adhésion', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(3);
+    expect(res.getBody().target.role).to.equal('player');
+    expect(res.getBody().target.membership).to.equal('active');
+  });
+}

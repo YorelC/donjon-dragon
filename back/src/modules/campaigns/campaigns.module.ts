@@ -18,6 +18,7 @@ import { FriendshipModule } from '@modules/friendship/friendship.module';
 import { UserModule } from '@modules/user/user.module';
 import { CAMPAIGN_DIRECTORY } from './application/ports/campaign-directory.port';
 import { CAMPAIGN_INVITATION_REPOSITORY } from './application/ports/campaign-invitation.repository.port';
+import { CAMPAIGN_LIFECYCLE_REPOSITORY } from './application/ports/campaign-lifecycle.repository.port';
 import { CAMPAIGN_REPOSITORY } from './application/ports/campaign.repository.port';
 import { FRIENDSHIP_CHECKER } from './application/ports/friendship-checker.port';
 import { AcceptCampaignInvitationUseCase } from './application/use-cases/accept-campaign-invitation.use-case';
@@ -29,6 +30,7 @@ import { CountCampaignInvitationsUseCase } from './application/use-cases/count-c
 import { CreateCampaignUseCase } from './application/use-cases/create-campaign.use-case';
 import { DeleteCampaignUseCase } from './application/use-cases/delete-campaign.use-case';
 import { DemoteCampaignMemberUseCase } from './application/use-cases/demote-campaign-member.use-case';
+import { ExcludeCampaignMemberUseCase } from './application/use-cases/exclude-campaign-member.use-case';
 import { GetCampaignDetailUseCase } from './application/use-cases/get-campaign-detail.use-case';
 import { GetCampaignMembershipUseCase } from './application/use-cases/get-campaign-membership.use-case';
 import { InviteToCampaignUseCase } from './application/use-cases/invite-to-campaign.use-case';
@@ -37,9 +39,6 @@ import { ListCampaignInvitationsUseCase } from './application/use-cases/list-cam
 import { ListMyCampaignsUseCase } from './application/use-cases/list-my-campaigns.use-case';
 import { PromoteCampaignMemberUseCase } from './application/use-cases/promote-campaign-member.use-case';
 import { RefuseCampaignInvitationUseCase } from './application/use-cases/refuse-campaign-invitation.use-case';
-import { RemoveCampaignMemberUseCase } from './application/use-cases/remove-campaign-member.use-case';
-import { SelfDemoteCampaignOwnerUseCase } from './application/use-cases/self-demote-campaign-owner.use-case';
-import { SelfPromoteCampaignOwnerUseCase } from './application/use-cases/self-promote-campaign-owner.use-case';
 import { TransferCampaignOwnershipUseCase } from './application/use-cases/transfer-campaign-ownership.use-case';
 import { FriendshipChecker } from './infrastructure/acl/friendship-checker';
 import { UserCampaignDirectory } from './infrastructure/acl/user-campaign-directory';
@@ -59,6 +58,8 @@ import { MongoCampaignEnvelopeRepository } from './infrastructure/persistence/mo
 import { MongoCampaignInvitationEnvelopeRepository } from './infrastructure/persistence/mongo-campaign-invitation-envelope.repository';
 import { MongoCampaignInvitationPersistenceRepository } from './infrastructure/persistence/mongo-campaign-invitation-persistence.repository';
 import { MongoCampaignInvitationRepository } from './infrastructure/persistence/mongo-campaign-invitation.repository';
+import { MongoCampaignLifecycleEnvelopeRepository } from './infrastructure/persistence/mongo-campaign-lifecycle-envelope.repository';
+import { MongoCampaignLifecycleRepository } from './infrastructure/persistence/mongo-campaign-lifecycle.repository';
 import { MongoCampaignRepository } from './infrastructure/persistence/mongo-campaign.repository';
 import { MongoCampaignPersistenceRepository } from './infrastructure/persistence/mongo-campaign-persistence.repository';
 import { CampaignController } from './presentation/campaign.controller';
@@ -84,10 +85,15 @@ import { CampaignController } from './presentation/campaign.controller';
       provide: CAMPAIGN_INVITATION_REPOSITORY,
       useClass: MongoCampaignInvitationRepository,
     },
+    {
+      provide: CAMPAIGN_LIFECYCLE_REPOSITORY,
+      useClass: MongoCampaignLifecycleRepository,
+    },
     MongoCampaignPersistenceRepository,
     MongoCampaignEnvelopeRepository,
     MongoCampaignInvitationPersistenceRepository,
     MongoCampaignInvitationEnvelopeRepository,
+    MongoCampaignLifecycleEnvelopeRepository,
     // Les deux seuls providers qui traversent vers un module voisin.
     { provide: CAMPAIGN_DIRECTORY, useClass: UserCampaignDirectory },
     { provide: FRIENDSHIP_CHECKER, useClass: FriendshipChecker },
@@ -104,13 +110,16 @@ import { CampaignController } from './presentation/campaign.controller';
     CancelCampaignInvitationUseCase,
     PromoteCampaignMemberUseCase,
     DemoteCampaignMemberUseCase,
-    RemoveCampaignMemberUseCase,
-    SelfPromoteCampaignOwnerUseCase,
-    SelfDemoteCampaignOwnerUseCase,
+    ExcludeCampaignMemberUseCase,
     TransferCampaignOwnershipUseCase,
     LeaveCampaignUseCase,
     DeleteCampaignUseCase,
   ],
-  exports: [GetCampaignMembershipUseCase],
+  exports: [
+    GetCampaignMembershipUseCase,
+    PromoteCampaignMemberUseCase,
+    ExcludeCampaignMemberUseCase,
+    LeaveCampaignUseCase,
+  ],
 })
 export class CampaignsModule {}

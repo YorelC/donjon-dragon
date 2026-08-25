@@ -93,11 +93,18 @@ describe('GetCampaignDetailUseCase', () => {
 
   it('reste juste quand le propriétaire n est que joueur', async () => {
     const campaign = await aFullCampaign();
+    campaign.promote(
+      UserId.create(gandalfId),
+      UserId.create(frodoId),
+      new Date(),
+    );
     campaign.transferOwnership(
       UserId.create(gandalfId),
       UserId.create(frodoId),
       new Date(),
     );
+    campaign.demote(UserId.create(frodoId), UserId.create(frodoId), new Date());
+    await campaignRepo.save(campaign);
 
     const detail = await useCase.execute({
       campaignId: campaign.id.value,

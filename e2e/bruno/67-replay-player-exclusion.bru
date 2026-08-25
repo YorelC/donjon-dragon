@@ -1,0 +1,28 @@
+meta {
+  name: 67 - Replay player exclusion
+  type: http
+  seq: 67
+}
+
+delete {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{inviteeDisplayName}}
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{excludeFrodoKey}}
+}
+
+body:json {
+  { "expectedRevision": 8 }
+}
+
+tests {
+  test('relit le résultat durable après disparition de la cible', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody()).to.deep.equal(JSON.parse(bru.getVar('excludeFrodoResult')));
+  });
+}

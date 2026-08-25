@@ -1,0 +1,22 @@
+meta {
+  name: 48 - Accept Legolas membership
+  type: http
+  seq: 48
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations/accept
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{finalLegolasAcceptKey}}
+}
+
+tests {
+  test('fait accepter la deuxième adhésion active', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

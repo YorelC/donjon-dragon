@@ -1,0 +1,35 @@
+meta {
+  name: 80 - Exclude game master directly
+  type: http
+  seq: 80
+}
+
+delete {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{ownerDisplayName}}
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{excludeGandalfKey}}
+}
+
+body:json {
+  { "expectedRevision": {{campaignRevision}} }
+}
+
+script:post-response {
+  bru.setVar('excludeGandalfResult', JSON.stringify(res.getBody()));
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('exclut le co-MJ sans rétrogradation préalable', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(14);
+    expect(res.getBody().target.membership).to.equal('left');
+    expect(res.getBody().target.role).to.equal(null);
+  });
+}

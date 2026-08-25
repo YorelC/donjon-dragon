@@ -1,0 +1,27 @@
+meta {
+  name: 59 - Reject divergent lifecycle intent
+  type: http
+  seq: 59
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{inviteeDisplayName}}/promote
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{ownerLeaveKey}}
+}
+
+body:json {
+  { "expectedRevision": 7 }
+}
+
+tests {
+  test('refuse la même clé avec une autre intention', function() {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

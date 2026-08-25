@@ -1,0 +1,36 @@
+meta {
+  name: 38 - Login promoted Frodo
+  type: http
+  seq: 38
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+script:pre-request {
+  await bru.sleep(61000);
+}
+
+body:json {
+  {
+    "email": "{{inviteeEmail}}",
+    "password": "{{inviteePassword}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('csrfToken', bru.cookies.get('csrf_token'));
+}
+
+tests {
+  test('ouvre la session du membre promu', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

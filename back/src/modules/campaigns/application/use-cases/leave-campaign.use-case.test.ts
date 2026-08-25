@@ -1,207 +1,138 @@
 import { randomUUID } from 'crypto';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { anActor } from '@kernel/testing/actor.fixture';
 import { FixedClock } from '@kernel/testing/fixed-clock';
 import { UserId } from '@kernel/domain/user-id';
 
-import type { Campaign } from '../../domain/campaign';
+import type { CampaignMutationParticipant } from '../campaign-lifecycle-participant';
 import { CampaignId } from '../../domain/campaign-id';
 import {
-  CampaignNotFoundError,
-  CannotLeaveAsLastGameMasterError,
-  MemberNotFoundError,
-  NotCampaignMemberError,
-  NotCampaignOwnerError,
+  CannotTransferToSelfError,
+  NotAGameMasterError,
   SuccessorRequiredError,
 } from '../../domain/campaign.errors';
 import { InMemoryCampaignDirectory } from '../../testing/in-memory-campaign-directory';
+import { InMemoryCampaignLifecycleRepository } from '../../testing/in-memory-campaign-lifecycle.repository';
 import { InMemoryCampaignRepository } from '../../testing/in-memory-campaign.repository';
 import { aCampaign, withPlayer } from '../../testing/campaign.fixture';
-import { DeleteCampaignUseCase } from './delete-campaign.use-case';
 import { LeaveCampaignUseCase } from './leave-campaign.use-case';
 import { TransferCampaignOwnershipUseCase } from './transfer-campaign-ownership.use-case';
 
 const FRODO = 'Frodon';
+const noParticipant: CampaignMutationParticipant = async () => [];
 
-describe('propriété et sortie d une campagne', () => {
+describe('propriété et départ de campagne', () => {
   let leave: LeaveCampaignUseCase;
-  let remove: DeleteCampaignUseCase;
   let transfer: TransferCampaignOwnershipUseCase;
-  let campaignRepo: InMemoryCampaignRepository;
-  let directory: InMemoryCampaignDirectory;
-  let gandalfId: string;
-  let frodoId: string;
+  let campaigns: InMemoryCampaignRepository;
+  let ownerId: string;
+  let memberId: string;
+  let campaignId: string;
 
   beforeEach(() => {
-    campaignRepo = new InMemoryCampaignRepository();
-    directory = new InMemoryCampaignDirectory();
+    campaigns = new InMemoryCampaignRepository();
+    const directory = new InMemoryCampaignDirectory();
+    const lifecycle = new InMemoryCampaignLifecycleRepository(campaigns);
     const clock = new FixedClock();
-    leave = new LeaveCampaignUseCase(campaignRepo, directory, clock);
-    remove = new DeleteCampaignUseCase(campaignRepo);
-    transfer = new TransferCampaignOwnershipUseCase(campaignRepo, directory, clock);
-
-    gandalfId = randomUUID();
-    frodoId = randomUUID();
-    directory.save({ id: gandalfId, displayName: 'Gandalf' });
-    directory.save({ id: frodoId, displayName: FRODO });
+    leave = new LeaveCampaignUseCase(campaigns, lifecycle, directory, clock);
+    transfer = new TransferCampaignOwnershipUseCase(
+      campaigns,
+      lifecycle,
+      directory,
+      clock,
+    );
+    ownerId = randomUUID();
+    memberId = randomUUID();
+    directory.save({ id: ownerId, displayName: 'Gandalf' });
+    directory.save({ id: memberId, displayName: FRODO });
   });
 
-  async function withFrodoAsPlayer(): Promise<Campaign> {
-    const campaign = withPlayer(aCampaign(gandalfId), gandalfId, frodoId);
-    await campaignRepo.save(campaign);
+  it('transfère uniquement vers un MJ actif sans changer son rôle', async () => {
+    const campaign = await campaignWithCoMaster();
+    const result = await transfer.execute(transferCommand(campaign.revision));
+
+    expect(result.target).toMatchObject({ role: 'gameMaster', isOwner: true });
+    expect(result.actor.isOwner).toBe(false);
+  });
+
+  it('refuse un transfert vers un joueur et vers soi-même', async () => {
+    const campaign = await campaignWithPlayer();
+    await expect(transfer.execute(transferCommand(campaign.revision)))
+      .rejects.toThrow(NotAGameMasterError);
+    await expect(transfer.execute({
+      ...transferCommand(campaign.revision),
+      displayName: 'Gandalf',
+      idempotencyKey: randomUUID(),
+    })).rejects.toThrow(CannotTransferToSelfError);
+  });
+
+  it('fait quitter un membre ordinaire et rejoue le résultat après son départ', async () => {
+    const campaign = await campaignWithPlayer();
+    const dto = leaveCommand(campaign.revision, memberId);
+    const first = await leave.execute(dto, noParticipant);
+    const replay = await leave.execute(dto, noParticipant);
+
+    expect(first.actor).toEqual({ membership: 'left', role: null, isOwner: false });
+    expect(replay).toEqual(first);
+    expect((await reload(campaign.id.value))?.players()).toHaveLength(0);
+  });
+
+  it('refuse le départ du propriétaire sans successeur', async () => {
+    const campaign = await campaignWithCoMaster();
+    await expect(leave.execute(leaveCommand(campaign.revision, ownerId), noParticipant))
+      .rejects.toThrow(SuccessorRequiredError);
+  });
+
+  it('transfère et retire le propriétaire dans une seule commande', async () => {
+    const campaign = await campaignWithCoMaster();
+    const result = await leave.execute({
+      ...leaveCommand(campaign.revision, ownerId),
+      successorDisplayName: FRODO,
+    }, noParticipant);
+    const saved = await reload(campaign.id.value);
+
+    expect(result.actor.membership).toBe('left');
+    expect(result.target).toMatchObject({ isOwner: true, role: 'gameMaster' });
+    expect(saved?.ownerId.equals(UserId.create(memberId))).toBe(true);
+    expect(saved?.gameMasters()).toHaveLength(1);
+  });
+
+  async function campaignWithPlayer() {
+    const campaign = withPlayer(aCampaign(ownerId), ownerId, memberId);
+    campaignId = campaign.id.value;
+    await campaigns.save(campaign);
     return campaign;
   }
 
-  async function reload(campaign: Campaign): Promise<Campaign | null> {
-    return campaignRepo.findById(CampaignId.create(campaign.id.value));
+  async function campaignWithCoMaster() {
+    const campaign = await campaignWithPlayer();
+    campaign.promote(UserId.create(ownerId), UserId.create(memberId), new Date());
+    await campaigns.save(campaign);
+    return campaign;
   }
 
-  describe('LeaveCampaignUseCase', () => {
-    it('fait sortir le joueur, sans successeur à désigner', async () => {
-      const campaign = await withFrodoAsPlayer();
+  function transferCommand(expectedRevision: number) {
+    return {
+      campaignId,
+      displayName: FRODO,
+      expectedRevision,
+      actorId: anActor(ownerId),
+      idempotencyKey: randomUUID(),
+    };
+  }
 
-      await leave.execute({
-        campaignId: campaign.id.value,
-        actorId: anActor(frodoId),
-      });
+  function leaveCommand(expectedRevision: number, actorId: string) {
+    return {
+      campaignId,
+      expectedRevision,
+      actorId: anActor(actorId),
+      idempotencyKey: stableLeaveKey,
+    };
+  }
 
-      const saved = await reload(campaign);
-      expect(saved?.players()).toHaveLength(0);
-    });
-
-    it('exige un successeur quand le propriétaire part', async () => {
-      const campaign = await withFrodoAsPlayer();
-      await transfer.execute({
-        campaignId: campaign.id.value,
-        displayName: FRODO,
-        actorId: anActor(gandalfId),
-      });
-
-      await expect(
-        leave.execute({
-          campaignId: campaign.id.value,
-          actorId: anActor(frodoId),
-        }),
-      ).rejects.toThrow(SuccessorRequiredError);
-    });
-
-    it('passe la main et sort en une seule écriture', async () => {
-      const campaign = await withFrodoAsPlayer();
-      await transfer.execute({
-        campaignId: campaign.id.value,
-        displayName: FRODO,
-        actorId: anActor(gandalfId),
-      });
-
-      await leave.execute({
-        campaignId: campaign.id.value,
-        successorDisplayName: 'Gandalf',
-        actorId: anActor(frodoId),
-      });
-
-      const saved = await reload(campaign);
-      expect(saved?.ownerId.equals(UserId.create(gandalfId))).toBe(true);
-      expect(saved?.players()).toHaveLength(0);
-    });
-
-    it('refuse le départ de l unique maître du jeu', async () => {
-      const campaign = await withFrodoAsPlayer();
-
-      await expect(
-        leave.execute({
-          campaignId: campaign.id.value,
-          successorDisplayName: FRODO,
-          actorId: anActor(gandalfId),
-        }),
-      ).rejects.toThrow(CannotLeaveAsLastGameMasterError);
-    });
-
-    it('refuse un étranger avant de résoudre le moindre pseudo', async () => {
-      const campaign = await withFrodoAsPlayer();
-
-      await expect(
-        leave.execute({
-          campaignId: campaign.id.value,
-          successorDisplayName: 'PersonneDeCeNom',
-          actorId: anActor(randomUUID()),
-        }),
-      ).rejects.toThrow(NotCampaignMemberError);
-    });
-
-    it('refuse un successeur inconnu de l annuaire', async () => {
-      const campaign = await withFrodoAsPlayer();
-
-      await expect(
-        leave.execute({
-          campaignId: campaign.id.value,
-          successorDisplayName: 'PersonneDeCeNom',
-          actorId: anActor(frodoId),
-        }),
-      ).rejects.toThrow(MemberNotFoundError);
-    });
-  });
-
-  describe('TransferCampaignOwnershipUseCase', () => {
-    it('passe la propriété sans toucher au rôle', async () => {
-      const campaign = await withFrodoAsPlayer();
-
-      await transfer.execute({
-        campaignId: campaign.id.value,
-        displayName: FRODO,
-        actorId: anActor(gandalfId),
-      });
-
-      const saved = await reload(campaign);
-      expect(saved?.ownerId.equals(UserId.create(frodoId))).toBe(true);
-      expect(saved?.roleOf(UserId.create(frodoId))).toBe('player');
-    });
-
-    it('refuse un cédant qui n est pas propriétaire', async () => {
-      const campaign = await withFrodoAsPlayer();
-
-      await expect(
-        transfer.execute({
-          campaignId: campaign.id.value,
-          displayName: 'Gandalf',
-          actorId: anActor(frodoId),
-        }),
-      ).rejects.toThrow(NotCampaignOwnerError);
-    });
-  });
-
-  describe('DeleteCampaignUseCase', () => {
-    it('supprime la campagne du propriétaire', async () => {
-      const campaign = await withFrodoAsPlayer();
-
-      await remove.execute({
-        campaignId: campaign.id.value,
-        actorId: anActor(gandalfId),
-      });
-
-      expect(await reload(campaign)).toBeNull();
-    });
-
-    it('refuse un maître du jeu qui n est pas propriétaire', async () => {
-      const campaign = await withFrodoAsPlayer();
-      await transfer.execute({
-        campaignId: campaign.id.value,
-        displayName: FRODO,
-        actorId: anActor(gandalfId),
-      });
-
-      await expect(
-        remove.execute({
-          campaignId: campaign.id.value,
-          actorId: anActor(gandalfId),
-        }),
-      ).rejects.toThrow(NotCampaignOwnerError);
-      expect(await reload(campaign)).not.toBeNull();
-    });
-
-    it('refuse une campagne inconnue', async () => {
-      await expect(
-        remove.execute({ campaignId: randomUUID(), actorId: anActor(gandalfId) }),
-      ).rejects.toThrow(CampaignNotFoundError);
-    });
-  });
+  async function reload(id: string) {
+    return campaigns.findById(CampaignId.create(id));
+  }
 });
+
+const stableLeaveKey = randomUUID();

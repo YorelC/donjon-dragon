@@ -1,0 +1,43 @@
+meta {
+  name: 57 - Owner transfer and leave
+  type: http
+  seq: 57
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/leave
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{ownerLeaveKey}}
+}
+
+body:json {
+  {
+    "successorDisplayName": "{{thirdDisplayName}}",
+    "expectedRevision": {{campaignRevision}}
+  }
+}
+
+script:post-response {
+  bru.setVar('ownerLeaveResult', JSON.stringify(res.getBody()));
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('transfère puis retire le propriétaire en un résultat', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(8);
+    expect(res.getBody().actor).to.deep.equal({
+      membership: 'left',
+      role: null,
+      isOwner: false,
+    });
+    expect(res.getBody().target.isOwner).to.equal(true);
+    expect(res.getBody().target.role).to.equal('gameMaster');
+  });
+}

@@ -1,0 +1,22 @@
+meta {
+  name: 39 - Promoted Frodo cancels invitation
+  type: http
+  seq: 39
+}
+
+delete {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations/{{thirdDisplayName}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{permissionCancelKey}}
+}
+
+tests {
+  test('utilise immédiatement les permissions de MJ', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

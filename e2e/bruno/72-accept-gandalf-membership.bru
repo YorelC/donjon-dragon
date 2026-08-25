@@ -1,0 +1,22 @@
+meta {
+  name: 72 - Accept Gandalf membership
+  type: http
+  seq: 72
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations/accept
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{acceptGandalfKey}}
+}
+
+tests {
+  test('réactive Gandalf comme joueur', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

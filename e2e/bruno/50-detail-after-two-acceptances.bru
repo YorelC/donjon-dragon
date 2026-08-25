@@ -1,0 +1,25 @@
+meta {
+  name: 50 - Detail after two acceptances
+  type: http
+  seq: 50
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}
+  body: none
+  auth: none
+}
+
+script:post-response {
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('projette les deux joueurs acceptés et la révision courante', function() {
+    const names = res.getBody().players.map((player) => player.displayName);
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(4);
+    expect(names).to.include(bru.getEnvVar('inviteeDisplayName'));
+    expect(names).to.include(bru.getEnvVar('thirdDisplayName'));
+  });
+}

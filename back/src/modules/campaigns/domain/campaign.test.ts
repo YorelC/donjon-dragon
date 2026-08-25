@@ -9,13 +9,10 @@ import {
   AlreadyCampaignMemberError,
   AlreadyGameMasterError,
   CannotDemoteLastGameMasterError,
-  CannotDemoteOwnerError,
   CannotInviteSelfError,
   CannotLeaveAsLastGameMasterError,
-  CannotRemoveGameMasterError,
-  CannotRemoveOwnerError,
-  CannotRemoveSelfError,
-  CannotSelfDemoteAsLastGameMasterError,
+  CannotExcludeLastGameMasterError,
+  CannotExcludeOwnerError,
   CannotTransferToSelfError,
   MemberNotFoundError,
   NotAGameMasterError,
@@ -203,12 +200,12 @@ describe('Campaign.promote', () => {
     expect(campaign.ownerId.equals(gandalf)).toBe(true);
   });
 
-  it('refuse un promoteur qui n est pas maître du jeu', () => {
+  it('refuse un promoteur qui n est pas propriétaire', () => {
     const campaign = withTwoGameMasters();
     campaign.demote(gandalf, frodo, NOW);
 
     expect(() => campaign.promote(frodo, frodo, NOW)).toThrow(
-      NotCampaignGameMasterError,
+      NotCampaignOwnerError,
     );
   });
 
@@ -241,18 +238,14 @@ describe('Campaign.demote', () => {
     expect(idsOf(campaign.players())).toEqual([frodo.value]);
   });
 
-  it('refuse de rétrograder le propriétaire, même par un autre maître du jeu', () => {
+  it('refuse la rétrogradation demandée par un co-MJ non propriétaire', () => {
     const campaign = withTwoGameMasters();
 
-    expect(() => campaign.demote(frodo, gandalf, NOW)).toThrow(CannotDemoteOwnerError);
+    expect(() => campaign.demote(frodo, gandalf, NOW)).toThrow(NotCampaignOwnerError);
   });
 
   it('refuse de rétrograder le dernier maître du jeu', () => {
-    // Le propriétaire doit être quelqu'un d'autre, sinon c'est la protection du
-    // propriétaire qui répondrait — elle est vérifiée avant.
     const campaign = withTwoGameMasters();
-    campaign.joinFromInvitation(sam, gandalf, NOW);
-    campaign.transferOwnership(gandalf, sam, NOW);
     campaign.demote(gandalf, frodo, NOW);
 
     expect(() => campaign.demote(gandalf, gandalf, NOW)).toThrow(
@@ -267,125 +260,68 @@ describe('Campaign.demote', () => {
   });
 });
 
-describe('Campaign.selfPromoteAsOwner', () => {
-  it('fait du propriétaire joueur un maître du jeu', () => {
-    const campaign = withFrodoAsPlayer();
-    campaign.transferOwnership(gandalf, frodo, NOW);
-
-    campaign.selfPromoteAsOwner(frodo, NOW);
-
-    expect(campaign.roleOf(frodo)).toBe('gameMaster');
-  });
-
-  it('refuse un acteur qui n est pas propriétaire', () => {
+describe('Campaign.exclude', () => {
+  it('exclut un joueur de la campagne', () => {
     const campaign = withFrodoAsPlayer();
 
-    expect(() => campaign.selfPromoteAsOwner(frodo, NOW)).toThrow(
-      NotCampaignOwnerError,
-    );
-  });
-
-  it('refuse un propriétaire déjà maître du jeu', () => {
-    expect(() => aCampaign().selfPromoteAsOwner(gandalf, NOW)).toThrow(
-      AlreadyGameMasterError,
-    );
-  });
-});
-
-describe('Campaign.selfDemoteAsOwner', () => {
-  it('ramène le propriétaire au rang de joueur quand un autre MJ reste', () => {
-    const campaign = withTwoGameMasters();
-
-    campaign.selfDemoteAsOwner(gandalf, NOW);
-
-    expect(campaign.roleOf(gandalf)).toBe('player');
-  });
-
-  it('refuse un acteur qui n est pas propriétaire', () => {
-    const campaign = withTwoGameMasters();
-
-    expect(() => campaign.selfDemoteAsOwner(frodo, NOW)).toThrow(
-      NotCampaignOwnerError,
-    );
-  });
-
-  it('refuse un propriétaire déjà joueur', () => {
-    const campaign = withFrodoAsPlayer();
-    campaign.transferOwnership(gandalf, frodo, NOW);
-
-    expect(() => campaign.selfDemoteAsOwner(frodo, NOW)).toThrow(
-      NotAGameMasterError,
-    );
-  });
-
-  it('refuse quand le propriétaire est le dernier maître du jeu', () => {
-    expect(() => aCampaign().selfDemoteAsOwner(gandalf, NOW)).toThrow(
-      CannotSelfDemoteAsLastGameMasterError,
-    );
-  });
-});
-
-describe('Campaign.removeMember', () => {
-  it('retire le joueur de la campagne', () => {
-    const campaign = withFrodoAsPlayer();
-
-    campaign.removeMember(gandalf, frodo, NOW);
+    campaign.exclude(gandalf, frodo, NOW);
 
     expect(campaign.snapshot().members).toHaveLength(1);
   });
 
-  it('refuse de retirer un maître du jeu : on le rétrograde d abord', () => {
+  it('exclut directement un co-MJ sans rétrogradation préalable', () => {
+    const campaign = withTwoGameMasters();
+
+    campaign.exclude(gandalf, frodo, NOW);
+
+    expect(campaign.snapshot().members).toHaveLength(1);
+  });
+
+  it('refuse d exclure le propriétaire', () => {
+    const campaign = withTwoGameMasters();
+
+    expect(() => campaign.exclude(gandalf, gandalf, NOW)).toThrow(
+      CannotExcludeOwnerError,
+    );
+  });
+
+  it('refuse d exclure le dernier MJ actif', () => {
     const campaign = withTwoGameMasters();
     campaign.transferOwnership(gandalf, frodo, NOW);
+    campaign.demote(frodo, frodo, NOW);
 
-    expect(() => campaign.removeMember(frodo, gandalf, NOW)).toThrow(
-      CannotRemoveGameMasterError,
+    expect(() => campaign.exclude(frodo, gandalf, NOW)).toThrow(
+      CannotExcludeLastGameMasterError,
     );
   });
 
-  it('refuse de retirer le propriétaire', () => {
-    const campaign = withTwoGameMasters();
-
-    expect(() => campaign.removeMember(frodo, gandalf, NOW)).toThrow(
-      CannotRemoveOwnerError,
-    );
-  });
-
-  it('refuse de se retirer soi-même : on quitte, ou on supprime', () => {
+  it('refuse un demandeur qui n est pas propriétaire', () => {
     const campaign = withFrodoAsPlayer();
 
-    expect(() => campaign.removeMember(gandalf, gandalf, NOW)).toThrow(
-      CannotRemoveSelfError,
+    expect(() => campaign.exclude(frodo, gandalf, NOW)).toThrow(
+      NotCampaignOwnerError,
     );
   });
 
-  it('refuse un demandeur qui n est pas maître du jeu', () => {
-    const campaign = withFrodoAsPlayer();
-
-    expect(() => campaign.removeMember(frodo, gandalf, NOW)).toThrow(
-      NotCampaignGameMasterError,
-    );
-  });
-
-  it('refuse de retirer un étranger', () => {
-    expect(() => aCampaign().removeMember(gandalf, sam, NOW)).toThrow(
+  it('refuse d exclure un étranger', () => {
+    expect(() => aCampaign().exclude(gandalf, sam, NOW)).toThrow(
       MemberNotFoundError,
     );
   });
 });
 
 describe('Campaign.transferOwnership', () => {
-  it('passe la propriété à un joueur sans le promouvoir', () => {
-    const campaign = withFrodoAsPlayer();
+  it('passe la propriété à un MJ sans modifier son rôle', () => {
+    const campaign = withTwoGameMasters();
 
     campaign.transferOwnership(gandalf, frodo, NOW);
 
     expect(campaign.ownerId.equals(frodo)).toBe(true);
-    expect(campaign.roleOf(frodo)).toBe('player');
+    expect(campaign.roleOf(frodo)).toBe('gameMaster');
   });
 
   it('retire au cédant le droit de supprimer', () => {
-    const campaign = withFrodoAsPlayer();
+    const campaign = withTwoGameMasters();
 
     campaign.transferOwnership(gandalf, frodo, NOW);
 
@@ -394,7 +330,7 @@ describe('Campaign.transferOwnership', () => {
   });
 
   it('date la campagne de l instant du transfert', () => {
-    const campaign = withFrodoAsPlayer();
+    const campaign = withTwoGameMasters();
 
     campaign.transferOwnership(gandalf, frodo, LATER);
 
@@ -417,6 +353,14 @@ describe('Campaign.transferOwnership', () => {
     );
   });
 
+  it('refuse un successeur joueur actif', () => {
+    const campaign = withFrodoAsPlayer();
+
+    expect(() => campaign.transferOwnership(gandalf, frodo, NOW)).toThrow(
+      NotAGameMasterError,
+    );
+  });
+
   it('refuse un successeur sans adhésion active', () => {
     expect(() => aCampaign().transferOwnership(gandalf, frodo, NOW)).toThrow(
       MemberNotFoundError,
@@ -426,7 +370,7 @@ describe('Campaign.transferOwnership', () => {
 
 describe('Campaign — propriété à la réhydratation', () => {
   it('conserve le propriétaire du snapshot', () => {
-    const campaign = withFrodoAsPlayer();
+    const campaign = withTwoGameMasters();
     campaign.transferOwnership(gandalf, frodo, NOW);
 
     const restored = Campaign.restore(campaign.snapshot());

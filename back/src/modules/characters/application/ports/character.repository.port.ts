@@ -16,5 +16,14 @@ export interface CharacterRepositoryPort {
   findById(id: CharacterId): Promise<Character | null>;
   findByCampaignId(campaignId: OwningCampaignId): Promise<Character[]>;
   findAssignedTo(campaignId: OwningCampaignId, playerId: UserId): Promise<Character | null>;
+  findAssignedToInTransaction(
+    campaignId: OwningCampaignId,
+    playerId: UserId,
+    transactionHandle: unknown,
+  ): Promise<Character | null>;
+  saveInTransaction(
+    character: Character,
+    transactionHandle: unknown,
+  ): Promise<void>;
   deleteById(id: CharacterId): Promise<void>;
 }

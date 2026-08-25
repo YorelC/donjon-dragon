@@ -1,0 +1,21 @@
+meta {
+  name: 37 - Character unassigned after promotion
+  type: http
+  seq: 37
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters
+  body: none
+  auth: none
+}
+
+tests {
+  test('désassigne le personnage dans le commit de promotion', function() {
+    const character = res.getBody().find(
+      (item) => item.id === bru.getVar('characterId'),
+    );
+    expect(res.getStatus()).to.equal(200);
+    expect(character.assignedTo).to.equal(null);
+  });
+}

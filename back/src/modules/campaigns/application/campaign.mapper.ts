@@ -82,6 +82,7 @@ export function toCampaignDetail(projection: CampaignDetailProjection): Campaign
 
   return {
     id: campaign.id.value,
+    revision: campaign.revision,
     name: campaign.name.value,
     myRole: campaign.roleOf(viewerId),
     isOwner: campaign.isOwner(viewerId),

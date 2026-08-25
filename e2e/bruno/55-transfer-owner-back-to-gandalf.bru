@@ -1,0 +1,36 @@
+meta {
+  name: 55 - Transfer owner back to Gandalf
+  type: http
+  seq: 55
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/owner
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{transferBackKey}}
+}
+
+body:json {
+  {
+    "displayName": "{{ownerDisplayName}}",
+    "expectedRevision": {{campaignRevision}}
+  }
+}
+
+script:post-response {
+  bru.setVar('campaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('rend Gandalf propriétaire pour prouver le départ combiné', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().revision).to.equal(7);
+    expect(res.getBody().target.isOwner).to.equal(true);
+  });
+}

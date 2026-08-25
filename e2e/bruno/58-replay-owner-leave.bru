@@ -1,0 +1,31 @@
+meta {
+  name: 58 - Replay owner leave
+  type: http
+  seq: 58
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/leave
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{ownerLeaveKey}}
+}
+
+body:json {
+  {
+    "successorDisplayName": "{{thirdDisplayName}}",
+    "expectedRevision": 7
+  }
+}
+
+tests {
+  test('relit le résultat durable après suppression de l adhésion', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody()).to.deep.equal(JSON.parse(bru.getVar('ownerLeaveResult')));
+  });
+}

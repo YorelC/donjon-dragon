@@ -60,6 +60,7 @@ export interface CharacterSnapshot {
   build: CharacterBuildSnapshot;
   createdBy: string;
   assignedTo: string | null;
+  revision: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -99,6 +100,7 @@ interface CharacterState {
   roll: AbilityRoll | null;
   build: CharacterBuildState;
   assignedTo: UserId | null;
+  revision: number;
   updatedAt: string;
 }
 
@@ -158,6 +160,7 @@ export class Character {
         roll: input.roll,
         build: buildFrom(input.build, input.roll),
         assignedTo: null,
+        revision: INITIAL_REVISION,
         updatedAt: createdAt,
       },
     );
@@ -205,6 +208,10 @@ export class Character {
 
   get updatedAt(): string {
     return this.state.updatedAt;
+  }
+
+  get revision(): number {
+    return this.state.revision;
   }
 
   /** Ce que le moteur consomme. Toujours présent, un personnage n'existe que complet. */
@@ -269,6 +276,12 @@ export class Character {
     this.touch(now);
   }
 
+  unassignForCampaignTransition(now: Date): void {
+    if (!this.state.assignedTo) throw new NotAssignedError();
+    this.state.assignedTo = null;
+    this.touch(now);
+  }
+
   /**
    * Un joueur ne touche qu'à son propre personnage assigné. Un MJ touche à ce
    * qu'il a créé, à ce qui est attribué à un joueur (jamais à un autre MJ), à
@@ -302,12 +315,14 @@ export class Character {
       build: buildSnapshotOf(this.state.build),
       createdBy: this.origin.createdBy.value,
       assignedTo: this.state.assignedTo?.value ?? null,
+      revision: this.state.revision,
       createdAt: this.origin.createdAt,
       updatedAt: this.state.updatedAt,
     };
   }
 
   private touch(now: Date): void {
+    this.state.revision += REVISION_INCREMENT;
     this.state.updatedAt = now.toISOString();
   }
 }
@@ -352,9 +367,13 @@ function restoreState(snapshot: CharacterSnapshot): CharacterState {
     roll: snapshot.abilityRoll ? AbilityRoll.restore(snapshot.abilityRoll) : null,
     build: restoreBuild(snapshot.build),
     assignedTo: snapshot.assignedTo ? UserId.create(snapshot.assignedTo) : null,
+    revision: snapshot.revision,
     updatedAt: snapshot.updatedAt,
   };
 }
+
+const INITIAL_REVISION = 0;
+const REVISION_INCREMENT = 1;
 
 function restoreBuild(snapshot: CharacterBuildSnapshot): CharacterBuildState {
   return {
