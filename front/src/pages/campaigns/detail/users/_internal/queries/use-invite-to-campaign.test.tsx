@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import { IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema } from "@donjon-dragon/shared";
 import { ApiError } from "@/shared/api/api-error";
 
 vi.mock("sonner", () => ({
@@ -39,7 +40,7 @@ describe("toInviteErrorMessage", () => {
   it.each([
     [403, "Tu ne peux inviter que tes amis."],
     [404, "Aucun joueur ne porte ce pseudo."],
-    [409, "Ce joueur fait déjà partie de la campagne."],
+    [409, "Ce joueur est déjà membre de la campagne ou a déjà une invitation en attente."],
   ])("traduit le statut %s en un geste à faire", (status, expected) => {
     expect(toInviteErrorMessage(new ApiError(status, "peu importe"))).toBe(expected);
   });
@@ -72,6 +73,23 @@ describe("useInviteToCampaign", () => {
     expect(api.post).toHaveBeenCalledWith(
       `/api/campaigns/${CAMPAIGN_ID}/invitations`,
       { displayName: "Frodon" },
+      expect.objectContaining({
+        [IDEMPOTENCY_KEY_HEADER]: expect.any(String),
+      }),
+    );
+  });
+
+  // Sans clé valide le serveur refuse la commande : c'est le contrat, pas un détail.
+  it("signe la commande d'un identifiant d'idempotence UUID", async () => {
+    vi.mocked(api.post).mockResolvedValue(undefined);
+    const { result } = renderMutation();
+
+    result.current.mutate({ campaignId: CAMPAIGN_ID, displayName: "Frodon" });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    const headers = vi.mocked(api.post).mock.calls[0]?.[2];
+    expect(IdempotencyKeySchema.safeParse(headers?.[IDEMPOTENCY_KEY_HEADER]).success).toBe(
+      true,
     );
   });
 

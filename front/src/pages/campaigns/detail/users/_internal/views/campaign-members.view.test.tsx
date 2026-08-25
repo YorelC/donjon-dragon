@@ -11,6 +11,7 @@ import { CampaignMembersView } from "./campaign-members.view";
 function aCampaign(overrides: Partial<CampaignDetail> = {}): CampaignDetail {
   return {
     id: "3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8",
+    revision: 0,
     name: "La Malédiction de Strahd",
     myRole: "gameMaster",
     isOwner: true,
@@ -28,6 +29,7 @@ function management(overrides: Partial<MemberManagement> = {}): MemberManagement
     onPromote: vi.fn(),
     onDemote: vi.fn(),
     onRemove: vi.fn(),
+    onCancelInvitation: vi.fn(),
     ...overrides,
   };
 }
@@ -163,16 +165,20 @@ describe("CampaignMembersView — actions", () => {
     );
 
     expect(actions.onRemove).toHaveBeenCalledWith("Frodon");
+    expect(actions.onCancelInvitation).not.toHaveBeenCalled();
   });
 
-  it("annule l'invitation par la même action que le retrait", async () => {
+  // Retirer un membre et annuler une invitation sont deux routes serveur
+  // distinctes : les confondre appelait celle des membres sur un non-membre.
+  it("annule l'invitation par une action distincte du retrait", async () => {
     const { actions } = renderMembers();
 
     await userEvent.click(
       within(rowOf("Sam")).getByRole("button", { name: "Annuler l'invitation" }),
     );
 
-    expect(actions.onRemove).toHaveBeenCalledWith("Sam");
+    expect(actions.onCancelInvitation).toHaveBeenCalledWith("Sam");
+    expect(actions.onRemove).not.toHaveBeenCalled();
   });
 
   it("ne fige que la ligne dont l'action est en vol", () => {

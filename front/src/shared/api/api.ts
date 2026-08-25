@@ -6,6 +6,9 @@ import { refreshSession } from "./refresh";
 
 export { ApiError } from "./api-error";
 
+/** En-têtes propres à une commande, fusionnés au Content-Type et au jeton CSRF. */
+export type CommandHeaders = Record<string, string>;
+
 // Ces méthodes ne changent pas d'état : le serveur n'exige pas de jeton CSRF, donc
 // on n'en envoie pas.
 const SAFE_METHODS: readonly string[] = ["GET", "HEAD", "OPTIONS"];
@@ -98,14 +101,29 @@ function isUnauthenticatedRoute(path: string): boolean {
 
 export const api = {
   get: <T>(path: string) => request<T>(path),
-  post: <T>(path: string, body?: unknown) =>
-    request<T>(path, {
-      method: "POST",
-      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-    }),
-  put: <T>(path: string, body: unknown) =>
-    request<T>(path, { method: "PUT", body: JSON.stringify(body) }),
-  patch: <T>(path: string, body: unknown) =>
-    request<T>(path, { method: "PATCH", body: JSON.stringify(body) }),
-  delete: <T>(path: string) => request<T>(path, { method: "DELETE" }),
+  post: <T>(path: string, body?: unknown, headers?: CommandHeaders) =>
+    request<T>(path, commandInit("POST", body, headers)),
+  put: <T>(path: string, body?: unknown, headers?: CommandHeaders) =>
+    request<T>(path, commandInit("PUT", body, headers)),
+  patch: <T>(path: string, body?: unknown, headers?: CommandHeaders) =>
+    request<T>(path, commandInit("PATCH", body, headers)),
+  delete: <T>(path: string, headers?: CommandHeaders) =>
+    request<T>(path, commandInit("DELETE", undefined, headers)),
 };
+
+/**
+ * Toute commande se construit pareil : une méthode, un corps facultatif et des en-têtes
+ * facultatifs. `buildHeaders` pose le CSRF APRÈS cette fusion, donc une commande ne peut
+ * pas l'écraser par mégarde.
+ */
+function commandInit(
+  method: string,
+  body?: unknown,
+  headers?: CommandHeaders,
+): RequestInit {
+  return {
+    method,
+    ...(headers === undefined ? {} : { headers }),
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  };
+}

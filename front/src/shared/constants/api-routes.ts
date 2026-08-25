@@ -30,6 +30,8 @@ export const API_ROUTES = {
       `/api/campaigns/${encodeURIComponent(campaignId)}/invitations/accept`,
     refuseInvitation: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/invitations/refuse`,
+    cancelInvitation: (campaignId: string, displayName: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/invitations/${encodeURIComponent(displayName)}`,
     detail: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}`,
     remove: (campaignId: string) =>

@@ -101,7 +101,7 @@ function CancelInvitationAction({ member, management }: ActionsProps) {
       variant="destructive"
       size="sm"
       disabled={isBusy(member, management)}
-      onClick={() => management.onRemove(member.displayName)}
+      onClick={() => management.onCancelInvitation(member.displayName)}
     >
       Annuler l'invitation
     </Button>

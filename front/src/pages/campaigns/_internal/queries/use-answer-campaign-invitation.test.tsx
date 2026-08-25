@@ -2,14 +2,17 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import { IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema } from "@donjon-dragon/shared";
+import { ApiError } from "@/shared/api/api-error";
 
 vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 
-vi.mock("@/shared/api/api", () => ({
-  api: { post: vi.fn() },
-}));
+vi.mock("@/shared/api/api", async () => {
+  const { ApiError: RealApiError } = await import("@/shared/api/api-error");
+  return { api: { post: vi.fn() }, ApiError: RealApiError };
+});
 
 import { toast } from "sonner";
 import { api } from "@/shared/api/api";
@@ -56,8 +59,25 @@ describe("réponse à une invitation de campagne", () => {
     expect(api.post).toHaveBeenCalledWith(
       `/api/campaigns/${CAMPAIGN_ID}/invitations/${action}`,
       {},
+      expect.objectContaining({ [IDEMPOTENCY_KEY_HEADER]: expect.any(String) }),
     );
     expect(toast.success).toHaveBeenCalledWith(message);
+  });
+
+  it.each([
+    [useAcceptCampaignInvitation],
+    [useRefuseCampaignInvitation],
+  ])("signe la commande d'un identifiant d'idempotence UUID (%#)", async (hook) => {
+    vi.mocked(api.post).mockResolvedValue(undefined);
+    const { result } = renderMutation(hook);
+
+    result.current.mutate(CAMPAIGN_ID);
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    const headers = vi.mocked(api.post).mock.calls[0]?.[2];
+    expect(IdempotencyKeySchema.safeParse(headers?.[IDEMPOTENCY_KEY_HEADER]).success).toBe(
+      true,
+    );
   });
 
   it("invalide les demandes ET mes campagnes : accepter déplace la campagne", async () => {
@@ -75,6 +95,31 @@ describe("réponse à une invitation de campagne", () => {
     expect(INVITATION_COUNT_KEY.slice(0, CAMPAIGN_INVITATIONS_KEY.length)).toEqual([
       ...CAMPAIGN_INVITATIONS_KEY,
     ]);
+  });
+
+  // Le serveur masque en 404 l'absente, la terminale et celle d'un autre : le
+  // message ne doit pas laisser deviner laquelle des trois.
+  it.each([
+    [403, "Tu ne peux pas répondre à cette invitation."],
+    [404, "Cette invitation n'est plus disponible."],
+    [409, "Cette invitation a déjà été traitée."],
+  ])("explique un refus %s sans rien révéler du cycle", async (status, message) => {
+    vi.mocked(api.post).mockRejectedValue(new ApiError(status, "peu importe"));
+    const { result } = renderMutation(useAcceptCampaignInvitation);
+
+    result.current.mutate(CAMPAIGN_ID);
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalledWith(message));
+  });
+
+  it("n'invalide rien quand la réponse échoue", async () => {
+    vi.mocked(api.post).mockRejectedValue(new ApiError(404, "not found"));
+    const { result, invalidate } = renderMutation(useAcceptCampaignInvitation);
+
+    result.current.mutate(CAMPAIGN_ID);
+
+    await waitFor(() => expect(toast.error).toHaveBeenCalled());
+    expect(invalidate).not.toHaveBeenCalled();
   });
 
   it("prévient de l'échec", async () => {

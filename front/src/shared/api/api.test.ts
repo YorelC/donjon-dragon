@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { CSRF_HEADER, DOMAIN_ERROR_CODE } from "@donjon-dragon/shared";
+import {
+  CSRF_HEADER,
+  DOMAIN_ERROR_CODE,
+  IDEMPOTENCY_KEY_HEADER,
+} from "@donjon-dragon/shared";
 import { API_ROUTES } from "@/shared/constants/api-routes";
 import { ApiError, api } from "./api";
 import { refreshSession } from "./refresh";
@@ -130,6 +134,74 @@ describe("api client", () => {
       await api.get("/api/friends");
 
       expect(fetchMock.mock.calls[0][1].headers).not.toHaveProperty(CSRF_HEADER);
+    });
+  });
+
+  describe("en-têtes de commande", () => {
+    const COMMAND_KEY = "3f1d9b6e-6c1e-4d2a-9f0b-6b7c8d9e0a1b";
+
+    function noContent(): Response {
+      return new Response(null, { status: 204 });
+    }
+
+    it("fusionne les en-têtes fournis avec le Content-Type et le CSRF sur un POST", async () => {
+      giveBrowserACsrfCookie();
+      const fetchMock = vi.fn().mockResolvedValue(noContent());
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.post("/api/campaigns/c1/invitations", { displayName: "Bob" }, {
+        [IDEMPOTENCY_KEY_HEADER]: COMMAND_KEY,
+      });
+
+      expect(fetchMock.mock.calls[0][1].headers).toMatchObject({
+        "Content-Type": "application/json",
+        [CSRF_HEADER]: CSRF_TOKEN,
+        [IDEMPOTENCY_KEY_HEADER]: COMMAND_KEY,
+      });
+    });
+
+    it("les fusionne aussi sur un DELETE, qui n'a pas de corps", async () => {
+      giveBrowserACsrfCookie();
+      const fetchMock = vi.fn().mockResolvedValue(noContent());
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.delete("/api/campaigns/c1/invitations/Bob", {
+        [IDEMPOTENCY_KEY_HEADER]: COMMAND_KEY,
+      });
+
+      expect(fetchMock.mock.calls[0][1].headers).toMatchObject({
+        [CSRF_HEADER]: CSRF_TOKEN,
+        [IDEMPOTENCY_KEY_HEADER]: COMMAND_KEY,
+      });
+      expect(fetchMock.mock.calls[0][1]).not.toHaveProperty("body");
+    });
+
+    // Le CSRF tourne au renouvellement, la clé d'idempotence NON : c'est elle qui
+    // dit au serveur que le rejeu est la même commande et non une seconde.
+    it("conserve la même clé d'idempotence au rejeu après un 401", async () => {
+      giveBrowserACsrfCookie();
+      vi.mocked(refreshSession).mockImplementation(async () => {
+        document.cookie = "csrf_token=rotated.signature";
+      });
+
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ statusCode: 401, message: "Unauthorized" }), {
+            status: 401,
+          }),
+        )
+        .mockResolvedValueOnce(noContent());
+      vi.stubGlobal("fetch", fetchMock);
+
+      await api.post("/api/campaigns/c1/invitations/accept", {}, {
+        [IDEMPOTENCY_KEY_HEADER]: COMMAND_KEY,
+      });
+
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+      expect(fetchMock.mock.calls[0][1].headers[IDEMPOTENCY_KEY_HEADER]).toBe(COMMAND_KEY);
+      expect(fetchMock.mock.calls[1][1].headers[IDEMPOTENCY_KEY_HEADER]).toBe(COMMAND_KEY);
+      expect(fetchMock.mock.calls[1][1].headers[CSRF_HEADER]).toBe("rotated.signature");
     });
   });
 
