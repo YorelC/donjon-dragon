@@ -4,22 +4,29 @@ import {
   Get,
   HttpCode,
   Inject,
-  Param,
   Post,
   Put,
 } from '@nestjs/common';
 import {
   AssignCharacterSchema,
+  CharacterIdSchema,
   FinalizeCharacterSchema,
   PreviewCharacterSheetSchema,
+  UnassignCharacterSchema,
   type AssignCharacterDto as AssignCharacterBody,
   type FinalizeCharacterDto as FinalizeCharacterBody,
   type PreviewCharacterSheetDto as PreviewCharacterSheetBody,
+  type UnassignCharacterDto as UnassignCharacterBody,
 } from '@donjon-dragon/shared/character-schema';
+import {
+  CampaignIdSchema,
+  IDEMPOTENCY_KEY_HEADER,
+  IdempotencyKeySchema,
+} from '@donjon-dragon/shared/campaign-schema';
 import type { AuthenticatedActor } from '@kernel/domain/actor-id';
 
 import { CurrentUser } from '@common/decorators/current-user.decorator';
-import { ZodBody } from '@common/decorators/zod-validated.decorator';
+import { ZodBody, ZodHeader, ZodParam } from '@common/decorators/zod-validated.decorator';
 import { AssignCharacterUseCase } from '../application/use-cases/assign-character.use-case';
 import { CreateCharacterUseCase } from '../application/use-cases/create-character.use-case';
 import { DeleteCharacterUseCase } from '../application/use-cases/delete-character.use-case';
@@ -56,7 +63,7 @@ export class CharacterController {
   @Get()
   async listCampaignCharacters(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
   ) {
     return this.list.execute({ campaignId, actorId: user.userId });
   }
@@ -64,7 +71,7 @@ export class CharacterController {
   @Post()
   async createCharacter(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
     @ZodBody(FinalizeCharacterSchema) body: FinalizeCharacterBody,
   ) {
     return this.create.execute({ campaignId, actorId: user.userId, ...body });
@@ -73,8 +80,8 @@ export class CharacterController {
   @Put(':characterId')
   async finalizeCharacter(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('characterId') characterId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodParam('characterId', CharacterIdSchema) characterId: string,
     @ZodBody(FinalizeCharacterSchema) body: FinalizeCharacterBody,
   ) {
     return this.finalize.execute({
@@ -88,7 +95,7 @@ export class CharacterController {
   @Post('sheet-preview')
   async previewSheet(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
     @ZodBody(PreviewCharacterSheetSchema) body: PreviewCharacterSheetBody,
   ) {
     return this.preview.execute({ campaignId, actorId: user.userId, ...body });
@@ -97,8 +104,8 @@ export class CharacterController {
   @Get(':characterId/sheet')
   async getCharacterSheet(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('characterId') characterId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodParam('characterId', CharacterIdSchema) characterId: string,
   ) {
     return this.sheet.execute({ campaignId, characterId, actorId: user.userId });
   }
@@ -106,8 +113,8 @@ export class CharacterController {
   @Get(':characterId/build')
   async getCharacterBuild(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('characterId') characterId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodParam('characterId', CharacterIdSchema) characterId: string,
   ) {
     return this.buildDetail.execute({ campaignId, characterId, actorId: user.userId });
   }
@@ -116,8 +123,8 @@ export class CharacterController {
   @Delete(':characterId')
   async deleteCharacter(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('characterId') characterId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodParam('characterId', CharacterIdSchema) characterId: string,
   ) {
     await this.remove.execute({ campaignId, characterId, actorId: user.userId });
   }
@@ -125,24 +132,34 @@ export class CharacterController {
   @Post(':characterId/assign')
   async assignCharacter(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('characterId') characterId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodParam('characterId', CharacterIdSchema) characterId: string,
     @ZodBody(AssignCharacterSchema) body: AssignCharacterBody,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
     return this.assign.execute({
       campaignId,
       characterId,
       actorId: user.userId,
       playerDisplayName: body.playerDisplayName,
+      expectedRevision: body.expectedRevision,
+      idempotencyKey,
     });
   }
 
   @Post(':characterId/unassign')
   async unassignCharacter(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
-    @Param('characterId') characterId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodParam('characterId', CharacterIdSchema) characterId: string,
+    @ZodBody(UnassignCharacterSchema) body: UnassignCharacterBody,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
-    return this.unassign.execute({ campaignId, characterId, actorId: user.userId });
+    return this.unassign.execute({
+      campaignId, characterId, actorId: user.userId,
+      expectedRevision: body.expectedRevision, idempotencyKey,
+    });
   }
 }

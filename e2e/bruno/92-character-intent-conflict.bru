@@ -1,0 +1,27 @@
+meta {
+  name: 92 - Character intent conflict
+  type: http
+  seq: 92
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{replacementCharacterId}}/assign
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  idempotency-key: {{replacementKey}}
+}
+
+body:json {
+  { "playerDisplayName": "{{inviteeDisplayName}}", "expectedRevision": 0 }
+}
+
+tests {
+  test('rejette une intention différente sous la même clé', function() {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

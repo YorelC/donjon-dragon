@@ -1,0 +1,18 @@
+meta {
+  name: 87 - Player reads own sheet
+  type: http
+  seq: 87
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{playerCharacterId}}/sheet
+  body: none
+  auth: none
+}
+
+tests {
+  test('autorise la fiche complète du personnage contrôlé', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().abilities).to.be.an('object');
+  });
+}

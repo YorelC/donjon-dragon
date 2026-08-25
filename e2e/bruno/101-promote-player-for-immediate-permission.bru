@@ -1,0 +1,32 @@
+meta {
+  name: 102 - Promote player for immediate permission
+  type: http
+  seq: 102
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/members/{{ownerDisplayName}}/promote
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  idempotency-key: {{$randomUUID}}
+}
+
+body:json {
+  { "expectedRevision": {{spec007CampaignRevision}} }
+}
+
+script:post-response {
+  bru.setVar('spec007CampaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('promeut le joueur et désassigne son personnage', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().target.role).to.equal('gameMaster');
+  });
+}

@@ -202,7 +202,15 @@ export const PreviewCharacterSheetSchema = FinalizeCharacterSchema.omit({
 
 export const AssignCharacterSchema = z.object({
   playerDisplayName: z.string().trim().min(1),
+  expectedRevision: z.number().int().nonnegative(),
 });
+
+export const UnassignCharacterSchema = z.object({
+  expectedRevision: z.number().int().nonnegative(),
+});
+
+export const CharacterIdSchema = z.string().uuid();
+export const CharacterRevisionSchema = z.number().int().nonnegative();
 
 // ---------------------------------------------------------------------------
 // Réponses
@@ -284,7 +292,7 @@ export const CharacterBuildDetailSchema = z.object({
 export const CharacterStatusSchema = z.enum(['waiting_adventure']);
 
 export const CharacterSchema = z.object({
-  id: z.string().uuid(),
+  id: CharacterIdSchema,
   campaignId: z.string().uuid(),
   name: characterNameField(),
   status: CharacterStatusSchema,
@@ -292,6 +300,48 @@ export const CharacterSchema = z.object({
   abilityRoll: AbilityRollSchema.nullable(),
   createdByMe: z.boolean(),
   assignedTo: UserSummarySchema.nullable(),
+  revision: CharacterRevisionSchema,
+});
+
+export const CharacterPoolProjectionSchema = z.object({
+  id: CharacterIdSchema,
+  name: characterNameField(),
+  portrait: z.string().url().nullable(),
+  status: CharacterStatusSchema,
+  speciesName: z.string(),
+  lineageName: z.string().nullable(),
+  className: z.string(),
+  level: z.number().int().min(1).max(20),
+  assignmentStatus: z.enum(['assigned', 'available']),
+});
+
+export const ControlledCharacterProjectionSchema = CharacterPoolProjectionSchema.extend({
+  build: CharacterBuildSummarySchema,
+  assignedTo: UserSummarySchema.nullable(),
+  revision: CharacterRevisionSchema,
+});
+
+export const GameMasterCharacterProjectionSchema =
+  ControlledCharacterProjectionSchema.extend({
+    createdByMe: z.boolean(),
+  });
+
+export const CampaignCharacterListItemSchema = z.discriminatedUnion('projection', [
+  CharacterPoolProjectionSchema.extend({ projection: z.literal('pool') }),
+  ControlledCharacterProjectionSchema.extend({ projection: z.literal('controlled') }),
+  GameMasterCharacterProjectionSchema.extend({ projection: z.literal('gameMaster') }),
+]);
+
+export const CharacterAssignmentSummarySchema = z.object({
+  id: CharacterIdSchema,
+  revision: CharacterRevisionSchema,
+  assignedTo: UserSummarySchema.nullable(),
+});
+
+export const CharacterAssignmentCommandResultSchema = z.object({
+  campaignId: z.string().uuid(),
+  character: CharacterAssignmentSummarySchema,
+  previousCharacter: CharacterAssignmentSummarySchema.nullable(),
 });
 
 export type AbilityScores = z.infer<typeof AbilityScoresSchema>;
@@ -306,6 +356,12 @@ export type CharacterStatus = z.infer<typeof CharacterStatusSchema>;
 export type FinalizeCharacterDto = z.infer<typeof FinalizeCharacterSchema>;
 export type PreviewCharacterSheetDto = z.infer<typeof PreviewCharacterSheetSchema>;
 export type AssignCharacterDto = z.infer<typeof AssignCharacterSchema>;
+export type UnassignCharacterDto = z.infer<typeof UnassignCharacterSchema>;
 export type CharacterBuildSummary = z.infer<typeof CharacterBuildSummarySchema>;
 export type CharacterBuildDetailDto = z.infer<typeof CharacterBuildDetailSchema>;
 export type Character = z.infer<typeof CharacterSchema>;
+export type CampaignCharacterListItem = z.infer<typeof CampaignCharacterListItemSchema>;
+export type CharacterAssignmentSummary = z.infer<typeof CharacterAssignmentSummarySchema>;
+export type CharacterAssignmentCommandResult = z.infer<
+  typeof CharacterAssignmentCommandResultSchema
+>;

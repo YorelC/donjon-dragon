@@ -1,0 +1,21 @@
+meta {
+  name: 101 - Read revision before permission check
+  type: http
+  seq: 101
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}
+  body: none
+  auth: none
+}
+
+script:post-response {
+  bru.setVar('spec007CampaignRevision', res.getBody().revision);
+}
+
+tests {
+  test('relit la révision autoritaire avant promotion', function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

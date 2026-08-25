@@ -1,0 +1,22 @@
+meta {
+  name: 85 - Accept Spec 007 membership
+  type: http
+  seq: 85
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations/accept
+  body: none
+  auth: none
+}
+
+headers {
+  x-csrf-token: {{csrfToken}}
+  idempotency-key: {{$randomUUID}}
+}
+
+tests {
+  test('rejoint comme joueur actif', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

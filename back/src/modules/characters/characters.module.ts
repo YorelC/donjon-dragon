@@ -2,10 +2,23 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ClockModule } from '@kernel/infrastructure/clock.module';
+import {
+  COMMAND_RECEIPT_MODEL,
+  CommandReceiptSchema,
+} from '@kernel/infrastructure/command-receipt.schema';
+import {
+  FUNCTIONAL_AUDIT_ENTRY_MODEL,
+  FunctionalAuditEntrySchema,
+} from '@kernel/infrastructure/functional-audit-entry.schema';
+import {
+  OUTBOX_MESSAGE_MODEL,
+  OutboxMessageSchema,
+} from '@kernel/infrastructure/outbox-message.schema';
 import { CampaignsModule } from '@modules/campaigns/campaigns.module';
 import { ItemsModule } from '@modules/items/items.module';
 import { UserModule } from '@modules/user/user.module';
 import { CHARACTER_DIRECTORY } from './application/ports/character-directory.port';
+import { CHARACTER_ASSIGNMENT_REPOSITORY } from './application/ports/character-assignment.repository.port';
 import { CHARACTER_REPOSITORY } from './application/ports/character.repository.port';
 import { ITEM_CATALOG } from './application/ports/item-catalog.port';
 import { AssignCharacterUseCase } from './application/use-cases/assign-character.use-case';
@@ -29,13 +42,19 @@ import {
   CharacterSchema,
 } from './infrastructure/persistence/character.schema';
 import { MongoCharacterRepository } from './infrastructure/persistence/mongo-character.repository';
+import { MongoCharacterAssignmentRepository } from './infrastructure/persistence/mongo-character-assignment.repository';
 import { CharacterController } from './presentation/character.controller';
 import { CampaignCharacterLifecycleController } from './presentation/campaign-character-lifecycle.controller';
 import { DndCatalogController } from './presentation/dnd-catalog.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: CHARACTER_MODEL, schema: CharacterSchema }]),
+    MongooseModule.forFeature([
+      { name: CHARACTER_MODEL, schema: CharacterSchema },
+      { name: COMMAND_RECEIPT_MODEL, schema: CommandReceiptSchema },
+      { name: FUNCTIONAL_AUDIT_ENTRY_MODEL, schema: FunctionalAuditEntrySchema },
+      { name: OUTBOX_MESSAGE_MODEL, schema: OutboxMessageSchema },
+    ]),
     UserModule,
     CampaignsModule,
     ItemsModule,
@@ -48,6 +67,10 @@ import { DndCatalogController } from './presentation/dnd-catalog.controller';
   ],
   providers: [
     { provide: CHARACTER_REPOSITORY, useClass: MongoCharacterRepository },
+    {
+      provide: CHARACTER_ASSIGNMENT_REPOSITORY,
+      useClass: MongoCharacterAssignmentRepository,
+    },
     { provide: CHARACTER_DIRECTORY, useClass: UserCharacterDirectory },
     { provide: ITEM_CATALOG, useClass: ItemsItemCatalog },
     ListCampaignCharactersUseCase,

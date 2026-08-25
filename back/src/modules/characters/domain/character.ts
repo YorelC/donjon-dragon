@@ -21,6 +21,7 @@ import { CharacterId } from './character-id';
 import { CharacterName } from './character-name';
 import {
   AlreadyAssignedToThisPlayerError,
+  CharacterRevisionConflictError,
   NotAssignedError,
   NotEditableByActorError,
   OnlyGameMasterCanAssignError,
@@ -212,6 +213,12 @@ export class Character {
 
   get revision(): number {
     return this.state.revision;
+  }
+
+  assertRevision(expectedRevision: number): void {
+    if (this.state.revision !== expectedRevision) {
+      throw new CharacterRevisionConflictError();
+    }
   }
 
   /** Ce que le moteur consomme. Toujours présent, un personnage n'existe que complet. */

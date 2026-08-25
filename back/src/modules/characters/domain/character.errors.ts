@@ -52,6 +52,24 @@ export class CharacterRevisionConflictError extends ConflictDomainError {
   }
 }
 
+export class CharacterAssignmentCommandConflictError extends ConflictDomainError {
+  constructor() {
+    super('The idempotency key was already used for another character command');
+  }
+}
+
+export class CharacterAssignedToAnotherPlayerError extends ConflictDomainError {
+  constructor() {
+    super('This character is already assigned to another player');
+  }
+}
+
+export class AssigneeIsNotActivePlayerError extends ConflictDomainError {
+  constructor() {
+    super('The assignee must be an active player in this campaign');
+  }
+}
+
 /**
  * Refus d'édition/suppression : l'appelant n'est ni le créateur, ni le joueur
  * assigné, ni un maître du jeu habilité (attribué, ou propriétaire face à un

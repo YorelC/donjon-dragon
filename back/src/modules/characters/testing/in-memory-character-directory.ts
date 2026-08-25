@@ -5,6 +5,7 @@ import type {
 
 export class InMemoryCharacterDirectory implements CharacterDirectoryPort {
   private readonly users: CharacterDirectoryUser[] = [];
+  displayNameLookupCount = 0;
 
   register(user: CharacterDirectoryUser): void {
     this.users.push(user);
@@ -15,6 +16,11 @@ export class InMemoryCharacterDirectory implements CharacterDirectoryPort {
   }
 
   async findByDisplayName(displayName: string): Promise<CharacterDirectoryUser | null> {
+    this.displayNameLookupCount += 1;
     return this.users.find((user) => user.displayName === displayName) ?? null;
+  }
+
+  resetLookupCount(): void {
+    this.displayNameLookupCount = 0;
   }
 }

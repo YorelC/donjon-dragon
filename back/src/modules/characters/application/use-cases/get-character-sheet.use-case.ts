@@ -2,16 +2,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { ComputedCharacter } from '@donjon-dragon/shared/character-sheet-schema';
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import type { ActorId } from '@kernel/domain/actor-id';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
 import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
-import { loadCharacter } from '../character.lookup';
+import { loadCampaignCharacter } from '../character.lookup';
 import { resolveEquipment } from '../character-equipment.mapper';
 import { toCharacterSheetDto } from '../character-sheet.mapper';
-import { NotActiveCampaignMemberError } from '../../domain/character.errors';
+import { CharacterNotFoundError } from '../../domain/character.errors';
 import { resolveSheet } from '../../domain/resolution/resolve-sheet';
 
 export interface GetCharacterSheetDto {
@@ -23,8 +24,8 @@ export interface GetCharacterSheetDto {
 /**
  * La fiche d'un personnage existant, recalculée à chaque lecture.
  *
- * Tout membre actif de la campagne peut la lire : une fiche se montre à la
- * table. C'est l'édition qui est restreinte, pas la consultation.
+ * La fiche complète est privée : seuls le joueur assigné et les MJ actifs de
+ * la campagne la lisent. Les autres cas restent masqués comme une absence.
  */
 @Injectable()
 export class GetCharacterSheetUseCase {
@@ -40,9 +41,12 @@ export class GetCharacterSheetUseCase {
       campaignId: dto.campaignId,
       userId: dto.actorId,
     });
-    if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
-
-    const character = await loadCharacter(this.characterRepo, dto.characterId);
+    if (!role.isActiveMember) throw new CharacterNotFoundError();
+    const character = await loadCampaignCharacter(
+      this.characterRepo, dto.campaignId, dto.characterId,
+    );
+    const assignedToActor = character.assignedTo?.equals(UserId.create(dto.actorId));
+    if (!role.isGameMaster && !assignedToActor) throw new CharacterNotFoundError();
     const equipment = await resolveEquipment(
       this.itemCatalog,
       character.build.equipment,

@@ -1,0 +1,36 @@
+meta {
+  name: 90 - Replace player character
+  type: http
+  seq: 90
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{replacementCharacterId}}/assign
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  idempotency-key: {{replacementKey}}
+}
+
+body:json {
+  {
+    "playerDisplayName": "{{ownerDisplayName}}",
+    "expectedRevision": {{replacementRevision}}
+  }
+}
+
+script:post-response {
+  bru.setVar('replacementRevision', res.getBody().character.revision);
+}
+
+tests {
+  test('remplace atomiquement le personnage du joueur', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().previousCharacter.id).to.equal(bru.getVar('playerCharacterId'));
+    expect(res.getBody().character.assignedTo.displayName).to.equal(bru.getEnvVar('ownerDisplayName'));
+  });
+}

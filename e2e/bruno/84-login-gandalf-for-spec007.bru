@@ -1,0 +1,32 @@
+meta {
+  name: 84 - Login Gandalf for Spec 007
+  type: http
+  seq: 84
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+
+body:json {
+  {
+    "email": "{{ownerEmail}}",
+    "password": "{{ownerPassword}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('csrfToken', bru.cookies.get('csrf_token'));
+}
+
+tests {
+  test('ouvre la session du joueur Spec 007', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

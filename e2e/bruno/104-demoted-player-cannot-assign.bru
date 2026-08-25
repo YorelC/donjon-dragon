@@ -1,0 +1,27 @@
+meta {
+  name: 105 - Demoted player cannot assign
+  type: http
+  seq: 105
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{playerCharacterId}}/assign
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  idempotency-key: {{$randomUUID}}
+}
+
+body:json {
+  { "playerDisplayName": "{{ownerDisplayName}}", "expectedRevision": 2 }
+}
+
+tests {
+  test('perd immédiatement le droit d attribuer', function() {
+    expect(res.getStatus()).to.equal(403);
+  });
+}

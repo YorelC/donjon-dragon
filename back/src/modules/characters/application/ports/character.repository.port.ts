@@ -14,6 +14,10 @@ export const CHARACTER_REPOSITORY = Symbol('CHARACTER_REPOSITORY');
 export interface CharacterRepositoryPort {
   save(character: Character): Promise<void>;
   findById(id: CharacterId): Promise<Character | null>;
+  findByCampaignAndId(
+    campaignId: OwningCampaignId,
+    id: CharacterId,
+  ): Promise<Character | null>;
   findByCampaignId(campaignId: OwningCampaignId): Promise<Character[]>;
   findAssignedTo(campaignId: OwningCampaignId, playerId: UserId): Promise<Character | null>;
   findAssignedToInTransaction(

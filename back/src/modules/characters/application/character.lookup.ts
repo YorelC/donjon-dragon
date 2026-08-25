@@ -5,6 +5,7 @@ import type { CharacterRepositoryPort } from './ports/character.repository.port'
 import type { Character, CharacterAccessContext } from '../domain/character';
 import { CharacterId } from '../domain/character-id';
 import { CharacterNotFoundError } from '../domain/character.errors';
+import { OwningCampaignId } from '../domain/owning-campaign-id';
 
 /**
  * La lecture que fait tout use-case du module avant d'agir. Le port arrive en
@@ -17,6 +18,19 @@ export async function loadCharacter(
   const character = await characterRepo.findById(CharacterId.create(characterId));
   if (!character) throw new CharacterNotFoundError();
 
+  return character;
+}
+
+export async function loadCampaignCharacter(
+  characterRepo: CharacterRepositoryPort,
+  campaignId: string,
+  characterId: string,
+): Promise<Character> {
+  const character = await characterRepo.findByCampaignAndId(
+    OwningCampaignId.create(campaignId),
+    CharacterId.create(characterId),
+  );
+  if (!character) throw new CharacterNotFoundError();
   return character;
 }
 

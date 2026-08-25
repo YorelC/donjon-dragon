@@ -3,8 +3,30 @@ import { describe, it, expect } from 'vitest';
 import {
   AbilityRollSchema,
   AbilityScoresSchema,
+  AssignCharacterSchema,
+  CampaignCharacterListItemSchema,
   FinalizeCharacterSchema,
 } from './character-schema.js';
+
+describe('contrats d attribution et de projection', () => {
+  it('exige une révision optimiste pour attribuer', () => {
+    expect(AssignCharacterSchema.safeParse({
+      playerDisplayName: 'Frodo', expectedRevision: 2,
+    }).success).toBe(true);
+    expect(AssignCharacterSchema.safeParse({ playerDisplayName: 'Frodo' }).success)
+      .toBe(false);
+  });
+
+  it('interdit les champs privés dans la projection du vivier', () => {
+    const projection = CampaignCharacterListItemSchema.parse({
+      projection: 'pool', id: '550e8400-e29b-41d4-a716-446655440000',
+      name: 'Bilbon', portrait: null, status: 'waiting_adventure',
+      speciesName: 'Halfelin', lineageName: null, className: 'Roublard',
+      level: 1, assignmentStatus: 'available', abilityRoll: { totals: [18] },
+    });
+    expect('abilityRoll' in projection).toBe(false);
+  });
+});
 
 const VALID_SCORES = {
   strength: 8,

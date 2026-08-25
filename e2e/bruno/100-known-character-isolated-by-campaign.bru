@@ -1,0 +1,17 @@
+meta {
+  name: 100 - Known character isolated by campaign
+  type: http
+  seq: 100
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{isolationCampaignId}}/characters/{{replacementCharacterId}}/sheet
+  body: none
+  auth: none
+}
+
+tests {
+  test('masque en 404 un identifiant connu d une autre campagne', function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

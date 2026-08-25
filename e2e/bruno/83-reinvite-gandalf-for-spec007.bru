@@ -1,0 +1,27 @@
+meta {
+  name: 83 - Reinvite Gandalf for Spec 007
+  type: http
+  seq: 83
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/invitations
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  idempotency-key: {{$randomUUID}}
+}
+
+body:json {
+  { "displayName": "{{ownerDisplayName}}" }
+}
+
+tests {
+  test('réinvite le joueur exclu dans un nouveau cycle', function() {
+    expect(res.getStatus()).to.equal(204);
+  });
+}

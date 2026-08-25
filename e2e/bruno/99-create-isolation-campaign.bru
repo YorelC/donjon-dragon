@@ -1,0 +1,31 @@
+meta {
+  name: 99 - Create isolation campaign
+  type: http
+  seq: 99
+}
+
+post {
+  url: {{baseUrl}}/campaigns
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  idempotency-key: {{$randomUUID}}
+}
+
+body:json {
+  { "name": "E2E Spec 007 isolation" }
+}
+
+script:post-response {
+  bru.setVar('isolationCampaignId', res.getBody().id);
+}
+
+tests {
+  test('crée une seconde campagne isolée', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

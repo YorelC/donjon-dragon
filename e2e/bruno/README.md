@@ -1,6 +1,6 @@
 # E2E API avec Bruno
 
-Cette collection exécute les incréments 004 à 006 contre un vrai backend et une
+Cette collection exécute les incréments 004 à 007 contre un vrai backend et une
 vraie base MongoDB. Son scénario établit les amitiés par les API publiques, crée une
 campagne, puis prouve les cycles accepté, refusé et annulé des invitations.
 
@@ -10,7 +10,11 @@ l'absence d'adhésion après refus ou annulation. Elle enchaîne ensuite promoti
 désassignation atomique, prise et retrait immédiats des permissions, rétrogradation,
 garde du dernier MJ, transfert de propriété, départ combiné, rejeu durable, conflit
 d'intention, exclusion atomique d'un joueur avec personnage, exclusion directe d'un
-co-MJ, autorité du propriétaire et invariants finaux, sur 82 requêtes publiques.
+co-MJ, autorité du propriétaire et invariants finaux. La suite Spec 007 réinvite un
+joueur exclu, prouve son auto-attribution à la création, les lectures privées, le
+remplacement atomique, le retour au vivier, le rejeu, le conflit d'intention,
+l'isolation inter-campagnes et la perte immédiate du droit d'attribuer après
+rétrogradation.
 
 ## Prérequis
 
@@ -24,7 +28,7 @@ Un backend lancé depuis l'hôte doit viser une base dédiée, jamais une base u
 par exemple :
 
 ```text
-mongodb://localhost:27017/donjon-dragon-e2e-spec006-<horodatage>?replicaSet=donjonDragon&directConnection=true
+mongodb://localhost:27017/donjon-dragon-e2e-spec007-<horodatage>?replicaSet=donjonDragon&directConnection=true
 ```
 
 Le seed et le backend doivent recevoir exactement cette même URI. La collection ne

@@ -1,0 +1,31 @@
+meta {
+  name: 91 - Replay character replacement
+  type: http
+  seq: 91
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{replacementCharacterId}}/assign
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  idempotency-key: {{replacementKey}}
+}
+
+body:json {
+  {
+    "playerDisplayName": "{{ownerDisplayName}}",
+    "expectedRevision": 0
+  }
+}
+
+tests {
+  test('rejoue le résultat autoritaire sans nouvel effet', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().previousCharacter.id).to.equal(bru.getVar('playerCharacterId'));
+  });
+}

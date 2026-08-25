@@ -18,7 +18,7 @@ import {
 } from '../ports/character.repository.port';
 import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
 import { assertEquipmentIsKnown } from '../item.lookup';
-import { loadCharacter, resolveAccessContext } from '../character.lookup';
+import { loadCampaignCharacter, resolveAccessContext } from '../character.lookup';
 import { toCharacterDtoResolved } from '../character.mapper';
 import { AbilityRoll } from '../../domain/ability-roll';
 import { CharacterName } from '../../domain/character-name';
@@ -53,7 +53,9 @@ export class FinalizeCharacterUseCase {
 
   async execute(dto: FinalizeCharacterDto): Promise<CharacterDto> {
     await assertEquipmentIsKnown(this.itemCatalog, dto.equipment, dto.campaignId);
-    const character = await loadCharacter(this.characterRepo, dto.characterId);
+    const character = await loadCampaignCharacter(
+      this.characterRepo, dto.campaignId, dto.characterId,
+    );
     const context = await resolveAccessContext(
       this.membership,
       dto.campaignId,

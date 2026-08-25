@@ -1,0 +1,31 @@
+meta {
+  name: 93 - Login player after replacement
+  type: http
+  seq: 93
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+body:json {
+  {
+    "email": "{{ownerEmail}}",
+    "password": "{{ownerPassword}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('csrfToken', bru.cookies.get('csrf_token'));
+}
+
+tests {
+  test('rouvre la session du joueur remplacé', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

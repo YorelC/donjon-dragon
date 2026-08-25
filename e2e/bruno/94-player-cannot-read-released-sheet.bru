@@ -1,0 +1,17 @@
+meta {
+  name: 94 - Player cannot read released sheet
+  type: http
+  seq: 94
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{playerCharacterId}}/sheet
+  body: none
+  auth: none
+}
+
+tests {
+  test('masque la fiche de l ancien personnage', function() {
+    expect(res.getStatus()).to.equal(404);
+  });
+}

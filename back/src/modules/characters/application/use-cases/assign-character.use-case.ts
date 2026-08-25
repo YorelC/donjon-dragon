@@ -1,22 +1,31 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Character as CharacterDto } from '@donjon-dragon/shared/character-schema';
+import type { CharacterAssignmentCommandResult } from '@donjon-dragon/shared/character-schema';
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import { CLOCK, type Clock } from '@kernel/application/clock.port';
 import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
+import { hashCharacterAssignment } from '../character-assignment-intent';
+import { toAssignmentResult } from '../character-assignment.mapper';
+import { loadCampaignCharacter } from '../character.lookup';
 import {
-  CHARACTER_DIRECTORY,
-  type CharacterDirectoryPort,
-} from '../ports/character-directory.port';
-import {
-  CHARACTER_REPOSITORY,
-  type CharacterRepositoryPort,
-} from '../ports/character.repository.port';
-import { loadCharacter } from '../character.lookup';
-import { toCharacterDtoResolved } from '../character.mapper';
+  CHARACTER_ASSIGNMENT_REPOSITORY,
+  type CharacterAssignmentCommand,
+  type CharacterAssignmentFact,
+  type CharacterAssignmentRepositoryPort,
+  type CharacterAssignmentReceipt,
+} from '../ports/character-assignment.repository.port';
+import { CHARACTER_DIRECTORY, type CharacterDirectoryPort } from '../ports/character-directory.port';
+import { CHARACTER_REPOSITORY, type CharacterRepositoryPort } from '../ports/character.repository.port';
 import type { Character } from '../../domain/character';
-import { AssigneeNotFoundError } from '../../domain/character.errors';
+import {
+  AssigneeIsNotActivePlayerError,
+  AssigneeNotFoundError,
+  CharacterAssignedToAnotherPlayerError,
+  CharacterAssignmentCommandConflictError,
+  CharacterNotFoundError,
+  OnlyGameMasterCanAssignError,
+} from '../../domain/character.errors';
 import { OwningCampaignId } from '../../domain/owning-campaign-id';
 
 export interface AssignCharacterDto {
@@ -24,65 +33,137 @@ export interface AssignCharacterDto {
   campaignId: string;
   actorId: ActorId;
   playerDisplayName: string;
+  expectedRevision: number;
+  idempotencyKey: string;
 }
 
-/**
- * Attribuer un personnage déjà assigné à un joueur libère l'ancien : un joueur
- * ne porte jamais deux fiches en même temps, et l'ancienne rejoint le pool.
- */
+interface AssignmentContext {
+  dto: AssignCharacterDto;
+  principalId: UserId;
+  intentHash: string;
+}
+
 @Injectable()
 export class AssignCharacterUseCase {
   constructor(
-    @Inject(CHARACTER_REPOSITORY)
-    private readonly characterRepo: CharacterRepositoryPort,
-    @Inject(CHARACTER_DIRECTORY)
-    private readonly directory: CharacterDirectoryPort,
+    @Inject(CHARACTER_REPOSITORY) private readonly characters: CharacterRepositoryPort,
+    @Inject(CHARACTER_ASSIGNMENT_REPOSITORY)
+    private readonly assignments: CharacterAssignmentRepositoryPort,
+    @Inject(CHARACTER_DIRECTORY) private readonly directory: CharacterDirectoryPort,
     private readonly membership: GetCampaignMembershipUseCase,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
-  async execute(dto: AssignCharacterDto): Promise<CharacterDto> {
-    const character = await loadCharacter(this.characterRepo, dto.characterId);
-    const role = await this.membership.execute({
-      campaignId: dto.campaignId,
-      userId: dto.actorId,
-    });
-    const playerId = await this.resolvePlayerId(dto.playerDisplayName);
-    const now = this.clock.now();
-
-    await this.releasePreviousCharacter({
-      campaignId: dto.campaignId,
-      playerId,
-      incoming: character,
-      now,
-      actorIsGameMaster: role.isGameMaster,
-    });
-    character.assignTo(role.isGameMaster, playerId, now);
-    await this.characterRepo.save(character);
-    return toCharacterDtoResolved(this.directory, character, UserId.create(dto.actorId));
+  async execute(dto: AssignCharacterDto): Promise<CharacterAssignmentCommandResult> {
+    const context = assignmentContext(dto);
+    const replay = await this.replay(context);
+    if (replay) return replay;
+    const command = await this.prepare(context);
+    const receipt = await this.assignments.execute(command);
+    return acceptedResult(receipt, context.intentHash);
   }
 
-  private async resolvePlayerId(displayName: string): Promise<UserId> {
-    const player = await this.directory.findByDisplayName(displayName);
-    if (!player) throw new AssigneeNotFoundError();
-
-    return UserId.create(player.id);
-  }
-
-  private async releasePreviousCharacter(params: {
-    campaignId: string;
-    playerId: UserId;
-    incoming: Character;
-    now: Date;
-    actorIsGameMaster: boolean;
-  }): Promise<void> {
-    const previous = await this.characterRepo.findAssignedTo(
-      OwningCampaignId.create(params.campaignId),
-      params.playerId,
+  private async replay(context: AssignmentContext) {
+    const receipt = await this.assignments.findReceipt(
+      context.principalId, context.dto.idempotencyKey,
     );
-    if (!previous || previous.id.equals(params.incoming.id)) return;
-
-    previous.unassign(params.actorIsGameMaster, params.now);
-    await this.characterRepo.save(previous);
+    return receipt ? acceptedResult(receipt, context.intentHash) : null;
   }
+
+  private async prepare(context: AssignmentContext): Promise<CharacterAssignmentCommand> {
+    await this.assertActorIsGameMaster(context);
+    const character = await this.incomingCharacter(context);
+    const playerId = await this.resolveActivePlayer(context.dto);
+    this.assertAvailableTo(character, playerId);
+    const previous = await this.previousCharacter(context.dto.campaignId, playerId, character);
+    const occurredAt = this.clock.now();
+    if (previous) previous.unassignForCampaignTransition(occurredAt);
+    character.assignTo(true, playerId, occurredAt);
+    return this.command(context, character, previous, occurredAt);
+  }
+
+  private async assertActorIsGameMaster(context: AssignmentContext): Promise<void> {
+    const role = await this.membership.execute({
+      campaignId: context.dto.campaignId, userId: context.principalId.value,
+    });
+    if (!role.isActiveMember) throw new CharacterNotFoundError();
+    if (!role.isGameMaster) throw new OnlyGameMasterCanAssignError();
+  }
+
+  private async incomingCharacter(context: AssignmentContext): Promise<Character> {
+    const character = await loadCampaignCharacter(
+      this.characters, context.dto.campaignId, context.dto.characterId,
+    );
+    character.assertRevision(context.dto.expectedRevision);
+    return character;
+  }
+
+  private async resolveActivePlayer(dto: AssignCharacterDto): Promise<UserId> {
+    const user = await this.directory.findByDisplayName(dto.playerDisplayName);
+    if (!user) throw new AssigneeNotFoundError();
+    const role = await this.membership.execute({ campaignId: dto.campaignId, userId: user.id });
+    if (!role.isActiveMember || role.isGameMaster) throw new AssigneeIsNotActivePlayerError();
+    return UserId.create(user.id);
+  }
+
+  private assertAvailableTo(character: Character, playerId: UserId): void {
+    if (character.assignedTo && !character.assignedTo.equals(playerId)) {
+      throw new CharacterAssignedToAnotherPlayerError();
+    }
+  }
+
+  private async previousCharacter(
+    campaignId: string, playerId: UserId, incoming: Character,
+  ): Promise<Character | null> {
+    const previous = await this.characters.findAssignedTo(
+      OwningCampaignId.create(campaignId), playerId,
+    );
+    return previous?.id.equals(incoming.id) ? null : previous;
+  }
+
+  private async command(
+    context: AssignmentContext,
+    character: Character,
+    previousCharacter: Character | null,
+    occurredAt: Date,
+  ): Promise<CharacterAssignmentCommand> {
+    return {
+      campaignId: context.dto.campaignId,
+      principalId: context.principalId,
+      idempotencyKey: context.dto.idempotencyKey,
+      intentHash: context.intentHash,
+      occurredAt,
+      effectiveRole: 'gameMaster',
+      character,
+      previousCharacter,
+      facts: assignmentFacts(previousCharacter),
+      result: await toAssignmentResult(this.directory, character, previousCharacter),
+    };
+  }
+}
+
+function assignmentFacts(previous: Character | null): CharacterAssignmentFact[] {
+  return previous
+    ? ['character.unassigned', 'character.assigned']
+    : ['character.assigned'];
+}
+
+function assignmentContext(dto: AssignCharacterDto): AssignmentContext {
+  return {
+    dto,
+    principalId: UserId.create(dto.actorId),
+    intentHash: hashCharacterAssignment(
+      dto.campaignId, dto.characterId, dto.playerDisplayName, dto.expectedRevision,
+    ),
+  };
+}
+
+function acceptedResult(
+  receipt: CharacterAssignmentReceipt,
+  intentHash: string,
+): CharacterAssignmentCommandResult {
+  if (receipt.intentHash !== intentHash || !receipt.result) {
+    throw new CharacterAssignmentCommandConflictError();
+  }
+  return receipt.result;
 }

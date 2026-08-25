@@ -13,16 +13,24 @@ post {
 headers {
   content-type: application/json
   x-csrf-token: {{csrfToken}}
+  idempotency-key: {{$randomUUID}}
 }
 
 body:json {
-  { "playerDisplayName": "{{inviteeDisplayName}}" }
+  {
+    "playerDisplayName": "{{inviteeDisplayName}}",
+    "expectedRevision": {{characterRevision}}
+  }
+}
+
+script:post-response {
+  bru.setVar('characterRevision', res.getBody().character.revision);
 }
 
 tests {
   test('réattribue le personnage au joueur avant son exclusion', function() {
     expect(res.getStatus()).to.equal(201);
-    expect(res.getBody().assignedTo.displayName).to.equal(
+    expect(res.getBody().character.assignedTo.displayName).to.equal(
       bru.getEnvVar('inviteeDisplayName'),
     );
   });

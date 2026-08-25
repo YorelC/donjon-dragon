@@ -31,6 +31,17 @@ export class MongoCharacterRepository implements CharacterRepositoryPort {
     return doc ? toDomain(doc) : null;
   }
 
+  async findByCampaignAndId(
+    campaignId: OwningCampaignId,
+    id: CharacterId,
+  ): Promise<Character | null> {
+    const doc = await this.model
+      .findOne({ id: id.value, campaignId: campaignId.value })
+      .select('-_id')
+      .lean<CharacterDocument>();
+    return doc ? toDomain(doc) : null;
+  }
+
   async findByCampaignId(campaignId: OwningCampaignId): Promise<Character[]> {
     const docs = await this.model
       .find({ campaignId: campaignId.value })

@@ -1,0 +1,18 @@
+meta {
+  name: 98 - GM reads all character sheets
+  type: http
+  seq: 98
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{playerCharacterId}}/sheet
+  body: none
+  auth: none
+}
+
+tests {
+  test('autorise le MJ à lire une fiche du vivier', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().abilities).to.be.an('object');
+  });
+}

@@ -17,6 +17,14 @@ export class InMemoryCharacterRepository implements CharacterRepositoryPort {
     return character ? clone(character) : null;
   }
 
+  async findByCampaignAndId(
+    campaignId: OwningCampaignId,
+    id: CharacterId,
+  ): Promise<Character | null> {
+    const character = await this.findById(id);
+    return character?.campaignId.equals(campaignId) ? character : null;
+  }
+
   async findByCampaignId(campaignId: OwningCampaignId): Promise<Character[]> {
     return this.all().filter((character) => character.campaignId.equals(campaignId));
   }

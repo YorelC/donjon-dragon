@@ -1,0 +1,28 @@
+meta {
+  name: 96 - Player list has no private pool data
+  type: http
+  seq: 96
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters
+  body: none
+  auth: none
+}
+
+tests {
+  test('filtre le vivier côté serveur', function() {
+    const oldCharacter = res.getBody().find(
+      (item) => item.id === bru.getVar('playerCharacterId'),
+    );
+    const controlled = res.getBody().find(
+      (item) => item.id === bru.getVar('replacementCharacterId'),
+    );
+    expect(res.getStatus()).to.equal(200);
+    expect(oldCharacter.projection).to.equal('pool');
+    expect(oldCharacter).not.to.have.property('build');
+    expect(oldCharacter).not.to.have.property('assignedTo');
+    expect(oldCharacter).not.to.have.property('revision');
+    expect(controlled.projection).to.equal('controlled');
+  });
+}

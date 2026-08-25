@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Character as CharacterDto } from '@donjon-dragon/shared/character-schema';
+import type { CampaignCharacterListItem } from '@donjon-dragon/shared/character-schema';
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
@@ -12,8 +12,8 @@ import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
-import { toCharacterDtoResolved } from '../character.mapper';
-import { NotActiveCampaignMemberError } from '../../domain/character.errors';
+import { toCharacterListItem } from '../character-list.mapper';
+import { CharacterNotFoundError } from '../../domain/character.errors';
 import { OwningCampaignId } from '../../domain/owning-campaign-id';
 
 export interface ListCampaignCharactersDto {
@@ -22,11 +22,8 @@ export interface ListCampaignCharactersDto {
 }
 
 /**
- * Les personnages de la campagne, pour un membre actif de cette campagne.
- *
- * L'appartenance se vérifie ici et non par un filtre de requête : le listing
- * n'est pas moins sensible que la fiche, et sans ce contrôle un id de campagne
- * deviné suffisait à lire la table de quelqu'un d'autre.
+ * Les personnages de la campagne sous une projection calculée pour le lecteur.
+ * Les champs privés ne franchissent jamais la frontière HTTP avant filtrage.
  */
 @Injectable()
 export class ListCampaignCharactersUseCase {
@@ -38,12 +35,12 @@ export class ListCampaignCharactersUseCase {
     private readonly membership: GetCampaignMembershipUseCase,
   ) {}
 
-  async execute(dto: ListCampaignCharactersDto): Promise<CharacterDto[]> {
+  async execute(dto: ListCampaignCharactersDto): Promise<CampaignCharacterListItem[]> {
     const role = await this.membership.execute({
       campaignId: dto.campaignId,
       userId: dto.actorId,
     });
-    if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
+    if (!role.isActiveMember) throw new CharacterNotFoundError();
 
     const viewerId = UserId.create(dto.actorId);
     const characters = await this.characterRepo.findByCampaignId(
@@ -51,7 +48,9 @@ export class ListCampaignCharactersUseCase {
     );
 
     return Promise.all(
-      characters.map((character) => toCharacterDtoResolved(this.directory, character, viewerId)),
+      characters.map((character) =>
+        toCharacterListItem(this.directory, character, viewerId, role.isGameMaster),
+      ),
     );
   }
 }

@@ -1,0 +1,31 @@
+meta {
+  name: 97 - Login GM for visibility
+  type: http
+  seq: 97
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+}
+body:json {
+  {
+    "email": "{{thirdEmail}}",
+    "password": "{{thirdPassword}}"
+  }
+}
+
+script:post-response {
+  bru.setVar('csrfToken', bru.cookies.get('csrf_token'));
+}
+
+tests {
+  test('rouvre la session du MJ', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

@@ -37,6 +37,7 @@ export function toCharacterDto(
     abilityRoll: rollOf(character),
     createdByMe: character.createdBy.equals(viewerId),
     assignedTo: assignedPlayer ? { displayName: assignedPlayer.displayName } : null,
+    revision: character.revision,
   };
 }
 

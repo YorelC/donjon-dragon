@@ -6,7 +6,7 @@ import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
-import { loadCharacter, resolveAccessContext } from '../character.lookup';
+import { loadCampaignCharacter, resolveAccessContext } from '../character.lookup';
 
 export interface DeleteCharacterDto {
   characterId: string;
@@ -23,7 +23,9 @@ export class DeleteCharacterUseCase {
   ) {}
 
   async execute(dto: DeleteCharacterDto): Promise<void> {
-    const character = await loadCharacter(this.characterRepo, dto.characterId);
+    const character = await loadCampaignCharacter(
+      this.characterRepo, dto.campaignId, dto.characterId,
+    );
     const context = await resolveAccessContext(
       this.membership,
       dto.campaignId,

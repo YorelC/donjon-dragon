@@ -2,14 +2,15 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { CharacterBuildDetailDto } from '@donjon-dragon/shared/character-schema';
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
 import type { ActorId } from '@kernel/domain/actor-id';
+import { UserId } from '@kernel/domain/user-id';
 
 import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
-import { loadCharacter } from '../character.lookup';
+import { loadCampaignCharacter } from '../character.lookup';
 import { toCharacterBuildDetailDto } from '../character-build-detail.mapper';
-import { NotActiveCampaignMemberError } from '../../domain/character.errors';
+import { CharacterNotFoundError } from '../../domain/character.errors';
 
 export interface GetCharacterBuildDto {
   characterId: string;
@@ -21,9 +22,7 @@ export interface GetCharacterBuildDto {
  * Le build d'un personnage déjà créé, dans la forme granulaire qu'attend le
  * wizard pour se pré-remplir en édition.
  *
- * Même lecture que la fiche : tout membre actif de la campagne peut la lire,
- * c'est l'édition — via `finalize` — qui reste restreinte, pas la
- * consultation.
+ * Même audience privée que la fiche : joueur assigné ou MJ actif seulement.
  */
 @Injectable()
 export class GetCharacterBuildUseCase {
@@ -38,9 +37,12 @@ export class GetCharacterBuildUseCase {
       campaignId: dto.campaignId,
       userId: dto.actorId,
     });
-    if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
-
-    const character = await loadCharacter(this.characterRepo, dto.characterId);
+    if (!role.isActiveMember) throw new CharacterNotFoundError();
+    const character = await loadCampaignCharacter(
+      this.characterRepo, dto.campaignId, dto.characterId,
+    );
+    const assignedToActor = character.assignedTo?.equals(UserId.create(dto.actorId));
+    if (!role.isGameMaster && !assignedToActor) throw new CharacterNotFoundError();
 
     return toCharacterBuildDetailDto(character);
   }

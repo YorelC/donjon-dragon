@@ -9,7 +9,7 @@ import {
   withPlayer,
 } from '@modules/campaigns/testing/campaign.fixture';
 import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory-campaign.repository';
-import { NotActiveCampaignMemberError } from '../../domain/character.errors';
+import { CharacterNotFoundError } from '../../domain/character.errors';
 import { aCharacterBody } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
 import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
@@ -27,6 +27,7 @@ describe('ListCampaignCharactersUseCase', () => {
   const inviteeId = randomUUID();
 
   let useCase: ListCampaignCharactersUseCase;
+  let create: CreateCharacterUseCase;
   let campaignId: string;
 
   beforeEach(async () => {
@@ -40,7 +41,7 @@ describe('ListCampaignCharactersUseCase', () => {
 
     const membership = new GetCampaignMembershipUseCase(campaignRepo);
     const characterRepo = new InMemoryCharacterRepository();
-    const create = new CreateCharacterUseCase(
+    create = new CreateCharacterUseCase(
       characterRepo,
       directory,
       new InMemoryItemCatalog(),
@@ -56,6 +57,20 @@ describe('ListCampaignCharactersUseCase', () => {
     useCase = new ListCampaignCharactersUseCase(characterRepo, directory, membership);
   });
 
+  it('ne livre aucun champ privé des autres personnages au joueur', async () => {
+    await create.execute({
+      ...aCharacterBody('Bilbon'), campaignId, actorId: anActor(gameMasterId),
+    });
+    const characters = await useCase.execute({ campaignId, actorId: anActor(frodoId) });
+    const controlled = characters.find((item) => item.projection === 'controlled');
+    const pool = characters.find((item) => item.projection === 'pool');
+    expect(controlled).toMatchObject({ projection: 'controlled' });
+    expect(pool).toMatchObject({ projection: 'pool', assignmentStatus: 'available' });
+    expect(pool).not.toHaveProperty('build');
+    expect(pool).not.toHaveProperty('assignedTo');
+    expect(pool).not.toHaveProperty('revision');
+  });
+
   it('rend les personnages de la campagne à un membre actif', async () => {
     const characters = await useCase.execute({
       campaignId,
@@ -63,19 +78,22 @@ describe('ListCampaignCharactersUseCase', () => {
     });
 
     expect(characters).toHaveLength(1);
-    expect(characters[0]!.assignedTo).toEqual({ displayName: 'Frodo' });
+    expect(characters[0]).toMatchObject({
+      projection: 'gameMaster',
+      assignedTo: { displayName: 'Frodo' },
+    });
   });
 
   // Le cas qui motive le contrôle : un id de campagne se devine, une session non.
   it('refuse un utilisateur étranger à la campagne', async () => {
     await expect(
       useCase.execute({ campaignId, actorId: anActor(randomUUID()) }),
-    ).rejects.toThrow(NotActiveCampaignMemberError);
+    ).rejects.toThrow(CharacterNotFoundError);
   });
 
   it('refuse un invité qui n a pas encore répondu', async () => {
     await expect(
       useCase.execute({ campaignId, actorId: anActor(inviteeId) }),
-    ).rejects.toThrow(NotActiveCampaignMemberError);
+    ).rejects.toThrow(CharacterNotFoundError);
   });
 });

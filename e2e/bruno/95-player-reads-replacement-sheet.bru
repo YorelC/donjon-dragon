@@ -1,0 +1,18 @@
+meta {
+  name: 95 - Player reads replacement sheet
+  type: http
+  seq: 95
+}
+
+get {
+  url: {{baseUrl}}/campaigns/{{campaignId}}/characters/{{replacementCharacterId}}/sheet
+  body: none
+  auth: none
+}
+
+tests {
+  test('autorise la fiche du nouveau personnage contrôlé', function() {
+    expect(res.getStatus()).to.equal(200);
+    expect(res.getBody().abilities).to.be.an('object');
+  });
+}

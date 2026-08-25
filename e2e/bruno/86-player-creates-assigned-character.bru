@@ -1,7 +1,7 @@
 meta {
-  name: 33 - Create unassigned character
+  name: 86 - Player creates assigned character
   type: http
-  seq: 33
+  seq: 86
 }
 
 post {
@@ -17,20 +17,13 @@ headers {
 
 body:json {
   {
-    "name": "Bilbon E2E",
+    "name": "Gandalf Joueur E2E",
     "speciesKey": "halfling",
     "lineageKey": null,
     "classKey": "rogue",
     "backgroundKey": "charlatan",
     "abilityMethod": "roll",
-    "base": {
-      "strength": 8,
-      "dexterity": 15,
-      "constitution": 13,
-      "intelligence": 12,
-      "wisdom": 10,
-      "charisma": 14
-    },
+    "base": { "strength": 8, "dexterity": 15, "constitution": 13, "intelligence": 12, "wisdom": 10, "charisma": 14 },
     "backgroundBonuses": { "dexterity": 2, "charisma": 1 },
     "choices": [
       {
@@ -40,15 +33,9 @@ body:json {
       }
     ],
     "equipment": {
-      "armorKey": "leather",
-      "shield": false,
-      "items": [
-        { "itemKey": "leather", "quantity": 1 },
-        { "itemKey": "dagger", "quantity": 2 }
-      ],
-      "gold": 8,
-      "classOptionId": "A",
-      "backgroundOptionId": "A"
+      "armorKey": "leather", "shield": false,
+      "items": [{ "itemKey": "leather", "quantity": 1 }, { "itemKey": "dagger", "quantity": 2 }],
+      "gold": 8, "classOptionId": "A", "backgroundOptionId": "A"
     },
     "abilityRoll": {
       "dice": [[6,5,4,1],[6,4,4,2],[5,4,4,3],[4,4,4,1],[4,3,3,2],[3,3,2,1]],
@@ -58,13 +45,13 @@ body:json {
 }
 
 script:post-response {
-  bru.setVar('characterId', res.getBody().id);
-  bru.setVar('characterRevision', res.getBody().revision);
+  bru.setVar('playerCharacterId', res.getBody().id);
+  bru.setVar('playerCharacterRevision', res.getBody().revision);
 }
 
 tests {
-  test('crée un personnage dans le vivier', function() {
+  test('auto-attribue le personnage créé par le joueur', function() {
     expect(res.getStatus()).to.equal(201);
-    expect(res.getBody().assignedTo).to.equal(null);
+    expect(res.getBody().assignedTo.displayName).to.equal(bru.getEnvVar('ownerDisplayName'));
   });
 }
