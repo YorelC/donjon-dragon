@@ -1,3 +1,5 @@
+import { AUTH_TAB_PARAM, type AuthTab } from "@/shared/constants/auth-tab";
+
 export const ROUTES = {
   home: "/",
   campaigns: "/campaigns",
@@ -14,6 +16,10 @@ export const ROUTES = {
   login: "/login",
   verifyEmail: "/verify-email",
 } as const;
+
+/** L'accueil, ouvert sur l'un des deux onglets du panneau d'accès. */
+export const toHomeTab = (tab: AuthTab): string =>
+  `${ROUTES.home}?${AUTH_TAB_PARAM}=${tab}`;
 
 /**
  * `ROUTES.campaignDetail` porte le motif que react-router doit matcher ; cette

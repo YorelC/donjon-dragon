@@ -19,7 +19,7 @@ export function Nav() {
   }
 
   return (
-    <div className="relative pb-6">
+    <div className="relative">
       <DesktopNav menu={menu} />
       <MobileNav menu={menu} />
     </div>
@@ -51,7 +51,7 @@ function MobileNavTrigger() {
   return (
     <SheetTrigger
       aria-label="Menu de navigation"
-      className="absolute top-0 left-0 md:hidden"
+      className="md:hidden"
     >
       <Menu />
     </SheetTrigger>

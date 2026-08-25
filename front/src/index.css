@@ -108,11 +108,16 @@
   --text-note: 12.5px;
   --text-body: 13.5px;
   --text-lede: 14.5px;
+  --text-wordmark: 17px;
+  --text-intro: 15.5px;
   --text-title-record: 22px;
   --text-title-step: 25px;
   --text-title-page: 30px;
+  /* Titre d'accueil : le seul titre fluide, il porte la page a lui seul. */
+  --text-title-display: clamp(30px, 3.4vw, 44px);
 
   --tracking-name: 0.03em;
+  --tracking-display: 0.05em;
   --tracking-meta: 0.04em;
   --tracking-value: 0.06em;
   --tracking-title: 0.1em;
@@ -153,6 +158,27 @@
     font-family: var(--font-mono);
   }
 
+  /* Chrome peint le champ rempli en blanc et n'admet aucun `background`.
+     Seule une ombre interne opaque et `-webkit-text-fill-color` le couvrent ;
+     la transition infinie neutralise le retour au blanc apres l'animation.
+     `--color-muted` est la seule teinte qui se fonde dans le panneau : plus
+     clair, le champ rempli ressort du reste du formulaire.
+
+     `background-clip: padding-box` est indispensable : une ombre INTERNE ne
+     couvre que la boite de padding, alors que le fond de l'agent utilisateur
+     court jusque sous la bordure. Sans lui, le blanc transparait au travers de
+     la bordure or a 24 % et le champ rempli se cercle de blanc. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-foreground);
+    -webkit-box-shadow: 0 0 0 1000px var(--color-muted) inset;
+    background-clip: padding-box;
+    caret-color: var(--color-foreground);
+    transition: background-color 9999s ease-in-out 0s;
+  }
+
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -179,6 +205,11 @@
     @apply pb-8 text-center font-display text-title-page tracking-title text-gold-title uppercase;
   }
 
+  /* Titre d'accueil : fluide, il tient toute la colonne de presentation. */
+  .display-title {
+    @apply font-display text-title-display/[1.24] tracking-display text-gold-title text-balance uppercase;
+  }
+
   .hero-title {
     @apply font-display text-title-step tracking-title text-gold-title uppercase;
   }
@@ -191,7 +222,9 @@
     @apply mb-3 font-display text-title-record tracking-meta text-gold-title;
   }
 
-  .overline {
+  /* Surtitre. Le nom `overline` est deja un utilitaire Tailwind
+     (text-decoration-line), qui gagnait sur la classe et barrait le texte. */
+  .eyebrow {
     @apply text-overline tracking-overline text-gold/65 uppercase;
   }
 
@@ -205,6 +238,11 @@
 
   .lede {
     @apply text-lede/[1.7] text-ink-lede text-pretty;
+  }
+
+  /* Chapeau d'accueil : un cran au-dessus du paragraphe de bloc. */
+  .intro-text {
+    @apply text-intro/[1.7] text-ink-prose text-pretty;
   }
 
   .prose-block {
@@ -221,6 +259,11 @@
 
   .muted-text-xs {
     @apply text-label text-ink-meta;
+  }
+
+  /* Mention legale, note de bas de panneau. */
+  .fine-print {
+    @apply text-note/[1.65] text-ink-faint;
   }
 
   .empty-state-text {
@@ -300,7 +343,22 @@
     @apply border-destructive/60 bg-destructive/10;
   }
 
+  /* --- En-tete d'application ---------------------------------------------- */
+
+  .app-header {
+    @apply flex items-center justify-between gap-6 border-b border-gold/16 px-6 py-[22px] md:px-10;
+  }
+
+  .wordmark {
+    @apply font-display text-wordmark tracking-section whitespace-nowrap text-gold-title uppercase;
+  }
+
   /* --- Mise en page d'authentification ------------------------------------ */
+
+  /* Presentation a gauche, panneau d'acces a droite ; une seule colonne sous lg. */
+  .auth-split {
+    @apply mx-auto grid max-w-[1320px] items-start gap-11 px-6 pt-16 pb-18 md:px-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(300px,420px)];
+  }
 
   .auth-container {
     @apply mx-auto flex max-w-md flex-col gap-4;

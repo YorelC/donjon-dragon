@@ -139,11 +139,14 @@ dépendent.
 | `--text-note` | `12.5px` | Étiquette, commentaire de composant |
 | `--text-body` | `13.5px` | Paire nom / valeur |
 | `--text-lede` | `14.5px` | Chapeau d'une fiche |
+| `--text-intro` | `15.5px` | Chapeau d'accueil, sous le titre d'ouverture |
+| `--text-wordmark` | `17px` | Marque dans l'en-tête d'application |
 | `--text-title-record` | `22px` | Titre de fiche |
 | `--text-title-step` | `25px` | Titre d'étape |
 | `--text-title-page` | `30px` | Titre de page |
+| `--text-title-display` | `clamp(30px, 3.4vw, 44px)` | Titre d'accueil, seul titre fluide |
 
-Interlettrages : `--tracking-name` `.03em`, `--tracking-meta` `.04em`,
+Interlettrages : `--tracking-name` `.03em`, `--tracking-display` `.05em`, `--tracking-meta` `.04em`,
 `--tracking-value` `.06em`, `--tracking-title` `.1em`, `--tracking-label`
 `.14em`, `--tracking-section` `.16em`, `--tracking-overline` `.2em`.
 
@@ -155,9 +158,11 @@ sert à contourner la règle (voir `/design-system`).
 
 | Classe | Rôle |
 |---|---|
+| `.display-title` | Titre d'accueil fluide, au-dessus des trois autres |
 | `.page-title` / `.hero-title` / `.section-title` | Les trois niveaux de titre |
-| `.overline` / `.section-label` / `.field-label` | Surtitre, intitulé de section, libellé de champ |
-| `.lede` / `.prose-block` / `.meta-line` | Chapeau, paragraphe, métadonnée |
+| `.eyebrow` / `.section-label` / `.field-label` | Surtitre, intitulé de section, libellé de champ |
+| `.lede` / `.intro-text` / `.prose-block` / `.meta-line` | Chapeau de fiche, chapeau d'accueil, paragraphe, métadonnée |
+| `.fine-print` | Mention légale, note de bas de panneau |
 | `.muted-text` / `.muted-text-xs` / `.empty-state-text` | Textes atténués |
 | `.panel` / `.panel-surface` / `.panel-inset` / `.panel-flat` | Les quatre surfaces |
 | `.rule-line` / `.rule-line-reverse` | Filets dégradés |
@@ -166,6 +171,8 @@ sert à contourner la règle (voir `/design-system`).
 | `.name-value` | Paire nom / valeur à liseré gauche |
 | `.pill` / `.stat-token` | Pastille, jeton de récapitulatif |
 | `.alert-success` / `.alert-error` | Encarts de retour |
+| `.app-header` / `.wordmark` | Bandeau de tête et marque |
+| `.auth-split` | Accueil : présentation à gauche, panneau d'accès à droite |
 | `.auth-container` / `.auth-footer` / `.auth-links` | Mise en page d'authentification |
 
 `gold-fill` est déclaré en `@utility` et non en composant : il doit rester
@@ -181,6 +188,7 @@ sur place, jamais emballées.
 | Fichier | Rôle |
 |---|---|
 | `diamond.tsx` | Losange 5 / 12 / 34 px, la seule icône du système |
+| `eye-glyph.tsx` | Œil et œil barré, tracés à l'équerre sur la grammaire du losange |
 | `gold-rule.tsx` | Filet dégradé, filet à losange |
 | `ornate-corners.tsx` | Les quatre équerres d'un panneau de premier plan |
 | `section-heading.tsx` | Intitulé Cinzel + filet, variante encadrée |
@@ -191,7 +199,59 @@ sur place, jamais emballées.
 | `stat-token.tsx` | Jeton de récapitulatif + infobulle |
 | `name-value-row.tsx` | Paire nom / valeur |
 | `record-block.tsx` | Bloc de fiche |
-| `form-text-input.tsx` / `field-error.tsx` | Champ de formulaire et son erreur |
+| `form-text-input.tsx` / `field-error.tsx` | Champ de formulaire et son erreur (libellé, mention à droite, gabarit, erreur) |
+| `password-input.tsx` | Mot de passe et son œil de dévoilement, au bord droit du champ |
+
+## Onglets : le variant `panel`
+
+`tabs.tsx` porte trois variants de `TabsList` :
+
+| Variant | Forme |
+|---|---|
+| `default` | Cadre plein, l'onglet actif se remplit d'or |
+| `line` | Sans cadre, un souligné or sous l'onglet actif |
+| `panel` | Pleine largeur, filet bas continu, l'onglet actif se remplit **et** se souligne |
+
+Le `panel` est celui du panneau d'accès de l'accueil : les deux onglets se
+partagent la largeur du panneau et le filet du bas prolonge son cadre.
+
+## Noms de classe : la collision avec un utilitaire Tailwind
+
+Le surtitre s'est d'abord appelé `.overline` — or `overline` **est** un
+utilitaire Tailwind (`text-decoration-line: overline`). Les deux s'appliquaient,
+la couche `utilities` gagnait, et chaque surtitre portait un trait au-dessus. Il
+s'appelle désormais `.eyebrow`.
+
+Règle : avant de nommer une classe globale, vérifier que le nom n'est pas déjà
+un utilitaire Tailwind (`underline`, `italic`, `truncate`, `visible`…). La
+couche `components` perd toujours contre la couche `utilities`.
+
+## Autofill : `autocomplete` obligatoire sur tout champ d'identité
+
+Sans attribut `autocomplete`, Chrome classe un champ email comme une **adresse
+postale** et propose son autofill d'adresses : la suggestion s'affiche mais ne
+remplit rien. Les champs d'accès portent donc :
+
+| Champ | Valeur |
+|---|---|
+| Identifiant de connexion, email d'inscription | `username` |
+| Nom d'aventurier | `nickname` |
+| Mot de passe à la connexion | `current-password` |
+| Mot de passe à l'inscription et sa confirmation | `new-password` |
+
+Chrome peint en outre le champ rempli en blanc et ignore tout `background`.
+`@layer base` le recouvre par `input:-webkit-autofill { -webkit-text-fill-color;
+box-shadow: 0 0 0 1000px var(--color-muted) inset }` — c'est le seul levier que
+l'agent utilisateur laisse. `--color-muted` (`#0d131d`) est la seule teinte qui
+se fonde dans le panneau : mesurée contre un champ vide voisin, elle ne se
+distingue pas. Plus claire (`--color-card`), le champ rempli **et sa bordure**
+ressort du reste du formulaire.
+
+`background-clip: padding-box` complète la parade : une ombre **interne** ne
+couvre que la boîte de padding, tandis que le fond de l'agent utilisateur court
+jusque sous la bordure. Sans lui, le blanc transparaît au travers de la bordure
+or à 24 % — le champ rempli se cercle de blanc alors que son intérieur est
+correct.
 
 ## Justification des choix
 

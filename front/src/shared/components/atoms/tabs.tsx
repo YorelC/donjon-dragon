@@ -32,6 +32,8 @@ const tabsListVariants = cva(
       variant: {
         default: "border border-gold/14 bg-surface",
         line: "gap-1 bg-transparent",
+        panel:
+          "w-full gap-0 border-b border-gold/16 bg-transparent p-0 group-data-[orientation=horizontal]/tabs:h-auto",
       },
     },
     defaultVariants: {
@@ -66,8 +68,9 @@ function TabsTrigger({
       className={cn(
         "relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 border border-transparent px-3 py-1 font-display text-xs tracking-label whitespace-nowrap text-ink-idle uppercase transition-[color,border-color,background-color] duration-[.18s] group-data-[orientation=vertical]/tabs:w-full group-data-[orientation=vertical]/tabs:justify-start hover:text-gold-selected focus-visible:border-gold/60 focus-visible:outline-none disabled:pointer-events-none disabled:text-ink-disabled [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         "group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-[state=active]:border-transparent group-data-[variant=line]/tabs-list:data-[state=active]:bg-transparent",
+        "group-data-[variant=panel]/tabs-list:h-auto group-data-[variant=panel]/tabs-list:py-3 group-data-[variant=panel]/tabs-list:data-[state=active]:border-transparent",
         "data-[state=active]:gold-fill data-[state=active]:border-gold/75 data-[state=active]:text-gold-selected",
-        "after:absolute after:bg-gold/85 after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100",
+        "after:absolute after:bg-gold/85 after:opacity-0 after:transition-opacity group-data-[orientation=horizontal]/tabs:after:inset-x-0 group-data-[orientation=horizontal]/tabs:after:bottom-[-5px] group-data-[orientation=horizontal]/tabs:after:h-0.5 group-data-[orientation=vertical]/tabs:after:inset-y-0 group-data-[orientation=vertical]/tabs:after:-right-1 group-data-[orientation=vertical]/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-[state=active]:after:opacity-100 group-data-[variant=panel]/tabs-list:after:bottom-[-1px] group-data-[variant=panel]/tabs-list:data-[state=active]:after:opacity-100",
         className
       )}
       {...props}

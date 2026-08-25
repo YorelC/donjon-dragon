@@ -9,13 +9,12 @@ import { CampaignCharactersPage } from "./pages/campaigns/detail/characters/char
 import { CharacterBuilderPage } from "./pages/campaigns/detail/characters/builder/character-builder.page";
 import { CharacterSheetPage } from "./pages/campaigns/detail/characters/sheet/sheet.page";
 import { FriendsPage } from "./pages/profile/friends/friends.page";
-import { RegisterPage } from "./pages/register/register.page";
-import { LoginPage } from "./pages/login/login.page";
 import { VerifyEmailPage } from "./pages/verify-email/verify-email.page";
 import { ProfilePage } from "./pages/profile/profile.page";
 import { SettingsPage } from "./pages/profile/parametres/parametres.page";
-import { ROUTES } from "./shared/constants/routes";
-import { Nav } from "./shared/components/layout/nav";
+import { ROUTES, toHomeTab } from "./shared/constants/routes";
+import { AUTH_TAB } from "./shared/constants/auth-tab";
+import { AppHeader } from "./shared/components/layout/app-header";
 import { PrivateRoute } from "./shared/components/layout/private-route";
 import { SESSION_STATUS, useAuthStore } from "./shared/stores/auth.store";
 import { useSessionBootstrap } from "./shared/hooks/use-session-bootstrap";
@@ -31,8 +30,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <h1 className="page-title">Donjons & Dragons</h1>
-        <Nav />
+        <AppHeader />
         <AppRoutes />
       </BrowserRouter>
       <Toaster />
@@ -54,10 +52,29 @@ function AppRoutes() {
           <Route path={ROUTES.profileSettings} element={<SettingsPage />} />
         </Route>
       </Route>
-      <Route path={ROUTES.register} element={<RegisterPage />} />
-      <Route path={ROUTES.login} element={<LoginPage />} />
+      {AuthRedirectRoutes()}
       <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
     </Routes>
+  );
+}
+
+/**
+ * L'inscription et la connexion vivent desormais sur l'accueil, dans un panneau
+ * a deux onglets. Les deux anciennes routes restent des adresses valides : elles
+ * ouvrent l'accueil sur le bon onglet.
+ */
+function AuthRedirectRoutes() {
+  return (
+    <>
+      <Route
+        path={ROUTES.register}
+        element={<Navigate to={toHomeTab(AUTH_TAB.signup)} replace />}
+      />
+      <Route
+        path={ROUTES.login}
+        element={<Navigate to={toHomeTab(AUTH_TAB.login)} replace />}
+      />
+    </>
   );
 }
 

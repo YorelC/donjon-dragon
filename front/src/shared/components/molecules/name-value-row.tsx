@@ -7,7 +7,9 @@ interface NameValueRowProps {
 function NameValueRow({ name, value }: NameValueRowProps) {
   return (
     <div className="name-value">
-      <span className="text-body tracking-name text-gold-value">{name}</span>
+      <span className="font-display text-body tracking-meta text-gold-value">
+        {name}
+      </span>
       <span className="text-body/[1.65] text-ink-value">{value}</span>
     </div>
   );

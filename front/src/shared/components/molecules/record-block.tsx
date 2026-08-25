@@ -24,7 +24,7 @@ function RecordBlock({ header, children }: RecordBlockProps) {
 function RecordHeading({ header }: { header: RecordHeader }) {
   return (
     <header>
-      <span className="overline">{header.overline}</span>
+      <span className="eyebrow">{header.overline}</span>
       <h2 className="mt-[5px] font-display text-title-record tracking-meta text-gold-title">
         {header.title}
       </h2>
