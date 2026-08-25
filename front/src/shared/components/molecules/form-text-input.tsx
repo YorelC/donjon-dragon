@@ -20,7 +20,7 @@ function FormTextInput<TFieldValues extends FieldValues, TName extends FieldPath
   field,
 }: FormTextInputProps<TFieldValues, TName>) {
   return (
-    <div className="grid gap-1.5">
+    <div className="grid gap-[7px]">
       <Label htmlFor={field.name}>{label}</Label>
       <Input id={field.name} type={type} aria-invalid={!!error} {...field} />
       <FieldError message={error} />

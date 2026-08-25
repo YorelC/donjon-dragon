@@ -100,7 +100,7 @@ function LogoutButton({ onLogout }: { onLogout: () => void }) {
   return (
     <button
       onClick={onLogout}
-      className="font-semibold text-red-600 hover:text-red-700"
+      className="font-display text-xs tracking-label text-destructive uppercase transition-colors duration-[.18s] hover:text-gold-selected"
     >
       Déconnexion
     </button>

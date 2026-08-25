@@ -4,7 +4,7 @@ interface FieldErrorProps {
 
 function FieldError({ message }: FieldErrorProps) {
   if (!message) return null;
-  return <p className="text-sm text-destructive">{message}</p>;
+  return <p className="text-note text-destructive">{message}</p>;
 }
 
 export { FieldError };
