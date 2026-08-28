@@ -15,6 +15,7 @@ export const FriendshipSchema = new Schema<FriendshipDocument>(
     recipientId: { type: String, required: true },
     // Liste dérivée du domaine : plus de littéraux dupliqués ici.
     status: { type: String, enum: [...FRIENDSHIP_STATUSES], required: true },
+    revision: { type: Number, required: true, min: 0, default: 0 },
     createdAt: { type: String, required: true },
     updatedAt: { type: String, required: true },
   },

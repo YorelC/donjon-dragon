@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import type { FriendRequest } from '@donjon-dragon/shared/friendship-schema';
 import type { ActorId } from '@kernel/domain/actor-id';
@@ -33,7 +34,7 @@ export class AcceptFriendRequestUseCase {
 
     // L'agrégat porte la règle : seul le destinataire d'une demande 'pending'.
     friendship.accept(UserId.create(dto.actingUserId), this.clock.now());
-    await this.friendshipRepo.save(friendship);
+    await this.friendshipRepo.save(friendship, randomUUID());
 
     return toFriendRequestResponse(friendship);
   }

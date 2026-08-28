@@ -9,10 +9,18 @@ import type { DirectoryUser } from './ports/friend-directory.port';
  * absents : le client n'a pas à connaître l'identité système des autres joueurs.
  * Seul `id` reste, parce que c'est le handle de la ressource — celui qu'on
  * accepte, refuse ou supprime.
+ *
+ * `revision` sort pour une autre raison : c'est une mécanique de persistance et
+ * de diffusion, pas une donnée du contrat. Le retrait doit rester explicite —
+ * un spread la laisserait fuir sans que le typage ne bronche.
  */
 export function toFriendRequestResponse(friendship: Friendship): FriendRequest {
-  const { requesterId: _requesterId, recipientId: _recipientId, ...response } =
-    friendship.snapshot();
+  const {
+    requesterId: _requesterId,
+    recipientId: _recipientId,
+    revision: _revision,
+    ...response
+  } = friendship.snapshot();
 
   return response;
 }

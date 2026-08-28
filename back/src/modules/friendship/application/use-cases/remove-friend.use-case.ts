@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserId } from '@kernel/domain/user-id';
 import type { ActorId } from '@kernel/domain/actor-id';
@@ -31,6 +32,9 @@ export class RemoveFriendUseCase {
 
     friendship.assertInvolves(UserId.create(dto.userId));
 
-    await this.friendshipRepo.deleteById(id, this.clock.now());
+    await this.friendshipRepo.deleteById(id, {
+      commandId: randomUUID(),
+      occurredAt: this.clock.now(),
+    });
   }
 }

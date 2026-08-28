@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import type { ClientSession, Connection, Model } from 'mongoose';
@@ -13,7 +12,11 @@ import {
   type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
 
-import type { FriendshipRepositoryPort } from '../../application/ports/friendship.repository.port';
+import type {
+  CommandId,
+  FriendshipRemoval,
+  FriendshipRepositoryPort,
+} from '../../application/ports/friendship.repository.port';
 import type { Friendship } from '../../domain/friendship';
 import type { FriendshipId } from '../../domain/friendship-id';
 import { FRIENDSHIP_STATUS } from '../../domain/friendship-status';
@@ -43,11 +46,14 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
     @InjectConnection() private readonly connection: Connection,
   ) {}
 
-  async create(friendship: Friendship): Promise<void> {
+  async create(friendship: Friendship, commandId: CommandId): Promise<void> {
     const document = toPersistence(friendship);
     try {
       await this.connection.transaction((session) =>
-        this.createWithNotification(document, session),
+        this.createWithNotification(
+          { document, factType: FRIENDSHIP_FACT.requested, commandId },
+          session,
+        ),
       );
     } catch (error: unknown) {
       if (isDuplicateKeyError(error)) throw new FriendRequestAlreadyExistsError();
@@ -55,10 +61,13 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
     }
   }
 
-  async save(friendship: Friendship): Promise<void> {
+  async save(friendship: Friendship, commandId: CommandId): Promise<void> {
     const document = toPersistence(friendship);
     await this.connection.transaction((session) =>
-      this.saveWithNotification(document, session),
+      this.saveWithNotification(
+        { document, factType: transitionFact(document), commandId },
+        session,
+      ),
     );
   }
 
@@ -98,53 +107,49 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
     });
   }
 
-  async deleteById(id: FriendshipId, occurredAt: Date): Promise<void> {
+  async deleteById(id: FriendshipId, removal: FriendshipRemoval): Promise<void> {
     await this.connection.transaction((session) =>
-      this.deleteWithNotification({ id, occurredAt }, session),
+      this.deleteWithNotification({ id, ...removal }, session),
     );
   }
 
   private async createWithNotification(
-    document: FriendshipDocument,
+    notification: FriendshipNotification,
     session: ClientSession,
   ): Promise<void> {
+    const { document } = notification;
     await this.model.findOneAndReplace(refusedPairFilter(document), document, {
       upsert: true,
       session,
     });
-    await this.writeNotification(document, FRIENDSHIP_FACT.requested, session);
+    await this.writeNotification(notification, session);
   }
 
   private async saveWithNotification(
-    document: FriendshipDocument,
+    notification: FriendshipNotification,
     session: ClientSession,
   ): Promise<void> {
+    const { document } = notification;
     await this.model.findOneAndUpdate({ id: document.id }, document, { session });
-    await this.writeNotification(document, transitionFact(document), session);
+    await this.writeNotification(notification, session);
   }
 
   private async deleteWithNotification(
-    removal: FriendshipRemoval,
+    deletion: FriendshipDeletion,
     session: ClientSession,
   ): Promise<void> {
     const document = await this.model
-      .findOneAndDelete({ id: removal.id.value }, { session })
+      .findOneAndDelete({ id: deletion.id.value }, { session })
       .lean<FriendshipDocument>();
     if (!document) return;
-    await this.writeNotification(
-      { ...document, updatedAt: removal.occurredAt.toISOString() },
-      FRIENDSHIP_FACT.removed,
-      session,
-    );
+    await this.writeNotification(removalNotification(document, deletion), session);
   }
 
   private async writeNotification(
-    document: FriendshipDocument,
-    factType: string,
+    notification: FriendshipNotification,
     session: ClientSession,
   ): Promise<void> {
-    const message = friendshipOutboxMessage(document, factType);
-    await this.outbox.create([message], { session });
+    await this.outbox.create([friendshipOutboxMessage(notification)], { session });
   }
 
   private async findOne(
@@ -168,9 +173,26 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
   }
 }
 
-interface FriendshipRemoval {
+/** Ce qu'il faut savoir pour écrire un fait : l'état, sa nature, et sa cause. */
+interface FriendshipNotification {
+  document: FriendshipDocument;
+  factType: string;
+  commandId: CommandId;
+}
+
+interface FriendshipDeletion extends FriendshipRemoval {
   id: FriendshipId;
-  occurredAt: Date;
+}
+
+function removalNotification(
+  document: FriendshipDocument,
+  deletion: FriendshipDeletion,
+): FriendshipNotification {
+  return {
+    document: { ...document, updatedAt: deletion.occurredAt.toISOString() },
+    factType: FRIENDSHIP_FACT.removed,
+    commandId: deletion.commandId,
+  };
 }
 
 function refusedPairFilter(document: FriendshipDocument) {
@@ -190,14 +212,14 @@ function transitionFact(document: FriendshipDocument): string {
 }
 
 function friendshipOutboxMessage(
-  document: FriendshipDocument,
-  factType: string,
+  notification: FriendshipNotification,
 ): OutboxMessageDocument {
+  const { document, factType, commandId } = notification;
   return createOutboxMessage({
     ownerModule: OWNER_MODULE,
-    causationId: randomUUID(),
+    causationId: commandId,
     aggregateId: document.id,
-    aggregateRevision: revisionFor(document, factType),
+    aggregateRevision: notifiedRevision(document, factType),
     factType,
     fact: {},
     deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
@@ -206,17 +228,22 @@ function friendshipOutboxMessage(
   });
 }
 
+/**
+ * La suppression n'est pas une transition de l'agrégat : le document disparaît,
+ * donc personne n'incrémente sa révision. Le fait, lui, succède bien au dernier
+ * état connu.
+ */
+function notifiedRevision(document: FriendshipDocument, factType: string): number {
+  return factType === FRIENDSHIP_FACT.removed
+    ? document.revision + 1
+    : document.revision;
+}
+
 function friendshipAudience(document: FriendshipDocument) {
   return {
     policy: OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
     userIds: [document.requesterId, document.recipientId] as const,
   };
-}
-
-function revisionFor(document: FriendshipDocument, factType: string): number {
-  if (factType === FRIENDSHIP_FACT.requested) return 0;
-  if (factType === FRIENDSHIP_FACT.removed) return 2;
-  return 1;
 }
 
 const DUPLICATE_KEY_ERROR_CODE = 11_000;

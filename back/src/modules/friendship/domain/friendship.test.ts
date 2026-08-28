@@ -170,6 +170,58 @@ describe('Friendship — snapshot et réhydratation', () => {
   });
 });
 
+/**
+ * 5B exige une revision portee par la racine mutable, monotone, incrementee une
+ * fois par commande. Elle etait auparavant deduite du type de fait au moment
+ * d'ecrire l'outbox : plausible, mais fausse des qu'une transition s'ajoute.
+ */
+describe('Friendship — révision', () => {
+  it('naît à zéro', () => {
+    expect(Friendship.request(alice, bob, NOW).revision).toBe(0);
+  });
+
+  it('s incrémente à l acceptation', () => {
+    const friendship = Friendship.request(alice, bob, NOW);
+
+    friendship.accept(bob, LATER);
+
+    expect(friendship.revision).toBe(1);
+  });
+
+  it('s incrémente au refus', () => {
+    const friendship = Friendship.request(alice, bob, NOW);
+
+    friendship.refuse(bob, LATER);
+
+    expect(friendship.revision).toBe(1);
+  });
+
+  it('n avance pas sur une transition refusée', () => {
+    const friendship = Friendship.request(alice, bob, NOW);
+
+    expect(() => friendship.accept(carol, LATER)).toThrow();
+    expect(friendship.revision).toBe(0);
+  });
+
+  it('survit à la réhydratation', () => {
+    const friendship = Friendship.request(alice, bob, NOW);
+    friendship.accept(bob, LATER);
+
+    expect(Friendship.restore(friendship.snapshot()).revision).toBe(1);
+  });
+
+  // Les documents ecrits avant que le champ existe n'en portent pas.
+  it('repart de zéro pour un snapshot hérité sans révision', () => {
+    const { revision: _revision, ...legacy } = Friendship.request(
+      alice,
+      bob,
+      NOW,
+    ).snapshot();
+
+    expect(Friendship.restore(legacy as never).revision).toBe(0);
+  });
+});
+
 // Ces deux invariants n'etaient verifies nulle part : friendshipId partait
 // directement du parametre d'URL vers une requete Mongo (INV-002 non arme).
 describe('Identifiants typés', () => {

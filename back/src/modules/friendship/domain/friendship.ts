@@ -10,6 +10,8 @@ import {
   NotRequestRecipientError,
 } from './friendship.errors';
 
+const FIRST_REVISION = 0;
+
 /**
  * État brut de la relation. Sert de frontière avec les deux mondes qui doivent
  * lire l'agrégat sans y toucher : la persistance et la réponse HTTP. Leurs
@@ -21,6 +23,7 @@ export interface FriendshipSnapshot {
   requesterId: string;
   recipientId: string;
   status: FriendshipStatus;
+  revision: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,6 +44,7 @@ export class Friendship {
     readonly requesterId: UserId,
     readonly recipientId: UserId,
     private currentStatus: FriendshipStatus,
+    private currentRevision: number,
     readonly createdAt: string,
     private currentUpdatedAt: string,
   ) {}
@@ -55,18 +59,25 @@ export class Friendship {
       requesterId,
       recipientId,
       FRIENDSHIP_STATUS.pending,
+      FIRST_REVISION,
       createdAt,
       createdAt,
     );
   }
 
-  /** Réhydratation depuis la persistance : aucun invariant rejoué. */
+  /**
+   * Réhydratation depuis la persistance : aucun invariant rejoué.
+   *
+   * La révision est tolérante à son absence : les documents écrits avant qu'elle
+   * existe n'en portent pas, et repartent de la première.
+   */
   static restore(snapshot: FriendshipSnapshot): Friendship {
     return new Friendship(
       FriendshipId.create(snapshot.id),
       UserId.create(snapshot.requesterId),
       UserId.create(snapshot.recipientId),
       snapshot.status,
+      snapshot.revision ?? FIRST_REVISION,
       snapshot.createdAt,
       snapshot.updatedAt,
     );
@@ -78,6 +89,10 @@ export class Friendship {
 
   get updatedAt(): string {
     return this.currentUpdatedAt;
+  }
+
+  get revision(): number {
+    return this.currentRevision;
   }
 
   accept(by: UserId, now: Date): void {
@@ -111,6 +126,7 @@ export class Friendship {
       requesterId: this.requesterId.value,
       recipientId: this.recipientId.value,
       status: this.currentStatus,
+      revision: this.currentRevision,
       createdAt: this.createdAt,
       updatedAt: this.currentUpdatedAt,
     };
@@ -124,8 +140,10 @@ export class Friendship {
     if (!this.recipientId.equals(by)) throw new NotRequestRecipientError();
   }
 
+  /** Seul point de mutation de l'état, donc seul point d'incrément de la révision. */
   private transitionTo(status: FriendshipStatus, now: Date): void {
     this.currentStatus = status;
+    this.currentRevision += 1;
     this.currentUpdatedAt = now.toISOString();
   }
 }
