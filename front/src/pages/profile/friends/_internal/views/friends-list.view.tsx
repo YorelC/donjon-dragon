@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/shared/components/atoms/alert-dialog";
 import type { QueryState } from "@/shared/types/ui-state";
-import type { AcceptedFriend } from "../types/friends-schema";
+import type { AcceptedFriend } from "@/shared/types/friend";
 import type { FriendRemoval } from "../hooks/use-friend-removal";
 
 interface FriendsListViewProps {

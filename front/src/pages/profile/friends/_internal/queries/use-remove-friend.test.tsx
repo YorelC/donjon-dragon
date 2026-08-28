@@ -3,7 +3,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { ReactNode } from "react";
 import { useRemoveFriend } from "./use-remove-friend";
-import type { AcceptedFriend } from "../types/friends-schema";
+import type { AcceptedFriend } from "@/shared/types/friend";
 
 // Mocks
 vi.mock("sonner", () => ({

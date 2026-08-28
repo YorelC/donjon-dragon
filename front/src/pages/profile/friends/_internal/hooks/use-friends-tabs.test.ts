@@ -3,7 +3,7 @@ import { renderHook, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createElement, type ReactNode } from "react";
 import { useFriendsTabs } from "./use-friends-tabs";
-import { RECEIVED_COUNT_KEY } from "../queries/use-received-count";
+import { RECEIVED_COUNT_KEY } from "@/shared/queries/use-received-count";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 

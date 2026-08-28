@@ -3,8 +3,8 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FriendsView } from "./friends.view";
-import * as useReceivedCountModule from "../queries/use-received-count";
-import * as useFriendsModule from "../queries/use-friends";
+import * as useReceivedCountModule from "@/shared/queries/use-received-count";
+import * as useFriendsModule from "@/shared/queries/use-friends";
 import * as useReceivedRequestsModule from "../queries/use-received-requests";
 import * as useSentRequestsModule from "../queries/use-sent-requests";
 import * as useSearchUsersModule from "../queries/use-search-users";
@@ -16,8 +16,8 @@ import * as useSendModule from "../queries/use-send-friend-request";
 // La view compose ses containers : on neutralise la couche query pour ne tester
 // que ce qui appartient à la view — la structure des onglets et le placement du
 // badge. Le comportement de chaque panneau a ses propres tests.
-vi.mock("../queries/use-received-count");
-vi.mock("../queries/use-friends");
+vi.mock("@/shared/queries/use-received-count");
+vi.mock("@/shared/queries/use-friends");
 vi.mock("../queries/use-received-requests");
 vi.mock("../queries/use-sent-requests");
 vi.mock("../queries/use-search-users");
@@ -135,6 +135,6 @@ describe("FriendsView", () => {
 
 // ── Matrice de couverture UA ─────────────────────────────────────────────────
 // UA-006 — Placement du badge dans l'onglet "Reçues" : COUVERT
-// UA-007 / INV-008 — mise en forme du nombre : received-count-badge.view.test.tsx
+// UA-007 / INV-008 — mise en forme du nombre : shared/components/molecules/count-badge.test.tsx
 // UA-010 / INV-007 — masquage à zéro : received-count-badge.container.test.tsx
 // UA-009 — rafraîchissement au clic sur "Reçues" : use-friends-tabs.test.ts

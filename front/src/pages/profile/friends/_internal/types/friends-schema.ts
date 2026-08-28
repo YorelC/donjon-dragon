@@ -14,11 +14,6 @@ export const SentRequestSchema = FriendRequestSchema.extend({
   recipient: UserSummarySchema,
 });
 
-export const AcceptedFriendSchema = z.object({
-  friendshipId: z.string().uuid(),
-  friend: UserSummarySchema,
-});
-
 // Mêmes bornes que la route côté serveur, et une seule déclaration pour les deux.
 export const SearchFormSchema = z.object({
   query: UserSearchQuerySchema.shape.q,
@@ -26,5 +21,4 @@ export const SearchFormSchema = z.object({
 
 export type ReceivedRequest = z.infer<typeof ReceivedRequestSchema>;
 export type SentRequest = z.infer<typeof SentRequestSchema>;
-export type AcceptedFriend = z.infer<typeof AcceptedFriendSchema>;
 export type SearchFormValues = z.infer<typeof SearchFormSchema>;

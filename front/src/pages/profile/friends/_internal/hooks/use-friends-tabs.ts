@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { RECEIVED_COUNT_KEY } from "../queries/use-received-count";
+import { RECEIVED_COUNT_KEY } from "@/shared/queries/use-received-count";
 
 export type FriendsTab = "friends" | "received" | "sent" | "search";
 

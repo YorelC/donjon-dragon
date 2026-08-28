@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReceivedCountBadgeContainer } from "./received-count-badge.container";
-import * as useReceivedCountModule from "../queries/use-received-count";
+import * as useReceivedCountModule from "@/shared/queries/use-received-count";
 
-vi.mock("../queries/use-received-count", async () => {
+vi.mock("@/shared/queries/use-received-count", async () => {
   const actual = await vi.importActual<typeof useReceivedCountModule>(
-    "../queries/use-received-count",
+    "@/shared/queries/use-received-count",
   );
   return { ...actual, useReceivedCount: vi.fn() };
 });
@@ -70,4 +70,4 @@ describe("ReceivedCountBadgeContainer", () => {
 // ── Matrice de couverture UA ─────────────────────────────────────────────────
 // UA-010 — Masquage du badge à zéro demande : COUVERT (count=0, data undefined)
 // INV-007 — Badge conditionnel (visible si count>0, caché sinon) : COUVERT
-// UA-006 / UA-007 / INV-008 — mise en forme du nombre : received-count-badge.view.test.tsx
+// UA-006 / UA-007 / INV-008 — mise en forme du nombre : shared/components/molecules/count-badge.test.tsx

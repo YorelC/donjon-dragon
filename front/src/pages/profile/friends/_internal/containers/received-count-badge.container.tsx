@@ -1,5 +1,5 @@
-import { useReceivedCount } from "../queries/use-received-count";
-import { ReceivedCountBadgeView } from "../views/received-count-badge.view";
+import { useReceivedCount } from "@/shared/queries/use-received-count";
+import { CountBadge } from "@/shared/components/molecules/count-badge";
 
 export function ReceivedCountBadgeContainer() {
   const { data } = useReceivedCount();
@@ -8,5 +8,5 @@ export function ReceivedCountBadgeContainer() {
   // celle du compteur est un préfixe : il se rafraîchit sans refetch manuel.
   if (!data?.count) return null;
 
-  return <ReceivedCountBadgeView count={data.count} />;
+  return <CountBadge count={data.count} />;
 }

@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { FriendsListView } from "./friends-list.view";
 import type { FriendRemoval } from "../hooks/use-friend-removal";
 import type { QueryState } from "@/shared/types/ui-state";
-import type { AcceptedFriend } from "../types/friends-schema";
+import type { AcceptedFriend } from "@/shared/types/friend";
 
 const mockFriends: AcceptedFriend[] = [
   { friendshipId: "uuid-1", friend: { displayName: "Gandalf" } },

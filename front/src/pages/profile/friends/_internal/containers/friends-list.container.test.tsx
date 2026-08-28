@@ -5,10 +5,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { FriendsListContainer } from "./friends-list.container";
 
 // Mock queries
-vi.mock("../queries/use-friends");
+vi.mock("@/shared/queries/use-friends");
 vi.mock("../queries/use-remove-friend");
 
-import * as useFriendsModule from "../queries/use-friends";
+import * as useFriendsModule from "@/shared/queries/use-friends";
 import * as useRemoveFriendModule from "../queries/use-remove-friend";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

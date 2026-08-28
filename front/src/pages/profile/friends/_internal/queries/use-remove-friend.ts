@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/shared/api/api";
 import { API_ROUTES } from "@/shared/constants/api-routes";
-import type { AcceptedFriend } from "../types/friends-schema";
+import type { AcceptedFriend } from "@/shared/types/friend";
 
 async function handleMutate(
   queryClient: ReturnType<typeof useQueryClient>,

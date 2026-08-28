@@ -7,14 +7,14 @@ import { FriendsContainer } from "./friends.container";
 
 // Mock modules
 import * as useFriendsTabsModule from "../hooks/use-friends-tabs";
-import * as useFriendsModule from "../queries/use-friends";
+import * as useFriendsModule from "@/shared/queries/use-friends";
 import * as useRemoveFriendModule from "../queries/use-remove-friend";
-import * as useReceivedCountModule from "../queries/use-received-count";
+import * as useReceivedCountModule from "@/shared/queries/use-received-count";
 
 vi.mock("../hooks/use-friends-tabs");
-vi.mock("../queries/use-friends");
+vi.mock("@/shared/queries/use-friends");
 vi.mock("../queries/use-remove-friend");
-vi.mock("../queries/use-received-count");
+vi.mock("@/shared/queries/use-received-count");
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -201,6 +201,6 @@ describe("FriendsContainer", () => {
 // UA-008 — Rechargement du count au chargement de la page : COUVERT
 //   → le badge est monté dans la liste d'onglets, donc interrogé quel que soit
 //     l'onglet actif
-// UA-006 / UA-007 / INV-008 — badge : received-count-badge.view.test.tsx
+// UA-006 / UA-007 / INV-008 — badge : shared/components/molecules/count-badge.test.tsx
 // UA-010 / INV-007 — masquage à zéro : received-count-badge.container.test.tsx
 // UA-009 — rafraîchissement au clic sur "Reçues" : use-friends-tabs.test.ts

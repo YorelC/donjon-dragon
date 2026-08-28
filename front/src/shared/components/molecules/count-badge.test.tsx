@@ -1,15 +1,15 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { ReceivedCountBadgeView } from "./received-count-badge.view";
+import { CountBadge } from "./count-badge";
 
-describe("ReceivedCountBadgeView", () => {
+describe("CountBadge", () => {
   describe("UA-006 — Affichage du nombre de demandes reçues", () => {
     it.each([
       { count: 1, expected: "1" },
       { count: 3, expected: "3" },
       { count: 9, expected: "9" },
     ])("affiche '$expected' pour $count demande(s)", ({ count, expected }) => {
-      render(<ReceivedCountBadgeView count={count} />);
+      render(<CountBadge count={count} />);
 
       expect(screen.getByText(expected)).toBeInTheDocument();
     });
@@ -19,7 +19,7 @@ describe("ReceivedCountBadgeView", () => {
     it.each([{ count: 10 }, { count: 15 }, { count: 99 }])(
       "affiche '9+' pour $count demandes",
       ({ count }) => {
-        render(<ReceivedCountBadgeView count={count} />);
+        render(<CountBadge count={count} />);
 
         expect(screen.getByText("9+")).toBeInTheDocument();
       },
@@ -28,10 +28,9 @@ describe("ReceivedCountBadgeView", () => {
 
   describe("INV-008 — aria-label du badge", () => {
     it("annonce le nombre exact jusqu'à 9", () => {
-      render(<ReceivedCountBadgeView count={5} />);
+      render(<CountBadge count={5} />);
 
-      expect(screen.getByText("5")).toHaveAttribute(
-        "aria-label",
+      expect(screen.getByRole("status")).toHaveAccessibleName(
         "5 demandes en attente",
       );
     });
@@ -39,10 +38,9 @@ describe("ReceivedCountBadgeView", () => {
     it.each([{ count: 10 }, { count: 42 }])(
       "annonce 'Plus de 9 demandes en attente' pour $count",
       ({ count }) => {
-        render(<ReceivedCountBadgeView count={count} />);
+        render(<CountBadge count={count} />);
 
-        expect(screen.getByText("9+")).toHaveAttribute(
-          "aria-label",
+        expect(screen.getByRole("status")).toHaveAccessibleName(
           "Plus de 9 demandes en attente",
         );
       },
@@ -58,7 +56,7 @@ describe("ReceivedCountBadgeView", () => {
     });
 
     it.each(cases)("∀ count=$count : affiche '$expected'", ({ count, expected }) => {
-      render(<ReceivedCountBadgeView count={count} />);
+      render(<CountBadge count={count} />);
 
       expect(screen.getByText(expected)).toBeInTheDocument();
     });
@@ -71,4 +69,4 @@ describe("ReceivedCountBadgeView", () => {
 // INV-008 — Truncation "9+" + aria-label : COUVERT
 // Property-based (∀ count ∈ [1..100]) : COUVERT
 // UA-010 / INV-007 — Masquage à zéro : hors de cette view, la décision de ne rien
-//   rendre appartient au container → received-count-badge.container.test.tsx
+//   rendre appartient au container → pages/profile/friends/_internal/containers/received-count-badge.container.test.tsx

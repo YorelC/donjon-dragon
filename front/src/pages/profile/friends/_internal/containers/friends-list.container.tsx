@@ -1,4 +1,4 @@
-import { useFriends } from "../queries/use-friends";
+import { useFriends } from "@/shared/queries/use-friends";
 import { useFriendRemoval } from "../hooks/use-friend-removal";
 import { FriendsListView } from "../views/friends-list.view";
 
