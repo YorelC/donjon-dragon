@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { INVITATION_COUNT_KEY } from "../queries/use-invitation-count";
+import { CAMPAIGN_INVITATION_COUNT_KEY } from "@/shared/queries/use-campaign-invitation-count";
 
 export type CampaignsTab = "mine" | "invitations";
 
@@ -16,7 +16,7 @@ export function useCampaignsTabs() {
   function selectTab(tab: CampaignsTab) {
     setActiveTab(tab);
     if (tab === INVITATIONS_TAB) {
-      queryClient.invalidateQueries({ queryKey: INVITATION_COUNT_KEY });
+      queryClient.invalidateQueries({ queryKey: CAMPAIGN_INVITATION_COUNT_KEY });
     }
   }
 

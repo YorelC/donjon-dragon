@@ -2,10 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import type { PendingCampaignInvitationCount } from "@donjon-dragon/shared";
 import { api } from "@/shared/api/api";
 import { API_ROUTES } from "@/shared/constants/api-routes";
-import { CAMPAIGN_INVITATIONS_KEY } from "./use-campaign-invitations";
 
-export const INVITATION_COUNT_KEY = [
-  ...CAMPAIGN_INVITATIONS_KEY,
+/**
+ * La clé est écrite en dur, et non dérivée de `CAMPAIGN_INVITATIONS_KEY` : celle-ci
+ * vit dans le `_internal` de la page Campagnes, que `shared/` n'a pas le droit de
+ * connaître. C'est le test de la mutation qui garde les deux clés emboîtées.
+ */
+export const CAMPAIGN_INVITATION_COUNT_KEY = [
+  "campaigns",
+  "invitations",
   "count",
 ] as const;
 
@@ -15,9 +20,9 @@ export const INVITATION_COUNT_KEY = [
  */
 const COUNT_STALE_TIME_MS = 30_000;
 
-export function useInvitationCount() {
+export function useCampaignInvitationCount() {
   return useQuery({
-    queryKey: INVITATION_COUNT_KEY,
+    queryKey: CAMPAIGN_INVITATION_COUNT_KEY,
     queryFn: () =>
       api.get<PendingCampaignInvitationCount>(
         API_ROUTES.campaigns.invitationsCount,

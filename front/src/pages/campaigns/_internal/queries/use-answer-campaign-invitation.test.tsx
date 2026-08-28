@@ -21,7 +21,7 @@ import {
   useRefuseCampaignInvitation,
 } from "./use-answer-campaign-invitation";
 import { CAMPAIGN_INVITATIONS_KEY } from "./use-campaign-invitations";
-import { INVITATION_COUNT_KEY } from "./use-invitation-count";
+import { CAMPAIGN_INVITATION_COUNT_KEY } from "@/shared/queries/use-campaign-invitation-count";
 import { MY_CAMPAIGNS_KEY } from "./use-my-campaigns";
 
 const CAMPAIGN_ID = "3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8";
@@ -92,9 +92,9 @@ describe("réponse à une invitation de campagne", () => {
   });
 
   it("rafraîchit le badge sans le nommer : sa clé a celle des demandes en préfixe", () => {
-    expect(INVITATION_COUNT_KEY.slice(0, CAMPAIGN_INVITATIONS_KEY.length)).toEqual([
-      ...CAMPAIGN_INVITATIONS_KEY,
-    ]);
+    expect(
+      CAMPAIGN_INVITATION_COUNT_KEY.slice(0, CAMPAIGN_INVITATIONS_KEY.length),
+    ).toEqual([...CAMPAIGN_INVITATIONS_KEY]);
   });
 
   // Le serveur masque en 404 l'absente, la terminale et celle d'un autre : le

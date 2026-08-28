@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { MISSING_META } from "@/shared/utils/display-meta";
 import {
-  MISSING_META,
-  toInitials,
   toReceivedRequestMeta,
   toRelativeDate,
   toSentRequestMeta,
@@ -12,20 +11,6 @@ const NOW = new Date("2026-08-28T12:00:00.000Z");
 function isoDaysAgo(days: number): string {
   return new Date(NOW.getTime() - days * 24 * 60 * 60 * 1000).toISOString();
 }
-
-describe("toInitials", () => {
-  it.each([
-    { name: "Gandalf", expected: "Ga" },
-    { name: "legolas", expected: "Le" },
-    { name: "  Brunehilde  ", expected: "Br" },
-  ])("réduit $name à $expected", ({ name, expected }) => {
-    expect(toInitials(name)).toBe(expected);
-  });
-
-  it("signale un pseudo vide au lieu d'inventer des initiales", () => {
-    expect(toInitials("   ")).toBe(MISSING_META);
-  });
-});
 
 describe("toRelativeDate", () => {
   beforeEach(() => {

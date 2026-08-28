@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/shared/utils/utils";
 import { Diamond } from "@/shared/components/molecules/diamond";
-import { toInitials } from "../utils/friend-meta";
+import { toInitials } from "@/shared/utils/display-meta";
 
 /**
  * `settled` : un compagnon acquis. `pending` : une demande reçue, mise en avant

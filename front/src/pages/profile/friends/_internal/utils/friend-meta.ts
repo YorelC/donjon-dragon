@@ -1,3 +1,5 @@
+import { MISSING_META } from "@/shared/utils/display-meta";
+
 /**
  * Ce qu'on affiche sous un pseudo — et rien d'autre.
  *
@@ -6,7 +8,6 @@
  * seul. Seules les demandes portent une méta, parce qu'elles portent une date
  * réelle. Ce qui manque encore côté serveur : `docs/friends-meta-backend-gaps.md`.
  */
-export const MISSING_META = "—";
 
 export function toReceivedRequestMeta(createdAt: string): string {
   return `Demande reçue ${toRelativeDate(createdAt)}`;
@@ -14,14 +15,6 @@ export function toReceivedRequestMeta(createdAt: string): string {
 
 export function toSentRequestMeta(createdAt: string): string {
   return `Invitation envoyée ${toRelativeDate(createdAt)}`;
-}
-
-/** Deux lettres, comme sur le médaillon losange de la charte. */
-export function toInitials(displayName: string): string {
-  const trimmed = displayName.trim();
-  if (trimmed.length === 0) return MISSING_META;
-
-  return trimmed.charAt(0).toUpperCase() + trimmed.charAt(1).toLowerCase();
 }
 
 const MINUTE_MS = 60_000;
