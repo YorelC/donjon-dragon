@@ -29,6 +29,7 @@ script:post-response {
 tests {
   test('crée la campagne et son premier MJ', function() {
     expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().isOwner).to.equal(true);
     expect(res.getBody().gameMasterCount).to.equal(1);
     expect(res.getBody().playerCount).to.equal(0);
   });

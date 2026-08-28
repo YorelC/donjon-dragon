@@ -16,8 +16,8 @@ import type { CampaignCreationResult } from './ports/campaign.repository.port';
  * l'identité système des autres joueurs. Des compteurs suffisent à la liste, le
  * détail d'une campagne donne les pseudos.
  *
- * `myRole` se lit du point de vue de CELUI qui demande : la même campagne se
- * résume différemment selon le lecteur.
+ * `myRole` et `isOwner` se lisent du point de vue de CELUI qui demande : la même
+ * campagne se résume différemment selon le lecteur.
  */
 export function toCampaignSummary(
   campaign: Campaign,
@@ -27,19 +27,27 @@ export function toCampaignSummary(
     id: campaign.id.value,
     name: campaign.name.value,
     myRole: campaign.roleOf(viewerId),
+    isOwner: campaign.isOwner(viewerId),
     gameMasterCount: campaign.gameMasters().length,
     playerCount: campaign.players().length,
   };
 }
 
+/**
+ * Le créateur est le premier propriétaire, et le seul membre : personne d'autre ne
+ * peut recevoir ce résumé, mais on le calcule quand même plutôt que de l'affirmer.
+ */
 export function creationResultToSummary(
   result: CampaignCreationResult,
   viewerId: UserId,
 ): CampaignSummary {
+  const isOwner = result.ownerUserId === viewerId.value;
+
   return {
     id: result.campaignId,
     name: result.name,
-    myRole: result.ownerUserId === viewerId.value ? 'gameMaster' : 'player',
+    myRole: isOwner ? 'gameMaster' : 'player',
+    isOwner,
     gameMasterCount: result.gameMasterCount,
     playerCount: result.playerCount,
   };

@@ -48,11 +48,16 @@ export const CampaignRevisionSchema = z.number().int().min(0);
  * Aucun `userId` n'en sort — même raison que pour les amitiés : le client n'a pas
  * à connaître l'identité système des autres joueurs. Des compteurs suffisent ici,
  * le détail d'une campagne donne les pseudos.
+ *
+ * `isOwner` est calculé par le serveur, comme dans `CampaignDetailSchema` : c'est un
+ * DROIT, et un droit ne se déduit pas côté client d'une comparaison de pseudos.
+ * `myRole` dit la position du lecteur, `isOwner` dit ce qui n'appartient qu'à un seul.
  */
 export const CampaignSummarySchema = z.object({
   id: z.string().uuid(),
   name: campaignNameField(),
   myRole: CampaignRoleEnum,
+  isOwner: z.boolean(),
   gameMasterCount: z.number().int().min(1),
   playerCount: z.number().int().min(0),
 });

@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 import { describe, it, expect } from 'vitest';
 import { CAMPAIGN_NAME_RULES } from '@donjon-dragon/shared/campaign-schema';
 import { UserId } from '@kernel/domain/user-id';
+import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
 
 import { CAMPAIGN_NAME_LENGTH } from '../domain/campaign-name';
 import { aCampaign, withPlayer } from '../testing/campaign.fixture';
@@ -37,5 +38,16 @@ describe('toCampaignSummary', () => {
       'gameMaster',
     );
     expect(toCampaignSummary(campaign, UserId.create(frodoId)).myRole).toBe('player');
+  });
+
+  it('distingue la propriété du rôle : un second maître du jeu ne possède rien', () => {
+    const campaign = withPlayer(aCampaign(gandalfId), gandalfId, frodoId);
+    campaign.promote(UserId.create(gandalfId), UserId.create(frodoId), TEST_INSTANT);
+
+    const promoted = toCampaignSummary(campaign, UserId.create(frodoId));
+
+    expect(promoted.myRole).toBe('gameMaster');
+    expect(promoted.isOwner).toBe(false);
+    expect(toCampaignSummary(campaign, UserId.create(gandalfId)).isOwner).toBe(true);
   });
 });

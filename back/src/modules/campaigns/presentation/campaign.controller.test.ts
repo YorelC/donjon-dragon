@@ -31,6 +31,7 @@ const aSummary = () => ({
   id: randomUUID(),
   name: 'La Malédiction de Strahd',
   myRole: 'gameMaster' as const,
+  isOwner: true,
   gameMasterCount: 1,
   playerCount: 0,
 });

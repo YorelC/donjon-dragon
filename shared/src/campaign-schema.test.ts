@@ -81,12 +81,19 @@ describe('CampaignSummarySchema', () => {
     id: '3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8',
     name: shortest,
     myRole: 'gameMaster',
+    isOwner: true,
     gameMasterCount: 1,
     playerCount: 0,
   };
 
   it('accepte un résumé complet', () => {
     expect(CampaignSummarySchema.safeParse(valid).success).toBe(true);
+  });
+
+  it('exige la propriété : un maître du jeu n est pas forcément propriétaire', () => {
+    const { isOwner: _omitted, ...withoutOwnership } = valid;
+
+    expect(CampaignSummarySchema.safeParse(withoutOwnership).success).toBe(false);
   });
 
   it('exige au moins un maître du jeu : une campagne n est jamais orpheline', () => {

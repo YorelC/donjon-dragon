@@ -30,6 +30,7 @@ describe('CreateCampaignUseCase', () => {
     const summary = await create();
 
     expect(summary.myRole).toBe('gameMaster');
+    expect(summary.isOwner).toBe(true);
     expect(summary.gameMasterCount).toBe(1);
     expect(summary.playerCount).toBe(0);
     expect(summary.name).toBe(A_CAMPAIGN_NAME);

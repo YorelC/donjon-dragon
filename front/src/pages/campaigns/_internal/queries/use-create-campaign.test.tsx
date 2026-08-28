@@ -21,6 +21,7 @@ const CREATED: CampaignSummary = {
   id: "3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8",
   name: "La Malédiction de Strahd",
   myRole: "gameMaster",
+  isOwner: true,
   gameMasterCount: 1,
   playerCount: 0,
 };

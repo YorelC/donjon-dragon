@@ -50,6 +50,16 @@ describe('ListMyCampaignsUseCase', () => {
     expect(campaign?.myRole).toBe('player');
   });
 
+  it('rend la propriété du LECTEUR : un invité ne possède pas la campagne', async () => {
+    await campaignRepo.save(withPlayer(aCampaign(gandalfId), gandalfId, frodoId));
+
+    const [guest] = await useCase.execute({ userId: anActor(frodoId) });
+    const [founder] = await useCase.execute({ userId: anActor(gandalfId) });
+
+    expect(guest?.isOwner).toBe(false);
+    expect(founder?.isOwner).toBe(true);
+  });
+
   it('compte séparément maîtres du jeu et joueurs actifs', async () => {
     const campaign = withPlayer(aCampaign(gandalfId), gandalfId, frodoId);
     await campaignRepo.save(campaign);
