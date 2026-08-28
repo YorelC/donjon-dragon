@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/atoms/dialog";
+import { Diamond } from "@/shared/components/molecules/diamond";
 import { FormTextInput } from "@/shared/components/molecules/form-text-input";
 import type { FormState } from "@/shared/types/ui-state";
 
@@ -27,7 +28,10 @@ export function CreateCampaignView({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button>Créer une campagne</Button>
+        <Button>
+          <Diamond tone="filled" />
+          Nouvelle campagne
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

@@ -8,5 +8,5 @@ export function ReceivedCountBadgeContainer() {
   // celle du compteur est un préfixe : il se rafraîchit sans refetch manuel.
   if (!data?.count) return null;
 
-  return <CountBadge count={data.count} />;
+  return <CountBadge count={data.count} pending="demandes d'amis" />;
 }

@@ -10,5 +10,5 @@ export function ProfileRequestsBadge() {
 
   if (!data?.count) return null;
 
-  return <CountBadge count={data.count} />;
+  return <CountBadge count={data.count} pending="demandes d'amis" />;
 }

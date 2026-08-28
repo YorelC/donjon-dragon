@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import type { CampaignSummary } from "@donjon-dragon/shared";
+import { TooltipProvider } from "@/shared/components/atoms/tooltip";
 import type { QueryState } from "@/shared/types/ui-state";
 import { MyCampaignsView } from "./my-campaigns.view";
 
@@ -25,12 +26,17 @@ function queryState(
   return { data: [aCampaign()], loading: false, error: false, ...overrides };
 }
 
-/** La carte est un lien : il lui faut un routeur, mais plus aucun provider de données. */
+/**
+ * La ligne porte un lien et une infobulle : il lui faut un routeur et le provider
+ * d'infobulles, mais toujours aucun provider de données.
+ */
 function renderList(campaigns: QueryState<CampaignSummary[]> = queryState()) {
   return render(
-    <MemoryRouter>
-      <MyCampaignsView campaigns={campaigns} />
-    </MemoryRouter>,
+    <TooltipProvider>
+      <MemoryRouter>
+        <MyCampaignsView campaigns={campaigns} />
+      </MemoryRouter>
+    </TooltipProvider>,
   );
 }
 
@@ -59,6 +65,14 @@ describe("MyCampaignsView (view pure)", () => {
     ).toBeInTheDocument();
   });
 
+  it("porte les effectifs sous le nom", () => {
+    renderList(
+      queryState({ data: [aCampaign({ gameMasterCount: 2, playerCount: 3 })] }),
+    );
+
+    expect(screen.getByText("2 maîtres du jeu · 3 joueurs")).toBeInTheDocument();
+  });
+
   it("liste chaque campagne par son nom", () => {
     renderList(
       queryState({
@@ -76,41 +90,32 @@ describe("MyCampaignsView (view pure)", () => {
   it.each([
     ["gameMaster" as const, "Maître du jeu"],
     ["player" as const, "Joueur"],
-  ])("affiche le rôle du lecteur (%s)", (myRole, label) => {
+  ])("annonce le rôle du lecteur (%s) sous son marqueur", (myRole, label) => {
     renderList(queryState({ data: [aCampaign({ myRole })] }));
 
-    expect(screen.getByText(label)).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`^${label}\\.`))).toBeInTheDocument();
   });
 
-  it("accorde les effectifs au singulier", () => {
-    renderList(
-      queryState({ data: [aCampaign({ gameMasterCount: 1, playerCount: 1 })] }),
-    );
+  it("annonce la propriété, que le rôle ne dit pas", () => {
+    renderList(queryState({ data: [aCampaign({ isOwner: false })] }));
 
-    expect(screen.getByText(/1 maître du jeu · 1 joueur/)).toBeInTheDocument();
-  });
-
-  it("accorde les effectifs au pluriel", () => {
-    renderList(
-      queryState({ data: [aCampaign({ gameMasterCount: 2, playerCount: 3 })] }),
-    );
-
-    expect(screen.getByText(/2 maîtres du jeu · 3 joueurs/)).toBeInTheDocument();
-  });
-
-  it("accorde zéro joueur au singulier", () => {
-    renderList(queryState({ data: [aCampaign({ playerCount: 0 })] }));
-
-    expect(screen.getByText(/0 joueur$/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Campagne créée par un autre joueur\./),
+    ).toBeInTheDocument();
   });
 
   it("mène au détail de la campagne, quel que soit le rôle", () => {
     renderList(queryState({ data: [aCampaign({ myRole: "player" })] }));
 
-    expect(screen.getByRole("link")).toHaveAttribute(
-      "href",
-      "/campaigns/3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8",
-    );
+    expect(
+      screen.getByRole("link", { name: "Ouvrir La Malédiction de Strahd" }),
+    ).toHaveAttribute("href", "/campaigns/3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8");
+  });
+
+  it("n'expose qu'un seul élément cliquable par ligne", () => {
+    renderList(queryState({ data: [aCampaign()] }));
+
+    expect(screen.getAllByRole("link")).toHaveLength(1);
   });
 
   it("n'expose plus l'invitation depuis la liste : elle vit dans le détail", () => {

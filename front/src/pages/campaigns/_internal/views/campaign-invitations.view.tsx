@@ -1,7 +1,8 @@
 import type { CampaignInvitation } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
-import { Card, CardContent } from "@/shared/components/atoms/card";
+import { Diamond } from "@/shared/components/molecules/diamond";
 import type { QueryState } from "@/shared/types/ui-state";
+import { toInitials } from "@/shared/utils/display-meta";
 import type { InvitationAnswer } from "../hooks/use-invitation-answer";
 
 interface CampaignInvitationsViewProps {
@@ -29,7 +30,7 @@ export function CampaignInvitationsView({
     );
 
   return (
-    <div className="space-y-2">
+    <ul className="flex flex-col gap-2.5">
       {invitations.data.map((invitation) => (
         <InvitationRow
           key={invitation.campaignId}
@@ -37,7 +38,7 @@ export function CampaignInvitationsView({
           answer={answer}
         />
       ))}
-    </div>
+    </ul>
   );
 }
 
@@ -46,19 +47,31 @@ interface InvitationRowProps {
   answer: InvitationAnswer;
 }
 
+/** Ton « en attente » : la ligne est mise en avant parce qu'elle attend une réponse. */
 function InvitationRow({ invitation, answer }: InvitationRowProps) {
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between gap-4 p-4">
-        <div className="grid gap-0.5">
-          <span className="font-medium">{invitation.name}</span>
-          <span className="muted-text-xs">
-            Invitation de {invitation.invitedBy.displayName}
-          </span>
-        </div>
-        <InvitationActions invitation={invitation} answer={answer} />
-      </CardContent>
-    </Card>
+    <li className="flex items-center justify-between gap-5 border border-gold/28 bg-gold/5 px-5 py-4">
+      <InvitationIdentity invitation={invitation} />
+      <InvitationActions invitation={invitation} answer={answer} />
+    </li>
+  );
+}
+
+function InvitationIdentity({ invitation }: { invitation: CampaignInvitation }) {
+  return (
+    <div className="flex min-w-0 items-center gap-[18px]">
+      <Diamond size="badge" tone="active">
+        {toInitials(invitation.name)}
+      </Diamond>
+      <div className="flex min-w-0 flex-col gap-[5px]">
+        <span className="truncate font-display text-base tracking-meta text-gold-title">
+          {invitation.name}
+        </span>
+        <span className="meta-line truncate">
+          Invitation de {invitation.invitedBy.displayName}
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -67,13 +80,12 @@ function InvitationActions({ invitation, answer }: InvitationRowProps) {
   const isPending = answer.pendingCampaignId === campaignId;
 
   return (
-    <div className="flex shrink-0 gap-2">
-      <Button size="sm" disabled={isPending} onClick={() => answer.onAccept(campaignId)}>
-        Accepter
+    <div className="flex shrink-0 items-center gap-2.5">
+      <Button disabled={isPending} onClick={() => answer.onAccept(campaignId)}>
+        Rejoindre
       </Button>
       <Button
         variant="outline"
-        size="sm"
         disabled={isPending}
         onClick={() => answer.onRefuse(campaignId)}
       >

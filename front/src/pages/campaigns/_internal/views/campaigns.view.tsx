@@ -4,7 +4,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/atoms/tabs";
+import { OrnateCorners } from "@/shared/components/molecules/ornate-corners";
 import type { CampaignsTab } from "../hooks/use-campaigns-tabs";
+import type { CampaignsCounts } from "../hooks/use-campaigns-counts";
 import { CampaignInvitationsContainer } from "../containers/campaign-invitations.container";
 import { CreateCampaignContainer } from "../containers/create-campaign.container";
 import { InvitationCountBadgeContainer } from "../containers/invitation-count-badge.container";
@@ -13,42 +15,84 @@ import { MyCampaignsContainer } from "../containers/my-campaigns.container";
 interface CampaignsViewProps {
   activeTab: CampaignsTab;
   onTabChange: (tab: CampaignsTab) => void;
+  counts: CampaignsCounts;
 }
 
-export function CampaignsView({ activeTab, onTabChange }: CampaignsViewProps) {
+/** La route n'a pas de layout : elle pose son propre panneau, comme le Profil. */
+export function CampaignsView({
+  activeTab,
+  onTabChange,
+  counts,
+}: CampaignsViewProps) {
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <CampaignsHeader />
-      <Tabs
-        value={activeTab}
-        onValueChange={(tab) => onTabChange(tab as CampaignsTab)}
-      >
-        <CampaignsTabsList />
-        <CampaignsTabsPanels />
-      </Tabs>
+    <div className="p-5">
+      <main className="panel flex min-w-0 flex-col gap-[22px]">
+        <OrnateCorners />
+        <CampaignsHeader counts={counts} />
+        <Tabs
+          value={activeTab}
+          onValueChange={(tab) => onTabChange(tab as CampaignsTab)}
+        >
+          <CampaignsTabsList counts={counts} />
+          <CampaignsTabsPanels />
+        </Tabs>
+      </main>
     </div>
   );
 }
 
-function CampaignsHeader() {
+function CampaignsHeader({ counts }: { counts: CampaignsCounts }) {
   return (
-    <div className="mb-6 flex items-center justify-between gap-4">
-      <h1 className="section-title text-2xl">Campagnes</h1>
+    <div className="flex items-end justify-between gap-6">
+      <div>
+        <span className="eyebrow">{counts.campaigns} en cours</span>
+        <h1 className="page-title mt-1.5 pb-0">Campagnes</h1>
+      </div>
       <CreateCampaignContainer />
     </div>
   );
 }
 
-function CampaignsTabsList() {
+function CampaignsTabsList({ counts }: { counts: CampaignsCounts }) {
   return (
-    <TabsList className="grid w-full grid-cols-2">
-      <TabsTrigger value="mine">Mes campagnes en cours</TabsTrigger>
-      <TabsTrigger value="invitations" className="gap-2">
-        Demandes de campagne
+    <TabsList variant="line" className="h-auto flex-wrap gap-2">
+      <CampaignsTabTrigger value="mine" label="Mes campagnes en cours">
+        <TabCount count={counts.campaigns} />
+      </CampaignsTabTrigger>
+      <CampaignsTabTrigger value="invitations" label="Demandes de campagne">
         <InvitationCountBadgeContainer />
-      </TabsTrigger>
+      </CampaignsTabTrigger>
     </TabsList>
   );
+}
+
+interface CampaignsTabTriggerProps {
+  value: CampaignsTab;
+  label: string;
+  children: React.ReactNode;
+}
+
+function CampaignsTabTrigger({
+  value,
+  label,
+  children,
+}: CampaignsTabTriggerProps) {
+  return (
+    <TabsTrigger
+      value={value}
+      className="h-auto flex-none border-gold/20 px-[18px] py-2.5"
+    >
+      {label}
+      {children}
+    </TabsTrigger>
+  );
+}
+
+/** Un décompte nul ne mérite pas d'être affiché : la liste vide le dira. */
+function TabCount({ count }: { count: number }) {
+  if (count === 0) return null;
+
+  return <span className="muted-text-xs">{count}</span>;
 }
 
 function CampaignsTabsPanels() {

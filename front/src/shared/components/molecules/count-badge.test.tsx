@@ -9,7 +9,7 @@ describe("CountBadge", () => {
       { count: 3, expected: "3" },
       { count: 9, expected: "9" },
     ])("affiche '$expected' pour $count demande(s)", ({ count, expected }) => {
-      render(<CountBadge count={count} />);
+      render(<CountBadge count={count} pending="demandes d'amis" />);
 
       expect(screen.getByText(expected)).toBeInTheDocument();
     });
@@ -19,7 +19,7 @@ describe("CountBadge", () => {
     it.each([{ count: 10 }, { count: 15 }, { count: 99 }])(
       "affiche '9+' pour $count demandes",
       ({ count }) => {
-        render(<CountBadge count={count} />);
+        render(<CountBadge count={count} pending="demandes d'amis" />);
 
         expect(screen.getByText("9+")).toBeInTheDocument();
       },
@@ -28,20 +28,20 @@ describe("CountBadge", () => {
 
   describe("INV-008 — aria-label du badge", () => {
     it("annonce le nombre exact jusqu'à 9", () => {
-      render(<CountBadge count={5} />);
+      render(<CountBadge count={5} pending="demandes d'amis" />);
 
       expect(
-        screen.getByLabelText("5 demandes en attente"),
+        screen.getByLabelText("5 demandes d'amis en attente"),
       ).toBeInTheDocument();
     });
 
     it.each([{ count: 10 }, { count: 42 }])(
-      "annonce 'Plus de 9 demandes en attente' pour $count",
+      "annonce 'Plus de 9 demandes d'amis en attente' pour $count",
       ({ count }) => {
-        render(<CountBadge count={count} />);
+        render(<CountBadge count={count} pending="demandes d'amis" />);
 
         expect(
-          screen.getByLabelText("Plus de 9 demandes en attente"),
+          screen.getByLabelText("Plus de 9 demandes d'amis en attente"),
         ).toBeInTheDocument();
       },
     );
@@ -56,7 +56,7 @@ describe("CountBadge", () => {
     });
 
     it.each(cases)("∀ count=$count : affiche '$expected'", ({ count, expected }) => {
-      render(<CountBadge count={count} />);
+      render(<CountBadge count={count} pending="demandes d'amis" />);
 
       expect(screen.getByText(expected)).toBeInTheDocument();
     });

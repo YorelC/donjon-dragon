@@ -80,10 +80,16 @@ describe("CampaignInvitationsView (view pure)", () => {
     expect(screen.getByText("Invitation de Gandalf")).toBeInTheDocument();
   });
 
+  it("frappe le médaillon des initiales de la campagne", () => {
+    renderList();
+
+    expect(screen.getByText("La", { selector: "span" })).toBeInTheDocument();
+  });
+
   it("accepte la demande de la bonne campagne", async () => {
     const { answer } = renderList();
 
-    await userEvent.click(screen.getByRole("button", { name: "Accepter" }));
+    await userEvent.click(screen.getByRole("button", { name: "Rejoindre" }));
 
     expect(answer.onAccept).toHaveBeenCalledWith(CAMPAIGN_ID);
     expect(answer.onRefuse).not.toHaveBeenCalled();
@@ -101,7 +107,7 @@ describe("CampaignInvitationsView (view pure)", () => {
   it("désactive les deux boutons de la ligne en cours de réponse", () => {
     renderList(queryState(), answerState({ pendingCampaignId: CAMPAIGN_ID }));
 
-    expect(screen.getByRole("button", { name: "Accepter" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Rejoindre" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Refuser" })).toBeDisabled();
   });
 
@@ -112,7 +118,7 @@ describe("CampaignInvitationsView (view pure)", () => {
       answerState({ pendingCampaignId: CAMPAIGN_ID }),
     );
 
-    const acceptButtons = screen.getAllByRole("button", { name: "Accepter" });
+    const acceptButtons = screen.getAllByRole("button", { name: "Rejoindre" });
 
     expect(acceptButtons[0]).toBeDisabled();
     expect(acceptButtons[1]).toBeEnabled();

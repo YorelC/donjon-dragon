@@ -51,20 +51,26 @@ describe("CreateCampaignView (view pure)", () => {
     renderDialog({ open: false });
 
     expect(
-      screen.getByRole("button", { name: "Créer une campagne" }),
+      screen.getByRole("button", { name: "Nouvelle campagne" }),
     ).toBeInTheDocument();
   });
 
+  // Le déclencheur porte le même intitulé que la modale : c'est le titre, et non le
+  // texte, qui distingue la modale ouverte de son bouton d'ouverture.
   it("ne montre pas le formulaire tant que la modale est fermée", () => {
     renderDialog({ open: false });
 
-    expect(screen.queryByText("Nouvelle campagne")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: "Nouvelle campagne" }),
+    ).not.toBeInTheDocument();
   });
 
   it("montre le champ de nom quand la modale est ouverte", () => {
     renderDialog();
 
-    expect(screen.getByText("Nouvelle campagne")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Nouvelle campagne" }),
+    ).toBeInTheDocument();
     expect(screen.getByLabelText("Nom de la campagne")).toBeInTheDocument();
   });
 
@@ -72,7 +78,7 @@ describe("CreateCampaignView (view pure)", () => {
     const { props } = renderDialog({ open: false });
 
     await userEvent.click(
-      screen.getByRole("button", { name: "Créer une campagne" }),
+      screen.getByRole("button", { name: "Nouvelle campagne" }),
     );
 
     expect(props.onOpenChange).toHaveBeenCalledWith(true);
