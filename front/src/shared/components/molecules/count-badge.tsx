@@ -12,7 +12,7 @@ interface CountBadgeViewProps {
  */
 function CountBadge({ count }: CountBadgeViewProps) {
   return (
-    <span role="status" aria-label={toCountLabel(count)}>
+    <span aria-label={toCountLabel(count)}>
       <Diamond size="count" tone="stamp">
         {toCountText(count)}
       </Diamond>

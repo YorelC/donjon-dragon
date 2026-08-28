@@ -25,11 +25,11 @@ export function SentRequestsView({ requests }: SentRequestsViewProps) {
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <ul className="flex flex-col gap-2.5">
       {requests.data.map((request) => (
         <SentRequestRow key={request.id} request={request} />
       ))}
-    </div>
+    </ul>
   );
 }
 

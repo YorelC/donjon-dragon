@@ -77,7 +77,7 @@ function SearchResults({ results, pagination, invitation }: SearchResultsProps) 
 
   return (
     <ScrollArea className="h-96">
-      <div className="flex flex-col gap-2.5">
+      <ul className="flex flex-col gap-2.5">
         {results.data.map((user) => (
           <UserSearchResultRow
             key={user.displayName}
@@ -86,7 +86,7 @@ function SearchResults({ results, pagination, invitation }: SearchResultsProps) 
           />
         ))}
         <InfiniteScrollSentinel pagination={pagination} />
-      </div>
+      </ul>
     </ScrollArea>
   );
 }
@@ -95,9 +95,9 @@ function InfiniteScrollSentinel({ pagination }: { pagination: SearchPagination }
   if (!pagination.hasNextPage) return null;
 
   return (
-    <div ref={pagination.sentinelRef} className="empty-state-text py-2 text-center">
+    <li ref={pagination.sentinelRef} className="empty-state-text py-2 text-center">
       {pagination.isFetchingNextPage ? "Chargement..." : ""}
-    </div>
+    </li>
   );
 }
 

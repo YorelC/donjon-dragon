@@ -31,7 +31,7 @@ export function ReceivedRequestsView({
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <ul className="flex flex-col gap-2.5">
       {requests.data.map((request) => (
         <ReceivedRequestRow
           key={request.id}
@@ -39,7 +39,7 @@ export function ReceivedRequestsView({
           moderation={moderation}
         />
       ))}
-    </div>
+    </ul>
   );
 }
 

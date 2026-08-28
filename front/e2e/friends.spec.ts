@@ -58,7 +58,9 @@ test.describe('Recherche de joueurs', () => {
   }) => {
     await friendsPage.search('zzzqqq');
 
-    await expect(page.getByText('Aucun résultat trouvé')).toBeVisible();
+    await expect(
+      page.getByText('Aucun joueur ne correspond à cette recherche.'),
+    ).toBeVisible();
   });
 
   // 50 comptes seedés sous ce préfixe (back/src/scripts/seed-users.script.ts) : de
@@ -195,10 +197,7 @@ test.describe("Suppression d'un ami", () => {
   });
 
   test("la confirmation nomme l'ami concerné", async ({ friendsPage, page }) => {
-    await friendsPage
-      .row(ACCOUNTS.legolas.displayName)
-      .getByRole('button', { name: 'Supprimer' })
-      .click();
+    await friendsPage.openRemovalDialog(ACCOUNTS.legolas.displayName);
 
     // Le titre précisément : la description reprend le même pseudo, et un locator par
     // texte seul en attrapait deux.

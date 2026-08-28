@@ -15,8 +15,12 @@ export class FriendsPage {
   constructor(private readonly page: Page) {
     this.searchInput = page.getByLabel('Rechercher un joueur');
     // Le badge porte un aria-label qui enonce le compte : on le cible par ce
-    // libelle plutot que par son texte tronque ("9+").
-    this.receivedBadge = page.getByLabel(/demandes? en attente|Plus de 9 demandes/);
+    // libelle plutot que par son texte tronque ("9+"). Il faut le restreindre a
+    // l'onglet : le bandeau de tete affiche le MEME compteur, avec le meme
+    // libelle, et un locator global en attraperait deux.
+    this.receivedBadge = page
+      .getByRole('tab', { name: /^Reçues/ })
+      .getByLabel(/demandes? en attente|Plus de 9 demandes/);
   }
 
   async goto(): Promise<void> {
@@ -33,13 +37,13 @@ export class FriendsPage {
     await this.searchInput.fill(query);
   }
 
-  /** La carte d'un joueur, dans l'onglet actif. */
+  /** La ligne d'un joueur, dans l'onglet actif. */
   row(displayName: string): Locator {
-    return this.page.locator('[data-slot="card"]', { hasText: displayName });
+    return this.page.getByRole('listitem').filter({ hasText: displayName });
   }
 
   async sendRequestTo(displayName: string): Promise<void> {
-    await this.row(displayName).getByRole('button', { name: 'Envoyer' }).click();
+    await this.row(displayName).getByRole('button', { name: 'Inviter' }).click();
   }
 
   async accept(displayName: string): Promise<void> {
@@ -50,9 +54,14 @@ export class FriendsPage {
     await this.row(displayName).getByRole('button', { name: 'Refuser' }).click();
   }
 
-  /** Suppression d'un ami : ouvre la confirmation, puis confirme. */
+  /**
+   * Suppression d'un ami : ouvre la confirmation, puis confirme.
+   *
+   * La ligne dit « Retirer », la modale « Supprimer » : deux libelles distincts,
+   * pour que la confirmation nomme l'acte irreversible et la ligne pas.
+   */
   async removeFriend(displayName: string): Promise<void> {
-    await this.row(displayName).getByRole('button', { name: 'Supprimer' }).click();
+    await this.openRemovalDialog(displayName);
     await this.page
       .getByRole('alertdialog')
       .getByRole('button', { name: 'Supprimer' })
@@ -60,7 +69,11 @@ export class FriendsPage {
   }
 
   async cancelRemoval(displayName: string): Promise<void> {
-    await this.row(displayName).getByRole('button', { name: 'Supprimer' }).click();
+    await this.openRemovalDialog(displayName);
     await this.page.getByRole('button', { name: 'Annuler' }).click();
+  }
+
+  async openRemovalDialog(displayName: string): Promise<void> {
+    await this.row(displayName).getByRole('button', { name: 'Retirer' }).click();
   }
 }

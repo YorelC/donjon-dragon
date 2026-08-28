@@ -31,7 +31,7 @@ interface FriendRowProps {
 
 export function FriendRow({ name, meta, tone, children }: FriendRowProps) {
   return (
-    <div
+    <li
       className={cn(
         "flex items-center justify-between gap-5 border px-[18px] py-3.5 transition-[border-color] duration-[.18s]",
         ROW_TONES[tone],
@@ -39,7 +39,7 @@ export function FriendRow({ name, meta, tone, children }: FriendRowProps) {
     >
       <FriendIdentity name={name} meta={meta} tone={tone} />
       <div className="flex items-center gap-2.5">{children}</div>
-    </div>
+    </li>
   );
 }
 

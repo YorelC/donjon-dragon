@@ -36,7 +36,7 @@ export function FriendsListView({ friends, removal }: FriendsListViewProps) {
     );
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <ul className="flex flex-col gap-2.5">
       {friends.data.map((friend) => (
         <AcceptedFriendRow
           key={friend.friendshipId}
@@ -44,7 +44,7 @@ export function FriendsListView({ friends, removal }: FriendsListViewProps) {
           removal={removal}
         />
       ))}
-    </div>
+    </ul>
   );
 }
 

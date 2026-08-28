@@ -30,9 +30,9 @@ describe("CountBadge", () => {
     it("annonce le nombre exact jusqu'à 9", () => {
       render(<CountBadge count={5} />);
 
-      expect(screen.getByRole("status")).toHaveAccessibleName(
-        "5 demandes en attente",
-      );
+      expect(
+        screen.getByLabelText("5 demandes en attente"),
+      ).toBeInTheDocument();
     });
 
     it.each([{ count: 10 }, { count: 42 }])(
@@ -40,9 +40,9 @@ describe("CountBadge", () => {
       ({ count }) => {
         render(<CountBadge count={count} />);
 
-        expect(screen.getByRole("status")).toHaveAccessibleName(
-          "Plus de 9 demandes en attente",
-        );
+        expect(
+          screen.getByLabelText("Plus de 9 demandes en attente"),
+        ).toBeInTheDocument();
       },
     );
   });
