@@ -29,6 +29,10 @@ export interface DirectoryPage {
  */
 export interface FriendDirectoryPort {
   findById(id: string): Promise<DirectoryUser | null>;
+
+  // Hydratation d'une liste : une seule lecture pour N amitiés. Sans elle, chaque
+  // ligne d'une liste d'amis rejouait une requête (N+1).
+  findByIds(ids: string[]): Promise<DirectoryUser[]>;
   findByDisplayName(displayName: string): Promise<DirectoryUser | null>;
   search(query: string, page: number, limit: number): Promise<DirectoryPage>;
 }

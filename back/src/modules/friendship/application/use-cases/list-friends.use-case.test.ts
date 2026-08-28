@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { aUser } from '@modules/user/testing/user.fixture';
 import { anActor } from '@kernel/testing/actor.fixture';
 import { toUserIdentity } from '@modules/user/application/user.mapper';
@@ -61,6 +61,23 @@ describe('ListFriendsUseCase', () => {
     expect(result.map((af) => af.friend.displayName)).toContain('bob');
     expect(result.map((af) => af.friend.displayName)).toContain('charlie');
     expect(result.every((af) => af.friendshipId)).toBe(true);
+  });
+
+  // Verrou anti-regression : la boucle d'origine relisait l'annuaire une fois par
+  // amitie (N+1). Le nombre de lectures ne doit pas dependre du nombre d'amis.
+  it('ne lit l annuaire qu une seule fois', async () => {
+    await friendshipRepo.save(
+      accept(pendingRequest(alice.id.value, bob.id.value), bob.id.value),
+    );
+    await friendshipRepo.save(
+      accept(pendingRequest(alice.id.value, charlie.id.value), charlie.id.value),
+    );
+    const findByIds = vi.spyOn(directory, 'findByIds');
+
+    await useCase.execute({ userId: anActor(alice.id.value) });
+
+    expect(findByIds).toHaveBeenCalledTimes(1);
+    expect(findByIds).toHaveBeenCalledWith([bob.id.value, charlie.id.value]);
   });
 
   // Le friendshipId reste — c'est le handle pour supprimer. L'identite de l'ami,

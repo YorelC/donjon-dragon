@@ -10,9 +10,12 @@ import {
 } from '../ports/friendship.repository.port';
 import {
   FRIEND_DIRECTORY,
+  type DirectoryUser,
   type FriendDirectoryPort,
 } from '../ports/friend-directory.port';
 import { toFriendRequestResponse, toUserSummary } from '../friendship.mapper';
+import { indexDirectoryUsers } from '../directory-index';
+import type { Friendship } from '../../domain/friendship';
 
 export interface ListPendingSentDto {
   userId: ActorId;
@@ -36,17 +39,25 @@ export class ListPendingSentUseCase {
       UserId.create(dto.userId),
     );
 
-    const result: PendingSentFriendship[] = [];
-    for (const friendship of friendships) {
-      const recipient = await this.directory.findById(friendship.recipientId.value);
-      if (recipient) {
-        result.push({
-          ...toFriendRequestResponse(friendship),
-          recipient: toUserSummary(recipient),
-        });
-      }
-    }
+    const recipients = await indexDirectoryUsers(
+      this.directory,
+      friendships.map((friendship) => friendship.recipientId.value),
+    );
 
-    return result;
+    return friendships.flatMap((friendship) =>
+      this.describe(friendship, recipients.get(friendship.recipientId.value)),
+    );
+  }
+
+  // Un destinataire introuvable dans l'annuaire disparaît de la liste plutôt que de
+  // la faire échouer : le compte a pu être supprimé sans que la demande le soit.
+  private describe(
+    friendship: Friendship,
+    recipient: DirectoryUser | undefined,
+  ): PendingSentFriendship[] {
+    if (!recipient) return [];
+    return [
+      { ...toFriendRequestResponse(friendship), recipient: toUserSummary(recipient) },
+    ];
   }
 }

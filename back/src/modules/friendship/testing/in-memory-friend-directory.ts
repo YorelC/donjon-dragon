@@ -17,6 +17,12 @@ export class InMemoryFriendDirectory implements FriendDirectoryPort {
     return this.users.get(id) ?? null;
   }
 
+  async findByIds(ids: string[]): Promise<DirectoryUser[]> {
+    return ids
+      .map((id) => this.users.get(id))
+      .filter((user): user is DirectoryUser => user !== undefined);
+  }
+
   async findByDisplayName(displayName: string): Promise<DirectoryUser | null> {
     return (
       [...this.users.values()].find((user) => user.displayName === displayName) ?? null

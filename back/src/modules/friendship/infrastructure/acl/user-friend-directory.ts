@@ -21,6 +21,10 @@ export class UserFriendDirectory implements FriendDirectoryPort {
     return this.getUserProfile.identityById(id);
   }
 
+  async findByIds(ids: string[]): Promise<DirectoryUser[]> {
+    return this.getUserProfile.identitiesByIds(ids);
+  }
+
   async findByDisplayName(displayName: string): Promise<DirectoryUser | null> {
     return this.getUserProfile.identityByDisplayName(displayName);
   }
