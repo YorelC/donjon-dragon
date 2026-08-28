@@ -22,13 +22,46 @@ export function useRealtimeInvalidation(): void {
 
   useEffect(() => {
     if (status !== SESSION_STATUS.authenticated) return;
-    const resourceChanged = createRealtimeInvalidationListener(queryClient);
-    const sessionExpired = () => void refreshAndReconnect();
-    realtimeClient.on(REALTIME_EVENT.resourceChanged, resourceChanged);
-    realtimeClient.on(REALTIME_EVENT.sessionExpired, sessionExpired);
+    const listeners = realtimeListeners(queryClient);
+    subscribe(listeners);
+    // Une session neuve a droit a sa tentative de recuperation, meme si la
+    // precedente s'est arretee sur un renouvellement impossible.
+    resetRealtimeRecovery();
     realtimeClient.connect();
-    return () => disconnect(resourceChanged, sessionExpired);
+    return () => unsubscribe(listeners);
   }, [queryClient, status]);
+}
+
+/**
+ * `session.expired` et `connect_error` disent la même chose de deux façons : le
+ * serveur a refusé cette session. La sortie est la même — renouveler puis
+ * reconnecter.
+ */
+function realtimeListeners(queryClient: QueryClient) {
+  return {
+    [REALTIME_EVENT.resourceChanged]:
+      createRealtimeInvalidationListener(queryClient),
+    [REALTIME_EVENT.sessionExpired]: () => void recoverSession(),
+    connect_error: () => void recoverSession(),
+    connect: () => {
+      recovering = false;
+    },
+  };
+}
+
+type RealtimeListeners = ReturnType<typeof realtimeListeners>;
+
+function subscribe(listeners: RealtimeListeners): void {
+  Object.entries(listeners).forEach(([event, listener]) =>
+    realtimeClient.on(event, listener),
+  );
+}
+
+function unsubscribe(listeners: RealtimeListeners): void {
+  Object.entries(listeners).forEach(([event, listener]) =>
+    realtimeClient.off(event, listener),
+  );
+  realtimeClient.disconnect();
 }
 
 export function createRealtimeInvalidationListener(
@@ -60,20 +93,32 @@ async function invalidate(
   await queryClient.invalidateQueries({ queryKey });
 }
 
-async function refreshAndReconnect(): Promise<void> {
+/**
+ * Une seule tentative à la fois, remise à zéro par l'événement `connect`.
+ *
+ * Sans ce verrou, une cause que le renouvellement ne corrige pas — une origine
+ * hors liste blanche — ferait boucler refresh et reconnexion indéfiniment.
+ */
+let recovering = false;
+
+/**
+ * `disconnect()` d'abord : il coupe la reconnexion automatique de Socket.IO, qui
+ * repartirait sinon avec le cookie encore expiré avant la fin du renouvellement.
+ */
+export async function recoverSession(): Promise<void> {
+  if (recovering) return;
+  recovering = true;
+  realtimeClient.disconnect();
+
   try {
     await refreshSession();
-    realtimeClient.connect();
   } catch {
     return;
   }
+  realtimeClient.connect();
 }
 
-function disconnect(
-  resourceChanged: (input: unknown) => void,
-  sessionExpired: () => void,
-): void {
-  realtimeClient.off(REALTIME_EVENT.resourceChanged, resourceChanged);
-  realtimeClient.off(REALTIME_EVENT.sessionExpired, sessionExpired);
-  realtimeClient.disconnect();
+/** Réservé aux tests : le verrou est un état de module. */
+export function resetRealtimeRecovery(): void {
+  recovering = false;
 }

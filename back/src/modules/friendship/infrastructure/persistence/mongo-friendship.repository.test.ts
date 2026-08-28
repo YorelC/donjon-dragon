@@ -45,16 +45,24 @@ describe('MongoFriendshipRepository', () => {
 
   it('diffuse la révision de l agrégat, pas une valeur déduite du fait', async () => {
     const createOutbox = vi.fn().mockResolvedValue([]);
-    const repository = repositoryWith(
-      modelWithUpdate(vi.fn().mockResolvedValue(null)),
-      createOutbox,
-    );
+    const repository = repositoryWith(modelWithUpdate(anExistingDocument()), createOutbox);
     const friendship = pendingRequest();
     friendship.accept(UserId.create(BOB_ID), LATER);
 
     await repository.save(friendship, COMMAND_ID);
 
     expect(writtenMessage(createOutbox).aggregateRevision).toBe(friendship.revision);
+  });
+
+  // Annoncer un fait sur une écriture sans effet ferait refetcher les deux
+  // participants pour un état inchangé.
+  it('n annonce rien quand la mise à jour ne trouve personne', async () => {
+    const createOutbox = vi.fn().mockResolvedValue([]);
+    const repository = repositoryWith(modelWithUpdate(null), createOutbox);
+
+    await repository.save(pendingRequest(), COMMAND_ID);
+
+    expect(createOutbox).not.toHaveBeenCalled();
   });
 
   // La suppression n'incrémente rien : le document part. Le fait succède quand même
@@ -99,8 +107,14 @@ function modelWithReplace(replace: ReturnType<typeof vi.fn>) {
   return { findOneAndReplace: replace } as unknown as Model<FriendshipDocument>;
 }
 
-function modelWithUpdate(update: ReturnType<typeof vi.fn>) {
-  return { findOneAndUpdate: update } as unknown as Model<FriendshipDocument>;
+function modelWithUpdate(updated: FriendshipDocument | null) {
+  return {
+    findOneAndUpdate: vi.fn().mockResolvedValue(updated),
+  } as unknown as Model<FriendshipDocument>;
+}
+
+function anExistingDocument(): FriendshipDocument {
+  return { ...pendingRequest().snapshot(), pairKey: 'pair' };
 }
 
 function modelWithDelete(document: FriendshipDocument) {

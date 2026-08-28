@@ -7,7 +7,8 @@
     "lint": "pnpm -r lint && pnpm lint:rules",
     "lint:rules": "node scripts/check-rules-coverage.mjs",
     "test": "pnpm -r test",
-    "test:e2e:api": "cd e2e/bruno && bru run --env Local --tests-only --bail",
+    "test:e2e:api": "node scripts/run-e2e-api.mjs",
+    "e2e:clean": "node scripts/drop-e2e-databases.mjs",
     "seed": "pnpm --filter back seed",
     "seed:items": "pnpm --filter back seed:items",
     "seed:monsters": "pnpm --filter back seed:monsters"

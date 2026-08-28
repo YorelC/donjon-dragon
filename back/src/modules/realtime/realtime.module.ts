@@ -7,6 +7,7 @@ import {
   OutboxMessageSchema,
 } from '@kernel/infrastructure/outbox-message.schema';
 import { AuthModule } from '@modules/auth/auth.module';
+import { REALTIME_NOTIFIER } from './application/ports/realtime-notifier.port';
 import { RealtimeOutboxRelay } from './infrastructure/realtime-outbox.relay';
 import { RealtimeGateway } from './presentation/realtime.gateway';
 
@@ -19,6 +20,12 @@ import { RealtimeGateway } from './presentation/realtime.gateway';
       { name: OUTBOX_MESSAGE_MODEL, schema: OutboxMessageSchema },
     ]),
   ],
-  providers: [RealtimeGateway, RealtimeOutboxRelay],
+  providers: [
+    RealtimeGateway,
+    // La gateway EST l'adapter sortant, mais le relais ne la connaît que par son
+    // port : l'infrastructure n'a pas à importer la présentation.
+    { provide: REALTIME_NOTIFIER, useExisting: RealtimeGateway },
+    RealtimeOutboxRelay,
+  ],
 })
 export class RealtimeModule {}

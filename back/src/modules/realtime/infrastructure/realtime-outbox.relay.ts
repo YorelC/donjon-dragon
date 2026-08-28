@@ -1,6 +1,7 @@
 import {
   Inject,
   Injectable,
+  Logger,
   OnApplicationBootstrap,
   OnApplicationShutdown,
 } from '@nestjs/common';
@@ -10,6 +11,7 @@ import { z } from 'zod';
 import {
   REALTIME_RESOURCE,
   RealtimeResourceChangedSchema,
+  type RealtimeResource,
 } from '@donjon-dragon/shared/realtime-schema';
 import { CLOCK, type Clock } from '@kernel/application/clock.port';
 import {
@@ -21,22 +23,58 @@ import {
   OUTBOX_MESSAGE_MODEL,
   type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
-import { RealtimeGateway } from '../presentation/realtime.gateway';
+import {
+  REALTIME_NOTIFIER,
+  type RealtimeNotifierPort,
+} from '../application/ports/realtime-notifier.port';
 
-const OWNER_MODULE = 'friendship';
 const POLL_INTERVAL_MS = 500;
 const LEASE_DURATION_MS = 30_000;
 const MAX_MESSAGES_PER_POLL = 20;
-const FriendshipMessageSchema = z.object({
+
+/**
+ * Les audiences dont les destinataires sont écrits dans le message.
+ *
+ * `campaign-members` et `campaign-game-masters` en sont volontairement absentes :
+ * les résoudre demande une lecture d'adhésion que la 5D n'a pas spécifiée. Leurs
+ * messages restent donc `pending` — non livrés, mais pas perdus, et ils repartiront
+ * le jour où un résolveur d'audience de campagne existera.
+ */
+const RESOLVABLE_AUDIENCES = [
+  OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
+  OUTBOX_AUDIENCE_POLICY.targetUser,
+];
+
+/**
+ * Ce que le client doit réinvalider pour chaque fait. Table fermée : un fait absent
+ * ne se diffuse pas, il part en quarantaine. Une faute de frappe ne doit jamais
+ * pouvoir déclencher une diffusion par défaut.
+ */
+const RESOURCE_BY_FACT: Record<string, RealtimeResource> = {
+  'friendship.requested': REALTIME_RESOURCE.friendships,
+  'friendship.accepted': REALTIME_RESOURCE.friendships,
+  'friendship.refused': REALTIME_RESOURCE.friendships,
+  'friendship.removed': REALTIME_RESOURCE.friendships,
+  'campaign.invitation.created': REALTIME_RESOURCE['campaign-invitations'],
+  'campaign.invitation.cancelled': REALTIME_RESOURCE['campaign-invitations'],
+};
+
+/**
+ * Le routage n'a besoin que de l'identité du message, du fait et des destinataires.
+ * La cardinalité de l'audience est déjà tenue à l'écriture par la fabrique du
+ * kernel : le relais ne rejoue pas une règle qui n'est pas la sienne.
+ */
+const DeliverableMessageSchema = z.object({
   _id: z.string().uuid(),
-  audiencePolicy: z.literal(OUTBOX_AUDIENCE_POLICY.friendshipParticipants),
-  audienceUserIds: z.array(z.string().uuid()).length(2),
+  factType: z.string().min(1),
+  audienceUserIds: z.array(z.string().uuid()).min(1),
 });
 
 @Injectable()
 export class RealtimeOutboxRelay
   implements OnApplicationBootstrap, OnApplicationShutdown
 {
+  private readonly logger = new Logger(RealtimeOutboxRelay.name);
   private timer?: ReturnType<typeof setInterval>;
   private polling = false;
 
@@ -44,7 +82,7 @@ export class RealtimeOutboxRelay
     @InjectModel(OUTBOX_MESSAGE_MODEL)
     private readonly outbox: Model<OutboxMessageDocument>,
     @Inject(CLOCK) private readonly clock: Clock,
-    private readonly gateway: RealtimeGateway,
+    @Inject(REALTIME_NOTIFIER) private readonly notifier: RealtimeNotifierPort,
   ) {}
 
   onApplicationBootstrap(): void {
@@ -68,8 +106,10 @@ export class RealtimeOutboxRelay
     this.polling = true;
     try {
       await this.drainBatch(MAX_MESSAGES_PER_POLL);
-    } catch {
-      return;
+    } catch (error: unknown) {
+      // Sans cette trace, une panne de drainage n'a qu'un symptôme : « l'interface
+      // ne se met plus à jour ».
+      this.logger.error("Drainage de l'outbox temps réel interrompu", error);
     } finally {
       this.polling = false;
     }
@@ -97,21 +137,25 @@ export class RealtimeOutboxRelay
   }
 
   private async deliver(message: OutboxMessageDocument): Promise<void> {
-    const parsed = FriendshipMessageSchema.safeParse(message);
-    if (!parsed.success) return this.markQuarantined(message._id);
-    const payload = RealtimeResourceChangedSchema.parse({
-      messageId: parsed.data._id,
-      resource: REALTIME_RESOURCE.friendships,
-    });
-    this.gateway.notifyUsers(parsed.data.audienceUserIds, payload);
-    await this.markDelivered(message._id);
+    const parsed = DeliverableMessageSchema.safeParse(message);
+    if (!parsed.success) {
+      return this.quarantine(message._id, 'enveloppe illisible');
+    }
+
+    const resource = RESOURCE_BY_FACT[parsed.data.factType];
+    if (!resource) {
+      return this.quarantine(message._id, `fait inconnu ${parsed.data.factType}`);
+    }
+
+    this.notifier.notifyUsers(
+      parsed.data.audienceUserIds,
+      RealtimeResourceChangedSchema.parse({ messageId: parsed.data._id, resource }),
+    );
+    await this.updateStatus(message._id, OUTBOX_STATUS.delivered);
   }
 
-  private async markDelivered(messageId: string): Promise<void> {
-    await this.updateStatus(messageId, OUTBOX_STATUS.delivered);
-  }
-
-  private async markQuarantined(messageId: string): Promise<void> {
+  private async quarantine(messageId: string, reason: string): Promise<void> {
+    this.logger.error(`Message ${messageId} non diffusé : ${reason}`);
     await this.updateStatus(messageId, OUTBOX_STATUS.quarantined);
   }
 
@@ -128,8 +172,8 @@ export class RealtimeOutboxRelay
 
 function claimableFilter(now: Date) {
   return {
-    ownerModule: OWNER_MODULE,
     deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
+    audiencePolicy: { $in: RESOLVABLE_AUDIENCES },
     $or: [
       { status: OUTBOX_STATUS.pending, availableAt: { $lte: now } },
       { status: OUTBOX_STATUS.processing, leaseUntil: { $lte: now } },

@@ -31,8 +31,13 @@ par exemple :
 mongodb://localhost:27017/donjon-dragon-e2e-spec007-<horodatage>?replicaSet=donjonDragon&directConnection=true
 ```
 
-Le seed et le backend doivent recevoir exactement cette même URI. La collection ne
-supprime ni ne réinitialise aucune base.
+Le seed et le backend doivent recevoir exactement cette même URI. Le préfixe
+`donjon-dragon-e2e-` n'est pas décoratif : c'est lui qui rend la base jetable.
+
+La collection elle-même ne supprime rien — elle tourne dans la sandbox sûre, sans
+driver Mongo. Le nettoyage est fait par le lanceur `pnpm test:e2e:api`, qui supprime
+toutes les bases préfixées après l'exécution, succès ou échec. Pour garder l'état et
+l'inspecter, lancer avec `KEEP_E2E_DB=1`. Le balai seul : `pnpm e2e:clean`.
 
 ## Exécution
 

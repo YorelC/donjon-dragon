@@ -130,7 +130,12 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
     session: ClientSession,
   ): Promise<void> {
     const { document } = notification;
-    await this.model.findOneAndUpdate({ id: document.id }, document, { session });
+    const updated = await this.model.findOneAndUpdate({ id: document.id }, document, {
+      session,
+    });
+    // Rien de mis a jour, rien ne s'est passe : annoncer un fait ici ferait
+    // refetcher les deux participants pour un etat inchange.
+    if (!updated) return;
     await this.writeNotification(notification, session);
   }
 

@@ -16,6 +16,7 @@ import {
 } from '@kernel/application/session-revocation.port';
 import { ACCESS_COOKIE } from '@common/security/session-cookie.constants';
 import { VerifyAccessTokenUseCase } from '@modules/auth/application/use-cases/verify-access-token.use-case';
+import type { RealtimeNotifierPort } from '../application/ports/realtime-notifier.port';
 
 const SOCKET_PATH = '/api/socket.io';
 const USER_ROOM_PREFIX = 'user:';
@@ -46,7 +47,11 @@ interface RealtimeServer {
 
 @WebSocketGateway({ path: SOCKET_PATH, transports: ['websocket'] })
 export class RealtimeGateway
-  implements OnGatewayInit, OnGatewayConnection, OnModuleDestroy
+  implements
+    OnGatewayInit,
+    OnGatewayConnection,
+    OnModuleDestroy,
+    RealtimeNotifierPort
 {
   @WebSocketServer()
   private server!: RealtimeServer;

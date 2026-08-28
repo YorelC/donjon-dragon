@@ -112,6 +112,16 @@ module.exports = {
       to: { path: '^src/modules/[^/]+/presentation' },
     },
     {
+      name: 'no-presentation-from-infrastructure',
+      comment:
+        'Un adapter sortant ne connait pas le point d entree entrant du module. ' +
+        "S il en importe une classe, l'infrastructure se met a dependre du " +
+        'transport au lieu de son port, et le sens des dependances s inverse.',
+      severity: 'error',
+      from: { path: '^src/modules/[^/]+/infrastructure' },
+      to: { path: '^src/modules/[^/]+/presentation' },
+    },
+    {
       name: 'no-infra-from-testing',
       comment:
         'Un double de test remplace un adapter, il ne s appuie pas dessus. ' +

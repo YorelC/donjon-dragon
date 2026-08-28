@@ -37,7 +37,7 @@ services:
       NODE_ENV: development
       MONGODB_URI: mongodb://mongo:27017/donjon-dragon?replicaSet=donjonDragon&directConnection=true
       JWT_SECRET: dev-secret-change-in-production
-      CORS_ORIGIN: http://localhost:5173
+      CORS_ORIGINS: http://localhost:5173
     depends_on:
       mongo:
         condition: service_healthy

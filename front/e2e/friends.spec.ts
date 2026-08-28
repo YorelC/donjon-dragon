@@ -208,3 +208,41 @@ test.describe("Suppression d'un ami", () => {
     ).toBeVisible();
   });
 });
+
+/**
+ * Ce que seul un vrai navigateur peut prouver : la page se met a jour parce que le
+ * SERVEUR l'a poussee, et non parce qu'on l'a rechargee ou qu'on a clique.
+ *
+ * Regle du bloc : entre la precondition posee par l'autre joueur et l'assertion, on
+ * ne touche a rien. Un changement d'onglet revalide le compteur
+ * (use-friends-tabs.ts) et un rechargement refait toutes les requetes : l'un comme
+ * l'autre ferait passer ce test sans aucun temps reel.
+ */
+test.describe('Temps réel', () => {
+  test.beforeEach(async ({ page, legolasApi }) => {
+    await page.goto('/campaigns');
+    await clearAllRelations(page.request);
+    await clearAllRelations(legolasApi);
+  });
+
+  test("la demande d'un autre joueur fait apparaître le badge sans rechargement", async ({
+    friendsPage,
+    legolasApi,
+  }) => {
+    await friendsPage.goto();
+    await expect(friendsPage.receivedBadge).toBeHidden();
+
+    await sendFriendRequest(legolasApi, ACCOUNTS.gandalf.displayName);
+
+    await expect(friendsPage.receivedBadge).toBeVisible();
+  });
+
+  /**
+   * DÉCISION REQUISE — le symétrique manque encore.
+   *
+   * « Legolas accepte, la demande quitte les Envoyées de Gandalf » a été écrit puis
+   * retiré : il passait AUSSI avec le chemin de la socket saboté, donc il ne
+   * prouvait rien. La cause du rafraîchissement dans ce cas reste à identifier
+   * avant de pouvoir en faire une assertion honnête.
+   */
+});
