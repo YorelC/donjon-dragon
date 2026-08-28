@@ -1,9 +1,11 @@
+import type { ComponentType } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { useAuthStore } from "@/shared/stores/auth.store";
 import { ROUTES } from "@/shared/constants/routes";
 import { cn } from "@/shared/utils/utils";
 import { useNavMenu, type NavMenu } from "@/shared/hooks/use-nav-menu";
+import { CampaignInvitesBadge } from "@/shared/components/layout/campaign-invites-badge";
 import { ProfileRequestsBadge } from "@/shared/components/layout/profile-requests-badge";
 import {
   Sheet,
@@ -79,14 +81,14 @@ function MobileNavMenu({ menu }: { menu: NavMenu }) {
 interface NavLinkDescriptor {
   route: string;
   label: string;
-  /** Seul le Profil porte un compteur : les demandes d'amis reçues. */
-  hasRequestsBadge: boolean;
+  /** Le compteur de l'onglet, quand il en porte un : chacun compte autre chose. */
+  Badge?: ComponentType;
 }
 
 // L'accueil n'est pas un onglet : le losange de marque y ramène déjà.
 const NAV_LINKS: NavLinkDescriptor[] = [
-  { route: ROUTES.campaigns, label: "Campagnes", hasRequestsBadge: false },
-  { route: ROUTES.profile, label: "Profil", hasRequestsBadge: true },
+  { route: ROUTES.campaigns, label: "Campagnes", Badge: CampaignInvitesBadge },
+  { route: ROUTES.profile, label: "Profil", Badge: ProfileRequestsBadge },
 ];
 
 function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
@@ -108,7 +110,7 @@ function NavTab({ link, onLinkClick }: NavTabProps) {
   return (
     <NavLink to={link.route} onClick={onLinkClick} className={toNavLinkClassName}>
       <span>{link.label}</span>
-      {link.hasRequestsBadge ? <ProfileRequestsBadge /> : null}
+      {link.Badge ? <link.Badge /> : null}
     </NavLink>
   );
 }

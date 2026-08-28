@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Nav } from "./nav";
 import { useAuthStore } from "@/shared/stores/auth.store";
 import * as useReceivedCountModule from "@/shared/queries/use-received-count";
+import * as useCampaignInvitationCountModule from "@/shared/queries/use-campaign-invitation-count";
 
 vi.mock("@/shared/hooks/use-logout", () => ({
   useLogout: () => vi.fn(),
@@ -18,7 +19,18 @@ vi.mock("@/shared/queries/use-received-count", async () => {
   return { ...actual, useReceivedCount: vi.fn() };
 });
 
+vi.mock("@/shared/queries/use-campaign-invitation-count", async () => {
+  const actual = await vi.importActual<typeof useCampaignInvitationCountModule>(
+    "@/shared/queries/use-campaign-invitation-count",
+  );
+  return { ...actual, useCampaignInvitationCount: vi.fn() };
+});
+
 const mockedUseReceivedCount = vi.mocked(useReceivedCountModule.useReceivedCount);
+
+const mockedUseCampaignInvitationCount = vi.mocked(
+  useCampaignInvitationCountModule.useCampaignInvitationCount,
+);
 
 type ReceivedCountResult = ReturnType<typeof useReceivedCountModule.useReceivedCount>;
 
@@ -26,6 +38,16 @@ function stubReceivedCount(count: number | undefined) {
   mockedUseReceivedCount.mockReturnValue({
     data: count === undefined ? undefined : { count },
   } as ReceivedCountResult);
+}
+
+type CampaignCountResult = ReturnType<
+  typeof useCampaignInvitationCountModule.useCampaignInvitationCount
+>;
+
+function stubCampaignInvitationCount(count: number | undefined) {
+  mockedUseCampaignInvitationCount.mockReturnValue({
+    data: count === undefined ? undefined : { count },
+  } as CampaignCountResult);
 }
 
 const authenticatedUser = {
@@ -54,6 +76,7 @@ describe("Nav", () => {
   beforeEach(() => {
     useAuthStore.setState({ user: null });
     stubReceivedCount(0);
+    stubCampaignInvitationCount(0);
   });
 
   it("should render null when not authenticated", () => {
@@ -93,6 +116,30 @@ describe("Nav", () => {
 
     const profileLink = screen.getByRole("link", { name: /Profil/i });
     expect(profileLink).toHaveTextContent("3");
+  });
+
+  it("should stamp the pending campaign invitations count on the campaigns tab", () => {
+    useAuthStore.setState({ user: authenticatedUser });
+    stubCampaignInvitationCount(2);
+
+    renderNav();
+
+    expect(screen.getByRole("link", { name: /Campagnes/i })).toHaveTextContent(
+      "2",
+    );
+  });
+
+  it("stamps each tab with its own count, never the other's", () => {
+    useAuthStore.setState({ user: authenticatedUser });
+    stubReceivedCount(3);
+    stubCampaignInvitationCount(2);
+
+    renderNav();
+
+    expect(screen.getByRole("link", { name: /Campagnes/i })).toHaveTextContent(
+      "2",
+    );
+    expect(screen.getByRole("link", { name: /Profil/i })).toHaveTextContent("3");
   });
 
   it("should not stamp any count when no request is pending", () => {
