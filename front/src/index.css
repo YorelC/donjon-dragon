@@ -353,6 +353,20 @@
     @apply font-display text-wordmark tracking-section whitespace-nowrap text-gold-title uppercase;
   }
 
+  /* Onglet du bandeau : le soulignement dore signale la page ouverte. */
+  .nav-link {
+    @apply flex items-center gap-2.5 border-b border-transparent px-3 py-2 font-display text-note tracking-meta text-ink-help transition-[color,border-color] duration-[.18s] hover:text-gold-value;
+  }
+
+  .nav-link-on {
+    @apply border-gold/75 text-gold-selected hover:text-gold-selected;
+  }
+
+  /* Separateur vertical entre la navigation et la sortie de session. */
+  .nav-divider {
+    @apply mx-2.5 h-4 w-px bg-gold/24;
+  }
+
   /* --- Mise en page d'authentification ------------------------------------ */
 
   /* Presentation a gauche, panneau d'acces a droite ; une seule colonne sous lg. */

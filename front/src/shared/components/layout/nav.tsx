@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { useAuthStore } from "@/shared/stores/auth.store";
 import { ROUTES } from "@/shared/constants/routes";
+import { cn } from "@/shared/utils/utils";
 import { useNavMenu, type NavMenu } from "@/shared/hooks/use-nav-menu";
+import { ProfileRequestsBadge } from "@/shared/components/layout/profile-requests-badge";
 import {
   Sheet,
   SheetContent,
@@ -28,8 +30,9 @@ export function Nav() {
 
 function DesktopNav({ menu }: { menu: NavMenu }) {
   return (
-    <nav className="hidden justify-center gap-4 md:flex">
+    <nav className="hidden items-center md:flex">
       <NavLinks />
+      <div aria-hidden className="nav-divider" />
       <LogoutButton onLogout={menu.onLogout} />
     </nav>
   );
@@ -66,7 +69,7 @@ function MobileNavMenu({ menu }: { menu: NavMenu }) {
   };
 
   return (
-    <nav className="flex flex-col gap-4 p-4">
+    <nav className="flex flex-col items-start gap-2 p-4">
       <NavLinks onLinkClick={menu.onClose} />
       <LogoutButton onLogout={closeThen(menu.onLogout)} />
     </nav>
@@ -76,32 +79,47 @@ function MobileNavMenu({ menu }: { menu: NavMenu }) {
 interface NavLinkDescriptor {
   route: string;
   label: string;
+  /** Seul le Profil porte un compteur : les demandes d'amis reçues. */
+  hasRequestsBadge: boolean;
 }
 
+// L'accueil n'est pas un onglet : le losange de marque y ramène déjà.
 const NAV_LINKS: NavLinkDescriptor[] = [
-  { route: ROUTES.home, label: "Accueil" },
-  { route: ROUTES.campaigns, label: "Campagnes" },
-  { route: ROUTES.profile, label: "Profil" },
+  { route: ROUTES.campaigns, label: "Campagnes", hasRequestsBadge: false },
+  { route: ROUTES.profile, label: "Profil", hasRequestsBadge: true },
 ];
 
 function NavLinks({ onLinkClick }: { onLinkClick?: () => void }) {
   return (
     <>
       {NAV_LINKS.map((link) => (
-        <Link key={link.route} to={link.route} onClick={onLinkClick}>
-          {link.label}
-        </Link>
+        <NavTab key={link.route} link={link} onLinkClick={onLinkClick} />
       ))}
     </>
   );
 }
 
+interface NavTabProps {
+  link: NavLinkDescriptor;
+  onLinkClick?: () => void;
+}
+
+function NavTab({ link, onLinkClick }: NavTabProps) {
+  return (
+    <NavLink to={link.route} onClick={onLinkClick} className={toNavLinkClassName}>
+      <span>{link.label}</span>
+      {link.hasRequestsBadge ? <ProfileRequestsBadge /> : null}
+    </NavLink>
+  );
+}
+
+function toNavLinkClassName({ isActive }: { isActive: boolean }): string {
+  return cn("nav-link", isActive && "nav-link-on");
+}
+
 function LogoutButton({ onLogout }: { onLogout: () => void }) {
   return (
-    <button
-      onClick={onLogout}
-      className="font-display text-xs tracking-label text-destructive uppercase transition-colors duration-[.18s] hover:text-gold-selected"
-    >
+    <button onClick={onLogout} className="nav-link">
       Déconnexion
     </button>
   );
