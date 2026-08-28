@@ -34,8 +34,10 @@ function App() {
       <RealtimeBridge />
       <TooltipProvider>
         <BrowserRouter>
-          <AppHeader />
-          <AppRoutes />
+          <div className="app-shell">
+            <AppHeader />
+            <AppRoutes />
+          </div>
         </BrowserRouter>
       </TooltipProvider>
       <Toaster />

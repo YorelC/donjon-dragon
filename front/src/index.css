@@ -345,6 +345,13 @@
 
   /* --- En-tete d'application ---------------------------------------------- */
 
+  /* Coquille de l'application : le bandeau en haut, le reste de la hauteur pour
+     la page. Une page qui demande `flex-1` remplit donc l'ecran jusqu'en bas, et
+     ses panneaux avec elle. */
+  .app-shell {
+    @apply flex min-h-screen flex-col;
+  }
+
   .app-header {
     @apply flex items-center justify-between gap-6 border-b border-gold/16 px-6 py-[22px] md:px-10;
   }

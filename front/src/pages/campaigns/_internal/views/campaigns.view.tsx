@@ -25,8 +25,8 @@ export function CampaignsView({
   counts,
 }: CampaignsViewProps) {
   return (
-    <div className="p-5">
-      <main className="panel flex min-w-0 flex-col gap-[22px]">
+    <div className="flex min-h-0 flex-1 p-5">
+      <main className="panel flex min-w-0 flex-1 flex-col gap-[22px]">
         <OrnateCorners />
         <CampaignsHeader counts={counts} />
         <Tabs
