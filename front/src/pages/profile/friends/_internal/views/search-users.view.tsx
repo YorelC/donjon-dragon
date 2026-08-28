@@ -8,7 +8,6 @@ import type { UserSearch } from "../hooks/use-search-form";
 import type { SearchPagination } from "../hooks/use-infinite-scroll-trigger";
 import type { UserInvitation } from "../hooks/use-user-invitation";
 import { FriendRow } from "./friend-row.view";
-import { toSearchResultMeta } from "../utils/friend-meta";
 
 interface SearchUsersViewProps {
   results: QueryState<UserSummary[]>;
@@ -108,7 +107,7 @@ interface UserSearchResultRowProps {
 
 function UserSearchResultRow({ user, invitation }: UserSearchResultRowProps) {
   return (
-    <FriendRow name={user.displayName} meta={toSearchResultMeta()} tone="distant">
+    <FriendRow name={user.displayName} tone="distant">
       <InvitationAction user={user} invitation={invitation} />
     </FriendRow>
   );

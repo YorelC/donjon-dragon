@@ -1,11 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   MISSING_META,
-  toFriendMeta,
   toInitials,
   toReceivedRequestMeta,
   toRelativeDate,
-  toSearchResultMeta,
   toSentRequestMeta,
 } from "./friend-meta";
 
@@ -56,39 +54,30 @@ describe("toRelativeDate", () => {
   });
 });
 
-// Le serveur ne renvoie ni classe, ni niveau, ni presence : la ligne doit le
-// dire, jamais combler le vide. Voir docs/friends-meta-backend-gaps.md.
-describe("métadonnées absentes côté serveur", () => {
-  it("marque les trois champs manquants d'un ami", () => {
-    expect(toFriendMeta()).toBe(
-      `Classe ${MISSING_META} · Niveau ${MISSING_META} · Dernière séance ${MISSING_META}`,
-    );
-  });
-
-  it("marque les deux champs manquants d'un résultat de recherche", () => {
-    expect(toSearchResultMeta()).toBe(
-      `Classe ${MISSING_META} · Niveau ${MISSING_META}`,
-    );
-  });
-
-  it("mêle la date réelle d'une demande reçue et le trou des amis en commun", () => {
+// Un ami est un compte, pas un personnage : ni classe, ni niveau, ni presence.
+// Seules les demandes portent une meta, parce qu'elles portent une vraie date.
+describe("méta des demandes", () => {
+  beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(NOW);
+  });
 
-    expect(toReceivedRequestMeta(isoDaysAgo(1))).toBe(
-      `Demande reçue hier · Amis en commun ${MISSING_META}`,
-    );
-
+  afterEach(() => {
     vi.useRealTimers();
   });
 
-  it("n'a aucun trou sur une invitation envoyée", () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(NOW);
+  it("date une demande reçue, sans rien y ajouter", () => {
+    expect(toReceivedRequestMeta(isoDaysAgo(1))).toBe("Demande reçue hier");
+  });
 
-    expect(toSentRequestMeta(isoDaysAgo(1))).toBe("Invitation envoyée hier");
+  it("date une invitation envoyée, sans rien y ajouter", () => {
+    expect(toSentRequestMeta(isoDaysAgo(5))).toBe(
+      "Invitation envoyée il y a 5 jours",
+    );
+  });
+
+  it("n'affiche aucun champ manquant", () => {
+    expect(toReceivedRequestMeta(isoDaysAgo(1))).not.toContain(MISSING_META);
     expect(toSentRequestMeta(isoDaysAgo(1))).not.toContain(MISSING_META);
-
-    vi.useRealTimers();
   });
 });

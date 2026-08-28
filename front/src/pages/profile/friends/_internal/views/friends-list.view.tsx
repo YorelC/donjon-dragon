@@ -14,7 +14,6 @@ import type { QueryState } from "@/shared/types/ui-state";
 import type { AcceptedFriend } from "@/shared/types/friend";
 import type { FriendRemoval } from "../hooks/use-friend-removal";
 import { FriendRow } from "./friend-row.view";
-import { toFriendMeta } from "../utils/friend-meta";
 
 interface FriendsListViewProps {
   friends: QueryState<AcceptedFriend[]>;
@@ -55,7 +54,7 @@ interface FriendRowProps {
 
 function AcceptedFriendRow({ friend, removal }: FriendRowProps) {
   return (
-    <FriendRow name={friend.friend.displayName} meta={toFriendMeta()} tone="settled">
+    <FriendRow name={friend.friend.displayName} tone="settled">
       <RemoveFriendDialog friend={friend} removal={removal} />
     </FriendRow>
   );

@@ -1,34 +1,19 @@
 /**
- * La ligne de méta sous chaque pseudo. Le serveur ne connaît aujourd'hui que le
- * pseudo et la date des demandes : tout le reste est affiché comme manquant,
- * jamais inventé. Les champs à ouvrir côté back sont listés dans
- * `docs/friends-meta-backend-gaps.md`.
+ * Ce qu'on affiche sous un pseudo — et rien d'autre.
+ *
+ * Un ami est un COMPTE, pas un personnage : il n'a ni classe ni niveau, et la
+ * liste d'amis comme les résultats de recherche s'en tiennent donc au pseudo
+ * seul. Seules les demandes portent une méta, parce qu'elles portent une date
+ * réelle. Ce qui manque encore côté serveur : `docs/friends-meta-backend-gaps.md`.
  */
 export const MISSING_META = "—";
 
-const SEPARATOR = " · ";
-
-export function toFriendMeta(): string {
-  return [
-    `Classe ${MISSING_META}`,
-    `Niveau ${MISSING_META}`,
-    `Dernière séance ${MISSING_META}`,
-  ].join(SEPARATOR);
-}
-
 export function toReceivedRequestMeta(createdAt: string): string {
-  return [
-    `Demande reçue ${toRelativeDate(createdAt)}`,
-    `Amis en commun ${MISSING_META}`,
-  ].join(SEPARATOR);
+  return `Demande reçue ${toRelativeDate(createdAt)}`;
 }
 
 export function toSentRequestMeta(createdAt: string): string {
   return `Invitation envoyée ${toRelativeDate(createdAt)}`;
-}
-
-export function toSearchResultMeta(): string {
-  return [`Classe ${MISSING_META}`, `Niveau ${MISSING_META}`].join(SEPARATOR);
 }
 
 /** Deux lettres, comme sur le médaillon losange de la charte. */

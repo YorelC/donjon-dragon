@@ -24,8 +24,9 @@ const MEDALLION_TONES: Record<FriendRowTone, "active" | "idle"> = {
 
 interface FriendRowProps {
   name: string;
-  meta: string;
   tone: FriendRowTone;
+  /** Absente quand il n'y a rien de vrai à dire : un ami n'est qu'un pseudo. */
+  meta?: string;
   children: ReactNode;
 }
 
@@ -37,7 +38,7 @@ export function FriendRow({ name, meta, tone, children }: FriendRowProps) {
         ROW_TONES[tone],
       )}
     >
-      <FriendIdentity name={name} meta={meta} tone={tone} />
+      <FriendIdentity name={name} tone={tone} meta={meta} />
       <div className="flex items-center gap-2.5">{children}</div>
     </li>
   );
@@ -53,7 +54,7 @@ function FriendIdentity({ name, meta, tone }: Omit<FriendRowProps, "children">) 
         <span className="truncate text-[15px] tracking-name text-foreground">
           {name}
         </span>
-        <span className="meta-line truncate">{meta}</span>
+        {meta ? <span className="meta-line truncate">{meta}</span> : null}
       </div>
     </div>
   );
