@@ -46,7 +46,7 @@ function CampaignsHeader({ counts }: { counts: CampaignsCounts }) {
     <div className="flex items-end justify-between gap-6">
       <div>
         <span className="eyebrow">{counts.campaigns} en cours</span>
-        <h1 className="page-title mt-1.5 pb-0">Campagnes</h1>
+        <h1 className="page-title mt-1.5">Campagnes</h1>
       </div>
       <CreateCampaignContainer />
     </div>
@@ -55,7 +55,7 @@ function CampaignsHeader({ counts }: { counts: CampaignsCounts }) {
 
 function CampaignsTabsList({ counts }: { counts: CampaignsCounts }) {
   return (
-    <TabsList variant="line" className="h-auto flex-wrap gap-2">
+    <TabsList variant="box">
       <CampaignsTabTrigger value="mine" label="Mes campagnes en cours">
         <TabCount count={counts.campaigns} />
       </CampaignsTabTrigger>
@@ -78,10 +78,7 @@ function CampaignsTabTrigger({
   children,
 }: CampaignsTabTriggerProps) {
   return (
-    <TabsTrigger
-      value={value}
-      className="h-auto flex-none border-gold/20 px-[18px] py-2.5"
-    >
+    <TabsTrigger value={value}>
       {label}
       {children}
     </TabsTrigger>
@@ -98,10 +95,10 @@ function TabCount({ count }: { count: number }) {
 function CampaignsTabsPanels() {
   return (
     <>
-      <TabsContent value="mine" className="mt-6">
+      <TabsContent value="mine" className="mt-4">
         <MyCampaignsContainer />
       </TabsContent>
-      <TabsContent value="invitations" className="mt-6">
+      <TabsContent value="invitations" className="mt-4">
         <CampaignInvitationsContainer />
       </TabsContent>
     </>

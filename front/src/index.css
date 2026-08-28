@@ -202,7 +202,7 @@
   /* --- Titres et texte -------------------------------------------------- */
 
   .page-title {
-    @apply pb-8 text-center font-display text-title-page tracking-title text-gold-title uppercase;
+    @apply font-display text-title-page tracking-title text-gold-title uppercase;
   }
 
   /* Titre d'accueil : fluide, il tient toute la colonne de presentation. */

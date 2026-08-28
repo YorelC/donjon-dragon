@@ -44,7 +44,7 @@ function FriendsHeading() {
 
 function FriendsTabsList({ counts }: { counts: FriendsCounts }) {
   return (
-    <TabsList variant="line" className="h-auto flex-wrap gap-2">
+    <TabsList variant="box">
       <FriendsTab value="friends" label="Amis">
         <TabCount count={counts.friends} />
       </FriendsTab>
@@ -67,10 +67,7 @@ interface FriendsTabProps {
 
 function FriendsTab({ value, label, children }: FriendsTabProps) {
   return (
-    <TabsTrigger
-      value={value}
-      className="h-auto flex-none border-gold/20 px-[18px] py-2.5"
-    >
+    <TabsTrigger value={value}>
       {label}
       {children}
     </TabsTrigger>
@@ -87,16 +84,16 @@ function TabCount({ count }: { count: number }) {
 function FriendsTabsPanels() {
   return (
     <>
-      <TabsContent value="friends" className="mt-6">
+      <TabsContent value="friends" className="mt-4">
         <FriendsListContainer />
       </TabsContent>
-      <TabsContent value="received" className="mt-6">
+      <TabsContent value="received" className="mt-4">
         <ReceivedRequestsContainer />
       </TabsContent>
-      <TabsContent value="sent" className="mt-6">
+      <TabsContent value="sent" className="mt-4">
         <SentRequestsContainer />
       </TabsContent>
-      <TabsContent value="search" className="mt-6">
+      <TabsContent value="search" className="mt-4">
         <SearchUsersContainer />
       </TabsContent>
     </>
