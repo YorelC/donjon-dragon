@@ -17,6 +17,7 @@ import { CampaignsModule } from '@modules/campaigns/campaigns.module';
 import { BestiaryModule } from '@modules/bestiary/bestiary.module';
 import { ItemsModule } from '@modules/items/items.module';
 import { CharactersModule } from '@modules/characters/characters.module';
+import { RealtimeModule } from '@modules/realtime/realtime.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CharactersModule } from '@modules/characters/characters.module';
     ItemsModule,
     BestiaryModule,
     CharactersModule,
+    RealtimeModule,
   ],
   providers: [
     // Tout est protégé par défaut. Une route publique doit le déclarer avec

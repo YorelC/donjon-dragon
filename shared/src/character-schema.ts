@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import {
   AbilitySchema,
+  AlignmentSchema,
   BackgroundKeySchema,
   ClassKeySchema,
   EffectSourceTypeSchema,
@@ -9,6 +10,7 @@ import {
   OriginFeatKeySchema,
   SkillNameSchema,
   SpeciesKeySchema,
+  CreatureSizeSchema,
 } from './dnd-reference-schema.js';
 import { UserSummarySchema } from './user-schema.js';
 
@@ -137,6 +139,12 @@ export const CharacterChoiceSchema = z.object({
   fightingStyle: z.string().optional(),
   /** L'option d'Ordre divin (clerc) ou d'Ordre primitif (druide). */
   classOrder: z.string().optional(),
+  weaponMasteries: z.array(z.string()).optional(),
+  invocation: z.string().optional(),
+  invocationSpells: z.array(z.string()).optional(),
+  familiarForm: z.string().optional(),
+  pactWeaponKey: z.string().optional(),
+  spellbook: z.array(z.string()).optional(),
   feature: z.string().optional(),
 });
 
@@ -165,6 +173,9 @@ export const CharacterEquipmentSchema = z.object({
   gold: z.number().int().nonnegative(),
   classOptionId: z.string().nullable(),
   backgroundOptionId: z.string().nullable(),
+  classChoiceItemKey: z.string().nullable().optional(),
+  backgroundChoiceItemKey: z.string().nullable().optional(),
+  trinketId: z.number().int().min(1).max(100).nullable().optional(),
 });
 
 // ---------------------------------------------------------------------------
@@ -180,10 +191,17 @@ export const CharacterEquipmentSchema = z.object({
  * serveur ne le vérifie plus. `abilityRoll` est `null` pour les méthodes
  * `standardArray`/`pointBuy`, qui n'ont jamais de tirage.
  */
-export const FinalizeCharacterSchema = z.object({
+const CharacterCompositionSchema = z.object({
   name: characterNameField(),
+  alignment: AlignmentSchema.optional(),
+  age: z.number().int().positive().optional(),
+  heightCm: z.number().positive().optional(),
+  weightKg: z.number().positive().optional(),
+  description: z.string().nullable().optional(),
   speciesKey: SpeciesKeySchema,
   lineageKey: z.string().nullable(),
+  size: CreatureSizeSchema.optional(),
+  standardLanguages: z.array(LanguageSchema).optional(),
   classKey: ClassKeySchema,
   backgroundKey: BackgroundKeySchema,
   abilityMethod: AbilityMethodSchema,
@@ -194,11 +212,46 @@ export const FinalizeCharacterSchema = z.object({
   abilityRoll: AbilityRollSchema.nullable(),
 });
 
+export const FinalizeCharacterSchema = CharacterCompositionSchema.superRefine(
+  requireCompleteIdentity,
+);
+
 /** L'aperçu du wizard : les mêmes choix, mais rien n'est persisté ni vérifié. */
-export const PreviewCharacterSheetSchema = FinalizeCharacterSchema.omit({
+export const PreviewCharacterSheetSchema = CharacterCompositionSchema.omit({
   name: true,
   abilityRoll: true,
-});
+}).superRefine(requireCompleteOrigin);
+
+type IdentityCandidate = {
+  alignment?: unknown;
+  age?: unknown;
+  heightCm?: unknown;
+  weightKg?: unknown;
+  size?: unknown;
+  standardLanguages?: unknown;
+};
+
+function requireCompleteIdentity(value: IdentityCandidate, context: z.RefinementCtx): void {
+  requireCompleteOrigin(value, context);
+  addRequiredIssue(value.alignment, 'alignment', context);
+  addRequiredIssue(value.age, 'age', context);
+  addRequiredIssue(value.heightCm, 'heightCm', context);
+  addRequiredIssue(value.weightKg, 'weightKg', context);
+}
+
+function requireCompleteOrigin(value: IdentityCandidate, context: z.RefinementCtx): void {
+  addRequiredIssue(value.size, 'size', context);
+  addRequiredIssue(value.standardLanguages, 'standardLanguages', context);
+}
+
+function addRequiredIssue(
+  value: unknown,
+  field: string,
+  context: z.RefinementCtx,
+): void {
+  if (value !== undefined) return;
+  context.addIssue({ code: z.ZodIssueCode.custom, path: [field], message: 'Required' });
+}
 
 export const AssignCharacterSchema = z.object({
   playerDisplayName: z.string().trim().min(1),
@@ -241,9 +294,16 @@ export const CharacterBuildSummarySchema = z.object({
  */
 export const CharacterBuildDetailSchema = z.object({
   name: characterNameField(),
+  alignment: AlignmentSchema,
+  age: z.number().int().positive(),
+  heightCm: z.number().positive(),
+  weightKg: z.number().positive(),
+  description: z.string().nullable(),
 
   speciesKey: SpeciesKeySchema,
   lineageKey: z.string().nullable(),
+  size: CreatureSizeSchema,
+  standardLanguages: z.array(LanguageSchema),
   /** Celle du sort mineur de lignée, distincte de celle d'Initié à la magie. */
   lineageSpellcastingAbility: AbilitySchema.nullable(),
   speciesSkills: z.array(SkillNameSchema),
@@ -256,6 +316,12 @@ export const CharacterBuildDetailSchema = z.object({
   classSpells: z.array(z.string()),
   fightingStyle: z.string().nullable(),
   classOrder: z.string().nullable(),
+  weaponMasteries: z.array(z.string()),
+  invocation: z.string().nullable(),
+  invocationSpells: z.array(z.string()),
+  familiarForm: z.string().nullable(),
+  pactWeaponKey: z.string().nullable(),
+  spellbook: z.array(z.string()),
 
   backgroundKey: BackgroundKeySchema,
   backgroundBonuses: BackgroundAbilityBonusesSchema,
@@ -277,6 +343,9 @@ export const CharacterBuildDetailSchema = z.object({
   gold: z.number().int().nonnegative(),
   classOptionId: z.string().nullable(),
   backgroundOptionId: z.string().nullable(),
+  classChoiceItemKey: z.string().nullable(),
+  backgroundChoiceItemKey: z.string().nullable(),
+  trinketId: z.number().int().min(1).max(100).nullable(),
 });
 
 /**

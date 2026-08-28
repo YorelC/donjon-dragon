@@ -18,6 +18,11 @@ import {
   OUTBOX_MESSAGE_MODEL,
   type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
+import {
+  OUTBOX_AUDIENCE_POLICY,
+  OUTBOX_DELIVERY_CHANNEL,
+} from '@kernel/infrastructure/outbox-message.contract';
+import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 
 import type {
   CampaignLifecycleCommand,
@@ -27,8 +32,7 @@ import type {
 const SCHEMA_VERSION = 1;
 const OWNER_MODULE = 'campaigns';
 const ACCEPTED_STATUS = 'accepted';
-const PENDING_STATUS = 'pending';
-const AUDIENCE = 'campaign-members';
+const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignMembers;
 const SOURCES = ['SF-001', 'DEC-002', 'SPEC-006'];
 
 interface LifecycleEnvelopeWrite {
@@ -116,9 +120,7 @@ function auditDocument(write: LifecycleEnvelopeWrite): FunctionalAuditEntryDocum
 
 function outboxDocument(write: LifecycleEnvelopeWrite): OutboxMessageDocument {
   const { command, receiptId } = write;
-  return {
-    _id: randomUUID(),
-    schemaVersion: SCHEMA_VERSION,
+  return createOutboxMessage({
     ownerModule: OWNER_MODULE,
     campaignId: command.campaign.id.value,
     causationId: receiptId,
@@ -126,13 +128,10 @@ function outboxDocument(write: LifecycleEnvelopeWrite): OutboxMessageDocument {
     aggregateRevision: command.campaign.revision,
     factType: command.factType,
     fact: outboxFact(command.result),
-    audiencePolicy: AUDIENCE,
-    status: PENDING_STATUS,
-    availableAt: command.occurredAt,
-    leaseUntil: null,
-    createdAt: command.occurredAt,
-    updatedAt: command.occurredAt,
-  };
+    audience: { policy: AUDIENCE },
+    deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
+    occurredAt: command.occurredAt,
+  });
 }
 
 function outboxFact(result: CampaignCommandResult): Record<string, unknown> {

@@ -18,6 +18,12 @@ import {
   type CharacterEquipmentSnapshot,
 } from './character-equipment';
 import { CharacterId } from './character-id';
+import {
+  CharacterIdentity,
+  InvalidCharacterIdentityError,
+  type CharacterIdentityInput,
+  type CharacterIdentitySnapshot,
+} from './character-identity';
 import { CharacterName } from './character-name';
 import {
   AlreadyAssignedToThisPlayerError,
@@ -30,8 +36,10 @@ import { OwningCampaignId } from './owning-campaign-id';
 import type { AbilityRecord } from './reference/abilities';
 import { BACKGROUNDS } from './reference/backgrounds';
 import type { BackgroundKey, ClassKey, LineageKey, SpeciesKey } from './reference/keys';
+import type { CreatureSize, Language } from './reference/proficiencies';
 import { LEVEL_ONE, type CharacterBuild } from './resolution/character-build';
 import { validateChoices } from './resolution/validate-choices';
+import { resolveStartingEquipment } from './resolution/resolve-starting-equipment';
 
 /**
  * Ne décrit pas l'avancement de la création — un personnage n'existe en base
@@ -45,6 +53,8 @@ export type CharacterStatus = 'waiting_adventure';
 export interface CharacterBuildSnapshot {
   speciesKey: SpeciesKey;
   lineageKey: LineageKey | null;
+  size: CreatureSize;
+  standardLanguages: Language[];
   classKey: ClassKey;
   backgroundKey: BackgroundKey;
   abilities: AbilityAssignmentSnapshot;
@@ -56,6 +66,7 @@ export interface CharacterSnapshot {
   id: string;
   campaignId: string;
   name: string;
+  identity: CharacterIdentitySnapshot;
   status: CharacterStatus;
   abilityRoll: AbilityRollSnapshot | null;
   build: CharacterBuildSnapshot;
@@ -70,6 +81,8 @@ export interface CharacterSnapshot {
 export interface CharacterBuildInput {
   speciesKey: SpeciesKey;
   lineageKey: LineageKey | null;
+  size?: CreatureSize;
+  standardLanguages?: readonly Language[];
   classKey: ClassKey;
   backgroundKey: BackgroundKey;
   abilityMethod: AbilityMethod;
@@ -82,6 +95,8 @@ export interface CharacterBuildInput {
 interface CharacterBuildState {
   speciesKey: SpeciesKey;
   lineageKey: LineageKey | null;
+  size: CreatureSize;
+  standardLanguages: readonly Language[];
   classKey: ClassKey;
   backgroundKey: BackgroundKey;
   abilities: AbilityAssignment;
@@ -97,6 +112,7 @@ interface CharacterOrigin {
 
 interface CharacterState {
   name: CharacterName;
+  identity: CharacterIdentity;
   status: CharacterStatus;
   roll: AbilityRoll | null;
   build: CharacterBuildState;
@@ -109,6 +125,7 @@ interface CharacterState {
 export interface CharacterCreationInput {
   campaignId: OwningCampaignId;
   name: CharacterName;
+  identity: CharacterIdentityInput;
   createdBy: UserId;
   build: CharacterBuildInput;
   roll: AbilityRoll | null;
@@ -157,6 +174,7 @@ export class Character {
       { campaignId: input.campaignId, createdBy: input.createdBy, createdAt },
       {
         name: input.name,
+        identity: CharacterIdentity.create(input.identity),
         status: 'waiting_adventure',
         roll: input.roll,
         build: buildFrom(input.build, input.roll),
@@ -209,6 +227,10 @@ export class Character {
 
   get updatedAt(): string {
     return this.state.updatedAt;
+  }
+
+  get identity(): CharacterIdentitySnapshot {
+    return this.state.identity.snapshot();
   }
 
   get revision(): number {
@@ -317,6 +339,7 @@ export class Character {
       id: this.id.value,
       campaignId: this.origin.campaignId.value,
       name: this.state.name.value,
+      identity: this.state.identity.snapshot(),
       status: this.state.status,
       abilityRoll: this.state.roll?.snapshot() ?? null,
       build: buildSnapshotOf(this.state.build),
@@ -347,11 +370,15 @@ function buildFrom(input: CharacterBuildInput, roll: AbilityRoll | null): Charac
   return {
     speciesKey: input.speciesKey,
     lineageKey: input.lineageKey,
+    size: requiredSize(input.size),
+    standardLanguages: requiredLanguages(input.standardLanguages),
     classKey: input.classKey,
     backgroundKey: input.backgroundKey,
     abilities,
     choices,
-    equipment: CharacterEquipment.create(input.equipment),
+    equipment: CharacterEquipment.create(
+      resolveStartingEquipment(input.classKey, input.backgroundKey, input.equipment),
+    ),
   };
 }
 
@@ -370,6 +397,7 @@ function assignmentFrom(input: CharacterBuildInput, roll: AbilityRoll | null): A
 function restoreState(snapshot: CharacterSnapshot): CharacterState {
   return {
     name: CharacterName.create(snapshot.name),
+    identity: CharacterIdentity.restore(snapshot.identity),
     status: snapshot.status,
     roll: snapshot.abilityRoll ? AbilityRoll.restore(snapshot.abilityRoll) : null,
     build: restoreBuild(snapshot.build),
@@ -386,6 +414,8 @@ function restoreBuild(snapshot: CharacterBuildSnapshot): CharacterBuildState {
   return {
     speciesKey: snapshot.speciesKey,
     lineageKey: snapshot.lineageKey,
+    size: snapshot.size,
+    standardLanguages: [...snapshot.standardLanguages],
     classKey: snapshot.classKey,
     backgroundKey: snapshot.backgroundKey,
     abilities: AbilityAssignment.restore(snapshot.abilities),
@@ -398,10 +428,22 @@ function buildSnapshotOf(build: CharacterBuildState): CharacterBuildSnapshot {
   return {
     speciesKey: build.speciesKey,
     lineageKey: build.lineageKey,
+    size: build.size,
+    standardLanguages: [...build.standardLanguages],
     classKey: build.classKey,
     backgroundKey: build.backgroundKey,
     abilities: build.abilities.snapshot(),
     choices: build.choices.snapshot(),
     equipment: build.equipment.snapshot(),
   };
+}
+
+function requiredSize(size: CreatureSize | undefined): CreatureSize {
+  if (!size) throw new InvalidCharacterIdentityError();
+  return size;
+}
+
+function requiredLanguages(languages: readonly Language[] | undefined): Language[] {
+  if (!languages) throw new InvalidCharacterIdentityError();
+  return [...languages];
 }

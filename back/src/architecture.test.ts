@@ -18,8 +18,9 @@ const SRC = join(__dirname);
  * Les seuls fichiers autorisés à forger un `ActorId`.
  *
  * `actor-id.ts` le définit. `jwt.strategy.ts` est le point où une identité
- * devient prouvée, donc le seul endroit où la forger a un sens. `actor.fixture.ts`
- * est le double de test correspondant. Tout `.test.ts` est hors production.
+ * devient prouvée. `jwt-access-token-verifier.ts` applique la même frontière au
+ * handshake temps réel. `actor.fixture.ts` est le double de test correspondant.
+ * Tout `.test.ts` est hors production.
  *
  * Ajouter une entrée ici est une décision de sécurité : elle doit apparaître dans
  * une revue, pas se glisser dans un diff.
@@ -28,6 +29,13 @@ const MINTING_IS_ALLOWED_IN = [
   join('kernel', 'domain', 'actor-id.ts'),
   join('kernel', 'testing', 'actor.fixture.ts'),
   join('modules', 'auth', 'presentation', 'strategies', 'jwt.strategy.ts'),
+  join(
+    'modules',
+    'auth',
+    'infrastructure',
+    'token',
+    'jwt-access-token-verifier.ts',
+  ),
 ];
 
 describe('ActorId ne se forge qu\'à partir d\'un token vérifié', () => {

@@ -1,4 +1,4 @@
-// Les 9 espèces de D&D 2024, niveau 1 uniquement.
+// Les 10 espèces de D&D 2024, niveau 1 uniquement.
 // Sources : docs/characteres/races/*.json
 //
 // Les fichiers d'origine avaient quatre formes différentes : `traits[]` sans
@@ -51,6 +51,7 @@ const FAST_WALKING_SPEED = 10.5;
 const DARKVISION_SHORT = 18;
 const DARKVISION_LONG = 36;
 const DWARVEN_HP_PER_LEVEL = 1;
+const HEALING_HANDS_DIE = 'd4';
 
 const darkvisionTrait = (range: number): Feature => ({
   key: 'darkvision',
@@ -116,6 +117,54 @@ const draconicLineage = ([key, name, damageType]: readonly [
 // ---------------------------------------------------------------------------
 
 const SPECIES_LIST: readonly Species[] = [
+  {
+    key: 'aasimar',
+    name: 'Aasimar',
+    size: 'Medium',
+    sizeOptions: ['Small', 'Medium'],
+    speed: WALKING_SPEED,
+    darkvision: DARKVISION_SHORT,
+    traits: [
+      darkvisionTrait(DARKVISION_SHORT),
+      {
+        key: 'celestial-resistance',
+        name: 'Résistance céleste',
+        description: 'Résistance aux dégâts nécrotiques et radiants.',
+        effects: [resistanceEffect('necrotic'), resistanceEffect('radiant')],
+      },
+      {
+        key: 'healing-hands',
+        name: 'Mains guérisseuses',
+        description:
+          'Par une action Magie, rend un nombre de d4 égal au bonus de maîtrise, une fois par Repos long.',
+        effects: [
+          {
+            application: 'active',
+            resource: {
+              key: 'healingHands',
+              max: { kind: 'constant', value: 1 },
+              recovery: 'longRest',
+            },
+            note: `Soin : bonus de maîtrise ${HEALING_HANDS_DIE}.`,
+          },
+        ],
+      },
+      {
+        key: 'light-bearer',
+        name: 'Porteur de lumière',
+        description: 'Vous connaissez le sort mineur Lumière avec le Charisme.',
+        effects: [
+          {
+            application: 'grant',
+            grants: {
+              spells: [{ spellKey: 'light', frequency: 'atWill', ability: 'charisma' }],
+            },
+          },
+        ],
+      },
+    ],
+    lineage: null,
+  },
   {
     key: 'dragonborn',
     name: 'Drakéide',

@@ -22,6 +22,7 @@ les ADR techniques historiques de [`../adr/`](../adr/) sans les remplacer.
 | DEC-015 | [Architecture technique cible et modèle de calcul](015-target-technical-architecture.md) | Validée |
 | DEC-016 | [Modèle MongoDB cible et stratégie de persistance](016-target-mongodb-persistence.md) | Validée |
 | DEC-017 | [Modèle exécutable, typé et versionné des règles](017-executable-versioned-rule-model.md) | Principes validés, conception détaillée provisoire |
+| DEC-018 | [Diffusion temps réel après commit](018-realtime-after-commit.md) | Validée |
 
 Une décision nouvelle ne réécrit pas silencieusement l'historique. Elle indique la
 décision remplacée, sa motivation et les conséquences sur les spécifications, le code

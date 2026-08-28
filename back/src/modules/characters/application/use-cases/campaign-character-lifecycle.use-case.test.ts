@@ -15,7 +15,7 @@ import { Character } from '../../domain/character';
 import { CharacterName } from '../../domain/character-name';
 import { OwningCampaignId } from '../../domain/owning-campaign-id';
 import { STANDARD_ARRAY_ROLL } from '../../testing/character-build.fixture';
-import { A_CHARACTER_BUILD } from '../../testing/character.fixture';
+import { A_CHARACTER_BUILD, A_CHARACTER_IDENTITY } from '../../testing/character.fixture';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
 import { LeaveCampaignWithCharacterUseCase } from './leave-campaign-with-character.use-case';
 import { ExcludeCampaignMemberWithCharacterUseCase } from './exclude-campaign-member-with-character.use-case';
@@ -186,6 +186,7 @@ describe('coordination atomique campagne et personnage', () => {
     const character = Character.create({
       campaignId: OwningCampaignId.create(campaignId),
       name: CharacterName.create('Frodon Sacquet'),
+      identity: A_CHARACTER_IDENTITY,
       createdBy: UserId.create(ownerId),
       build: A_CHARACTER_BUILD,
       roll: STANDARD_ARRAY_ROLL,

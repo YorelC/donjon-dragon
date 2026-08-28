@@ -132,7 +132,12 @@ function proficienciesFor(
   build: CharacterBuild,
   effects: ReturnType<typeof collectEffects>,
 ): ResolvedProficiencies {
-  return resolveProficiencies(effects, build.choices, CLASSES[build.classKey].savingThrows);
+  return resolveProficiencies(
+    effects,
+    build.choices,
+    CLASSES[build.classKey].savingThrows,
+    build.standardLanguages,
+  );
 }
 
 function skillsOf(
@@ -161,7 +166,7 @@ function identityOf(
     lineageName: lineage?.name ?? null,
     className: CLASSES[build.classKey].name,
     backgroundName: BACKGROUNDS[build.backgroundKey].name,
-    size: species.size,
+    size: build.size,
     darkvision: species.darkvision,
   };
 }

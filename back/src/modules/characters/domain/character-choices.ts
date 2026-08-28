@@ -33,8 +33,14 @@ export interface CharacterChoice {
   spellList?: ClassKey;
   /** Le don de Style de combat du guerrier. */
   fightingStyle?: string;
+  weaponMasteries?: readonly string[];
   /** L'option d'Ordre divin (clerc) ou d'Ordre primitif (druide). */
   classOrder?: string;
+  invocation?: string;
+  invocationSpells?: readonly SpellKey[];
+  familiarForm?: string;
+  pactWeaponKey?: string;
+  spellbook?: readonly SpellKey[];
   /** Une capacité nommée qui ne rentre dans aucun des champs ci-dessus. */
   feature?: string;
 }
@@ -94,5 +100,8 @@ function copyChoice(choice: CharacterChoice): CharacterChoice {
     tools: choice.tools ? [...choice.tools] : undefined,
     languages: choice.languages ? [...choice.languages] : undefined,
     spells: choice.spells ? [...choice.spells] : undefined,
+    weaponMasteries: choice.weaponMasteries ? [...choice.weaponMasteries] : undefined,
+    invocationSpells: choice.invocationSpells ? [...choice.invocationSpells] : undefined,
+    spellbook: choice.spellbook ? [...choice.spellbook] : undefined,
   };
 }

@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { anActor } from '@kernel/testing/actor.fixture';
+import { FixedClock } from '@kernel/testing/fixed-clock';
 import { aUser } from '@modules/user/testing/user.fixture';
 import {
   FriendshipNotFoundError,
@@ -20,7 +21,7 @@ describe('RemoveFriendUseCase', () => {
 
   beforeEach(async () => {
     friendshipRepo = new InMemoryFriendshipRepository();
-    useCase = new RemoveFriendUseCase(friendshipRepo);
+    useCase = new RemoveFriendUseCase(friendshipRepo, new FixedClock());
 
     alice = aUser({
       email: 'alice@example.com',

@@ -12,6 +12,7 @@ const A_PACKAGE: CharacterEquipmentSnapshot = {
   shield: true,
   items: [
     { itemKey: 'chain-mail', quantity: 1 },
+    { itemKey: 'shield', quantity: 1 },
     { itemKey: 'javelin', quantity: 8 },
   ],
   gold: 4,
@@ -23,9 +24,9 @@ describe('CharacterEquipment — invariants', () => {
   // L'existence de l'armure ne se verifie plus ici : elle vit dans le catalogue,
   // et le domaine ne fait pas d'I/O. C'est `assertEquipmentIsKnown` qui tranche.
   it('accepte une clé d armure que le domaine ne connaît pas', () => {
-    expect(CharacterEquipment.create({ ...A_PACKAGE, armorKey: 'mithril' }).armorKey).toBe(
-      'mithril',
-    );
+    const items = [...A_PACKAGE.items, { itemKey: 'mithril', quantity: 1 }];
+    expect(CharacterEquipment.create({ ...A_PACKAGE, armorKey: 'mithril', items }).armorKey)
+      .toBe('mithril');
   });
 
   it('accepte de ne rien porter : le barbare et le moine en vivent', () => {
@@ -47,6 +48,8 @@ describe('CharacterEquipment — invariants', () => {
   it('accepte une clé d objet que le domaine ne connaît pas', () => {
     const equipment = CharacterEquipment.create({
       ...A_PACKAGE,
+      armorKey: null,
+      shield: false,
       items: [{ itemKey: 'objet-invente-par-le-mj', quantity: 1 }],
     });
 

@@ -333,7 +333,7 @@ const CLASS_LIST: readonly CharacterClass[] = [
         name: 'Druidique',
         description:
           "Vous connaissez le druidique, langue secrète des druides, et détectez les messages druidiques cachés à 9 m.",
-        effects: [{ application: 'informational', note: 'Langue secrète : druidique.' }],
+        effects: [{ application: 'grant', grants: { languages: ['druidic'] } }],
       },
       {
         key: 'primal-order',
@@ -710,7 +710,7 @@ const CLASS_LIST: readonly CharacterClass[] = [
           'Vous connaissez le jargon des voleurs, plus une autre langue de votre choix.',
         effects: [
           { application: 'grant', grants: { languageChoiceCount: 1 } },
-          { application: 'informational', note: 'Jargon des voleurs.' },
+          { application: 'grant', grants: { languages: ['thievesCant'] } },
         ],
       },
       weaponMastery(2),

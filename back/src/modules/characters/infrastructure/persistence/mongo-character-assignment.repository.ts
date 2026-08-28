@@ -17,6 +17,11 @@ import {
   OUTBOX_MESSAGE_MODEL,
   type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
+import {
+  OUTBOX_AUDIENCE_POLICY,
+  OUTBOX_DELIVERY_CHANNEL,
+} from '@kernel/infrastructure/outbox-message.contract';
+import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 import type { UserId } from '@kernel/domain/user-id';
 
 import type {
@@ -33,8 +38,7 @@ import { CHARACTER_MODEL } from './character.schema';
 const SCHEMA_VERSION = 1;
 const OWNER_MODULE = 'characters';
 const ACCEPTED_STATUS = 'accepted';
-const PENDING_STATUS = 'pending';
-const AUDIENCE = 'campaign-members';
+const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignMembers;
 const SOURCES = ['SF-001', 'SF-002', 'DEC-002', 'SPEC-007'];
 const DUPLICATE_KEY_ERROR = 11000;
 
@@ -172,15 +176,15 @@ function outboxDocument(
   index: number,
 ): OutboxMessageDocument {
   const aggregate = factAggregate(command, factType, index);
-  return {
-    _id: randomUUID(), schemaVersion: SCHEMA_VERSION, ownerModule: OWNER_MODULE,
+  return createOutboxMessage({
+    ownerModule: OWNER_MODULE,
     campaignId: command.campaignId, causationId: receiptId,
     aggregateId: aggregate.id.value, aggregateRevision: aggregate.revision,
     factType, fact: { campaignId: command.campaignId, characterId: aggregate.id.value },
-    audiencePolicy: AUDIENCE, status: PENDING_STATUS,
-    availableAt: command.occurredAt, leaseUntil: null,
-    createdAt: command.occurredAt, updatedAt: command.occurredAt,
-  };
+    audience: { policy: AUDIENCE },
+    deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
+    occurredAt: command.occurredAt,
+  });
 }
 
 function factAggregate(

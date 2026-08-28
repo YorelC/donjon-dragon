@@ -7,7 +7,7 @@ export interface FunctionalAuditEntryDocument {
   _id: string;
   schemaVersion: number;
   ownerModule: string;
-  campaignId: string;
+  campaignId?: string;
   commandReceiptId: string;
   actorKey: string;
   effectiveRole: string | null;
@@ -26,7 +26,7 @@ export const FunctionalAuditEntrySchema = new Schema<FunctionalAuditEntryDocumen
     _id: { type: String, required: true },
     schemaVersion: { type: Number, required: true, min: 1 },
     ownerModule: { type: String, required: true },
-    campaignId: { type: String, required: true },
+    campaignId: { type: String, required: false },
     commandReceiptId: { type: String, required: true },
     actorKey: { type: String, required: true },
     effectiveRole: { type: String, default: null },
@@ -43,5 +43,6 @@ export const FunctionalAuditEntrySchema = new Schema<FunctionalAuditEntryDocumen
 );
 
 FunctionalAuditEntrySchema.index({ campaignId: 1, occurredAt: 1, _id: 1 });
+FunctionalAuditEntrySchema.index({ ownerModule: 1, occurredAt: 1, _id: 1 });
 FunctionalAuditEntrySchema.index({ aggregateId: 1 });
 FunctionalAuditEntrySchema.index({ commandReceiptId: 1 });

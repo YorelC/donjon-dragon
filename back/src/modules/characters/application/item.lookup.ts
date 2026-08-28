@@ -2,6 +2,7 @@ import type { CharacterEquipment } from '@donjon-dragon/shared/character-schema'
 
 import type { ItemCatalogPort } from './ports/item-catalog.port';
 import { NotAnArmorError, UnknownItemError } from '../domain/character.errors';
+import { creationItemName } from '../domain/reference/creation-options';
 
 /**
  * Les vérifications que le domaine ne peut pas faire : le catalogue d'objets vit
@@ -29,7 +30,11 @@ function wantedKeys(equipment: CharacterEquipment): string[] {
   const carried = equipment.items.map((item) => item.itemKey);
   const worn = equipment.armorKey === null ? [] : [equipment.armorKey];
 
-  return [...new Set([...carried, ...worn])];
+  return [...new Set([...carried, ...worn])].filter(isCatalogItem);
+}
+
+function isCatalogItem(key: string): boolean {
+  return creationItemName(key) === null;
 }
 
 /**

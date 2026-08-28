@@ -19,6 +19,7 @@ import { PrivateRoute } from "./shared/components/layout/private-route";
 import { SESSION_STATUS, useAuthStore } from "./shared/stores/auth.store";
 import { useSessionBootstrap } from "./shared/hooks/use-session-bootstrap";
 import { Toaster } from "./shared/components/atoms/sonner";
+import { useRealtimeInvalidation } from "./shared/realtime/use-realtime-invalidation";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <RealtimeBridge />
       <BrowserRouter>
         <AppHeader />
         <AppRoutes />
@@ -36,6 +38,11 @@ function App() {
       <Toaster />
     </QueryClientProvider>
   );
+}
+
+function RealtimeBridge() {
+  useRealtimeInvalidation();
+  return null;
 }
 
 function AppRoutes() {

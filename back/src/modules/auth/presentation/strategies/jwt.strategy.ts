@@ -9,7 +9,7 @@ import {
   actorFromVerifiedToken,
   type AuthenticatedActor,
 } from '@kernel/domain/actor-id';
-import { ACCESS_COOKIE } from '../session-cookies';
+import { ACCESS_COOKIE } from '@common/security/session-cookie.constants';
 
 const fromSessionCookie = (request: Request): string | null =>
   request.cookies?.[ACCESS_COOKIE] ?? null;
@@ -19,8 +19,8 @@ const fromSessionCookie = (request: Request): string | null =>
  * `request.user` : on le fait passer par le schema Zod plutot que de caster,
  * pour qu'un token signe mais malforme soit refuse et non propage.
  *
- * C'est le SEUL endroit du back qui a le droit de forger un `ActorId` : ici, et
- * seulement ici, l'identite vient d'une signature verifiee et non du client.
+ * L'identite vient d'une signature verifiee et non du client. Le transport
+ * temps réel applique la même frontière via VerifyAccessTokenUseCase.
  */
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

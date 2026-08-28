@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserId } from '@kernel/domain/user-id';
 import type { ActorId } from '@kernel/domain/actor-id';
+import { CLOCK, type Clock } from '@kernel/application/clock.port';
 
 import {
   FRIENDSHIP_REPOSITORY,
@@ -19,6 +20,7 @@ export class RemoveFriendUseCase {
   constructor(
     @Inject(FRIENDSHIP_REPOSITORY)
     private readonly friendshipRepo: FriendshipRepositoryPort,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(dto: RemoveFriendDto): Promise<void> {
@@ -29,6 +31,6 @@ export class RemoveFriendUseCase {
 
     friendship.assertInvolves(UserId.create(dto.userId));
 
-    await this.friendshipRepo.deleteById(id);
+    await this.friendshipRepo.deleteById(id, this.clock.now());
   }
 }

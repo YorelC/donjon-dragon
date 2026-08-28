@@ -6,6 +6,7 @@ import { PassportModule } from '@nestjs/passport';
 
 import { CsrfTokenService } from '@common/security/csrf-token.service';
 import { ClockModule } from '@kernel/infrastructure/clock.module';
+import { SessionRevocationModule } from '@kernel/infrastructure/session-revocation.module';
 import { UserModule } from '@modules/user/user.module';
 import { EMAIL_SENDER } from './application/ports/email-sender.port';
 import { EMAIL_VERIFICATION_TOKEN_REPOSITORY } from './application/ports/email-verification-token.repository.port';
@@ -17,6 +18,8 @@ import { LoginUseCase } from './application/use-cases/login.use-case';
 import { VerifyEmailUseCase } from './application/use-cases/verify-email.use-case';
 import { RefreshTokensUseCase } from './application/use-cases/refresh-tokens.use-case';
 import { LogoutUseCase } from './application/use-cases/logout.use-case';
+import { VerifyAccessTokenUseCase } from './application/use-cases/verify-access-token.use-case';
+import { ACCESS_TOKEN_VERIFIER } from './application/ports/access-token-verifier.port';
 import { BcryptPasswordHasher } from './infrastructure/crypto/bcrypt-password-hasher';
 import { NodemailerEmailSender } from './infrastructure/mail/nodemailer-email-sender';
 import { CapturedEmailSender } from './infrastructure/mail/captured-email-sender';
@@ -31,6 +34,7 @@ import {
   RefreshTokenSchema,
 } from './infrastructure/persistence/refresh-token.schema';
 import { JwtTokenService } from './infrastructure/token/jwt-token.service';
+import { JwtAccessTokenVerifier } from './infrastructure/token/jwt-access-token-verifier';
 import { AuthController } from './presentation/auth.controller';
 import { SessionCookies } from './presentation/session-cookies';
 import { JwtStrategy } from './presentation/strategies/jwt.strategy';
@@ -39,6 +43,7 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
   imports: [
     UserModule,
     ClockModule,
+    SessionRevocationModule,
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -64,6 +69,7 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
     SessionCookies,
     CsrfTokenService,
     { provide: TOKEN_SERVICE, useClass: JwtTokenService },
+    { provide: ACCESS_TOKEN_VERIFIER, useClass: JwtAccessTokenVerifier },
     // useFactory assumé : l'adapter reçoit une valeur primitive, pas un service.
     {
       provide: PASSWORD_HASHER,
@@ -88,7 +94,9 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
     VerifyEmailUseCase,
     RefreshTokensUseCase,
     LogoutUseCase,
+    VerifyAccessTokenUseCase,
   ],
+  exports: [VerifyAccessTokenUseCase],
 })
 export class AuthModule {}
 

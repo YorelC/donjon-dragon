@@ -21,6 +21,9 @@ export interface CharacterEquipmentSnapshot {
   /** L'option de paquetage retenue, pour que le wizard se rouvre sur le bon choix. */
   classOptionId: string | null;
   backgroundOptionId: string | null;
+  classChoiceItemKey?: string | null;
+  backgroundChoiceItemKey?: string | null;
+  trinketId?: number | null;
 }
 
 export class NegativeGoldError extends InvalidDomainError {
@@ -32,6 +35,12 @@ export class NegativeGoldError extends InvalidDomainError {
 export class InvalidItemQuantityError extends InvalidDomainError {
   constructor() {
     super('Item quantity must be a positive integer');
+  }
+}
+
+export class WornItemNotOwnedError extends InvalidDomainError {
+  constructor() {
+    super('Worn armor and shield must be owned');
   }
 }
 
@@ -54,6 +63,7 @@ export class CharacterEquipment {
   static create(snapshot: CharacterEquipmentSnapshot): CharacterEquipment {
     if (snapshot.gold < 0) throw new NegativeGoldError();
     assertQuantities(snapshot.items ?? []);
+    assertWornItemsAreOwned(snapshot);
 
     return new CharacterEquipment(copyOf(snapshot));
   }
@@ -86,6 +96,10 @@ export class CharacterEquipment {
     return this.state.backgroundOptionId;
   }
 
+  get trinketId(): number | null {
+    return this.state.trinketId ?? null;
+  }
+
   get items(): readonly CarriedItemSnapshot[] {
     return this.state.items;
   }
@@ -113,6 +127,9 @@ function copyOf(snapshot: CharacterEquipmentSnapshot): CharacterEquipmentSnapsho
     gold: snapshot.gold ?? 0,
     classOptionId: snapshot.classOptionId ?? null,
     backgroundOptionId: snapshot.backgroundOptionId ?? null,
+    classChoiceItemKey: snapshot.classChoiceItemKey ?? null,
+    backgroundChoiceItemKey: snapshot.backgroundChoiceItemKey ?? null,
+    trinketId: snapshot.trinketId ?? null,
   };
 }
 
@@ -121,4 +138,11 @@ function assertQuantities(items: readonly CarriedItemSnapshot[]): void {
     (item) => Number.isInteger(item.quantity) && item.quantity > 0,
   );
   if (!allPositive) throw new InvalidItemQuantityError();
+}
+
+function assertWornItemsAreOwned(snapshot: CharacterEquipmentSnapshot): void {
+  const owned = new Set((snapshot.items ?? []).map((item) => item.itemKey));
+  const ownsArmor = snapshot.armorKey === null || owned.has(snapshot.armorKey);
+  const ownsShield = !snapshot.shield || owned.has(SHIELD_ITEM_KEY);
+  if (!ownsArmor || !ownsShield) throw new WornItemNotOwnedError();
 }

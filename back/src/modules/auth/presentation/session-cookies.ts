@@ -5,10 +5,11 @@ import type { CookieOptions, Request, Response } from 'express';
 import { CSRF_COOKIE } from '@donjon-dragon/shared/csrf-transport';
 
 import { CsrfTokenService } from '@common/security/csrf-token.service';
+import { ACCESS_COOKIE } from '@common/security/session-cookie.constants';
 import { REFRESH_TTL_MS } from '../domain/token/refresh-token';
 
-export const ACCESS_COOKIE = 'access_token';
 export const REFRESH_COOKIE = 'refresh_token';
+export { ACCESS_COOKIE };
 
 /** Le refresh token n'a besoin d'exister que sur les routes qui le consomment. */
 const REFRESH_PATH = '/api/auth';

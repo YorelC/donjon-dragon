@@ -22,6 +22,15 @@ describe('Command envelope schemas', () => {
     );
     expect(hasIndex(OutboxMessageSchema.indexes(), 'availableAt')).toBe(true);
   });
+
+  it('indexe reçus et audits sans imposer une campagne', () => {
+    expect(hasIndex(CommandReceiptSchema.indexes(), 'ownerModule')).toBe(true);
+    expect(hasIndex(FunctionalAuditEntrySchema.indexes(), 'ownerModule')).toBe(true);
+    expect(Boolean(CommandReceiptSchema.path('campaignId').options.required)).toBe(false);
+    expect(
+      Boolean(FunctionalAuditEntrySchema.path('campaignId').options.required),
+    ).toBe(false);
+  });
 });
 
 type SchemaIndexes = ReturnType<typeof CommandReceiptSchema.indexes>;

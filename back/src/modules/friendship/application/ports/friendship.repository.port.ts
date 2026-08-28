@@ -31,5 +31,5 @@ export interface FriendshipRepositoryPort {
    *  pour userId. Doit utiliser un countDocuments (pas un find + length). */
   countPendingReceived(userId: UserId): Promise<number>;
 
-  deleteById(id: FriendshipId): Promise<void>;
+  deleteById(id: FriendshipId, occurredAt: Date): Promise<void>;
 }

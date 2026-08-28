@@ -25,7 +25,10 @@ import { MongoCharacterRepository } from '@modules/characters/infrastructure/per
 import {
   CHARACTER_MODEL, CharacterSchema,
 } from '@modules/characters/infrastructure/persistence/character.schema';
-import { aCharacterBody } from '@modules/characters/testing/character.fixture';
+import {
+  A_CHARACTER_IDENTITY,
+  aCharacterBody,
+} from '@modules/characters/testing/character.fixture';
 
 const MONGO_URI = process.env.MONGODB_INTEGRATION_URI;
 const describeMongo = MONGO_URI ? describe : describe.skip;
@@ -176,6 +179,7 @@ function character(campaignId: string, name: string): Character {
   return Character.create({
     campaignId: OwningCampaignId.create(campaignId),
     name: CharacterName.create(body.name),
+    identity: A_CHARACTER_IDENTITY,
     createdBy: UserId.create(randomUUID()),
     build: toBuildInput(body),
     roll: AbilityRoll.restore(requiredRoll(body.abilityRoll)),

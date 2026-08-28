@@ -14,6 +14,11 @@ import {
   OUTBOX_MESSAGE_MODEL,
   type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
+import {
+  OUTBOX_AUDIENCE_POLICY,
+  OUTBOX_DELIVERY_CHANNEL,
+} from '@kernel/infrastructure/outbox-message.contract';
+import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 
 import type {
   CampaignCreationCommand,
@@ -25,9 +30,8 @@ const SCHEMA_VERSION = 1;
 const OWNER_MODULE = 'campaigns';
 const INTENTION_TYPE = 'campaign.create';
 const ACCEPTED_STATUS = 'accepted';
-const PENDING_STATUS = 'pending';
 const CREATED_FACT = 'campaign.created';
-const CAMPAIGN_MEMBERS_AUDIENCE = 'campaign-members';
+const CAMPAIGN_MEMBERS_AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignMembers;
 const CAMPAIGN_REQUIREMENT = 'SF-001';
 const STRING_RESULT_FIELDS = ['campaignId', 'name', 'ownerUserId'] as const;
 const NUMBER_RESULT_FIELDS = ['gameMasterCount', 'playerCount'] as const;
@@ -116,9 +120,7 @@ function auditDocument(write: CampaignEnvelopeWrite): FunctionalAuditEntryDocume
 
 function outboxDocument(write: CampaignEnvelopeWrite): OutboxMessageDocument {
   const { command, receiptId, result } = write;
-  return {
-    _id: randomUUID(),
-    schemaVersion: SCHEMA_VERSION,
+  return createOutboxMessage({
     ownerModule: OWNER_MODULE,
     campaignId: result.campaignId,
     causationId: receiptId,
@@ -126,13 +128,10 @@ function outboxDocument(write: CampaignEnvelopeWrite): OutboxMessageDocument {
     aggregateRevision: command.campaign.revision,
     factType: CREATED_FACT,
     fact: { campaignId: result.campaignId, ownerUserId: result.ownerUserId },
-    audiencePolicy: CAMPAIGN_MEMBERS_AUDIENCE,
-    status: PENDING_STATUS,
-    availableAt: command.occurredAt,
-    leaseUntil: null,
-    createdAt: command.occurredAt,
-    updatedAt: command.occurredAt,
-  };
+    audience: { policy: CAMPAIGN_MEMBERS_AUDIENCE },
+    deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
+    occurredAt: command.occurredAt,
+  });
 }
 
 function creationResult(value: unknown): CampaignCreationResult {

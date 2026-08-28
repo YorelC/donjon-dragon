@@ -7,15 +7,19 @@ import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use
 import type { ActorId } from '@kernel/domain/actor-id';
 
 import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
+import { assertEquipmentIsKnown } from '../item.lookup';
 import { toBuildInput } from '../character-build.mapper';
 import { resolveEquipment } from '../character-equipment.mapper';
 import { toCharacterSheetDto } from '../character-sheet.mapper';
 import { AbilityAssignment } from '../../domain/ability-assignment';
 import { CharacterChoices } from '../../domain/character-choices';
 import { CharacterEquipment } from '../../domain/character-equipment';
+import { InvalidCharacterIdentityError } from '../../domain/character-identity';
 import { NotActiveCampaignMemberError } from '../../domain/character.errors';
 import { LEVEL_ONE, type CharacterBuild } from '../../domain/resolution/character-build';
 import { resolveSheet } from '../../domain/resolution/resolve-sheet';
+import { resolveStartingEquipment } from '../../domain/resolution/resolve-starting-equipment';
+import { validateChoices } from '../../domain/resolution/validate-choices';
 
 export type PreviewCharacterSheetDto = PreviewBody & {
   campaignId: string;
@@ -45,6 +49,11 @@ export class PreviewCharacterSheetUseCase {
     if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
 
     const build = buildFrom(dto);
+    await assertEquipmentIsKnown(
+      this.itemCatalog,
+      build.equipment.snapshot(),
+      dto.campaignId,
+    );
     const equipment = await resolveEquipment(this.itemCatalog, build.equipment, dto.campaignId);
 
     return toCharacterSheetDto(resolveSheet(build, equipment.worn), equipment.resolved);
@@ -53,10 +62,14 @@ export class PreviewCharacterSheetUseCase {
 
 function buildFrom(dto: PreviewCharacterSheetDto): CharacterBuild {
   const input = toBuildInput(dto);
+  const choices = CharacterChoices.create(input.choices);
+  validateChoices({ ...input, choices });
 
   return {
     speciesKey: input.speciesKey,
     lineageKey: input.lineageKey,
+    size: required(input.size),
+    standardLanguages: required(input.standardLanguages),
     classKey: input.classKey,
     backgroundKey: input.backgroundKey,
     level: LEVEL_ONE,
@@ -65,7 +78,14 @@ function buildFrom(dto: PreviewCharacterSheetDto): CharacterBuild {
       backgroundBonuses: input.backgroundBonuses,
       method: input.abilityMethod,
     }),
-    choices: CharacterChoices.create(input.choices),
-    equipment: CharacterEquipment.create(input.equipment),
+    choices,
+    equipment: CharacterEquipment.create(
+      resolveStartingEquipment(input.classKey, input.backgroundKey, input.equipment),
+    ),
   };
+}
+
+function required<T>(value: T | undefined): T {
+  if (value === undefined) throw new InvalidCharacterIdentityError();
+  return value;
 }

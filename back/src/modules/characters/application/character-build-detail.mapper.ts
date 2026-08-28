@@ -22,8 +22,11 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
 
   return {
     name: character.name.value,
+    ...character.identity,
     speciesKey: build.speciesKey,
     lineageKey: build.lineageKey,
+    size: build.size,
+    standardLanguages: [...build.standardLanguages],
     ...lineageFieldsOf(choices),
     ...speciesFieldsOf(choices),
     classKey: build.classKey,
@@ -44,6 +47,7 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
  */
 function equipmentFieldsOf(character: Character) {
   const equipment = character.build.equipment;
+  const selection = equipment.snapshot();
 
   return {
     armorKey: equipment.armorKey,
@@ -52,6 +56,9 @@ function equipmentFieldsOf(character: Character) {
     gold: equipment.gold,
     classOptionId: equipment.classOptionId,
     backgroundOptionId: equipment.backgroundOptionId,
+    classChoiceItemKey: selection.classChoiceItemKey ?? null,
+    backgroundChoiceItemKey: selection.backgroundChoiceItemKey ?? null,
+    trinketId: equipment.trinketId,
   };
 }
 
@@ -92,6 +99,12 @@ function classFieldsOf(choices: readonly CharacterChoice[]) {
     classSpells: levelOneOf(spells),
     fightingStyle: choice?.fightingStyle ?? null,
     classOrder: choice?.classOrder ?? null,
+    weaponMasteries: [...(choice?.weaponMasteries ?? [])],
+    invocation: choice?.invocation ?? null,
+    invocationSpells: [...(choice?.invocationSpells ?? [])],
+    familiarForm: choice?.familiarForm ?? null,
+    pactWeaponKey: choice?.pactWeaponKey ?? null,
+    spellbook: [...(choice?.spellbook ?? [])],
   };
 }
 

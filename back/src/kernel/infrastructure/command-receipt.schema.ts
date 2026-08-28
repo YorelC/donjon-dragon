@@ -13,7 +13,7 @@ export interface CommandReceiptDocument {
   intentHash: string;
   status: string;
   result: unknown;
-  campaignId: string;
+  campaignId?: string;
   aggregateIds: string[];
   randomResults: unknown[];
   createdAt: Date;
@@ -31,7 +31,7 @@ export const CommandReceiptSchema = new Schema<CommandReceiptDocument>(
     intentHash: { type: String, required: true },
     status: { type: String, required: true },
     result: { type: Schema.Types.Mixed, required: true },
-    campaignId: { type: String, required: true },
+    campaignId: { type: String, required: false },
     aggregateIds: { type: [String], required: true },
     randomResults: { type: [Schema.Types.Mixed], required: true },
     createdAt: { type: Date, required: true },
@@ -45,3 +45,4 @@ CommandReceiptSchema.index(
   { unique: true },
 );
 CommandReceiptSchema.index({ campaignId: 1, createdAt: 1 });
+CommandReceiptSchema.index({ ownerModule: 1, createdAt: 1 });

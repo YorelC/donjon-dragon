@@ -2,6 +2,7 @@ import type { ResolvedEquipment } from '@donjon-dragon/shared/character-sheet-sc
 
 import type { CatalogedItem, ItemCatalogPort } from './ports/item-catalog.port';
 import { SHIELD_ITEM_KEY, type CharacterEquipment } from '../domain/character-equipment';
+import { creationItemName } from '../domain/reference/creation-options';
 import type { WornArmor, WornEquipment } from '../domain/resolution/worn-equipment';
 
 export interface EquipmentView {
@@ -24,7 +25,7 @@ export async function resolveEquipment(
   campaignId: string,
 ): Promise<EquipmentView> {
   const items = await catalog.findByKeys(keysOf(equipment), campaignId);
-  const byKey = new Map(items.map((item) => [item.key, item]));
+  const byKey = new Map([...items, ...virtualItemsOf(equipment)].map((item) => [item.key, item]));
 
   return {
     resolved: viewOf(equipment, byKey),
@@ -41,7 +42,15 @@ function keysOf(equipment: CharacterEquipment): string[] {
   const carried = equipment.items.map((item) => item.itemKey);
   const worn = [equipment.armorKey, equipment.shield ? SHIELD_ITEM_KEY : null];
 
-  return [...new Set([...carried, ...worn.filter((key): key is string => key !== null)])];
+  return [...new Set([...carried, ...worn.filter((key): key is string => key !== null)])]
+    .filter((key) => creationItemName(key) === null);
+}
+
+function virtualItemsOf(equipment: CharacterEquipment): CatalogedItem[] {
+  return equipment.items.flatMap((item) => {
+    const name = creationItemName(item.itemKey);
+    return name ? [{ key: item.itemKey, name, armor: null }] : [];
+  });
 }
 
 type Catalog = Map<string, CatalogedItem>;

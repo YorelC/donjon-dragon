@@ -11,6 +11,8 @@ export function toBuildInput(body: PreviewCharacterSheetDto): CharacterBuildInpu
   return {
     speciesKey: body.speciesKey,
     lineageKey: body.lineageKey,
+    size: body.size,
+    standardLanguages: body.standardLanguages,
     classKey: body.classKey,
     backgroundKey: body.backgroundKey,
     abilityMethod: body.abilityMethod,

@@ -4,7 +4,11 @@ import { UserId } from '@kernel/domain/user-id';
 import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
 
 import { STANDARD_ARRAY_ROLL } from '../testing/character-build.fixture';
-import { A_CHARACTER_BUILD, A_CHARACTER_NAME } from '../testing/character.fixture';
+import {
+  A_CHARACTER_BUILD,
+  A_CHARACTER_IDENTITY,
+  A_CHARACTER_NAME,
+} from '../testing/character.fixture';
 import { AbilityAssignmentMismatchError } from './ability-assignment';
 import { Character, type CharacterAccessContext } from './character';
 import { CharacterName } from './character-name';
@@ -30,6 +34,7 @@ function aCharacter(createdBy: UserId = gandalf): Character {
   return Character.create({
     campaignId,
     name: NAME,
+    identity: A_CHARACTER_IDENTITY,
     createdBy,
     build: A_CHARACTER_BUILD,
     roll: STANDARD_ARRAY_ROLL,
@@ -65,6 +70,7 @@ describe('Character.create', () => {
       Character.create({
         campaignId,
         name: NAME,
+        identity: A_CHARACTER_IDENTITY,
         createdBy: gandalf,
         build: A_CHARACTER_BUILD,
         roll: null,
@@ -91,6 +97,7 @@ describe('Character.create', () => {
       Character.create({
         campaignId,
         name: NAME,
+        identity: A_CHARACTER_IDENTITY,
         createdBy: gandalf,
         build: cheated,
         roll: STANDARD_ARRAY_ROLL,
@@ -106,6 +113,7 @@ describe('Character.create', () => {
       Character.create({
         campaignId,
         name: NAME,
+        identity: A_CHARACTER_IDENTITY,
         createdBy: gandalf,
         build: missingLineage,
         roll: STANDARD_ARRAY_ROLL,
@@ -144,7 +152,9 @@ describe('Character.finalize', () => {
     const character = aCharacter();
     const tooFewSkills = {
       ...A_CHARACTER_BUILD,
-      choices: [{ source: { type: 'class' as const, key: 'rogue' }, skills: ['stealth' as const] }],
+      choices: A_CHARACTER_BUILD.choices.map((choice) =>
+        choice.source.type === 'class' ? { ...choice, skills: ['stealth' as const] } : choice,
+      ),
     };
 
     expect(() => character.finalize(tooFewSkills, asCreator, NOW)).toThrow(

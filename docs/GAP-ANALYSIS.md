@@ -95,10 +95,11 @@ suivants ne doivent cependant pas être inventés pendant l'implémentation :
 > état, reçu d'idempotence, audit et outbox sont commis ensemble, avec révisions
 > optimistes. Le propriétaire a validé ce choix le 21 août 2026.
 
-> **DÉCISION REQUISE — Protocole temps réel détaillé**
+> **DÉCISION RÉSOLUE — Protocole temps réel initial**
 >
-> Définir les commandes, événements, accusés de réception, numéros de version,
-> stratégie de reconnexion et règles d'idempotence avant d'implémenter Socket.IO.
+> DEC-018 et `TECHNICAL-REALTIME-5D.md` fixent les notifications après commit,
+> audiences recalculées, contrôles du handshake, reconnexion et déduplication. Les
+> événements détaillés du combat et du butin restent à spécifier avant leur tranche.
 
 > **DÉCISION REQUISE — Stockage des portraits**
 >

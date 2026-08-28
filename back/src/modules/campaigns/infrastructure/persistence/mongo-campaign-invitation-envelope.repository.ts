@@ -14,6 +14,13 @@ import {
   OUTBOX_MESSAGE_MODEL,
   type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
+import {
+  OUTBOX_AUDIENCE_POLICY,
+  OUTBOX_DELIVERY_CHANNEL,
+  type CampaignOutboxAudience,
+  type OutboxDeliveryChannel,
+} from '@kernel/infrastructure/outbox-message.contract';
+import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 
 import type {
   CampaignInvitationCommand,
@@ -23,13 +30,14 @@ import type {
 const SCHEMA_VERSION = 1;
 const OWNER_MODULE = 'campaigns';
 const ACCEPTED_STATUS = 'accepted';
-const PENDING_STATUS = 'pending';
 const SOURCES = ['SF-001', 'SF-006'];
+
+type CampaignAudiencePolicy = CampaignOutboxAudience['policy'];
 
 interface InvitationEnvelopeDescriptor {
   intentionType: string;
   factType: string;
-  audiencePolicy: string;
+  audiencePolicy: CampaignAudiencePolicy;
   aggregateIds: string[];
   revisionBefore: number | null;
 }
@@ -49,11 +57,17 @@ interface InvitationEnvelopeRequest {
 interface DescriptorPolicy {
   intentionType: string;
   factType: string;
-  audiencePolicy: string;
+  audiencePolicy: CampaignAudiencePolicy;
 }
 
 interface DescriptorConfiguration extends DescriptorPolicy {
   revisionBefore: number | null;
+}
+
+interface OutboxProjection {
+  factType: string;
+  audiencePolicy: CampaignAudiencePolicy;
+  deliveryChannel: OutboxDeliveryChannel;
 }
 
 @Injectable()
@@ -160,47 +174,44 @@ function auditDocument(write: InvitationEnvelopeWrite): FunctionalAuditEntryDocu
   };
 }
 
-function auditPolicy(audiencePolicy: string) {
+function auditPolicy(audiencePolicy: CampaignAudiencePolicy) {
   return { reasons: [], sources: SOURCES, audiences: [audiencePolicy] };
 }
 
 function outboxDocument(write: InvitationEnvelopeWrite): OutboxMessageDocument {
-  return baseOutboxDocument(write, write.descriptor.factType, write.descriptor.audiencePolicy);
+  return baseOutboxDocument(write, {
+    factType: write.descriptor.factType,
+    audiencePolicy: write.descriptor.audiencePolicy,
+    deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
+  });
 }
 
 function emailOutboxDocument(write: InvitationEnvelopeWrite): OutboxMessageDocument {
-  return baseOutboxDocument(write, 'campaign.invitation.email-requested', 'email-delivery');
+  return baseOutboxDocument(write, {
+    factType: 'campaign.invitation.email-requested',
+    audiencePolicy: OUTBOX_AUDIENCE_POLICY.targetUser,
+    deliveryChannel: OUTBOX_DELIVERY_CHANNEL.email,
+  });
 }
 
 function baseOutboxDocument(
   write: InvitationEnvelopeWrite,
-  factType: string,
-  audiencePolicy: string,
+  projection: OutboxProjection,
 ): OutboxMessageDocument {
   const { command, receiptId } = write;
   const invitation = command.invitation.snapshot();
-  return {
-    ...outboxIdentity(invitation, receiptId),
-    factType,
-    fact: invitationFact(invitation),
-    audiencePolicy,
-    ...outboxLifecycle(command.occurredAt),
-  };
-}
-
-function outboxIdentity(
-  invitation: ReturnType<CampaignInvitationCommand['invitation']['snapshot']>,
-  receiptId: string,
-) {
-  return {
-    _id: randomUUID(),
-    schemaVersion: SCHEMA_VERSION,
+  return createOutboxMessage({
     ownerModule: OWNER_MODULE,
     campaignId: invitation.campaignId,
     causationId: receiptId,
     aggregateId: invitation.id,
     aggregateRevision: invitation.revision,
-  };
+    factType: projection.factType,
+    fact: invitationFact(invitation),
+    audience: campaignAudience(projection.audiencePolicy, invitation.targetUserId),
+    deliveryChannel: projection.deliveryChannel,
+    occurredAt: command.occurredAt,
+  });
 }
 
 function invitationFact(
@@ -214,14 +225,14 @@ function invitationFact(
   };
 }
 
-function outboxLifecycle(occurredAt: Date) {
-  return {
-    status: PENDING_STATUS,
-    availableAt: occurredAt,
-    leaseUntil: null,
-    createdAt: occurredAt,
-    updatedAt: occurredAt,
-  };
+function campaignAudience(
+  policy: CampaignAudiencePolicy,
+  targetUserId: string,
+): CampaignOutboxAudience {
+  if (policy === OUTBOX_AUDIENCE_POLICY.targetUser) {
+    return { policy, userIds: [targetUserId] };
+  }
+  return { policy };
 }
 
 function creationDescriptor(
@@ -230,7 +241,7 @@ function creationDescriptor(
   return descriptor(command, {
     intentionType: 'campaign.invitation.create',
     factType: 'campaign.invitation.created',
-    audiencePolicy: 'target-user',
+    audiencePolicy: OUTBOX_AUDIENCE_POLICY.targetUser,
     revisionBefore: null,
   });
 }
@@ -243,7 +254,7 @@ function acceptanceDescriptor(
     ...descriptor(command, {
       intentionType: 'campaign.invitation.accept',
       factType: 'campaign.invitation.accepted',
-      audiencePolicy: 'campaign-members',
+      audiencePolicy: OUTBOX_AUDIENCE_POLICY.campaignMembers,
       revisionBefore: snapshot.revision - 1,
     }),
     aggregateIds: [snapshot.id, snapshot.campaignId],
@@ -256,7 +267,7 @@ function refusalDescriptor(
   return terminalDescriptor(command, {
     intentionType: 'campaign.invitation.refuse',
     factType: 'campaign.invitation.refused',
-    audiencePolicy: 'campaign-game-masters',
+    audiencePolicy: OUTBOX_AUDIENCE_POLICY.campaignGameMasters,
   });
 }
 
@@ -266,7 +277,7 @@ function cancellationDescriptor(
   return terminalDescriptor(command, {
     intentionType: 'campaign.invitation.cancel',
     factType: 'campaign.invitation.cancelled',
-    audiencePolicy: 'target-user',
+    audiencePolicy: OUTBOX_AUDIENCE_POLICY.targetUser,
   });
 }
 

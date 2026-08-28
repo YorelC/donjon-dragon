@@ -61,10 +61,13 @@ export class CreateCharacterUseCase {
     });
     if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
     if (!role.isGameMaster) await this.assertNoExistingCharacter(campaignId, actorId);
-    await assertEquipmentIsKnown(this.itemCatalog, dto.equipment, dto.campaignId);
-
     const now = this.clock.now();
     const character = Character.create(this.creationInputFor(dto, campaignId, actorId, now));
+    await assertEquipmentIsKnown(
+      this.itemCatalog,
+      character.build.equipment.snapshot(),
+      dto.campaignId,
+    );
     if (!role.isGameMaster) character.selfAssignToCreator(now);
 
     await this.characterRepo.save(character);
@@ -80,6 +83,13 @@ export class CreateCharacterUseCase {
     return {
       campaignId,
       name: CharacterName.create(dto.name),
+      identity: {
+        alignment: dto.alignment,
+        age: dto.age,
+        heightCm: dto.heightCm,
+        weightKg: dto.weightKg,
+        description: dto.description,
+      },
       createdBy,
       build: toBuildInput(dto),
       roll: dto.abilityRoll ? AbilityRoll.restore(dto.abilityRoll) : null,

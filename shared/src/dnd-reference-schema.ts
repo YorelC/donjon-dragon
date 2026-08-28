@@ -41,6 +41,7 @@ export const SkillNameSchema = z.enum([
 ]);
 
 export const SpeciesKeySchema = z.enum([
+  'aasimar',
   'dragonborn',
   'dwarf',
   'elf',
@@ -155,6 +156,18 @@ export const WeaponProficiencySchema = z.enum([
 
 export const CreatureSizeSchema = z.enum(['Small', 'Medium']);
 
+export const AlignmentSchema = z.enum([
+  'lawfulGood',
+  'neutralGood',
+  'chaoticGood',
+  'lawfulNeutral',
+  'trueNeutral',
+  'chaoticNeutral',
+  'lawfulEvil',
+  'neutralEvil',
+  'chaoticEvil',
+]);
+
 export const LanguageSchema = z.enum([
   'common',
   'commonSignLanguage',
@@ -173,6 +186,8 @@ export const LanguageSchema = z.enum([
   'primordial',
   'sylvan',
   'undercommon',
+  'druidic',
+  'thievesCant',
 ]);
 
 export const EffectApplicationSchema = z.enum([
@@ -204,6 +219,7 @@ export type DamageType = z.infer<typeof DamageTypeSchema>;
 export type WeaponProperty = z.infer<typeof WeaponPropertySchema>;
 export type WeaponMastery = z.infer<typeof WeaponMasterySchema>;
 export type CreatureSize = z.infer<typeof CreatureSizeSchema>;
+export type Alignment = z.infer<typeof AlignmentSchema>;
 export type Language = z.infer<typeof LanguageSchema>;
 export type EffectApplication = z.infer<typeof EffectApplicationSchema>;
 export type EffectSourceType = z.infer<typeof EffectSourceTypeSchema>;

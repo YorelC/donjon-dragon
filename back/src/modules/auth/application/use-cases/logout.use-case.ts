@@ -2,6 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { UserId } from '@kernel/domain/user-id';
 import type { ActorId } from '@kernel/domain/actor-id';
 import { CLOCK, type Clock } from '@kernel/application/clock.port';
+import {
+  SESSION_REVOCATION_PUBLISHER,
+  type SessionRevocationPublisherPort,
+} from '@kernel/application/session-revocation.port';
 
 import {
   REFRESH_TOKEN_REPOSITORY,
@@ -15,6 +19,8 @@ export class LogoutUseCase {
     @Inject(REFRESH_TOKEN_REPOSITORY)
     private readonly refreshRepo: RefreshTokenRepositoryPort,
     @Inject(CLOCK) private readonly clock: Clock,
+    @Inject(SESSION_REVOCATION_PUBLISHER)
+    private readonly revocations: SessionRevocationPublisherPort,
   ) {}
 
   /**
@@ -30,8 +36,9 @@ export class LogoutUseCase {
     const token = await this.refreshRepo.findBySecret(
       TokenSecret.fromPlain(plainToken),
     );
-    if (!token?.belongsTo(UserId.create(userId))) return;
-
-    await this.refreshRepo.revokeFamily(token.familyId, this.clock.now());
+    if (token?.belongsTo(UserId.create(userId))) {
+      await this.refreshRepo.revokeFamily(token.familyId, this.clock.now());
+    }
+    this.revocations.publish(userId);
   }
 }

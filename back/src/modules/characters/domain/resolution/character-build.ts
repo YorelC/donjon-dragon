@@ -2,6 +2,7 @@ import type { AbilityAssignment } from '../ability-assignment';
 import type { CharacterChoices } from '../character-choices';
 import type { CharacterEquipment } from '../character-equipment';
 import type { BackgroundKey, ClassKey, LineageKey, SpeciesKey } from '../reference/keys';
+import type { CreatureSize, Language } from '../reference/proficiencies';
 
 /**
  * Tout ce dont le moteur a besoin pour produire une fiche : les choix du joueur,
@@ -14,6 +15,8 @@ import type { BackgroundKey, ClassKey, LineageKey, SpeciesKey } from '../referen
 export interface CharacterBuild {
   speciesKey: SpeciesKey;
   lineageKey: LineageKey | null;
+  size: CreatureSize;
+  standardLanguages: readonly Language[];
   classKey: ClassKey;
   backgroundKey: BackgroundKey;
   level: number;

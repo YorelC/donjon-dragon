@@ -4,6 +4,13 @@ import type { CharacterBuildInput } from '../domain/character';
 import { STANDARD_ARRAY_DICE, STANDARD_ARRAY_ROLL } from './character-build.fixture';
 
 export const A_CHARACTER_NAME = 'Frodo Sacquet';
+export const A_CHARACTER_IDENTITY = {
+  alignment: 'neutralGood' as const,
+  age: 33,
+  heightCm: 105,
+  weightKg: 18,
+  description: 'Un voyageur prudent aux yeux vifs.',
+};
 
 /** Les six totaux du tirage figé de `character-build.fixture` : 15/14/13/12/10/8. */
 export const A_VALID_ASSIGNMENT = {
@@ -23,6 +30,8 @@ export const A_VALID_ASSIGNMENT = {
 export const A_CHARACTER_BUILD: CharacterBuildInput = {
   speciesKey: 'halfling',
   lineageKey: null,
+  size: 'Small',
+  standardLanguages: ['elvish', 'dwarvish'],
   classKey: 'rogue',
   backgroundKey: 'charlatan',
   abilityMethod: 'roll',
@@ -33,18 +42,21 @@ export const A_CHARACTER_BUILD: CharacterBuildInput = {
       source: { type: 'class', key: 'rogue' },
       skills: ['acrobatics', 'insight', 'perception', 'stealth'],
       expertise: ['stealth', 'perception'],
+      languages: ['gnomish'],
+      weaponMasteries: ['dagger', 'shortbow'],
+    },
+    {
+      source: { type: 'feat', key: 'skilled' },
+      skills: ['arcana', 'history', 'medicine'],
     },
   ],
   equipment: {
-    armorKey: 'leather',
+    armorKey: null,
     shield: false,
-    items: [
-      { itemKey: 'leather', quantity: 1 },
-      { itemKey: 'dagger', quantity: 2 },
-    ],
-    gold: 8,
-    classOptionId: 'A',
-    backgroundOptionId: 'A',
+    items: [],
+    gold: 0,
+    classOptionId: 'B',
+    backgroundOptionId: 'B',
   },
 };
 
@@ -59,8 +71,11 @@ export const A_CHARACTER_BUILD: CharacterBuildInput = {
  */
 const A_CHARACTER_BODY: FinalizeCharacterDto = {
   name: A_CHARACTER_NAME,
+  ...A_CHARACTER_IDENTITY,
   speciesKey: 'halfling',
   lineageKey: null,
+  size: 'Small',
+  standardLanguages: ['elvish', 'dwarvish'],
   classKey: 'rogue',
   backgroundKey: 'charlatan',
   abilityMethod: 'roll',
@@ -71,18 +86,21 @@ const A_CHARACTER_BODY: FinalizeCharacterDto = {
       source: { type: 'class', key: 'rogue' },
       skills: ['acrobatics', 'insight', 'perception', 'stealth'],
       expertise: ['stealth', 'perception'],
+      languages: ['gnomish'],
+      weaponMasteries: ['dagger', 'shortbow'],
+    },
+    {
+      source: { type: 'feat', key: 'skilled' },
+      skills: ['arcana', 'history', 'medicine'],
     },
   ],
   equipment: {
-    armorKey: 'leather',
+    armorKey: null,
     shield: false,
-    items: [
-      { itemKey: 'leather', quantity: 1 },
-      { itemKey: 'dagger', quantity: 2 },
-    ],
-    gold: 8,
-    classOptionId: 'A',
-    backgroundOptionId: 'A',
+    items: [],
+    gold: 0,
+    classOptionId: 'B',
+    backgroundOptionId: 'B',
   },
   abilityRoll: {
     dice: STANDARD_ARRAY_DICE.map((roll) => [...roll]),

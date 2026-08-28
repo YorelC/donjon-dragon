@@ -88,6 +88,8 @@ export const LANGUAGES = [
   'primordial',
   'sylvan',
   'undercommon',
+  'druidic',
+  'thievesCant',
 ] as const;
 
 export type Language = (typeof LANGUAGES)[number];

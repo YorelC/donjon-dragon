@@ -4,7 +4,11 @@ import { UserId } from '@kernel/domain/user-id';
 import { TEST_INSTANT } from '@kernel/testing/fixed-clock';
 
 import { STANDARD_ARRAY_ROLL } from '../testing/character-build.fixture';
-import { A_VALID_ASSIGNMENT } from '../testing/character.fixture';
+import {
+  A_CHARACTER_BUILD,
+  A_CHARACTER_IDENTITY,
+  A_VALID_ASSIGNMENT,
+} from '../testing/character.fixture';
 import { toCharacterBuildDetailDto } from './character-build-detail.mapper';
 import { Character, type CharacterBuildInput } from '../domain/character';
 import { CharacterName } from '../domain/character-name';
@@ -15,13 +19,26 @@ const campaignId = OwningCampaignId.create(randomUUID());
 const NOW = TEST_INSTANT;
 
 function characterWith(build: CharacterBuildInput): Character {
-  return Character.create({
+  const character = Character.create({
     campaignId,
     name: CharacterName.create('Frodo Sacquet'),
+    identity: A_CHARACTER_IDENTITY,
     createdBy: gandalf,
-    build,
+    build: A_CHARACTER_BUILD,
     roll: STANDARD_ARRAY_ROLL,
     now: NOW,
+  });
+  const snapshot = character.snapshot();
+  return Character.restore({
+    ...snapshot,
+    build: {
+      ...snapshot.build,
+      speciesKey: build.speciesKey,
+      lineageKey: build.lineageKey,
+      classKey: build.classKey,
+      backgroundKey: build.backgroundKey,
+      choices: build.choices.map((choice) => ({ ...choice })),
+    },
   });
 }
 
@@ -35,6 +52,8 @@ function characterWith(build: CharacterBuildInput): Character {
 const FULL_BUILD: CharacterBuildInput = {
   speciesKey: 'human',
   lineageKey: null,
+  size: 'Medium',
+  standardLanguages: ['elvish', 'dwarvish'],
   classKey: 'rogue',
   backgroundKey: 'charlatan',
   abilityMethod: 'roll',
@@ -100,7 +119,7 @@ describe('toCharacterBuildDetailDto', () => {
     expect(dto.base).toEqual(A_VALID_ASSIGNMENT);
     expect(dto.abilityRoll?.totals).toEqual([15, 14, 13, 12, 10, 8]);
 
-    expect(dto.armorKey).toBe('leather');
+    expect(dto.armorKey).toBeNull();
     expect(dto.shield).toBe(false);
   });
 

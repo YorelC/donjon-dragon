@@ -555,7 +555,7 @@ sécurité séparé.
 
 #### Audit fonctionnel
 
-Une entrée append-only conserve module, campagne, commande, acteur, rôle effectif,
+Une entrée append-only conserve module, campagne lorsqu'elle existe, commande, acteur, rôle effectif,
 action, agrégats, révisions avant/après, motifs, sources, causalité et audiences. Elle
 enregistre un changement structuré ou des références de versions, pas une copie
 indifférenciée de tous les secrets.
@@ -580,9 +580,15 @@ reconstruction.
 #### Outbox
 
 Un message d'outbox contient un identifiant unique, le module propriétaire, la
-causalité, les agrégats et révisions concernés, le fait interne, sa politique
-d'audience, sa disponibilité et ses métadonnées de livraison. Il ne contient pas un
+campagne seulement lorsque le fait lui appartient, la causalité, les agrégats et
+révisions concernés, le fait interne, son canal, sa politique d'audience, sa
+disponibilité et ses métadonnées de livraison. Il ne contient pas un
 payload universel réunissant les secrets de toutes les audiences.
+
+Le périmètre métier et l'audience sont deux dimensions distinctes. Une invitation peut
+appartenir à une campagne tout en visant un utilisateur qui n'en est pas encore membre.
+Une amitié ne porte aucun `campaignId`. Le vocabulaire d'audience est fermé dans le
+kernel backend ; le détail du contrat et de sa résolution est fixé par la phase 5D.
 
 Après commit, un diffuseur revendique le message par un bail atomique, construit les
 projections autorisées puis marque les livraisons. Une livraison est au moins une fois ;
@@ -726,10 +732,10 @@ contrôles d'autorisation ni les révisions.
 | `campaign_reserves` | `campaignId` unique | une réserve par campagne |
 | `campaign_reserve_entries` | `{ reserveId, sourceCombatId }` ; `instanceId` unique | consultation et transfert |
 | `persistent_effects` | `{ campaignId, targetType, targetId, status }`, `{ status, dueAt }` | effets actifs et échéances |
-| `command_receipts` | `{ principalKey, idempotencyKey }` unique ; `{ campaignId, createdAt }` | déduplication et support |
+| `command_receipts` | `{ principalKey, idempotencyKey }` unique ; `{ campaignId, createdAt }` lorsque la campagne existe ; `{ ownerModule, createdAt }` | déduplication et support |
 | `bulk_command_runs` | `{ principalKey, idempotencyKey }` unique ; `{ campaignId, status }` | reprise d'une action groupée par cible |
 | `bulk_command_items` | `{ runId, targetId }` unique ; `{ runId, status }` | un résultat stable par cible sans tableau croissant |
-| `functional_audit_entries` | `{ campaignId, occurredAt, id }`, références d'agrégat, `commandReceiptId` | chronologie durable |
+| `functional_audit_entries` | `{ campaignId, occurredAt, id }` lorsque la campagne existe ; `{ ownerModule, occurredAt, id }`, références d'agrégat, `commandReceiptId` | chronologie durable |
 | `calculation_traces` | `commandReceiptId`, `{ campaignId, createdAt }` | explication autorisée |
 | `calculation_trace_steps` | `{ traceId, sequence }` unique ; `{ traceId, targetId }` | détail paginable et ordonné |
 | `outbox_messages` | `{ status, availableAt, leaseUntil }`, `{ ownerModule, aggregateId, createdAt }` | publication et diagnostic |

@@ -6,6 +6,7 @@
 // Convention : kebab-case, alignée sur les seeds de docs/characteres/.
 
 export const SPECIES_KEYS = [
+  'aasimar',
   'dragonborn',
   'dwarf',
   'elf',

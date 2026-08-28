@@ -7,6 +7,7 @@ import type {
   CharacterEquipmentSnapshot,
 } from '../../domain/character-equipment';
 import type { CharacterBuildSnapshot, CharacterSnapshot } from '../../domain/character';
+import type { CharacterIdentitySnapshot } from '../../domain/character-identity';
 
 export const CHARACTER_MODEL = 'Character';
 
@@ -23,6 +24,17 @@ const AbilityAssignmentSubSchema = new Schema<AbilityAssignmentSnapshot>(
     base: { type: Object, required: true },
     backgroundBonuses: { type: Object, required: true },
     method: { type: String, required: true },
+  },
+  subSchema,
+);
+
+const CharacterIdentitySubSchema = new Schema<CharacterIdentitySnapshot>(
+  {
+    alignment: { type: String, required: true },
+    age: { type: Number, required: true, min: 1 },
+    heightCm: { type: Number, required: true, min: Number.MIN_VALUE },
+    weightKg: { type: Number, required: true, min: Number.MIN_VALUE },
+    description: { type: String, default: null },
   },
   subSchema,
 );
@@ -44,6 +56,9 @@ const CharacterEquipmentSubSchema = new Schema<CharacterEquipmentSnapshot>(
     // Nullables : les personnages créés avant les paquetages n'ont pas d'option.
     classOptionId: { type: String, default: null },
     backgroundOptionId: { type: String, default: null },
+    classChoiceItemKey: { type: String, default: null },
+    backgroundChoiceItemKey: { type: String, default: null },
+    trinketId: { type: Number, default: null, min: 1, max: 100 },
   },
   subSchema,
 );
@@ -52,6 +67,8 @@ const CharacterBuildSubSchema = new Schema<CharacterBuildSnapshot>(
   {
     speciesKey: { type: String, required: true },
     lineageKey: { type: String, default: null },
+    size: { type: String, required: true },
+    standardLanguages: { type: [String], required: true },
     classKey: { type: String, required: true },
     backgroundKey: { type: String, required: true },
     abilities: { type: AbilityAssignmentSubSchema, required: true },
@@ -71,6 +88,7 @@ export const CharacterSchema = new Schema<CharacterSnapshot>(
     id: { type: String, required: true, unique: true },
     campaignId: { type: String, required: true },
     name: { type: String, required: true },
+    identity: { type: CharacterIdentitySubSchema, required: true },
     /** Participation à l'aventure de la campagne, pas avancement de la création. */
     status: { type: String, required: true },
     /** `null` pour les méthodes standardArray/pointBuy, qui n'ont pas de tirage. */

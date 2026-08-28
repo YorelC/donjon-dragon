@@ -52,7 +52,6 @@ export class FinalizeCharacterUseCase {
   ) {}
 
   async execute(dto: FinalizeCharacterDto): Promise<CharacterDto> {
-    await assertEquipmentIsKnown(this.itemCatalog, dto.equipment, dto.campaignId);
     const character = await loadCampaignCharacter(
       this.characterRepo, dto.campaignId, dto.characterId,
     );
@@ -67,6 +66,11 @@ export class FinalizeCharacterUseCase {
     character.rename(CharacterName.create(dto.name), context, now);
     if (dto.abilityRoll) character.rollAbilities(AbilityRoll.restore(dto.abilityRoll), context, now);
     character.finalize(toBuildInput(dto), context, now);
+    await assertEquipmentIsKnown(
+      this.itemCatalog,
+      character.build.equipment.snapshot(),
+      dto.campaignId,
+    );
 
     await this.characterRepo.save(character);
     return toCharacterDtoResolved(this.directory, character, UserId.create(dto.actorId));

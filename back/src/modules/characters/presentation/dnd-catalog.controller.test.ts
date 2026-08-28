@@ -25,10 +25,10 @@ describe('DndCatalogController', () => {
     expect(() => DndCatalogSchema.parse(controller.getCatalog())).not.toThrow();
   });
 
-  it('expose les 9 espèces, 12 classes et 16 historiques', () => {
+  it('expose les 10 espèces, 12 classes et 16 historiques', () => {
     const catalog = controller.getCatalog();
 
-    expect(catalog.species).toHaveLength(9);
+    expect(catalog.species).toHaveLength(10);
     expect(catalog.classes).toHaveLength(12);
     expect(catalog.backgrounds).toHaveLength(16);
     expect(catalog.originFeats).toHaveLength(10);

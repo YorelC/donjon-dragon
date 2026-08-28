@@ -10,6 +10,7 @@ import type {
   LineageKey,
   SpeciesKey,
 } from '../domain/reference/keys';
+import { SPECIES } from '../domain/reference/species';
 import { LEVEL_ONE, type CharacterBuild } from '../domain/resolution/character-build';
 
 /**
@@ -45,6 +46,8 @@ export function aBuild(input: BuildInput): CharacterBuild {
   return {
     speciesKey: input.speciesKey,
     lineageKey: input.lineageKey ?? null,
+    size: SPECIES[input.speciesKey].sizeOptions?.[0] ?? SPECIES[input.speciesKey].size,
+    standardLanguages: ['elvish', 'dwarvish'],
     classKey: input.classKey,
     backgroundKey: input.backgroundKey,
     level: LEVEL_ONE,
@@ -64,10 +67,14 @@ function abilitiesOf(input: BuildInput): AbilityAssignment {
 }
 
 function equipmentOf(input: BuildInput): CharacterEquipment {
+  const worn = [
+    ...(input.armorKey ? [{ itemKey: input.armorKey, quantity: 1 }] : []),
+    ...(input.shield ? [{ itemKey: 'shield', quantity: 1 }] : []),
+  ];
   return CharacterEquipment.create({
     armorKey: input.armorKey ?? null,
     shield: input.shield ?? false,
-    items: [],
+    items: worn,
     gold: 0,
     classOptionId: null,
     backgroundOptionId: null,

@@ -31,6 +31,7 @@ export function resolveProficiencies(
   effects: readonly CollectedEffect[],
   choices: CharacterChoices,
   savingThrows: readonly Ability[],
+  standardLanguages: readonly Language[] = [],
 ): ResolvedProficiencies {
   const granted = effects.flatMap((collected) =>
     collected.effect.grants ? [collected.effect.grants] : [],
@@ -40,7 +41,7 @@ export function resolveProficiencies(
     skills: skillsOf(granted, choices),
     expertise: unique(choices.all.flatMap((choice) => choice.expertise ?? [])),
     tools: toolsOf(granted, choices),
-    languages: languagesOf(granted, choices),
+    languages: languagesOf(granted, choices, standardLanguages),
     armorTraining: unique(granted.flatMap(pick((grant) => grant.armorTraining))),
     weapons: unique(granted.flatMap(pick((grant) => grant.weaponProficiencies))),
     savingThrows: [...savingThrows],
@@ -64,9 +65,11 @@ function toolsOf(granted: readonly GrantPayload[], choices: CharacterChoices): s
 function languagesOf(
   granted: readonly GrantPayload[],
   choices: CharacterChoices,
+  standardLanguages: readonly Language[],
 ): Language[] {
   return unique<Language>([
     DEFAULT_LANGUAGE,
+    ...standardLanguages,
     ...granted.flatMap(pick((grant) => grant.languages)),
     ...choices.all.flatMap((choice) => choice.languages ?? []),
   ]);

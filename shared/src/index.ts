@@ -10,3 +10,4 @@ export * from './monster-schema.js';
 export * from './character-sheet-schema.js';
 export * from './error-schema.js';
 export * from './csrf-transport.js';
+export * from './realtime-schema.js';

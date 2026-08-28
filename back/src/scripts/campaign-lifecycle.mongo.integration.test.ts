@@ -52,7 +52,10 @@ import {
   CHARACTER_MODEL,
   CharacterSchema,
 } from '@modules/characters/infrastructure/persistence/character.schema';
-import { aCharacterBody } from '@modules/characters/testing/character.fixture';
+import {
+  A_CHARACTER_IDENTITY,
+  aCharacterBody,
+} from '@modules/characters/testing/character.fixture';
 
 const MONGO_URI = process.env.MONGODB_INTEGRATION_URI;
 const describeMongo = MONGO_URI ? describe : describe.skip;
@@ -223,6 +226,7 @@ function assignedCharacter(
   const character = Character.create({
     campaignId: OwningCampaignId.create(campaign.id.value),
     name: CharacterName.create(body.name),
+    identity: A_CHARACTER_IDENTITY,
     createdBy: UserId.create(ownerId),
     build: toBuildInput(body),
     roll: AbilityRoll.restore(requiredRoll(body.abilityRoll)),
