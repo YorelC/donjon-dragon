@@ -69,7 +69,7 @@ describe("ReceivedRequestsView", () => {
       renderRequests(queryState({ data: [] }));
 
       expect(
-        screen.getByText(/Tu n'as pas de demandes en attente\./i),
+        screen.getByText(/Vous n'avez aucune demande en attente\./i),
       ).toBeInTheDocument();
     });
 

@@ -58,7 +58,7 @@ describe("FriendsListView (pure view)", () => {
 
     it("should display empty state when no friends and not loading/error", () => {
       renderList(removalState(), queryState({ data: [] }));
-      expect(screen.getByText(/Tu n'as pas encore d'amis\./i)).toBeInTheDocument();
+      expect(screen.getByText(/Aucun compagnon dans votre liste pour l'instant\./i)).toBeInTheDocument();
     });
 
     it("should display all friends with their display names", () => {
@@ -94,20 +94,20 @@ describe("FriendsListView (pure view)", () => {
       ).not.toBeInTheDocument();
     });
 
-    it("appelle onClick(friendshipId) quand le bouton Supprimer de la carte est cliqué", async () => {
+    it("appelle onClick(friendshipId) quand le bouton Retirer de la ligne est cliqué", async () => {
       const onClick = vi.fn();
       renderList(removalState({ onClick }));
 
-      const buttons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const buttons = screen.getAllByRole("button", { name: /Retirer/i });
       await userEvent.click(buttons[2]!); // Aragorn
 
       expect(onClick).toHaveBeenCalledWith("uuid-3");
     });
 
-    it("affiche un bouton Supprimer par ami", () => {
+    it("affiche un bouton Retirer par ami", () => {
       renderList();
       // Note: when selectedFriendId is null, only card buttons are visible
-      const buttons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const buttons = screen.getAllByRole("button", { name: /Retirer/i });
       expect(buttons).toHaveLength(3);
     });
   });

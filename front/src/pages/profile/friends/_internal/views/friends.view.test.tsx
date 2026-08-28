@@ -70,7 +70,11 @@ function renderView(onTabChange = vi.fn()) {
     onTabChange,
     ...render(
       <QueryClientProvider client={queryClient}>
-        <FriendsView activeTab="friends" onTabChange={onTabChange} />
+        <FriendsView
+          activeTab="friends"
+          onTabChange={onTabChange}
+          counts={{ friends: 0, sent: 0 }}
+        />
       </QueryClientProvider>,
     ),
   };
@@ -102,7 +106,7 @@ describe("FriendsView", () => {
   it("rend le panneau de l'onglet actif", () => {
     renderView();
 
-    expect(screen.getByText("Tu n'as pas encore d'amis.")).toBeInTheDocument();
+    expect(screen.getByText("Aucun compagnon dans votre liste pour l'instant.")).toBeInTheDocument();
   });
 
   it("remonte le changement d'onglet à son container", async () => {

@@ -42,6 +42,7 @@ describe("SearchUsersContainer", () => {
     vi.mocked(useUserInvitationModule.useUserInvitation).mockReturnValue({
       onSend: vi.fn(),
       pendingRecipients: new Set(),
+      friendNames: new Set(),
       sendingTo: null,
     });
   });

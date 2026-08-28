@@ -1,5 +1,4 @@
 import { Button } from "@/shared/components/atoms/button";
-import { Card, CardContent } from "@/shared/components/atoms/card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,6 +13,8 @@ import {
 import type { QueryState } from "@/shared/types/ui-state";
 import type { AcceptedFriend } from "@/shared/types/friend";
 import type { FriendRemoval } from "../hooks/use-friend-removal";
+import { FriendRow } from "./friend-row.view";
+import { toFriendMeta } from "../utils/friend-meta";
 
 interface FriendsListViewProps {
   friends: QueryState<AcceptedFriend[]>;
@@ -28,12 +29,20 @@ export function FriendsListView({ friends, removal }: FriendsListViewProps) {
       <div className="empty-state-text">Erreur lors du chargement des amis.</div>
     );
   if (friends.data.length === 0)
-    return <div className="empty-state-text">Tu n'as pas encore d'amis.</div>;
+    return (
+      <div className="empty-state-text">
+        Aucun compagnon dans votre liste pour l'instant.
+      </div>
+    );
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2.5">
       {friends.data.map((friend) => (
-        <FriendRow key={friend.friendshipId} friend={friend} removal={removal} />
+        <AcceptedFriendRow
+          key={friend.friendshipId}
+          friend={friend}
+          removal={removal}
+        />
       ))}
     </div>
   );
@@ -44,14 +53,11 @@ interface FriendRowProps {
   removal: FriendRemoval;
 }
 
-function FriendRow({ friend, removal }: FriendRowProps) {
+function AcceptedFriendRow({ friend, removal }: FriendRowProps) {
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between p-4">
-        <span className="font-medium">{friend.friend.displayName}</span>
-        <RemoveFriendDialog friend={friend} removal={removal} />
-      </CardContent>
-    </Card>
+    <FriendRow name={friend.friend.displayName} meta={toFriendMeta()} tone="settled">
+      <RemoveFriendDialog friend={friend} removal={removal} />
+    </FriendRow>
   );
 }
 
@@ -66,8 +72,8 @@ function RemoveFriendDialog({ friend, removal }: FriendRowProps) {
       }
     >
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" size="sm" disabled={removal.isPending}>
-          {removal.isPending ? "Suppression..." : "Supprimer"}
+        <Button variant="outline" disabled={removal.isPending}>
+          {removal.isPending ? "Suppression..." : "Retirer"}
         </Button>
       </AlertDialogTrigger>
       <RemoveFriendConfirmation

@@ -87,8 +87,8 @@ describe("FriendsContainer", () => {
       const user = userEvent.setup();
       renderWithProviders();
 
-      // Cliquer sur "Supprimer" pour Gandalf
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      // Cliquer sur "Retirer" pour Gandalf
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       expect(
@@ -109,7 +109,7 @@ describe("FriendsContainer", () => {
       renderWithProviders();
 
       // Ouvrir la modale
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       // Vérifier que la modale est ouverte
@@ -139,7 +139,7 @@ describe("FriendsContainer", () => {
       renderWithProviders();
 
       // Cliquer Supprimer sur Gandalf
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       // Vérifier la modale ouverte

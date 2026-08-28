@@ -64,7 +64,7 @@ describe("FriendsListContainer", () => {
       const user = userEvent.setup();
       renderWithProviders();
 
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       expect(
@@ -78,7 +78,7 @@ describe("FriendsListContainer", () => {
       const user = userEvent.setup();
       renderWithProviders();
 
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[2]!); // Aragorn
 
       expect(
@@ -99,7 +99,7 @@ describe("FriendsListContainer", () => {
       renderWithProviders();
 
       // Ouvrir la modale
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       expect(
@@ -130,7 +130,7 @@ describe("FriendsListContainer", () => {
       renderWithProviders();
 
       // Ouvrir la modale
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       expect(
@@ -159,7 +159,7 @@ describe("FriendsListContainer", () => {
       renderWithProviders();
 
       // Ouvrir la modale sur Gandalf
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       // Confirmer la suppression
@@ -167,7 +167,7 @@ describe("FriendsListContainer", () => {
 
       // Vérifier que selectedFriendId est réinitialisé (la modale est fermée)
       // et qu'on peut ouvrir une autre modale
-      const otherButtons = screen.getAllByRole("button", { name: /^Supprimer$/i });
+      const otherButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(otherButtons[1]!); // Frodon Sacquet
 
       expect(

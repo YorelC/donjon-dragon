@@ -1,7 +1,7 @@
-import { Badge } from "@/shared/components/atoms/badge";
-import { Card, CardContent } from "@/shared/components/atoms/card";
 import type { QueryState } from "@/shared/types/ui-state";
 import type { SentRequest } from "../types/friends-schema";
+import { FriendRow } from "./friend-row.view";
+import { toSentRequestMeta } from "../utils/friend-meta";
 
 interface SentRequestsViewProps {
   requests: QueryState<SentRequest[]>;
@@ -18,12 +18,14 @@ export function SentRequestsView({ requests }: SentRequestsViewProps) {
     );
   if (requests.data.length === 0) {
     return (
-      <div className="empty-state-text">Tu n'as pas de demandes en attente.</div>
+      <div className="empty-state-text">
+        Aucune invitation en attente de réponse.
+      </div>
     );
   }
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2.5">
       {requests.data.map((request) => (
         <SentRequestRow key={request.id} request={request} />
       ))}
@@ -33,11 +35,12 @@ export function SentRequestsView({ requests }: SentRequestsViewProps) {
 
 function SentRequestRow({ request }: { request: SentRequest }) {
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between p-4">
-        <span className="font-medium">{request.recipient.displayName}</span>
-        <Badge variant="outline">En attente</Badge>
-      </CardContent>
-    </Card>
+    <FriendRow
+      name={request.recipient.displayName}
+      meta={toSentRequestMeta(request.createdAt)}
+      tone="distant"
+    >
+      <span className="pill">En attente</span>
+    </FriendRow>
   );
 }

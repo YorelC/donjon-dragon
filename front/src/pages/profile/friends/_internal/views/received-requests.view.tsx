@@ -1,8 +1,9 @@
 import { Button } from "@/shared/components/atoms/button";
-import { Card, CardContent } from "@/shared/components/atoms/card";
 import type { QueryState } from "@/shared/types/ui-state";
 import type { RequestModeration } from "../hooks/use-request-moderation";
 import type { ReceivedRequest } from "../types/friends-schema";
+import { FriendRow } from "./friend-row.view";
+import { toReceivedRequestMeta } from "../utils/friend-meta";
 
 interface ReceivedRequestsViewProps {
   requests: QueryState<ReceivedRequest[]>;
@@ -23,12 +24,14 @@ export function ReceivedRequestsView({
     );
   if (requests.data.length === 0) {
     return (
-      <div className="empty-state-text">Tu n'as pas de demandes en attente.</div>
+      <div className="empty-state-text">
+        Vous n'avez aucune demande en attente.
+      </div>
     );
   }
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2.5">
       {requests.data.map((request) => (
         <ReceivedRequestRow
           key={request.id}
@@ -47,12 +50,14 @@ interface ReceivedRequestRowProps {
 
 function ReceivedRequestRow({ request, moderation }: ReceivedRequestRowProps) {
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between p-4">
-        <span className="font-medium">{request.requester.displayName}</span>
-        <ModerationActions requestId={request.id} moderation={moderation} />
-      </CardContent>
-    </Card>
+    <FriendRow
+      name={request.requester.displayName}
+      meta={toReceivedRequestMeta(request.createdAt)}
+      tone="pending"
+    >
+      <AcceptRequestButton requestId={request.id} moderation={moderation} />
+      <RefuseRequestButton requestId={request.id} moderation={moderation} />
+    </FriendRow>
   );
 }
 
@@ -61,22 +66,12 @@ interface ModerationActionsProps {
   moderation: RequestModeration;
 }
 
-function ModerationActions({ requestId, moderation }: ModerationActionsProps) {
-  return (
-    <div className="flex gap-2">
-      <AcceptRequestButton requestId={requestId} moderation={moderation} />
-      <RefuseRequestButton requestId={requestId} moderation={moderation} />
-    </div>
-  );
-}
-
 function AcceptRequestButton({ requestId, moderation }: ModerationActionsProps) {
   return (
     <Button
       onClick={() => moderation.onAccept(requestId)}
       disabled={moderation.acceptPending}
       variant="default"
-      size="sm"
     >
       {moderation.acceptPending ? "Acceptation..." : "Accepter"}
     </Button>
@@ -88,8 +83,7 @@ function RefuseRequestButton({ requestId, moderation }: ModerationActionsProps) 
     <Button
       onClick={() => moderation.onRefuse(requestId)}
       disabled={moderation.refusePending}
-      variant="destructive"
-      size="sm"
+      variant="outline"
     >
       {moderation.refusePending ? "Refus..." : "Refuser"}
     </Button>

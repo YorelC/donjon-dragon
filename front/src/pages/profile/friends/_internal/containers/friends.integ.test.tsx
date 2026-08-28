@@ -176,8 +176,8 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
       expect(screen.getByText("Frodon Sacquet")).toBeInTheDocument();
       expect(screen.getByText("Aragorn")).toBeInTheDocument();
 
-      // 2. Clic "Supprimer" sur Gandalf → modale s'ouvre
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      // 2. Clic "Retirer" sur Gandalf → modale s'ouvre
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       expect(
@@ -220,7 +220,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
       });
 
       // Ouvrir la modale
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       expect(
@@ -295,7 +295,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
       });
 
       // Ouvrir la modale, cliquer Supprimer
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       const confirmButton = screen.getByRole("button", { name: /^Supprimer$/i });
@@ -365,7 +365,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
       });
 
       // Ouvrir la modale → confirmer
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       await user.click(screen.getByRole("button", { name: /^Supprimer$/i }));
@@ -391,7 +391,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
       expect(screen.getByText("Gandalf")).toBeInTheDocument();
       expect(screen.getByText("Frodon Sacquet")).toBeInTheDocument();
       expect(screen.getByText("Aragorn")).toBeInTheDocument();
-      expect(screen.getAllByRole("button", { name: /Supprimer/i })).toHaveLength(
+      expect(screen.getAllByRole("button", { name: /Retirer/i })).toHaveLength(
         3,
       );
     });
@@ -447,7 +447,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
       });
 
       // Ouvrir la modale sur Gandalf
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
 
       expect(
@@ -538,7 +538,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
       });
 
       // Ouvrir la modale → confirmer
-      const removeButtons = screen.getAllByRole("button", { name: /Supprimer/i });
+      const removeButtons = screen.getAllByRole("button", { name: /Retirer/i });
       await user.click(removeButtons[0]!);
       await user.click(screen.getByRole("button", { name: /^Supprimer$/i }));
 
@@ -565,7 +565,7 @@ describe("[INTEG] Parcours complet : suppression ami et badge", () => {
       expect(friendCards[2]).toHaveTextContent("Aragorn");
 
       // Chacun a son propre bouton Supprimer
-      expect(screen.getAllByRole("button", { name: /Supprimer/i })).toHaveLength(
+      expect(screen.getAllByRole("button", { name: /Retirer/i })).toHaveLength(
         3,
       );
     });
