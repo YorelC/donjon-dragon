@@ -1,15 +1,15 @@
 import { useProfileNav } from "../hooks/use-profile-nav";
+import { useProfileIdentity } from "../hooks/use-profile-identity";
 import { ProfileLayoutView } from "../views/profile-layout.view";
 
 export function ProfileLayoutContainer() {
   const { items, isMenuOpen, toggleMenu, closeMenu } = useProfileNav();
+  const identity = useProfileIdentity();
 
   return (
     <ProfileLayoutView
-      items={items}
-      isMenuOpen={isMenuOpen}
-      onToggleMenu={toggleMenu}
-      onNavigate={closeMenu}
+      nav={{ items, isMenuOpen, onToggleMenu: toggleMenu, onNavigate: closeMenu }}
+      identity={identity}
     />
   );
 }

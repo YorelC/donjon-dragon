@@ -1,33 +1,33 @@
 import { Outlet, NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { Button, buttonVariants } from "@/shared/components/atoms/button";
+import { Button } from "@/shared/components/atoms/button";
+import { SectionHeading } from "@/shared/components/molecules/section-heading";
+import { OrnateCorners } from "@/shared/components/molecules/ornate-corners";
 import { cn } from "@/shared/utils/utils";
 import type { ProfileNavItem } from "../constants/profile-nav-items";
+import type { ProfileIdentity } from "../hooks/use-profile-identity";
 
-export interface ProfileLayoutViewProps {
+export interface ProfileNavigation {
   items: ProfileNavItem[];
   isMenuOpen: boolean;
   onToggleMenu: () => void;
   onNavigate: () => void;
 }
 
-export function ProfileLayoutView({
-  items,
-  isMenuOpen,
-  onToggleMenu,
-  onNavigate,
-}: ProfileLayoutViewProps) {
+export interface ProfileLayoutViewProps {
+  nav: ProfileNavigation;
+  identity: ProfileIdentity;
+}
+
+export function ProfileLayoutView({ nav, identity }: ProfileLayoutViewProps) {
   return (
-    <div className="flex">
-      <ProfileMenuButton onToggleMenu={onToggleMenu} />
+    <div className="flex min-h-0 flex-1 gap-4 p-5">
+      <ProfileMenuButton onToggleMenu={nav.onToggleMenu} />
 
-      <ProfileSidebar
-        items={items}
-        isMenuOpen={isMenuOpen}
-        onNavigate={onNavigate}
-      />
+      <ProfileSidebar nav={nav} identity={identity} />
 
-      <main className="flex-1">
+      <main className="panel min-w-0 flex-1">
+        <OrnateCorners />
         <Outlet />
       </main>
     </div>
@@ -40,55 +40,94 @@ function ProfileMenuButton({ onToggleMenu }: { onToggleMenu: () => void }) {
       variant="outline"
       size="icon"
       onClick={onToggleMenu}
-      className="md:hidden absolute top-20 left-4 z-50"
+      aria-label="Menu du profil"
+      className="absolute top-20 left-4 z-50 md:hidden"
     >
       <Menu className="size-5" />
     </Button>
   );
 }
 
-interface ProfileSidebarProps {
-  items: ProfileNavItem[];
-  isMenuOpen: boolean;
-  onNavigate: () => void;
-}
-
-function ProfileSidebar({ items, isMenuOpen, onNavigate }: ProfileSidebarProps) {
+function ProfileSidebar({ nav, identity }: ProfileLayoutViewProps) {
   return (
-    <aside className={toSidebarClassName(isMenuOpen)}>
-      <nav role="navigation" className="flex flex-col gap-1">
-        {items.map((item) => (
-          <ProfileNavLink key={item.route} item={item} onNavigate={onNavigate} />
+    <aside className={toSidebarClassName(nav.isMenuOpen)}>
+      <SectionHeading label="Profil" />
+      <nav role="navigation" className="flex flex-col gap-1.5">
+        {nav.items.map((item) => (
+          <ProfileNavEntry
+            key={item.label}
+            item={item}
+            onNavigate={nav.onNavigate}
+          />
         ))}
       </nav>
+      <ProfileIdentityBlock identity={identity} />
     </aside>
   );
 }
 
-interface ProfileNavLinkProps {
+interface ProfileNavEntryProps {
   item: ProfileNavItem;
   onNavigate: () => void;
 }
 
-function ProfileNavLink({ item, onNavigate }: ProfileNavLinkProps) {
+function ProfileNavEntry({ item, onNavigate }: ProfileNavEntryProps) {
+  if (item.route === null) {
+    return <InertNavEntry label={item.label} />;
+  }
+
   return (
-    <NavLink to={item.route} onClick={onNavigate} className={toNavLinkClassName}>
+    <NavLink to={item.route} onClick={onNavigate} className={toNavEntryClassName}>
       {item.label}
     </NavLink>
   );
 }
 
-function toSidebarClassName(isMenuOpen: boolean): string {
-  return cn(
-    "fixed md:relative md:block w-48 border-r border-sidebar-border bg-sidebar p-4",
-    isMenuOpen ? "block" : "hidden",
-    "md:block",
+/** L'écran est annoncé mais pas encore ouvert : visible, jamais actionnable. */
+function InertNavEntry({ label }: { label: string }) {
+  return (
+    <span aria-disabled className={cn(NAV_ENTRY_BASE, "border-gold/14 text-ink-disabled")}>
+      {label}
+    </span>
   );
 }
 
-function toNavLinkClassName({ isActive }: { isActive: boolean }): string {
-  return cn(
-    buttonVariants({ variant: isActive ? "secondary" : "ghost" }),
-    "w-full justify-start",
+function ProfileIdentityBlock({ identity }: { identity: ProfileIdentity }) {
+  return (
+    <div className="name-value mt-auto">
+      <span className="text-body tracking-name text-gold-value">
+        {identity.displayName}
+      </span>
+      <span className="muted-text-xs">{toCompanionsLabel(identity)}</span>
+    </div>
   );
+}
+
+const NAV_ENTRY_BASE =
+  "flex items-center justify-between gap-2.5 border px-3.5 py-2.5 font-display text-note tracking-meta";
+
+function toSidebarClassName(isMenuOpen: boolean): string {
+  return cn(
+    "panel fixed z-40 flex w-[268px] shrink-0 flex-col gap-4 md:relative md:flex",
+    isMenuOpen ? "flex" : "hidden",
+  );
+}
+
+function toNavEntryClassName({ isActive }: { isActive: boolean }): string {
+  return cn(
+    NAV_ENTRY_BASE,
+    "selectable text-ink-idle",
+    isActive && "selectable-on text-gold-selected",
+  );
+}
+
+function toCompanionsLabel({ friendCount, pendingCount }: ProfileIdentity): string {
+  const friends = `${friendCount} ${plural(friendCount, "ami")}`;
+  if (pendingCount === 0) return friends;
+
+  return `${friends} · ${pendingCount} ${plural(pendingCount, "demande")} en attente`;
+}
+
+function plural(count: number, word: string): string {
+  return count > 1 ? `${word}s` : word;
 }

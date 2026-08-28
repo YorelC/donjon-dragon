@@ -12,15 +12,16 @@ describe("profile-nav-items", () => {
     expect(friendsItem?.route).toBe(ROUTES.profileFriends);
   });
 
-  it("should point to profileSettings route", () => {
+  // L'ecran des parametres est annonce, pas encore ouvert : aucune route.
+  it("should leave the account settings entry inert", () => {
     const settingsItem = PROFILE_NAV_ITEMS.find(
-      (item) => item.label === "Parametres"
+      (item) => item.label === "Paramètres du compte",
     );
-    expect(settingsItem?.route).toBe(ROUTES.profileSettings);
+    expect(settingsItem?.route).toBeNull();
   });
 
   it("should use ROUTES constants, not string literals", () => {
-    PROFILE_NAV_ITEMS.forEach((item) => {
+    PROFILE_NAV_ITEMS.filter((item) => item.route !== null).forEach((item) => {
       expect(item.route).toMatch(/^\/profile\//);
     });
   });
