@@ -40,10 +40,14 @@ export class VerifyEmailUseCase {
     // près et le refresh token qu'il ouvre doivent dater du même moment.
     const now = this.clock.now();
     const token = await this.readVerificationToken(plainToken, now);
+    // Consommer AVANT de vérifier : entre la lecture et la suppression, deux
+    // requêtes concurrentes tenaient toutes deux un token valide. Seule celle
+    // qui supprime effectivement le document poursuit.
+    if (!(await this.verificationRepo.consume(token))) {
+      throw new InvalidVerificationTokenError();
+    }
     // La transition appartient à user ; auth ne fait que la déclencher.
     const verifiedUser = await this.markEmailVerified.execute(token.userId.value);
-    // Usage unique : le lien est consommé, donc supprimé.
-    await this.verificationRepo.delete(token);
 
     return this.issueTokens(verifiedUser, now);
   }

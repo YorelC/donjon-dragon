@@ -35,7 +35,8 @@ export class MongoEmailVerificationTokenRepository
     return doc ? toDomain(doc) : null;
   }
 
-  async delete(token: EmailVerificationToken): Promise<void> {
-    await this.model.deleteOne({ id: token.id });
+  async consume(token: EmailVerificationToken): Promise<boolean> {
+    const result = await this.model.deleteOne({ id: token.id });
+    return result.deletedCount === 1;
   }
 }

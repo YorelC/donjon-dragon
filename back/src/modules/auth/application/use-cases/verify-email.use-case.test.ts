@@ -87,6 +87,20 @@ describe('VerifyEmailUseCase', () => {
     );
   });
 
+  // Le lien lu deux fois avant d'etre supprime : c'est la course que la lecture
+  // puis suppression laissait passer. Seule la requete qui supprime poursuit.
+  it('ne laisse qu une seule requête concurrente consommer le lien', async () => {
+    const plainToken = await issueLinkForAlice();
+
+    const outcomes = await Promise.allSettled([
+      useCase.execute(plainToken),
+      useCase.execute(plainToken),
+    ]);
+
+    expect(outcomes.filter((outcome) => outcome.status === 'fulfilled')).toHaveLength(1);
+    expect(outcomes.filter((outcome) => outcome.status === 'rejected')).toHaveLength(1);
+  });
+
   it('refuse un lien inconnu', async () => {
     await expect(useCase.execute('jamais-emis')).rejects.toThrow(
       InvalidVerificationTokenError,

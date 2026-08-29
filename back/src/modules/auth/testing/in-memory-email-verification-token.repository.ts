@@ -17,7 +17,7 @@ export class InMemoryEmailVerificationTokenRepository
     );
   }
 
-  async delete(token: EmailVerificationToken): Promise<void> {
-    this.tokens.delete(token.id);
+  async consume(token: EmailVerificationToken): Promise<boolean> {
+    return this.tokens.delete(token.id);
   }
 }
