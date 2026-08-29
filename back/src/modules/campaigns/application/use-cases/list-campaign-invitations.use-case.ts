@@ -44,8 +44,12 @@ export class ListCampaignInvitationsUseCase {
   async execute(dto: ListCampaignInvitationsDto): Promise<CampaignInvitation[]> {
     const userId = UserId.create(dto.userId);
     const invitations = await this.invitationRepo.listOpenForTarget(userId);
-    const campaigns = await this.indexCampaigns(invitations);
-    const inviters = await this.indexInviters(invitations);
+    // Les deux lectures sont independantes : les enchainer ajouterait un
+    // aller-retour de latence sans rien changer au nombre de requetes.
+    const [campaigns, inviters] = await Promise.all([
+      this.indexCampaigns(invitations),
+      this.indexInviters(invitations),
+    ]);
 
     return invitations
       .map((invitation) => project(invitation, campaigns, inviters))

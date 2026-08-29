@@ -101,6 +101,29 @@ describe('VerifyEmailUseCase', () => {
     expect(outcomes.filter((outcome) => outcome.status === 'rejected')).toHaveLength(1);
   });
 
+  // Ce test DOCUMENTE un trou, il ne valide pas un comportement souhaitable :
+  // consommer avant de verifier reglait la course, au prix d'un compte qui reste
+  // non verifie avec un lien perdu si l'ecriture utilisateur echoue. Il tombera
+  // le jour ou la reprise sera decidee — c'est le but.
+  it('perd le lien si la vérification du compte échoue après consommation', async () => {
+    const plainToken = await issueLinkForAlice();
+    const failing = new VerifyEmailUseCase(
+      failingMarkEmailVerified(),
+      verificationRepo,
+      refreshRepo,
+      new StubTokenService(),
+      clock,
+    );
+
+    await expect(failing.execute(plainToken)).rejects.toThrow('panne utilisateur');
+
+    const stored = await userRepo.findById(UserId.create(alice.id.value));
+    expect(stored?.snapshot().emailVerified).toBe(false);
+    await expect(useCase.execute(plainToken)).rejects.toThrow(
+      InvalidVerificationTokenError,
+    );
+  });
+
   it('refuse un lien inconnu', async () => {
     await expect(useCase.execute('jamais-emis')).rejects.toThrow(
       InvalidVerificationTokenError,
@@ -139,3 +162,10 @@ describe('VerifyEmailUseCase', () => {
     expect(issued.createdAt).toBe(clock.now().toISOString());
   });
 });
+
+/** Un module `user` en panne apres que le lien a deja ete consomme. */
+function failingMarkEmailVerified(): MarkEmailVerifiedUseCase {
+  return {
+    execute: () => Promise.reject(new Error('panne utilisateur')),
+  } as unknown as MarkEmailVerifiedUseCase;
+}

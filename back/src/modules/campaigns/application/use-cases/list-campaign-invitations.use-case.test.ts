@@ -46,6 +46,25 @@ describe('lectures des invitations ouvertes', () => {
     return { campaign, invitation };
   }
 
+  // PERF-02 : projeter ligne par ligne relisait la campagne ET l'annuaire pour
+  // chaque invitation. Sans ce compte, l'optimisation peut regresser sans que
+  // rien ne casse.
+  it('charge campagnes et invitants en un seul lot, quel que soit le nombre', async () => {
+    await storeOpenInvitation();
+    await storeOpenInvitation();
+    await storeOpenInvitation();
+    campaigns.singleReads = 0;
+    campaigns.batchReads = 0;
+    directory.batchLookups = 0;
+
+    const result = await list.execute({ userId: anActor(frodoId) });
+
+    expect(result).toHaveLength(3);
+    expect(campaigns.batchReads).toBe(1);
+    expect(campaigns.singleReads).toBe(0);
+    expect(directory.batchLookups).toBe(1);
+  });
+
   it('rend la campagne et l ami qui a invité sans identifiant utilisateur', async () => {
     const { campaign } = await storeOpenInvitation();
 

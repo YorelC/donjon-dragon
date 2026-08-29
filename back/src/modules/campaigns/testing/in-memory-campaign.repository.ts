@@ -11,6 +11,9 @@ import type { CampaignId } from '../domain/campaign-id';
 export class InMemoryCampaignRepository implements CampaignRepositoryPort {
   private readonly campaigns = new Map<string, Campaign>();
   private readonly receipts = new Map<string, CampaignCreationReceipt>();
+  /** Comptes de lecture : ce que les tests de N+1 observent. */
+  singleReads = 0;
+  batchReads = 0;
 
   async create(command: CampaignCreationCommand): Promise<CampaignCreationReceipt> {
     const key = receiptKey(command);
@@ -28,11 +31,13 @@ export class InMemoryCampaignRepository implements CampaignRepositoryPort {
   }
 
   async findById(id: CampaignId): Promise<Campaign | null> {
+    this.singleReads += 1;
     const campaign = this.campaigns.get(id.value);
     return campaign ? clone(campaign) : null;
   }
 
   async findManyByIds(ids: CampaignId[]): Promise<Campaign[]> {
+    this.batchReads += 1;
     return ids.flatMap((id) => {
       const campaign = this.campaigns.get(id.value);
       return campaign ? [clone(campaign)] : [];

@@ -5,7 +5,7 @@ import {
   type CampaignRepositoryPort,
 } from '../ports/campaign.repository.port';
 import { loadCampaign } from '../campaign.lookup';
-import { membershipOf, type CampaignMembership } from './get-campaign-membership.use-case';
+import { membershipOf, type CampaignMembership } from '../campaign-membership';
 
 export interface GetCampaignMembershipsDto {
   campaignId: string;

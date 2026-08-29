@@ -43,6 +43,13 @@ export class VerifyEmailUseCase {
     // Consommer AVANT de vérifier : entre la lecture et la suppression, deux
     // requêtes concurrentes tenaient toutes deux un token valide. Seule celle
     // qui supprime effectivement le document poursuit.
+    //
+    // LIMITE CONNUE, non résolue ici : si `markEmailVerified` échoue ensuite, le
+    // lien est perdu et le compte reste non vérifié, sans route de renvoi. Les
+    // deux écritures vivent dans deux modules et deux collections ; les rendre
+    // solidaires demande une transaction Mongo ou une procédure de renvoi
+    // explicite — un arbitrage qui appartient au propriétaire du projet, pas à
+    // ce use-case. La course est réglée, la cohérence sur panne ne l'est pas.
     if (!(await this.verificationRepo.consume(token))) {
       throw new InvalidVerificationTokenError();
     }
