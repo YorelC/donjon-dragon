@@ -33,6 +33,17 @@ export class FriendRequestAlreadyExistsError extends ConflictDomainError {
   }
 }
 
+/**
+ * Deux transitions concurrentes sur la meme amitie : la seconde ecrase la
+ * premiere en silence si on ne compare pas la revision attendue. Le client
+ * rejoue avec l'etat frais.
+ */
+export class FriendshipRevisionConflictError extends ConflictDomainError {
+  constructor() {
+    super('Friendship was modified by another request');
+  }
+}
+
 export class AlreadyFriendsError extends ConflictDomainError {
   constructor() {
     super('These users are already friends');

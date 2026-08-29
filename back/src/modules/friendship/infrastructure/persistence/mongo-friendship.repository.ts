@@ -20,7 +20,10 @@ import type {
 import type { Friendship } from '../../domain/friendship';
 import type { FriendshipId } from '../../domain/friendship-id';
 import { FRIENDSHIP_STATUS } from '../../domain/friendship-status';
-import { FriendRequestAlreadyExistsError } from '../../domain/friendship.errors';
+import {
+  FriendRequestAlreadyExistsError,
+  FriendshipRevisionConflictError,
+} from '../../domain/friendship.errors';
 import { friendshipPairKey } from '../../domain/friendship-pair-key';
 import {
   toDomain,
@@ -130,12 +133,16 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
     session: ClientSession,
   ): Promise<void> {
     const { document } = notification;
-    const updated = await this.model.findOneAndUpdate({ id: document.id }, document, {
-      session,
-    });
-    // Rien de mis a jour, rien ne s'est passe : annoncer un fait ici ferait
-    // refetcher les deux participants pour un etat inchange.
-    if (!updated) return;
+    const updated = await this.model.findOneAndUpdate(
+      expectedRevisionFilter(document),
+      document,
+      { session },
+    );
+    // Aucun document ne correspond : soit l'amitie a disparu, soit une autre
+    // requete l'a fait avancer entre-temps. Ecraser sans le dire perdrait sa
+    // transition, et annoncer un fait ferait refetcher pour un etat qu'on n'a
+    // pas ecrit.
+    if (!updated) throw new FriendshipRevisionConflictError();
     await this.writeNotification(notification, session);
   }
 
@@ -248,6 +255,22 @@ function friendshipAudience(document: FriendshipDocument) {
   return {
     policy: OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
     userIds: [document.requesterId, document.recipientId] as const,
+  };
+}
+
+const FIRST_REVISION = 0;
+
+/**
+ * La revision attendue est celle d'AVANT la transition. Le `$in` avec `null`
+ * couvre les documents ecrits avant l'existence du champ : Mongo ne fait pas
+ * correspondre `{ revision: 0 }` a un champ absent, alors que l'agregat, lui,
+ * les rehydrate en premiere revision.
+ */
+function expectedRevisionFilter(document: FriendshipDocument) {
+  const expected = document.revision - 1;
+  return {
+    id: document.id,
+    revision: expected === FIRST_REVISION ? { $in: [FIRST_REVISION, null] } : expected,
   };
 }
 

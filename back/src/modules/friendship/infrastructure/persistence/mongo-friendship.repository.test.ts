@@ -5,6 +5,7 @@ import type { OutboxMessageDocument } from '@kernel/infrastructure/outbox-messag
 import { Friendship } from '../../domain/friendship';
 import { FriendshipId } from '../../domain/friendship-id';
 import type { FriendshipDocument } from './friendship.mapper';
+import { FriendshipRevisionConflictError } from '../../domain/friendship.errors';
 import { MongoFriendshipRepository } from './mongo-friendship.repository';
 
 const ALICE_ID = '11111111-1111-4111-8111-111111111111';
@@ -54,15 +55,42 @@ describe('MongoFriendshipRepository', () => {
     expect(writtenMessage(createOutbox).aggregateRevision).toBe(friendship.revision);
   });
 
-  // Annoncer un fait sur une écriture sans effet ferait refetcher les deux
-  // participants pour un état inchangé.
-  it('n annonce rien quand la mise à jour ne trouve personne', async () => {
+  // L'ecriture ne trouve rien : soit l'amitie a disparu, soit une autre requete
+  // l'a fait avancer. L'ancien code retournait en silence, ce qui perdait la
+  // transition sans que personne ne le sache. Annoncer un fait serait pire
+  // encore : les deux participants refetcheraient un etat jamais ecrit.
+  it('refuse une écriture dont la révision attendue ne correspond plus', async () => {
     const createOutbox = vi.fn().mockResolvedValue([]);
     const repository = repositoryWith(modelWithUpdate(null), createOutbox);
 
-    await repository.save(pendingRequest(), COMMAND_ID);
-
+    await expect(repository.save(pendingRequest(), COMMAND_ID)).rejects.toThrow(
+      FriendshipRevisionConflictError,
+    );
     expect(createOutbox).not.toHaveBeenCalled();
+  });
+
+  // Ce qui est compare, c'est la revision d'AVANT la transition.
+  it('compare la révision précédant la transition', async () => {
+    const update = vi.fn().mockResolvedValue(anExistingDocument());
+    const repository = repositoryWith(modelWithUpdateSpy(update), vi.fn().mockResolvedValue([]));
+    const friendship = acceptedAtRevision(4);
+
+    await repository.save(friendship, COMMAND_ID);
+
+    expect(update.mock.calls[0]?.[0]).toMatchObject({ revision: 4 });
+  });
+
+  // Les documents ecrits avant l'existence du champ n'ont pas de revision, et
+  // Mongo ne fait pas correspondre `{ revision: 0 }` a un champ absent.
+  it('tolère un document antérieur à la révision sur la première transition', async () => {
+    const update = vi.fn().mockResolvedValue(anExistingDocument());
+    const repository = repositoryWith(modelWithUpdateSpy(update), vi.fn().mockResolvedValue([]));
+    const friendship = pendingRequest();
+    friendship.accept(UserId.create(BOB_ID), LATER);
+
+    await repository.save(friendship, COMMAND_ID);
+
+    expect(update.mock.calls[0]?.[0]).toMatchObject({ revision: { $in: [0, null] } });
   });
 
   // La suppression n'incrémente rien : le document part. Le fait succède quand même
@@ -111,6 +139,20 @@ function modelWithUpdate(updated: FriendshipDocument | null) {
   return {
     findOneAndUpdate: vi.fn().mockResolvedValue(updated),
   } as unknown as Model<FriendshipDocument>;
+}
+
+function modelWithUpdateSpy(findOneAndUpdate: ReturnType<typeof vi.fn>) {
+  return { findOneAndUpdate } as unknown as Model<FriendshipDocument>;
+}
+
+/** Une amitie deja avancee : la premiere transition est un cas a part. */
+function acceptedAtRevision(revision: number): Friendship {
+  const friendship = Friendship.restore({
+    ...pendingRequest().snapshot(),
+    revision,
+  });
+  friendship.accept(UserId.create(BOB_ID), LATER);
+  return friendship;
 }
 
 function anExistingDocument(): FriendshipDocument {
