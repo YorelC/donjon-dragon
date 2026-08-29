@@ -5,7 +5,7 @@ paths:
   - "back/src/modules/auth/domain/token/**/*.ts"
   - "back/src/modules/auth/application/use-cases/{login,logout,refresh-tokens,verify-email}.use-case.ts"
   - "back/src/common/guards/*.guard.ts"
-  - "back/src/common/security/*.service.ts"
+  - "back/src/common/security/*.ts"
   - "back/src/main.ts"
   - "back/src/typed-express.d.ts"
 ---
