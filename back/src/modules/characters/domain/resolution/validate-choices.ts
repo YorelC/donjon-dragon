@@ -1,6 +1,4 @@
-import { InvalidDomainError } from '@kernel/domain/domain.error';
-
-import type { CharacterChoice, CharacterChoices } from '../character-choices';
+import type { CharacterChoice } from '../character-choices';
 import { BACKGROUNDS } from '../reference/backgrounds';
 import { CLASS_ORDERS } from '../reference/class-orders';
 import { CLASSES } from '../reference/classes';
@@ -16,49 +14,21 @@ import {
 } from '../reference/creation-options';
 import type { SkillChoice } from '../reference/effect';
 import { FIGHTING_STYLE_KEYS } from '../reference/fighting-styles';
-import type {
-  BackgroundKey,
-  ClassKey,
-  LineageKey,
-  OriginFeatKey,
-  SpeciesKey,
-} from '../reference/keys';
+import type { ClassKey, OriginFeatKey, SpeciesKey } from '../reference/keys';
 import { ORIGIN_FEATS } from '../reference/origin-feats';
-import type { CreatureSize, Language } from '../reference/proficiencies';
+import type { Language } from '../reference/proficiencies';
 import { SKILLS, type SkillName } from '../reference/skills';
 import { SPECIES } from '../reference/species';
 import { WEAPONS } from '../reference/weapons';
+import {
+  InvalidCharacterChoiceError,
+  InvalidSkillChoiceError,
+  LineageRequiredError,
+  UnknownLineageError,
+  fail,
+  type ChoicesToValidate,
+} from './choice-validation';
 import { validateSpellChoices } from './validate-spell-choices';
-
-export class InvalidCharacterChoiceError extends InvalidDomainError {
-  constructor(readonly origin: string) {
-    super(`Invalid character choice for ${origin}`);
-  }
-}
-
-export class LineageRequiredError extends InvalidCharacterChoiceError {
-  constructor() {
-    super('lineage');
-  }
-}
-
-export class UnknownLineageError extends InvalidCharacterChoiceError {
-  constructor() {
-    super('lineage');
-  }
-}
-
-export class InvalidSkillChoiceError extends InvalidCharacterChoiceError {}
-
-export interface ChoicesToValidate {
-  speciesKey: SpeciesKey;
-  lineageKey: LineageKey | null;
-  size?: CreatureSize;
-  standardLanguages?: readonly Language[];
-  classKey: ClassKey;
-  backgroundKey: BackgroundKey;
-  choices: CharacterChoices;
-}
 
 export function validateChoices(input: ChoicesToValidate): void {
   assertLineage(input);
@@ -346,8 +316,4 @@ function assertExactUnique<T>(
   if (!validCount || !selected.every((value) => allowed.includes(value))) {
     throw new ErrorType(origin);
   }
-}
-
-function fail(origin: string): never {
-  throw new InvalidCharacterChoiceError(origin);
 }

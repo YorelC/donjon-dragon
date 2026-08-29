@@ -5,7 +5,7 @@ import { CLASS_ORDERS } from '../reference/class-orders';
 import { CLASSES } from '../reference/classes';
 import type { ClassKey, SpellKey } from '../reference/keys';
 import { SPELLS, type Spell } from '../reference/spells';
-import { InvalidCharacterChoiceError, type ChoicesToValidate } from './validate-choices';
+import { fail, type ChoicesToValidate } from './choice-validation';
 
 const MAGIC_INITIATE_LISTS = ['cleric', 'druid', 'wizard'] as const;
 const MAGIC_INITIATE_ABILITIES: readonly Ability[] = ['intelligence', 'wisdom', 'charisma'];
@@ -136,8 +136,4 @@ function isLevelOneRitual(key: SpellKey): boolean {
 
 function assertEmpty(values: readonly unknown[], origin: string): void {
   if (values.length > 0) fail(origin);
-}
-
-function fail(origin: string): never {
-  throw new InvalidCharacterChoiceError(origin);
 }

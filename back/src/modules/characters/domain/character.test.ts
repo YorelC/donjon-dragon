@@ -19,7 +19,10 @@ import {
   NotEditableByActorError,
   OnlyGameMasterCanAssignError,
 } from './character.errors';
-import { InvalidSkillChoiceError, LineageRequiredError } from './resolution/validate-choices';
+import {
+  InvalidSkillChoiceError,
+  LineageRequiredError,
+} from './resolution/choice-validation';
 import { OwningCampaignId } from './owning-campaign-id';
 
 const gandalf = UserId.create(randomUUID());
