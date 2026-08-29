@@ -44,6 +44,10 @@ export class MongoCampaignRepository implements CampaignRepositoryPort {
     return this.campaigns.findById(id);
   }
 
+  findManyByIds(ids: CampaignId[]): Promise<Campaign[]> {
+    return this.campaigns.findManyByIds(ids);
+  }
+
   listActiveForUser(userId: UserId): Promise<Campaign[]> {
     return this.campaigns.listForUser(userId, MEMBERSHIP_STATUS.active);
   }

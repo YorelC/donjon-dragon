@@ -32,6 +32,13 @@ export class InMemoryCampaignRepository implements CampaignRepositoryPort {
     return campaign ? clone(campaign) : null;
   }
 
+  async findManyByIds(ids: CampaignId[]): Promise<Campaign[]> {
+    return ids.flatMap((id) => {
+      const campaign = this.campaigns.get(id.value);
+      return campaign ? [clone(campaign)] : [];
+    });
+  }
+
   async listActiveForUser(userId: UserId): Promise<Campaign[]> {
     return this.all().filter((campaign) =>
       contains([...campaign.gameMasters(), ...campaign.players()], userId),

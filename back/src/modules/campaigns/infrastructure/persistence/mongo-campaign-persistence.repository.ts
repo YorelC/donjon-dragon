@@ -43,6 +43,10 @@ export class MongoCampaignPersistenceRepository {
     return this.hydrate(root);
   }
 
+  findManyByIds(ids: CampaignId[]): Promise<Campaign[]> {
+    return this.findMany(ids.map((id) => id.value));
+  }
+
   async listForUser(userId: UserId, status: MembershipStatus): Promise<Campaign[]> {
     const memberships = await this.memberships
       .find({ userId: userId.value, status })
@@ -83,20 +87,51 @@ export class MongoCampaignPersistenceRepository {
     if (documents.length > 0) await this.memberships.insertMany(documents, { session });
   }
 
+  /**
+   * Une lecture d'adhesions pour TOUTES les campagnes, indexee en memoire.
+   *
+   * L'hydratation racine par racine coutait une requete par campagne : le cout
+   * d'une liste augmentait avec le nombre de tables du joueur, ce que personne
+   * ne voyait puisque Promise.all masquait la latence sans reduire les allers-
+   * retours.
+   */
   private async findMany(campaignIds: string[]): Promise<Campaign[]> {
     if (campaignIds.length === 0) return [];
     const roots = await this.roots
       .find({ _id: { $in: campaignIds }, deletedAt: null })
       .lean<CampaignDocument[]>();
-    return Promise.all(roots.map((root) => this.hydrate(root)));
+    const byCampaign = await this.membershipsOf(roots.map((root) => root._id));
+    return roots.map((root) => toDomain(root, byCampaign.get(root._id) ?? []));
   }
 
+  private async membershipsOf(
+    campaignIds: string[],
+  ): Promise<Map<string, CampaignMembershipDocument[]>> {
+    const documents = await this.memberships
+      .find({ campaignId: { $in: campaignIds } })
+      .lean<CampaignMembershipDocument[]>();
+    return groupByCampaign(documents);
+  }
+
+  /** Un seul agregat : pas de boucle, donc rien a grouper. */
   private async hydrate(root: CampaignDocument): Promise<Campaign> {
     const memberships = await this.memberships
       .find({ campaignId: root._id })
       .lean<CampaignMembershipDocument[]>();
     return toDomain(root, memberships);
   }
+}
+
+function groupByCampaign(
+  documents: CampaignMembershipDocument[],
+): Map<string, CampaignMembershipDocument[]> {
+  const grouped = new Map<string, CampaignMembershipDocument[]>();
+  documents.forEach((document) => {
+    const current = grouped.get(document.campaignId) ?? [];
+    current.push(document);
+    grouped.set(document.campaignId, current);
+  });
+  return grouped;
 }
 
 function activeRoot(campaignId: string) {

@@ -37,6 +37,13 @@ export interface CampaignRepositoryPort {
   create(command: CampaignCreationCommand): Promise<CampaignCreationReceipt>;
   save(campaign: Campaign): Promise<void>;
   findById(id: CampaignId): Promise<Campaign | null>;
+
+  /**
+   * Une lecture pour N campagnes. Sans elle, projeter une liste d'invitations
+   * relit la campagne ligne par ligne. L'ordre n'est pas garanti et une
+   * campagne inconnue ou supprimee est absente du resultat.
+   */
+  findManyByIds(ids: CampaignId[]): Promise<Campaign[]>;
   listActiveForUser(userId: UserId): Promise<Campaign[]>;
   deleteById(id: CampaignId): Promise<void>;
 }
