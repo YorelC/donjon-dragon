@@ -21,14 +21,8 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
   const choices = build.choices.all;
 
   return {
-    name: character.name.value,
-    ...character.identity,
-    speciesKey: build.speciesKey,
-    lineageKey: build.lineageKey,
-    size: build.size,
-    standardLanguages: [...build.standardLanguages],
-    ...lineageFieldsOf(choices),
-    ...speciesFieldsOf(choices),
+    ...identityFieldsOf(character),
+    ...originFieldsOf(build, choices),
     classKey: build.classKey,
     ...classFieldsOf(choices),
     backgroundKey: build.backgroundKey,
@@ -36,6 +30,23 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
     ...skilledFieldsOf(choices),
     ...abilityFieldsOf(character),
     ...equipmentFieldsOf(character),
+  };
+}
+
+/** Ce que le joueur a saisi de sa main : le nom et la fiche d'etat civil. */
+function identityFieldsOf(character: Character) {
+  return { name: character.name.value, ...character.identity };
+}
+
+/** L'espece et ce qui en decoule : lignee, taille, langues, choix d'espece. */
+function originFieldsOf(build: Character['build'], choices: readonly CharacterChoice[]) {
+  return {
+    speciesKey: build.speciesKey,
+    lineageKey: build.lineageKey,
+    size: build.size,
+    standardLanguages: [...build.standardLanguages],
+    ...lineageFieldsOf(choices),
+    ...speciesFieldsOf(choices),
   };
 }
 

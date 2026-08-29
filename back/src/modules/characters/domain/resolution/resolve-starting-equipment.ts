@@ -50,22 +50,49 @@ export function resolveStartingEquipment(
   backgroundKey: BackgroundKey,
   selection: EquipmentSelection,
 ): CharacterEquipmentSnapshot {
-  const classOption = findOption(CLASSES[classKey].startingEquipment.options, selection.classOptionId);
-  const backgroundOption = findOption(
-    BACKGROUNDS[backgroundKey].equipment.options,
-    selection.backgroundOptionId,
-  );
-  const entries = entriesFor(classOption, backgroundOption, classKey, backgroundKey, selection);
+  const chosen = chosenOptions(classKey, backgroundKey, selection);
+  const entries = entriesFor(chosen, classKey, backgroundKey, selection);
+  return snapshotFrom(chosen, entries, selection);
+}
+
+interface ChosenOptions {
+  classOption: EquipmentOption;
+  backgroundOption: EquipmentOption;
+}
+
+/** Les deux paquets de depart retenus. Une reference inconnue est un refus, pas un defaut. */
+function chosenOptions(
+  classKey: ClassKey,
+  backgroundKey: BackgroundKey,
+  selection: EquipmentSelection,
+): ChosenOptions {
+  return {
+    classOption: findOption(
+      CLASSES[classKey].startingEquipment.options,
+      selection.classOptionId,
+    ),
+    backgroundOption: findOption(
+      BACKGROUNDS[backgroundKey].equipment.options,
+      selection.backgroundOptionId,
+    ),
+  };
+}
+
+function snapshotFrom(
+  chosen: ChosenOptions,
+  entries: EquipmentEntry[],
+  selection: EquipmentSelection,
+): CharacterEquipmentSnapshot {
   const trinketId = validatedTrinket(selection.trinketId ?? null);
   return {
     ...selection,
-    classOptionId: classOption.id,
-    backgroundOptionId: backgroundOption.id,
+    classOptionId: chosen.classOption.id,
+    backgroundOptionId: chosen.backgroundOption.id,
     classChoiceItemKey: selection.classChoiceItemKey ?? null,
     backgroundChoiceItemKey: selection.backgroundChoiceItemKey ?? null,
     trinketId,
     items: mergeEntries(addTrinket(entries, trinketId)),
-    gold: classOption.gold + backgroundOption.gold,
+    gold: chosen.classOption.gold + chosen.backgroundOption.gold,
   };
 }
 
@@ -79,19 +106,18 @@ function findOption(
 }
 
 function entriesFor(
-  classOption: EquipmentOption,
-  backgroundOption: EquipmentOption,
+  chosen: ChosenOptions,
   classKey: ClassKey,
   backgroundKey: BackgroundKey,
   selection: EquipmentSelection,
 ): EquipmentEntry[] {
   const classEntries = concreteEntries(
-    classOption,
+    chosen.classOption,
     CLASS_CHOICE_CATALOG[classKey],
     selection.classChoiceItemKey ?? null,
   );
   const backgroundEntries = concreteEntries(
-    backgroundOption,
+    chosen.backgroundOption,
     BACKGROUND_CHOICE_CATALOG[backgroundKey],
     selection.backgroundChoiceItemKey ?? null,
   );

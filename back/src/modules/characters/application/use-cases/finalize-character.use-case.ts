@@ -21,6 +21,7 @@ import { assertEquipmentIsKnown } from '../item.lookup';
 import { loadCampaignCharacter, resolveAccessContext } from '../character.lookup';
 import { toCharacterDtoResolved } from '../character.mapper';
 import { AbilityRoll } from '../../domain/ability-roll';
+import type { Character, CharacterAccessContext } from '../../domain/character';
 import { CharacterName } from '../../domain/character-name';
 import { toBuildInput } from '../character-build.mapper';
 
@@ -62,10 +63,7 @@ export class FinalizeCharacterUseCase {
       character.createdBy,
     );
 
-    const now = this.clock.now();
-    character.rename(CharacterName.create(dto.name), context, now);
-    if (dto.abilityRoll) character.rollAbilities(AbilityRoll.restore(dto.abilityRoll), context, now);
-    character.finalize(toBuildInput(dto), context, now);
+    this.applyWizardOutput(character, dto, context);
     await assertEquipmentIsKnown(
       this.itemCatalog,
       character.build.equipment.snapshot(),
@@ -74,5 +72,21 @@ export class FinalizeCharacterUseCase {
 
     await this.characterRepo.save(character);
     return toCharacterDtoResolved(this.directory, character, UserId.create(dto.actorId));
+  }
+
+  /**
+   * Les trois mutations que porte la copie du wizard, dans l'ordre ou l'agregat
+   * les attend : le nom, le tirage s'il y en a un, puis le build. Un seul
+   * instant les date toutes les trois.
+   */
+  private applyWizardOutput(
+    character: Character,
+    dto: FinalizeCharacterDto,
+    context: CharacterAccessContext,
+  ): void {
+    const now = this.clock.now();
+    character.rename(CharacterName.create(dto.name), context, now);
+    if (dto.abilityRoll) character.rollAbilities(AbilityRoll.restore(dto.abilityRoll), context, now);
+    character.finalize(toBuildInput(dto), context, now);
   }
 }

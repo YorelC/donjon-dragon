@@ -73,16 +73,27 @@ function buildFrom(dto: PreviewCharacterSheetDto): CharacterBuild {
     classKey: input.classKey,
     backgroundKey: input.backgroundKey,
     level: LEVEL_ONE,
-    abilities: AbilityAssignment.restore({
-      base: input.base,
-      backgroundBonuses: input.backgroundBonuses,
-      method: input.abilityMethod,
-    }),
+    abilities: abilitiesOf(input),
     choices,
-    equipment: CharacterEquipment.create(
-      resolveStartingEquipment(input.classKey, input.backgroundKey, input.equipment),
-    ),
+    equipment: equipmentOf(input),
   };
+}
+
+type BuildInput = ReturnType<typeof toBuildInput>;
+
+function abilitiesOf(input: BuildInput): AbilityAssignment {
+  return AbilityAssignment.restore({
+    base: input.base,
+    backgroundBonuses: input.backgroundBonuses,
+    method: input.abilityMethod,
+  });
+}
+
+/** L'apercu part des memes options de depart que la creation, sans rien persister. */
+function equipmentOf(input: BuildInput): CharacterEquipment {
+  return CharacterEquipment.create(
+    resolveStartingEquipment(input.classKey, input.backgroundKey, input.equipment),
+  );
 }
 
 function required<T>(value: T | undefined): T {

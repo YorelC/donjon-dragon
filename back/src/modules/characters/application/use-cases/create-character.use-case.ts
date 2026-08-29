@@ -83,13 +83,7 @@ export class CreateCharacterUseCase {
     return {
       campaignId,
       name: CharacterName.create(dto.name),
-      identity: {
-        alignment: dto.alignment,
-        age: dto.age,
-        heightCm: dto.heightCm,
-        weightKg: dto.weightKg,
-        description: dto.description,
-      },
+      identity: identityOf(dto),
       createdBy,
       build: toBuildInput(dto),
       roll: dto.abilityRoll ? AbilityRoll.restore(dto.abilityRoll) : null,
@@ -104,4 +98,15 @@ export class CreateCharacterUseCase {
     const existing = await this.characterRepo.findAssignedTo(campaignId, playerId);
     if (existing) throw new PlayerAlreadyHasCharacterError();
   }
+}
+
+/** L'etat civil du personnage, distinct de son build : rien ici n'est une regle. */
+function identityOf(dto: CreateCharacterDto): CharacterCreationInput['identity'] {
+  return {
+    alignment: dto.alignment,
+    age: dto.age,
+    heightCm: dto.heightCm,
+    weightKg: dto.weightKg,
+    description: dto.description,
+  };
 }
