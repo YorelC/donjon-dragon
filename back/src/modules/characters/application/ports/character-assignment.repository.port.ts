@@ -2,10 +2,11 @@ import type { CharacterAssignmentCommandResult } from '@donjon-dragon/shared/cha
 import type { UserId } from '@kernel/domain/user-id';
 
 import type { Character } from '../../domain/character';
+import type { CharacterFact } from '../realtime-projection';
 
 export const CHARACTER_ASSIGNMENT_REPOSITORY = Symbol('CHARACTER_ASSIGNMENT_REPOSITORY');
 
-export type CharacterAssignmentFact = 'character.assigned' | 'character.unassigned';
+export type CharacterAssignmentFact = CharacterFact;
 
 export interface CharacterAssignmentCommand {
   campaignId: string;

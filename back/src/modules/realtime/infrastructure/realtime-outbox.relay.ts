@@ -9,7 +9,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import { z } from 'zod';
 import {
-  REALTIME_RESOURCE,
   RealtimeResourceChangedSchema,
   type RealtimeResource,
 } from '@donjon-dragon/shared/realtime-schema';
@@ -17,14 +16,24 @@ import { CLOCK, type Clock } from '@kernel/application/clock.port';
 import {
   OUTBOX_AUDIENCE_POLICY,
   OUTBOX_DELIVERY_CHANNEL,
-  OUTBOX_FACT_TYPE,
   OUTBOX_STATUS,
-  type OutboxFactType,
 } from '@kernel/infrastructure/outbox-message.contract';
 import {
   OUTBOX_MESSAGE_MODEL,
   type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
+import {
+  CAMPAIGN_REALTIME_PROJECTION,
+  CAMPAIGNS_OWNER_MODULE,
+} from '@modules/campaigns/application/realtime-projection';
+import {
+  CHARACTER_REALTIME_PROJECTION,
+  CHARACTERS_OWNER_MODULE,
+} from '@modules/characters/application/realtime-projection';
+import {
+  FRIENDSHIP_REALTIME_PROJECTION,
+  FRIENDSHIP_OWNER_MODULE,
+} from '@modules/friendship/application/realtime-projection';
 import {
   CAMPAIGN_AUDIENCE,
   type CampaignAudiencePort,
@@ -39,50 +48,21 @@ const LEASE_DURATION_MS = 30_000;
 const MAX_MESSAGES_PER_POLL = 20;
 
 
-/** Un fait qui n'a rien à faire diffuser en temps réel, et pourquoi. */
-const NOT_BROADCAST = null;
-
 /**
- * Ce que le client doit réinvalider pour chaque fait produit.
+ * Le résolveur de projection, sélectionné par `ownerModule`.
  *
- * La table est **totale** sur le vocabulaire fermé du kernel : ajouter un fait
- * sans lui donner de projection ne compile pas. C'est la seule garantie qui
- * empêche un fait connu de partir silencieusement en quarantaine — ce qui est
- * pire que `pending`, puisque la quarantaine est terminale.
+ * Chaque module possède SON vocabulaire de faits et SA table de projection : le
+ * relais ne connaît aucun fait métier, il choisit une table et y cherche. C'est
+ * le découpage que demande le contrat temps réel — le diffuseur route, le module
+ * propriétaire dit ce que son fait change à l'écran.
  *
- * Les faits de campagne visent `campaigns` : la ressource existe déjà dans le
- * vocabulaire navigateur, et le client y invalide tout le préfixe `["campaigns"]`,
- * détails et personnages compris. Aucun élargissement de `shared` n'est donc
- * nécessaire pour les livrer.
- *
- * Un fait ABSENT de la table reste possible côté Mongo — un document écrit par une
- * version antérieure — et part en quarantaine. Une faute de frappe ne doit jamais
- * pouvoir déclencher une diffusion par défaut.
+ * Chaque table est totale sur le vocabulaire de son module : un fait ajouté sans
+ * projection ne compile pas, et ne peut donc pas partir en quarantaine par oubli.
  */
-const RESOURCE_BY_FACT: Record<OutboxFactType, RealtimeResource | null> = {
-  [OUTBOX_FACT_TYPE.friendshipRequested]: REALTIME_RESOURCE.friendships,
-  [OUTBOX_FACT_TYPE.friendshipAccepted]: REALTIME_RESOURCE.friendships,
-  [OUTBOX_FACT_TYPE.friendshipRefused]: REALTIME_RESOURCE.friendships,
-  [OUTBOX_FACT_TYPE.friendshipRemoved]: REALTIME_RESOURCE.friendships,
-  [OUTBOX_FACT_TYPE.campaignCreated]: REALTIME_RESOURCE.campaigns,
-  [OUTBOX_FACT_TYPE.campaignMemberPromoted]: REALTIME_RESOURCE.campaigns,
-  [OUTBOX_FACT_TYPE.campaignMemberDemoted]: REALTIME_RESOURCE.campaigns,
-  [OUTBOX_FACT_TYPE.campaignMemberExcluded]: REALTIME_RESOURCE.campaigns,
-  [OUTBOX_FACT_TYPE.campaignMemberLeft]: REALTIME_RESOURCE.campaigns,
-  [OUTBOX_FACT_TYPE.campaignOwnershipTransferred]: REALTIME_RESOURCE.campaigns,
-  [OUTBOX_FACT_TYPE.campaignInvitationCreated]:
-    REALTIME_RESOURCE['campaign-invitations'],
-  [OUTBOX_FACT_TYPE.campaignInvitationCancelled]:
-    REALTIME_RESOURCE['campaign-invitations'],
-  // Acceptee et refusee ne visent pas l'invite mais la table : l'audience est
-  // campaign-members pour l'une, campaign-game-masters pour l'autre.
-  [OUTBOX_FACT_TYPE.campaignInvitationAccepted]: REALTIME_RESOURCE.campaigns,
-  [OUTBOX_FACT_TYPE.campaignInvitationRefused]: REALTIME_RESOURCE.campaigns,
-  // Canal `email` : jamais reclame par ce relais, donc jamais projete. L'entree
-  // existe pour que la table reste totale, pas pour etre atteinte.
-  [OUTBOX_FACT_TYPE.campaignInvitationEmailRequested]: NOT_BROADCAST,
-  [OUTBOX_FACT_TYPE.characterAssigned]: REALTIME_RESOURCE.campaigns,
-  [OUTBOX_FACT_TYPE.characterUnassigned]: REALTIME_RESOURCE.campaigns,
+const PROJECTION_BY_MODULE: Record<string, Record<string, RealtimeResource | null>> = {
+  [FRIENDSHIP_OWNER_MODULE]: FRIENDSHIP_REALTIME_PROJECTION,
+  [CAMPAIGNS_OWNER_MODULE]: CAMPAIGN_REALTIME_PROJECTION,
+  [CHARACTERS_OWNER_MODULE]: CHARACTER_REALTIME_PROJECTION,
 };
 
 /**
@@ -184,7 +164,7 @@ export class RealtimeOutboxRelay
       return this.quarantine(message._id, 'enveloppe illisible');
     }
 
-    const resource = projectionOf(parsed.data.factType);
+    const resource = projectionOf(message.ownerModule, parsed.data.factType);
     if (!resource) {
       return this.quarantine(message._id, `fait sans projection ${parsed.data.factType}`);
     }
@@ -266,11 +246,21 @@ function claimableFilter(now: Date) {
 }
 
 /**
- * Un `factType` lu en base n'est pas contraint par le vocabulaire : un document
- * ecrit par une version anterieure peut en porter un que la table ignore.
+ * `ownerModule` et `factType` viennent de la base : rien ne les contraint. Un
+ * document ecrit par une version anterieure peut porter un fait que la table
+ * ignore, et une chaine comme `constructor` ou `__proto__` recupererait une
+ * propriete HERITEE si on interrogeait l'objet naivement. Le resultat ne serait
+ * alors ni une ressource ni `null` : la validation jetterait, le message
+ * resterait `processing` et repartirait a chaque expiration de bail — une boucle
+ * au lieu d'une quarantaine.
  */
-function projectionOf(factType: string): RealtimeResource | null {
-  return RESOURCE_BY_FACT[factType as OutboxFactType] ?? NOT_BROADCAST;
+function projectionOf(ownerModule: string, factType: string): RealtimeResource | null {
+  const projection = ownProperty(PROJECTION_BY_MODULE, ownerModule);
+  return projection ? ownProperty(projection, factType) : null;
+}
+
+function ownProperty<T>(table: Record<string, T>, key: string): T | null {
+  return Object.hasOwn(table, key) ? table[key]! : null;
 }
 
 /** Les deux audiences dont les destinataires sont immuables et écrits au commit. */

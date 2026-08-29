@@ -3,17 +3,21 @@ import type { UserId } from '@kernel/domain/user-id';
 
 import type { Campaign } from '../../domain/campaign';
 import type { CampaignMutationParticipant } from '../campaign-lifecycle-participant';
+import type { CampaignFact } from '../realtime-projection';
 
 export const CAMPAIGN_LIFECYCLE_REPOSITORY = Symbol(
   'CAMPAIGN_LIFECYCLE_REPOSITORY',
 );
 
-export type CampaignLifecycleFact =
+/** Le sous-ensemble des faits du module que porte une commande de cycle de vie. */
+export type CampaignLifecycleFact = Extract<
+  CampaignFact,
   | 'campaign.member-promoted'
   | 'campaign.member-demoted'
   | 'campaign.member-excluded'
   | 'campaign.ownership-transferred'
-  | 'campaign.member-left';
+  | 'campaign.member-left'
+>;
 
 export interface CampaignLifecycleCommand {
   campaign: Campaign;

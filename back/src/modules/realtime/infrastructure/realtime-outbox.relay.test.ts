@@ -4,13 +4,23 @@ import type { Clock } from '@kernel/application/clock.port';
 import {
   OUTBOX_AUDIENCE_POLICY,
   OUTBOX_DELIVERY_CHANNEL,
-  OUTBOX_FACT_TYPE,
   OUTBOX_STATUS,
   type OutboxAudience,
-  type OutboxFactType,
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 import type { OutboxMessageDocument } from '@kernel/infrastructure/outbox-message.schema';
+import {
+  CAMPAIGN_FACT,
+  CAMPAIGNS_OWNER_MODULE,
+} from '@modules/campaigns/application/realtime-projection';
+import {
+  CHARACTER_FACT,
+  CHARACTERS_OWNER_MODULE,
+} from '@modules/characters/application/realtime-projection';
+import {
+  FRIENDSHIP_FACT,
+  FRIENDSHIP_OWNER_MODULE,
+} from '@modules/friendship/application/realtime-projection';
 import type { CampaignAudiencePort } from '../application/ports/campaign-audience.port';
 import type { RealtimeNotifierPort } from '../application/ports/realtime-notifier.port';
 import { RealtimeOutboxRelay } from './realtime-outbox.relay';
@@ -69,7 +79,7 @@ describe('RealtimeOutboxRelay', () => {
     const notifier = aNotifier();
     const audience = anAudience([ALICE_ID, BOB_ID]);
     const relay = relayFor(
-      campaignFactMessage(OUTBOX_FACT_TYPE.campaignInvitationAccepted),
+      campaignFactMessage(CAMPAIGN_FACT.invitationAccepted),
       notifier, vi.fn().mockResolvedValue({}), audience,
     );
 
@@ -87,7 +97,7 @@ describe('RealtimeOutboxRelay', () => {
   it('exclut un membre qui n est plus actif au moment de l émission', async () => {
     const notifier = aNotifier();
     const relay = relayFor(
-      campaignFactMessage(OUTBOX_FACT_TYPE.campaignInvitationAccepted),
+      campaignFactMessage(CAMPAIGN_FACT.invitationAccepted),
       notifier, vi.fn().mockResolvedValue({}), anAudience([ALICE_ID]),
     );
 
@@ -103,7 +113,8 @@ describe('RealtimeOutboxRelay', () => {
     const updateOne = vi.fn().mockResolvedValue({});
     const notifier = aNotifier();
     const relay = relayFor(
-      campaignFactMessage(OUTBOX_FACT_TYPE.characterAssigned), notifier, updateOne,
+      campaignFactMessage(CHARACTER_FACT.assigned, CHARACTERS_OWNER_MODULE),
+      notifier, updateOne,
     );
 
     await relay.drainOnce();
@@ -131,7 +142,7 @@ describe('RealtimeOutboxRelay', () => {
 
   it('met en quarantaine un fait de campagne sans campaignId', async () => {
     const updateOne = vi.fn().mockResolvedValue({});
-    const message = { ...campaignFactMessage(OUTBOX_FACT_TYPE.campaignInvitationAccepted) };
+    const message = { ...campaignFactMessage(CAMPAIGN_FACT.invitationAccepted) };
     delete message.campaignId;
     const relay = relayFor(message, aNotifier(), updateOne);
 
@@ -168,26 +179,26 @@ describe('RealtimeOutboxRelay', () => {
   // au lieu de rester `pending`. La table doit couvrir chaque fait reellement
   // produit, et ce tableau le verifie fait par fait.
   it.each([
-    [OUTBOX_FACT_TYPE.friendshipRequested, 'friendships'],
-    [OUTBOX_FACT_TYPE.friendshipAccepted, 'friendships'],
-    [OUTBOX_FACT_TYPE.friendshipRefused, 'friendships'],
-    [OUTBOX_FACT_TYPE.friendshipRemoved, 'friendships'],
-    [OUTBOX_FACT_TYPE.campaignCreated, 'campaigns'],
-    [OUTBOX_FACT_TYPE.campaignMemberPromoted, 'campaigns'],
-    [OUTBOX_FACT_TYPE.campaignMemberDemoted, 'campaigns'],
-    [OUTBOX_FACT_TYPE.campaignMemberExcluded, 'campaigns'],
-    [OUTBOX_FACT_TYPE.campaignMemberLeft, 'campaigns'],
-    [OUTBOX_FACT_TYPE.campaignOwnershipTransferred, 'campaigns'],
-    [OUTBOX_FACT_TYPE.campaignInvitationCreated, 'campaign-invitations'],
-    [OUTBOX_FACT_TYPE.campaignInvitationCancelled, 'campaign-invitations'],
-    [OUTBOX_FACT_TYPE.campaignInvitationAccepted, 'campaigns'],
-    [OUTBOX_FACT_TYPE.campaignInvitationRefused, 'campaigns'],
-    [OUTBOX_FACT_TYPE.characterAssigned, 'campaigns'],
-    [OUTBOX_FACT_TYPE.characterUnassigned, 'campaigns'],
-  ])('projette %s sur %s au lieu de le quarantiner', async (factType, resource) => {
+    [FRIENDSHIP_OWNER_MODULE, FRIENDSHIP_FACT.requested, 'friendships'],
+    [FRIENDSHIP_OWNER_MODULE, FRIENDSHIP_FACT.accepted, 'friendships'],
+    [FRIENDSHIP_OWNER_MODULE, FRIENDSHIP_FACT.refused, 'friendships'],
+    [FRIENDSHIP_OWNER_MODULE, FRIENDSHIP_FACT.removed, 'friendships'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.created, 'campaigns'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.memberPromoted, 'campaigns'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.memberDemoted, 'campaigns'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.memberExcluded, 'campaigns'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.memberLeft, 'campaigns'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.ownershipTransferred, 'campaigns'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.invitationCreated, 'campaign-invitations'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.invitationCancelled, 'campaign-invitations'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.invitationAccepted, 'campaigns'],
+    [CAMPAIGNS_OWNER_MODULE, CAMPAIGN_FACT.invitationRefused, 'campaigns'],
+    [CHARACTERS_OWNER_MODULE, CHARACTER_FACT.assigned, 'campaigns'],
+    [CHARACTERS_OWNER_MODULE, CHARACTER_FACT.unassigned, 'campaigns'],
+  ])('projette %s/%s sur %s au lieu de le quarantiner', async (owner, factType, resource) => {
     const updateOne = vi.fn().mockResolvedValue({});
     const notifier = aNotifier();
-    const relay = relayFor(campaignFactMessage(factType), notifier, updateOne);
+    const relay = relayFor(campaignFactMessage(factType, owner), notifier, updateOne);
 
     await relay.drainOnce();
 
@@ -196,6 +207,52 @@ describe('RealtimeOutboxRelay', () => {
       expect.objectContaining({ resource }),
     );
     expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.delivered);
+  });
+
+  // Un fait projete par le MAUVAIS module ne doit pas etre diffusé : la table
+  // est celle du proprietaire, pas un dictionnaire global.
+  it('ne projette pas un fait sous un module propriétaire étranger', async () => {
+    const updateOne = vi.fn().mockResolvedValue({});
+    const notifier = aNotifier();
+    const relay = relayFor(
+      campaignFactMessage(CHARACTER_FACT.assigned, CAMPAIGNS_OWNER_MODULE),
+      notifier, updateOne,
+    );
+
+    await relay.drainOnce();
+
+    expect(notifier.notifyUsers).not.toHaveBeenCalled();
+    expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.quarantined);
+  });
+
+  // Une table JavaScript ordinaire rend `constructor` ou `__proto__` par
+  // heritage. Sans lecture de propriete PROPRE, la projection n'etait ni une
+  // ressource ni null : la validation jetait, le message restait `processing`,
+  // et le bail expire le remettait en jeu — une boucle au lieu d'une quarantaine.
+  it.each(['constructor', '__proto__', 'toString', 'hasOwnProperty'])(
+    'met en quarantaine le fait hérité %s au lieu de boucler',
+    async (factType) => {
+      const updateOne = vi.fn().mockResolvedValue({});
+      const notifier = aNotifier();
+      const relay = relayFor(campaignFactMessage(factType), notifier, updateOne);
+
+      await relay.drainOnce();
+
+      expect(notifier.notifyUsers).not.toHaveBeenCalled();
+      expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.quarantined);
+    },
+  );
+
+  it('met en quarantaine un module propriétaire hérité', async () => {
+    const updateOne = vi.fn().mockResolvedValue({});
+    const relay = relayFor(
+      campaignFactMessage(CAMPAIGN_FACT.created, 'constructor'),
+      aNotifier(), updateOne,
+    );
+
+    await relay.drainOnce();
+
+    expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.quarantined);
   });
 
   it('ne draine rien quand l outbox est vide', async () => {
@@ -241,7 +298,7 @@ function pausedOutbox() {
 }
 
 function friendshipMessage(): OutboxMessageDocument {
-  return userMessage(OUTBOX_FACT_TYPE.friendshipRequested, {
+  return userMessage(FRIENDSHIP_FACT.requested, {
     policy: OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
     userIds: [ALICE_ID, BOB_ID],
   });
@@ -254,7 +311,7 @@ function friendshipMessage(): OutboxMessageDocument {
  */
 function unknownFactMessage(): OutboxMessageDocument {
   return {
-    ...userMessage(OUTBOX_FACT_TYPE.friendshipRequested, {
+    ...userMessage(FRIENDSHIP_FACT.requested, {
       policy: OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
       userIds: [ALICE_ID, BOB_ID],
     }),
@@ -264,12 +321,12 @@ function unknownFactMessage(): OutboxMessageDocument {
 
 function invitationMessage(): OutboxMessageDocument {
   return createOutboxMessage({
-    ownerModule: 'campaigns',
+    ownerModule: CAMPAIGNS_OWNER_MODULE,
     campaignId: CAMPAIGN_ID,
     causationId: 'command-2',
     aggregateId: 'invitation-1',
     aggregateRevision: 0,
-    factType: OUTBOX_FACT_TYPE.campaignInvitationCreated,
+    factType: CAMPAIGN_FACT.invitationCreated,
     fact: {},
     audience: { policy: OUTBOX_AUDIENCE_POLICY.targetUser, userIds: [BOB_ID] },
     deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
@@ -280,14 +337,14 @@ function invitationMessage(): OutboxMessageDocument {
 /** Un fait de campagne : ses destinataires ne sont PAS dans l'enveloppe. */
 function gameMasterFactMessage(): OutboxMessageDocument {
   return {
-    ...campaignFactMessage(OUTBOX_FACT_TYPE.campaignInvitationRefused),
+    ...campaignFactMessage(CAMPAIGN_FACT.invitationRefused),
     audiencePolicy: OUTBOX_AUDIENCE_POLICY.campaignGameMasters,
   };
 }
 
-function campaignFactMessage(factType: OutboxFactType): OutboxMessageDocument {
+function campaignFactMessage(factType: string, ownerModule = CAMPAIGNS_OWNER_MODULE): OutboxMessageDocument {
   return createOutboxMessage({
-    ownerModule: 'characters',
+    ownerModule,
     campaignId: CAMPAIGN_ID,
     causationId: 'command-3',
     aggregateId: 'character-1',
@@ -301,11 +358,11 @@ function campaignFactMessage(factType: OutboxFactType): OutboxMessageDocument {
 }
 
 function userMessage(
-  factType: OutboxFactType,
+  factType: string,
   audience: Extract<OutboxAudience, { userIds: readonly string[] }>,
 ): OutboxMessageDocument {
   return createOutboxMessage({
-    ownerModule: 'friendship',
+    ownerModule: FRIENDSHIP_OWNER_MODULE,
     causationId: 'command-1',
     aggregateId: 'friendship-1',
     aggregateRevision: 0,

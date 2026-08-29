@@ -23,6 +23,7 @@ import {
   OUTBOX_DELIVERY_CHANNEL,
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
+import { CAMPAIGNS_OWNER_MODULE } from '../../application/realtime-projection';
 
 import type {
   CampaignLifecycleCommand,
@@ -30,7 +31,7 @@ import type {
 } from '../../application/ports/campaign-lifecycle.repository.port';
 
 const SCHEMA_VERSION = 1;
-const OWNER_MODULE = 'campaigns';
+const OWNER_MODULE = CAMPAIGNS_OWNER_MODULE;
 const ACCEPTED_STATUS = 'accepted';
 const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignMembers;
 const SOURCES = ['SF-001', 'DEC-002', 'SPEC-006'];

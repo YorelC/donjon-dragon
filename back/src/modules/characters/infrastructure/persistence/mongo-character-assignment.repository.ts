@@ -22,6 +22,7 @@ import {
   OUTBOX_DELIVERY_CHANNEL,
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
+import { CHARACTERS_OWNER_MODULE } from '../../application/realtime-projection';
 import type { UserId } from '@kernel/domain/user-id';
 
 import type {
@@ -36,7 +37,7 @@ import { toPersistence, type CharacterDocument } from './character.mapper';
 import { CHARACTER_MODEL } from './character.schema';
 
 const SCHEMA_VERSION = 1;
-const OWNER_MODULE = 'characters';
+const OWNER_MODULE = CHARACTERS_OWNER_MODULE;
 const ACCEPTED_STATUS = 'accepted';
 const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignMembers;
 const SOURCES = ['SF-001', 'SF-002', 'DEC-002', 'SPEC-007'];

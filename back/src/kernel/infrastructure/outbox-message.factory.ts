@@ -5,7 +5,6 @@ import {
   OUTBOX_STATUS,
   type CampaignOutboxAudience,
   type OutboxDeliveryChannel,
-  type OutboxFactType,
   type UserOutboxAudience,
 } from './outbox-message.contract';
 import type { OutboxMessageDocument } from './outbox-message.schema';
@@ -17,7 +16,9 @@ interface OutboxMessageInputBase {
   causationId: string;
   aggregateId: string;
   aggregateRevision: number;
-  factType: OutboxFactType;
+  // Volontairement `string` : le kernel ne connait aucun fait metier. Chaque
+  // module ferme SON vocabulaire et le type a l'appel.
+  factType: string;
   fact: unknown;
   deliveryChannel: OutboxDeliveryChannel;
   occurredAt: Date;

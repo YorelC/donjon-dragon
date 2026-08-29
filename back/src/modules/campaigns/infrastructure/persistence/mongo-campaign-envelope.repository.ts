@@ -19,6 +19,10 @@ import {
   OUTBOX_DELIVERY_CHANNEL,
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
+import {
+  CAMPAIGN_FACT,
+  CAMPAIGNS_OWNER_MODULE,
+} from '../../application/realtime-projection';
 
 import type {
   CampaignCreationCommand,
@@ -27,10 +31,10 @@ import type {
 } from '../../application/ports/campaign.repository.port';
 
 const SCHEMA_VERSION = 1;
-const OWNER_MODULE = 'campaigns';
+const OWNER_MODULE = CAMPAIGNS_OWNER_MODULE;
 const INTENTION_TYPE = 'campaign.create';
 const ACCEPTED_STATUS = 'accepted';
-const CREATED_FACT = 'campaign.created';
+const CREATED_FACT = CAMPAIGN_FACT.created;
 const CAMPAIGN_MEMBERS_AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignMembers;
 const CAMPAIGN_REQUIREMENT = 'SF-001';
 const STRING_RESULT_FIELDS = ['campaignId', 'name', 'ownerUserId'] as const;

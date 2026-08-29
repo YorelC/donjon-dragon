@@ -19,9 +19,13 @@ import {
   OUTBOX_DELIVERY_CHANNEL,
   type CampaignOutboxAudience,
   type OutboxDeliveryChannel,
-  type OutboxFactType,
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
+import {
+  CAMPAIGN_FACT,
+  CAMPAIGNS_OWNER_MODULE,
+  type CampaignFact,
+} from '../../application/realtime-projection';
 
 import type {
   CampaignInvitationCommand,
@@ -29,7 +33,7 @@ import type {
 } from '../../application/ports/campaign-invitation.repository.port';
 
 const SCHEMA_VERSION = 1;
-const OWNER_MODULE = 'campaigns';
+const OWNER_MODULE = CAMPAIGNS_OWNER_MODULE;
 const ACCEPTED_STATUS = 'accepted';
 const SOURCES = ['SF-001', 'SF-006'];
 
@@ -37,7 +41,7 @@ type CampaignAudiencePolicy = CampaignOutboxAudience['policy'];
 
 interface InvitationEnvelopeDescriptor {
   intentionType: string;
-  factType: OutboxFactType;
+  factType: CampaignFact;
   audiencePolicy: CampaignAudiencePolicy;
   aggregateIds: string[];
   revisionBefore: number | null;
@@ -57,7 +61,7 @@ interface InvitationEnvelopeRequest {
 
 interface DescriptorPolicy {
   intentionType: string;
-  factType: OutboxFactType;
+  factType: CampaignFact;
   audiencePolicy: CampaignAudiencePolicy;
 }
 
@@ -66,7 +70,7 @@ interface DescriptorConfiguration extends DescriptorPolicy {
 }
 
 interface OutboxProjection {
-  factType: OutboxFactType;
+  factType: CampaignFact;
   audiencePolicy: CampaignAudiencePolicy;
   deliveryChannel: OutboxDeliveryChannel;
 }
@@ -189,7 +193,7 @@ function outboxDocument(write: InvitationEnvelopeWrite): OutboxMessageDocument {
 
 function emailOutboxDocument(write: InvitationEnvelopeWrite): OutboxMessageDocument {
   return baseOutboxDocument(write, {
-    factType: 'campaign.invitation.email-requested',
+    factType: CAMPAIGN_FACT.invitationEmailRequested,
     audiencePolicy: OUTBOX_AUDIENCE_POLICY.targetUser,
     deliveryChannel: OUTBOX_DELIVERY_CHANNEL.email,
   });
@@ -241,7 +245,7 @@ function creationDescriptor(
 ): InvitationEnvelopeDescriptor {
   return descriptor(command, {
     intentionType: 'campaign.invitation.create',
-    factType: 'campaign.invitation.created',
+    factType: CAMPAIGN_FACT.invitationCreated,
     audiencePolicy: OUTBOX_AUDIENCE_POLICY.targetUser,
     revisionBefore: null,
   });
@@ -254,7 +258,7 @@ function acceptanceDescriptor(
   return {
     ...descriptor(command, {
       intentionType: 'campaign.invitation.accept',
-      factType: 'campaign.invitation.accepted',
+      factType: CAMPAIGN_FACT.invitationAccepted,
       audiencePolicy: OUTBOX_AUDIENCE_POLICY.campaignMembers,
       revisionBefore: snapshot.revision - 1,
     }),
@@ -267,7 +271,7 @@ function refusalDescriptor(
 ): InvitationEnvelopeDescriptor {
   return terminalDescriptor(command, {
     intentionType: 'campaign.invitation.refuse',
-    factType: 'campaign.invitation.refused',
+    factType: CAMPAIGN_FACT.invitationRefused,
     audiencePolicy: OUTBOX_AUDIENCE_POLICY.campaignGameMasters,
   });
 }
@@ -277,7 +281,7 @@ function cancellationDescriptor(
 ): InvitationEnvelopeDescriptor {
   return terminalDescriptor(command, {
     intentionType: 'campaign.invitation.cancel',
-    factType: 'campaign.invitation.cancelled',
+    factType: CAMPAIGN_FACT.invitationCancelled,
     audiencePolicy: OUTBOX_AUDIENCE_POLICY.targetUser,
   });
 }
