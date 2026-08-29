@@ -4,8 +4,15 @@ import { toComposition } from "./character-build-detail";
 
 const BASE_DTO: CharacterBuildDetailDto = {
   name: "Frodo Sacquet",
+  alignment: "chaoticGood",
+  age: 33,
+  heightCm: 96,
+  weightKg: 30,
+  description: null,
   speciesKey: "halfling",
   lineageKey: null,
+  size: "Small",
+  standardLanguages: ["common", "halfling"],
   lineageSpellcastingAbility: null,
   speciesSkills: [],
   speciesFeat: null,
@@ -16,6 +23,12 @@ const BASE_DTO: CharacterBuildDetailDto = {
   classSpells: [],
   fightingStyle: null,
   classOrder: null,
+  weaponMasteries: [],
+  invocation: null,
+  invocationSpells: [],
+  familiarForm: null,
+  pactWeaponKey: null,
+  spellbook: [],
   backgroundKey: "charlatan",
   backgroundBonuses: { dexterity: 2, charisma: 1 },
   featSkills: [],
@@ -36,6 +49,9 @@ const BASE_DTO: CharacterBuildDetailDto = {
   gold: 8,
   classOptionId: "A",
   backgroundOptionId: "A",
+  classChoiceItemKey: null,
+  backgroundChoiceItemKey: null,
+  trinketId: null,
 };
 
 describe("toComposition — assignment", () => {

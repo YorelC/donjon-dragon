@@ -39,8 +39,15 @@ const VALID_SCORES = {
 
 const A_FINALIZED_CHARACTER = {
   name: 'Frodo Sacquet',
+  alignment: 'chaoticGood',
+  age: 33,
+  heightCm: 96,
+  weightKg: 30,
+  description: null,
   speciesKey: 'halfling',
   lineageKey: null,
+  size: 'Small',
+  standardLanguages: ['common', 'halfling'],
   classKey: 'rogue',
   backgroundKey: 'charlatan',
   abilityMethod: 'roll',
