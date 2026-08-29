@@ -89,7 +89,44 @@ describe('RealtimeOutboxRelay', () => {
   it('ne draine rien quand l outbox est vide', async () => {
     await expect(emptyOutbox().relay.drainOnce()).resolves.toBe(false);
   });
+
+  // L'arret survient avant la fermeture des connexions : le poll en vol doit
+  // avoir fini d'ecrire, sinon son message reste `processing` jusqu'au bail.
+  it('attend la fin du poll en cours avant de rendre la main', async () => {
+    const { relay, releaseClaim, drained } = pausedOutbox();
+    relay.onApplicationBootstrap();
+
+    const stopped = relay.onModuleDestroy();
+    releaseClaim();
+    await stopped;
+
+    expect(drained()).toBe(true);
+  });
 });
+
+/** Un outbox dont la reclamation ne se resout que sur ordre du test. */
+function pausedOutbox() {
+  let release = (): void => {};
+  const claimed = new Promise<null>((resolve) => {
+    release = () => resolve(null);
+  });
+  let finished = false;
+  const model = {
+    findOneAndUpdate: vi.fn(() => ({
+      lean: () => claimed.then((value) => {
+        finished = true;
+        return value;
+      }),
+    })),
+    updateOne: vi.fn().mockResolvedValue({}),
+  } as unknown as Model<OutboxMessageDocument>;
+
+  return {
+    relay: new RealtimeOutboxRelay(model, fixedClock(), aNotifier()),
+    releaseClaim: () => release(),
+    drained: () => finished,
+  };
+}
 
 function friendshipMessage(): OutboxMessageDocument {
   return userMessage('friendship.requested', {

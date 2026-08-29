@@ -3,7 +3,7 @@ import {
   Injectable,
   Logger,
   OnApplicationBootstrap,
-  OnApplicationShutdown,
+  OnModuleDestroy,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
@@ -72,11 +72,15 @@ const DeliverableMessageSchema = z.object({
 
 @Injectable()
 export class RealtimeOutboxRelay
-  implements OnApplicationBootstrap, OnApplicationShutdown
+  implements OnApplicationBootstrap, OnModuleDestroy
 {
   private readonly logger = new Logger(RealtimeOutboxRelay.name);
   private timer?: ReturnType<typeof setInterval>;
-  private polling = false;
+  /**
+   * Le poll en cours, et non un drapeau : un booléen dit qu'on draine, il ne
+   * permet pas d'attendre la fin du drainage. L'arrêt en a besoin.
+   */
+  private activePoll: Promise<void> | null = null;
 
   constructor(
     @InjectModel(OUTBOX_MESSAGE_MODEL)
@@ -90,8 +94,15 @@ export class RealtimeOutboxRelay
     void this.poll();
   }
 
-  onApplicationShutdown(): void {
+  /**
+   * `onModuleDestroy` et non `onApplicationShutdown` : le second s'exécute APRÈS
+   * la fermeture des connexions. Un poll encore en vol y écrirait dans une
+   * connexion Mongo déjà fermée, et le message réclamé resterait `processing`
+   * jusqu'à expiration de son bail.
+   */
+  async onModuleDestroy(): Promise<void> {
     if (this.timer) clearInterval(this.timer);
+    await this.activePoll;
   }
 
   async drainOnce(): Promise<boolean> {
@@ -101,17 +112,21 @@ export class RealtimeOutboxRelay
     return true;
   }
 
-  private async poll(): Promise<void> {
-    if (this.polling) return;
-    this.polling = true;
+  private poll(): Promise<void> {
+    if (this.activePoll) return this.activePoll;
+    this.activePoll = this.drainSafely().finally(() => {
+      this.activePoll = null;
+    });
+    return this.activePoll;
+  }
+
+  private async drainSafely(): Promise<void> {
     try {
       await this.drainBatch(MAX_MESSAGES_PER_POLL);
     } catch (error: unknown) {
       // Sans cette trace, une panne de drainage n'a qu'un symptôme : « l'interface
       // ne se met plus à jour ».
       this.logger.error("Drainage de l'outbox temps réel interrompu", error);
-    } finally {
-      this.polling = false;
     }
   }
 
