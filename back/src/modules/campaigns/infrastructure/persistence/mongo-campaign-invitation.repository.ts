@@ -105,6 +105,11 @@ export class MongoCampaignInvitationRepository
     if (!isDuplicateKey(error)) throw error;
     const receipt = await this.findReceipt(command.principalId, command.idempotencyKey);
     if (receipt) return receipt;
+    // La transaction ecrit l'invitation, le recu, l'audit et l'outbox : chacun a
+    // ses propres index uniques. Seule une collision sur l'index d'invitation
+    // ouverte signifie « invitation deja ouverte ». Toute autre remonte telle
+    // quelle, sous peine d'envoyer le diagnostic dans la mauvaise direction.
+    if (!violates(error, OPEN_INVITATION_INDEX)) throw error;
     throw new AlreadyOpenCampaignInvitationError();
   }
 }
@@ -112,4 +117,20 @@ export class MongoCampaignInvitationRepository
 function isDuplicateKey(error: unknown): boolean {
   if (!error || typeof error !== 'object') return false;
   return 'code' in error && error.code === DUPLICATE_KEY_ERROR;
+}
+
+/** L'index unique de `campaign-invitation.schema.ts`, partiel sur `status: pending`. */
+const OPEN_INVITATION_INDEX = ['campaignId', 'targetUserId'];
+
+function violates(error: unknown, keys: readonly string[]): boolean {
+  const pattern = keyPatternOf(error);
+  return !!pattern && keys.every((key) => key in pattern);
+}
+
+function keyPatternOf(error: unknown): Record<string, unknown> | null {
+  if (!error || typeof error !== 'object' || !('keyPattern' in error)) return null;
+  const pattern = (error as { keyPattern: unknown }).keyPattern;
+  return pattern && typeof pattern === 'object'
+    ? (pattern as Record<string, unknown>)
+    : null;
 }

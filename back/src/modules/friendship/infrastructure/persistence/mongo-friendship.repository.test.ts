@@ -5,7 +5,10 @@ import type { OutboxMessageDocument } from '@kernel/infrastructure/outbox-messag
 import { Friendship } from '../../domain/friendship';
 import { FriendshipId } from '../../domain/friendship-id';
 import type { FriendshipDocument } from './friendship.mapper';
-import { FriendshipRevisionConflictError } from '../../domain/friendship.errors';
+import {
+  FriendRequestAlreadyExistsError,
+  FriendshipRevisionConflictError,
+} from '../../domain/friendship.errors';
 import { MongoFriendshipRepository } from './mongo-friendship.repository';
 
 const ALICE_ID = '11111111-1111-4111-8111-111111111111';
@@ -93,6 +96,31 @@ describe('MongoFriendshipRepository', () => {
     expect(update.mock.calls[0]?.[0]).toMatchObject({ revision: { $in: [0, null] } });
   });
 
+  // Le vrai risque du code 11000 : la transaction ecrit l'amitie ET son outbox,
+  // chacune avec ses index uniques. Une collision ailleurs que sur la paire ne
+  // signifie pas « demande deja existante », et un diagnostic faux envoie la
+  // correction dans la mauvaise direction.
+  it('traduit une collision de paire en demande déjà existante', async () => {
+    const repository = repositoryWith(
+      modelWithReplace(vi.fn().mockRejectedValue(duplicateKeyOn('pairKey'))),
+      vi.fn().mockResolvedValue([]),
+    );
+
+    await expect(repository.create(pendingRequest(), COMMAND_ID)).rejects.toThrow(
+      FriendRequestAlreadyExistsError,
+    );
+  });
+
+  it('laisse remonter une collision sur un autre index', async () => {
+    const collision = duplicateKeyOn('_id');
+    const repository = repositoryWith(
+      modelWithReplace(vi.fn().mockRejectedValue(collision)),
+      vi.fn().mockResolvedValue([]),
+    );
+
+    await expect(repository.create(pendingRequest(), COMMAND_ID)).rejects.toBe(collision);
+  });
+
   // La suppression n'incrémente rien : le document part. Le fait succède quand même
   // au dernier état connu.
   it('diffuse la révision suivante à la suppression', async () => {
@@ -139,6 +167,10 @@ function modelWithUpdate(updated: FriendshipDocument | null) {
   return {
     findOneAndUpdate: vi.fn().mockResolvedValue(updated),
   } as unknown as Model<FriendshipDocument>;
+}
+
+function duplicateKeyOn(field: string): { code: number; keyPattern: unknown } {
+  return { code: 11_000, keyPattern: { [field]: 1 } };
 }
 
 function modelWithUpdateSpy(findOneAndUpdate: ReturnType<typeof vi.fn>) {

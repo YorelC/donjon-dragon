@@ -59,7 +59,10 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
         ),
       );
     } catch (error: unknown) {
-      if (isDuplicateKeyError(error)) throw new FriendRequestAlreadyExistsError();
+      // La transaction ecrit l'amitie ET son outbox : une collision sur un `_id`
+      // de message remonterait deguisee en « demande deja existante ». Seul
+      // l'index de paire porte cet invariant.
+      if (violatesPairKey(error)) throw new FriendRequestAlreadyExistsError();
       throw error;
     }
   }
@@ -279,6 +282,15 @@ const DUPLICATE_KEY_ERROR_CODE = 11_000;
 function isDuplicateKeyError(error: unknown): error is { code: number } {
   if (typeof error !== 'object' || error === null) return false;
   return 'code' in error && error.code === DUPLICATE_KEY_ERROR_CODE;
+}
+
+/** L'index unique `pairKey` de `friendship.schema.ts` : un seul document par paire. */
+const PAIR_KEY_INDEX = 'pairKey';
+
+function violatesPairKey(error: unknown): boolean {
+  if (!isDuplicateKeyError(error) || !('keyPattern' in error)) return false;
+  const pattern = (error as { keyPattern: unknown }).keyPattern;
+  return !!pattern && typeof pattern === 'object' && PAIR_KEY_INDEX in pattern;
 }
 
 function friendshipParticipantsFilter(userAId: UserId, userBId: UserId) {
