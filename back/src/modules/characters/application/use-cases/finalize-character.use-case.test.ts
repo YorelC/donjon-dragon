@@ -4,6 +4,7 @@ import { anActor } from '@kernel/testing/actor.fixture';
 import { FixedClock } from '@kernel/testing/fixed-clock';
 
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
+import { GetCampaignMembershipsUseCase } from '@modules/campaigns/application/use-cases/get-campaign-memberships.use-case';
 import { aCampaign, withPlayer } from '@modules/campaigns/testing/campaign.fixture';
 import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory-campaign.repository';
 import {
@@ -43,6 +44,7 @@ describe('FinalizeCharacterUseCase', () => {
     directory.register({ id: frodoId, displayName: 'Frodo' });
 
     const membership = new GetCampaignMembershipUseCase(campaignRepo);
+    const memberships = new GetCampaignMembershipsUseCase(campaignRepo);
     const characterRepo = new InMemoryCharacterRepository();
     const clock = new FixedClock();
     create = new CreateCharacterUseCase(
@@ -56,7 +58,7 @@ describe('FinalizeCharacterUseCase', () => {
       characterRepo,
       directory,
       new InMemoryItemCatalog(),
-      membership,
+      memberships,
       clock,
     );
   });

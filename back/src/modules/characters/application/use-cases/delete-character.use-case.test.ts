@@ -5,6 +5,7 @@ import { anActor } from '@kernel/testing/actor.fixture';
 import { FixedClock, TEST_INSTANT } from '@kernel/testing/fixed-clock';
 
 import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
+import { GetCampaignMembershipsUseCase } from '@modules/campaigns/application/use-cases/get-campaign-memberships.use-case';
 import { aCampaign, withPlayer } from '@modules/campaigns/testing/campaign.fixture';
 import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory-campaign.repository';
 import { CharacterId } from '../../domain/character-id';
@@ -49,6 +50,7 @@ describe('DeleteCharacterUseCase', () => {
     directory.register({ id: frodoId, displayName: 'Frodo' });
 
     const membership = new GetCampaignMembershipUseCase(campaignRepo);
+    const memberships = new GetCampaignMembershipsUseCase(campaignRepo);
     characterRepo = new InMemoryCharacterRepository();
     create = new CreateCharacterUseCase(
       characterRepo,
@@ -57,7 +59,7 @@ describe('DeleteCharacterUseCase', () => {
       membership,
       new FixedClock(),
     );
-    useCase = new DeleteCharacterUseCase(characterRepo, membership);
+    useCase = new DeleteCharacterUseCase(characterRepo, memberships);
   });
 
   async function characterCreatedBy(creatorId: string): Promise<string> {

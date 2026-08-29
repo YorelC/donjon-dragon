@@ -3,7 +3,7 @@ import type {
   Character as CharacterDto,
   FinalizeCharacterDto as FinalizeCharacterBody,
 } from '@donjon-dragon/shared/character-schema';
-import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
+import { GetCampaignMembershipsUseCase } from '@modules/campaigns/application/use-cases/get-campaign-memberships.use-case';
 import { CLOCK, type Clock } from '@kernel/application/clock.port';
 import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
@@ -49,7 +49,7 @@ export class FinalizeCharacterUseCase {
     @Inject(CHARACTER_DIRECTORY)
     private readonly directory: CharacterDirectoryPort,
     @Inject(ITEM_CATALOG) private readonly itemCatalog: ItemCatalogPort,
-    private readonly membership: GetCampaignMembershipUseCase,
+    private readonly memberships: GetCampaignMembershipsUseCase,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
@@ -57,12 +57,11 @@ export class FinalizeCharacterUseCase {
     const character = await loadCampaignCharacter(
       this.characterRepo, dto.campaignId, dto.characterId,
     );
-    const context = await resolveAccessContext(
-      this.membership,
-      dto.campaignId,
-      dto.actorId,
-      character.createdBy,
-    );
+    const context = await resolveAccessContext(this.memberships, {
+      campaignId: dto.campaignId,
+      actorId: dto.actorId,
+      createdBy: character.createdBy,
+    });
 
     this.applyWizardOutput(character, dto, context);
     await assertEquipmentIsKnown(

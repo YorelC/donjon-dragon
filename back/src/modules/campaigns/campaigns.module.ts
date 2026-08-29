@@ -33,6 +33,7 @@ import { DemoteCampaignMemberUseCase } from './application/use-cases/demote-camp
 import { ExcludeCampaignMemberUseCase } from './application/use-cases/exclude-campaign-member.use-case';
 import { GetCampaignDetailUseCase } from './application/use-cases/get-campaign-detail.use-case';
 import { GetCampaignMembershipUseCase } from './application/use-cases/get-campaign-membership.use-case';
+import { GetCampaignMembershipsUseCase } from './application/use-cases/get-campaign-memberships.use-case';
 import { InviteToCampaignUseCase } from './application/use-cases/invite-to-campaign.use-case';
 import { LeaveCampaignUseCase } from './application/use-cases/leave-campaign.use-case';
 import { ListCampaignInvitationsUseCase } from './application/use-cases/list-campaign-invitations.use-case';
@@ -103,6 +104,7 @@ import { CampaignController } from './presentation/campaign.controller';
     CountCampaignInvitationsUseCase,
     GetCampaignDetailUseCase,
     GetCampaignMembershipUseCase,
+    GetCampaignMembershipsUseCase,
     InviteToCampaignUseCase,
     AcceptCampaignInvitationUseCase,
     RefuseCampaignInvitationUseCase,
@@ -117,6 +119,7 @@ import { CampaignController } from './presentation/campaign.controller';
   ],
   exports: [
     GetCampaignMembershipUseCase,
+    GetCampaignMembershipsUseCase,
     PromoteCampaignMemberUseCase,
     ExcludeCampaignMemberUseCase,
     LeaveCampaignUseCase,

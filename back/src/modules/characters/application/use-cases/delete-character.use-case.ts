@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { GetCampaignMembershipUseCase } from '@modules/campaigns/application/use-cases/get-campaign-membership.use-case';
+import { GetCampaignMembershipsUseCase } from '@modules/campaigns/application/use-cases/get-campaign-memberships.use-case';
 import type { ActorId } from '@kernel/domain/actor-id';
 
 import {
@@ -19,19 +19,18 @@ export class DeleteCharacterUseCase {
   constructor(
     @Inject(CHARACTER_REPOSITORY)
     private readonly characterRepo: CharacterRepositoryPort,
-    private readonly membership: GetCampaignMembershipUseCase,
+    private readonly memberships: GetCampaignMembershipsUseCase,
   ) {}
 
   async execute(dto: DeleteCharacterDto): Promise<void> {
     const character = await loadCampaignCharacter(
       this.characterRepo, dto.campaignId, dto.characterId,
     );
-    const context = await resolveAccessContext(
-      this.membership,
-      dto.campaignId,
-      dto.actorId,
-      character.createdBy,
-    );
+    const context = await resolveAccessContext(this.memberships, {
+      campaignId: dto.campaignId,
+      actorId: dto.actorId,
+      createdBy: character.createdBy,
+    });
 
     character.assertEditableBy(context);
     await this.characterRepo.deleteById(character.id);
