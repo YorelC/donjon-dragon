@@ -6,6 +6,7 @@ import { UserId } from '@kernel/domain/user-id';
 import {
   CAMPAIGN_DIRECTORY,
   type CampaignDirectoryPort,
+  type DirectoryUser,
 } from '../ports/campaign-directory.port';
 import {
   CAMPAIGN_INVITATION_REPOSITORY,
@@ -35,28 +36,54 @@ export class ListCampaignInvitationsUseCase {
     private readonly directory: CampaignDirectoryPort,
   ) {}
 
+  /**
+   * Trois lectures quel que soit le nombre d'invitations : les invitations, puis
+   * les campagnes et les invitants en lot. Projeter ligne par ligne relisait la
+   * campagne ET l'annuaire pour chacune.
+   */
   async execute(dto: ListCampaignInvitationsDto): Promise<CampaignInvitation[]> {
     const userId = UserId.create(dto.userId);
     const invitations = await this.invitationRepo.listOpenForTarget(userId);
-    const projected = await Promise.all(
-      invitations.map((invitation) => this.project(invitation)),
+    const campaigns = await this.indexCampaigns(invitations);
+    const inviters = await this.indexInviters(invitations);
+
+    return invitations
+      .map((invitation) => project(invitation, campaigns, inviters))
+      .filter(isInvitation);
+  }
+
+  private async indexCampaigns(
+    invitations: InvitationAggregate[],
+  ): Promise<Map<string, Campaign>> {
+    const campaigns = await this.campaignRepo.findManyByIds(
+      invitations.map((invitation) => invitation.campaignId),
     );
-    return projected.filter(isInvitation);
+    return new Map(campaigns.map((campaign) => [campaign.id.value, campaign]));
   }
 
-  private async project(
-    invitation: InvitationAggregate,
-  ): Promise<CampaignInvitation | null> {
-    const campaign = await this.loadCampaign(invitation);
-    const inviter = await this.directory.findById(invitation.invitedByUserId.value);
-    return inviter ? toCampaignInvitation(invitation, campaign, inviter) : null;
+  private async indexInviters(
+    invitations: InvitationAggregate[],
+  ): Promise<Map<string, DirectoryUser>> {
+    const ids = invitations.map((invitation) => invitation.invitedByUserId.value);
+    const users = await this.directory.findManyByIds([...new Set(ids)]);
+    return new Map(users.map((user) => [user.id, user]));
   }
+}
 
-  private async loadCampaign(invitation: InvitationAggregate): Promise<Campaign> {
-    const campaign = await this.campaignRepo.findById(invitation.campaignId);
-    if (!campaign) throw new CampaignNotFoundError();
-    return campaign;
-  }
+/**
+ * Projection sans I/O. L'asymetrie est celle d'avant : une campagne absente est
+ * une incoherence de donnees, un invitant absent est une ligne qu'on tait.
+ */
+function project(
+  invitation: InvitationAggregate,
+  campaigns: Map<string, Campaign>,
+  inviters: Map<string, DirectoryUser>,
+): CampaignInvitation | null {
+  const campaign = campaigns.get(invitation.campaignId.value);
+  if (!campaign) throw new CampaignNotFoundError();
+
+  const inviter = inviters.get(invitation.invitedByUserId.value);
+  return inviter ? toCampaignInvitation(invitation, campaign, inviter) : null;
 }
 
 function isInvitation(
