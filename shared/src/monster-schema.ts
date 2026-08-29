@@ -48,8 +48,11 @@ export const MonsterEntrySchema = z.object({
   description: z.string(),
 });
 
+/** La clé de catalogue, telle qu'elle arrive en segment d'URL. */
+export const MonsterKeySchema = z.string().min(1);
+
 export const MonsterSchema = z.object({
-  key: z.string().min(1),
+  key: MonsterKeySchema,
   name: z.string().min(1),
   /**
    * `type` et `size` restent des chaînes libres. Le manuel écrit « Bête

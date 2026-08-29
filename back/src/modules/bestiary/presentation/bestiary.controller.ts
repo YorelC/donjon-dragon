@@ -1,5 +1,10 @@
-import { Controller, Get, Inject, Param } from '@nestjs/common';
-import type { Monster as MonsterDto } from '@donjon-dragon/shared/monster-schema';
+import { Controller, Get, Inject } from '@nestjs/common';
+import {
+  MonsterKeySchema,
+  type Monster as MonsterDto,
+} from '@donjon-dragon/shared/monster-schema';
+
+import { ZodParam } from '@common/decorators/zod-validated.decorator';
 
 import { FindMonsterByKeyUseCase } from '../application/use-cases/find-monster-by-key.use-case';
 import { ListBestiaryUseCase } from '../application/use-cases/list-bestiary.use-case';
@@ -27,7 +32,7 @@ export class BestiaryController {
    * `campaigns/:campaignId`, dont l'appartenance se vérifie.
    */
   @Get(':monsterKey')
-  async findMonster(@Param('monsterKey') monsterKey: string): Promise<MonsterDto> {
+  async findMonster(@ZodParam('monsterKey', MonsterKeySchema) monsterKey: string): Promise<MonsterDto> {
     return this.find.execute(monsterKey, null);
   }
 }

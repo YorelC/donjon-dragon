@@ -3,18 +3,19 @@ import {
   Post,
   Get,
   Delete,
-  Param,
   Inject,
   HttpCode,
 } from '@nestjs/common';
 import type { AuthenticatedActor } from '@kernel/domain/actor-id';
 import {
+  FriendshipIdSchema,
   UserSearchQuerySchema,
   type UserSearchQuery,
 } from '@donjon-dragon/shared/friendship-schema';
+import { displayNameField } from '@donjon-dragon/shared/user-schema';
 
 import { CurrentUser } from '@common/decorators/current-user.decorator';
-import { ZodQuery } from '@common/decorators/zod-validated.decorator';
+import { ZodParam, ZodQuery } from '@common/decorators/zod-validated.decorator';
 import { SendFriendRequestUseCase } from '../application/use-cases/send-friend-request.use-case';
 import { AcceptFriendRequestUseCase } from '../application/use-cases/accept-friend-request.use-case';
 import { RefuseFriendRequestUseCase } from '../application/use-cases/refuse-friend-request.use-case';
@@ -60,7 +61,7 @@ export class FriendshipController {
   @Post('request/:displayName')
   async sendFriendRequest(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('displayName') displayName: string,
+    @ZodParam('displayName', displayNameField()) displayName: string,
   ) {
     return this.sendFriendRequestUseCase.execute({
       requesterId: user.userId,
@@ -71,7 +72,7 @@ export class FriendshipController {
   @Post('accept/:friendshipId')
   async acceptFriendRequest(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('friendshipId') friendshipId: string,
+    @ZodParam('friendshipId', FriendshipIdSchema) friendshipId: string,
   ) {
     return this.acceptFriendRequestUseCase.execute({
       friendshipId,
@@ -82,7 +83,7 @@ export class FriendshipController {
   @Post('refuse/:friendshipId')
   async refuseFriendRequest(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('friendshipId') friendshipId: string,
+    @ZodParam('friendshipId', FriendshipIdSchema) friendshipId: string,
   ) {
     return this.refuseFriendRequestUseCase.execute({
       friendshipId,
@@ -126,7 +127,7 @@ export class FriendshipController {
   @Delete(':friendshipId')
   async removeFriend(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('friendshipId') friendshipId: string,
+    @ZodParam('friendshipId', FriendshipIdSchema) friendshipId: string,
   ) {
     await this.removeFriendUseCase.execute({ userId: user.userId, friendshipId });
   }

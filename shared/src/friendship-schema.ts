@@ -85,8 +85,10 @@ export const UserSearchResultSchema = z.object({
 
 // ── Suppression d'ami (UA-003) ──────────────────────────────────────────────
 /** INV-002 [UA-003] : friendshipId doit être un UUID valide. */
+export const FriendshipIdSchema = z.string().uuid();
+
 export const DeleteFriendParamsSchema = z.object({
-  friendshipId: z.string().uuid(),
+  friendshipId: FriendshipIdSchema,
 });
 
 // ── Badge compteur de demandes reçues (UA-006, UA-008) ──────────────────────

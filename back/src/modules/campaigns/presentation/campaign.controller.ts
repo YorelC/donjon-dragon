@@ -4,7 +4,6 @@ import {
   Get,
   HttpCode,
   Inject,
-  Param,
   Post,
 } from '@nestjs/common';
 import {
@@ -103,7 +102,7 @@ export class CampaignController {
   @Get(':campaignId')
   async getCampaignDetail(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
   ) {
     return this.detail.execute({
       campaignId,
@@ -115,7 +114,7 @@ export class CampaignController {
   @Post(':campaignId/invitations')
   async inviteToCampaign(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
     @ZodBody(InviteToCampaignSchema) body: InviteToCampaignBody,
     @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
     idempotencyKey: string,
@@ -132,7 +131,7 @@ export class CampaignController {
   @Post(':campaignId/invitations/accept')
   async acceptCampaignInvitation(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
     @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
     idempotencyKey: string,
   ) {
@@ -147,7 +146,7 @@ export class CampaignController {
   @Post(':campaignId/invitations/refuse')
   async refuseCampaignInvitation(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
     @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
     idempotencyKey: string,
   ) {
@@ -162,7 +161,7 @@ export class CampaignController {
   @Delete(':campaignId/invitations/:displayName')
   async cancelCampaignInvitation(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
     @ZodParam('displayName', displayNameField()) displayName: string,
     @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
     idempotencyKey: string,
@@ -216,7 +215,7 @@ export class CampaignController {
   @Delete(':campaignId')
   async deleteCampaign(
     @CurrentUser() user: AuthenticatedActor,
-    @Param('campaignId') campaignId: string,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
   ) {
     await this.remove.execute({ campaignId, actorId: user.userId });
   }
