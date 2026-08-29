@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   OUTBOX_AUDIENCE_POLICY,
+  OUTBOX_FACT_TYPE,
   OUTBOX_DELIVERY_CHANNEL,
   OUTBOX_STATUS,
 } from './outbox-message.contract';
@@ -79,7 +80,7 @@ function baseMessage() {
     causationId: 'receipt-1',
     aggregateId: 'aggregate-1',
     aggregateRevision: 1,
-    factType: 'friendship.changed',
+    factType: OUTBOX_FACT_TYPE.friendshipRequested,
     fact: {},
     deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
     occurredAt: OCCURRED_AT,

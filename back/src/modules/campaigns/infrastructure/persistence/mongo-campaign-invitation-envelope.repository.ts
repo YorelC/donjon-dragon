@@ -19,6 +19,7 @@ import {
   OUTBOX_DELIVERY_CHANNEL,
   type CampaignOutboxAudience,
   type OutboxDeliveryChannel,
+  type OutboxFactType,
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 
@@ -36,7 +37,7 @@ type CampaignAudiencePolicy = CampaignOutboxAudience['policy'];
 
 interface InvitationEnvelopeDescriptor {
   intentionType: string;
-  factType: string;
+  factType: OutboxFactType;
   audiencePolicy: CampaignAudiencePolicy;
   aggregateIds: string[];
   revisionBefore: number | null;
@@ -56,7 +57,7 @@ interface InvitationEnvelopeRequest {
 
 interface DescriptorPolicy {
   intentionType: string;
-  factType: string;
+  factType: OutboxFactType;
   audiencePolicy: CampaignAudiencePolicy;
 }
 
@@ -65,7 +66,7 @@ interface DescriptorConfiguration extends DescriptorPolicy {
 }
 
 interface OutboxProjection {
-  factType: string;
+  factType: OutboxFactType;
   audiencePolicy: CampaignAudiencePolicy;
   deliveryChannel: OutboxDeliveryChannel;
 }

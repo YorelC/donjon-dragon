@@ -12,6 +12,40 @@ export const OUTBOX_AUDIENCE_POLICY_VALUES = Object.values(
 export type OutboxAudiencePolicy =
   (typeof OUTBOX_AUDIENCE_POLICY)[keyof typeof OUTBOX_AUDIENCE_POLICY];
 
+/**
+ * Le vocabulaire ferme des faits d'outbox, tous modules confondus.
+ *
+ * Il vit ici, avec les politiques d'audience, pour une raison precise : le
+ * relais doit pouvoir declarer une projection pour CHAQUE fait, et le compilateur
+ * doit refuser un fait ajoute sans projection. Un fait connu qui partirait en
+ * quarantaine faute d'entree est une fonctionnalite perdue en silence.
+ *
+ * Ajouter un fait ici casse la compilation du relais tant qu'il n'a pas sa
+ * projection. C'est voulu.
+ */
+export const OUTBOX_FACT_TYPE = {
+  friendshipRequested: 'friendship.requested',
+  friendshipAccepted: 'friendship.accepted',
+  friendshipRefused: 'friendship.refused',
+  friendshipRemoved: 'friendship.removed',
+  campaignCreated: 'campaign.created',
+  campaignMemberPromoted: 'campaign.member-promoted',
+  campaignMemberDemoted: 'campaign.member-demoted',
+  campaignMemberExcluded: 'campaign.member-excluded',
+  campaignMemberLeft: 'campaign.member-left',
+  campaignOwnershipTransferred: 'campaign.ownership-transferred',
+  campaignInvitationCreated: 'campaign.invitation.created',
+  campaignInvitationAccepted: 'campaign.invitation.accepted',
+  campaignInvitationRefused: 'campaign.invitation.refused',
+  campaignInvitationCancelled: 'campaign.invitation.cancelled',
+  campaignInvitationEmailRequested: 'campaign.invitation.email-requested',
+  characterAssigned: 'character.assigned',
+  characterUnassigned: 'character.unassigned',
+} as const;
+
+export type OutboxFactType =
+  (typeof OUTBOX_FACT_TYPE)[keyof typeof OUTBOX_FACT_TYPE];
+
 export const OUTBOX_DELIVERY_CHANNEL = {
   realtime: 'realtime',
   email: 'email',

@@ -5,6 +5,7 @@ import {
   OUTBOX_STATUS,
   type CampaignOutboxAudience,
   type OutboxDeliveryChannel,
+  type OutboxFactType,
   type UserOutboxAudience,
 } from './outbox-message.contract';
 import type { OutboxMessageDocument } from './outbox-message.schema';
@@ -16,7 +17,7 @@ interface OutboxMessageInputBase {
   causationId: string;
   aggregateId: string;
   aggregateRevision: number;
-  factType: string;
+  factType: OutboxFactType;
   fact: unknown;
   deliveryChannel: OutboxDeliveryChannel;
   occurredAt: Date;

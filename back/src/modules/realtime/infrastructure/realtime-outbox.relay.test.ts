@@ -4,8 +4,10 @@ import type { Clock } from '@kernel/application/clock.port';
 import {
   OUTBOX_AUDIENCE_POLICY,
   OUTBOX_DELIVERY_CHANNEL,
+  OUTBOX_FACT_TYPE,
   OUTBOX_STATUS,
   type OutboxAudience,
+  type OutboxFactType,
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 import type { OutboxMessageDocument } from '@kernel/infrastructure/outbox-message.schema';
@@ -67,7 +69,7 @@ describe('RealtimeOutboxRelay', () => {
     const notifier = aNotifier();
     const audience = anAudience([ALICE_ID, BOB_ID]);
     const relay = relayFor(
-      campaignFactMessage('campaign.invitation.created'),
+      campaignFactMessage(OUTBOX_FACT_TYPE.campaignInvitationAccepted),
       notifier, vi.fn().mockResolvedValue({}), audience,
     );
 
@@ -76,7 +78,7 @@ describe('RealtimeOutboxRelay', () => {
     expect(audience.activeMemberIds).toHaveBeenCalledWith(CAMPAIGN_ID);
     expect(notifier.notifyUsers).toHaveBeenCalledWith(
       [ALICE_ID, BOB_ID],
-      expect.objectContaining({ resource: 'campaign-invitations' }),
+      expect.objectContaining({ resource: 'campaigns' }),
     );
   });
 
@@ -85,7 +87,7 @@ describe('RealtimeOutboxRelay', () => {
   it('exclut un membre qui n est plus actif au moment de l émission', async () => {
     const notifier = aNotifier();
     const relay = relayFor(
-      campaignFactMessage('campaign.invitation.created'),
+      campaignFactMessage(OUTBOX_FACT_TYPE.campaignInvitationAccepted),
       notifier, vi.fn().mockResolvedValue({}), anAudience([ALICE_ID]),
     );
 
@@ -94,24 +96,42 @@ describe('RealtimeOutboxRelay', () => {
     expect(notifier.notifyUsers).toHaveBeenCalledWith([ALICE_ID], expect.anything());
   });
 
-  // NEW-14 : l'attribution d'un personnage ecrit bien en campaign-members, mais
-  // aucune ressource navigateur ne lui correspond. L'ecart devient bruyant.
-  it('met en quarantaine une attribution de personnage, faute de ressource', async () => {
+  // NEW-14 : l'attribution d'un personnage ecrit en campaign-members. La
+  // ressource `campaigns` existe deja, et le client y invalide tout le prefixe
+  // ["campaigns"], personnages compris : rien a elargir pour la livrer.
+  it('diffuse une attribution de personnage aux membres de la campagne', async () => {
     const updateOne = vi.fn().mockResolvedValue({});
     const notifier = aNotifier();
     const relay = relayFor(
-      campaignFactMessage('character.assigned'), notifier, updateOne,
+      campaignFactMessage(OUTBOX_FACT_TYPE.characterAssigned), notifier, updateOne,
     );
 
     await relay.drainOnce();
 
-    expect(notifier.notifyUsers).not.toHaveBeenCalled();
-    expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.quarantined);
+    expect(notifier.notifyUsers).toHaveBeenCalledWith(
+      [ALICE_ID, BOB_ID],
+      expect.objectContaining({ resource: 'campaigns' }),
+    );
+    expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.delivered);
+  });
+
+  // Le refus vise les MJ, pas la table entiere.
+  it('résout campaign-game-masters par la lecture dédiée', async () => {
+    const notifier = aNotifier();
+    const audience = anAudience([ALICE_ID, BOB_ID], [ALICE_ID]);
+    const relay = relayFor(
+      gameMasterFactMessage(), notifier, vi.fn().mockResolvedValue({}), audience,
+    );
+
+    await relay.drainOnce();
+
+    expect(audience.activeGameMasterIds).toHaveBeenCalledWith(CAMPAIGN_ID);
+    expect(notifier.notifyUsers).toHaveBeenCalledWith([ALICE_ID], expect.anything());
   });
 
   it('met en quarantaine un fait de campagne sans campaignId', async () => {
     const updateOne = vi.fn().mockResolvedValue({});
-    const message = { ...campaignFactMessage('campaign.invitation.created') };
+    const message = { ...campaignFactMessage(OUTBOX_FACT_TYPE.campaignInvitationAccepted) };
     delete message.campaignId;
     const relay = relayFor(message, aNotifier(), updateOne);
 
@@ -141,6 +161,41 @@ describe('RealtimeOutboxRelay', () => {
     await relay.drainOnce();
 
     expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.quarantined);
+  });
+
+  // La regression que ce lot a introduite puis corrigee : le relais reclame
+  // TOUS les messages `realtime`, donc un fait sans projection devient terminal
+  // au lieu de rester `pending`. La table doit couvrir chaque fait reellement
+  // produit, et ce tableau le verifie fait par fait.
+  it.each([
+    [OUTBOX_FACT_TYPE.friendshipRequested, 'friendships'],
+    [OUTBOX_FACT_TYPE.friendshipAccepted, 'friendships'],
+    [OUTBOX_FACT_TYPE.friendshipRefused, 'friendships'],
+    [OUTBOX_FACT_TYPE.friendshipRemoved, 'friendships'],
+    [OUTBOX_FACT_TYPE.campaignCreated, 'campaigns'],
+    [OUTBOX_FACT_TYPE.campaignMemberPromoted, 'campaigns'],
+    [OUTBOX_FACT_TYPE.campaignMemberDemoted, 'campaigns'],
+    [OUTBOX_FACT_TYPE.campaignMemberExcluded, 'campaigns'],
+    [OUTBOX_FACT_TYPE.campaignMemberLeft, 'campaigns'],
+    [OUTBOX_FACT_TYPE.campaignOwnershipTransferred, 'campaigns'],
+    [OUTBOX_FACT_TYPE.campaignInvitationCreated, 'campaign-invitations'],
+    [OUTBOX_FACT_TYPE.campaignInvitationCancelled, 'campaign-invitations'],
+    [OUTBOX_FACT_TYPE.campaignInvitationAccepted, 'campaigns'],
+    [OUTBOX_FACT_TYPE.campaignInvitationRefused, 'campaigns'],
+    [OUTBOX_FACT_TYPE.characterAssigned, 'campaigns'],
+    [OUTBOX_FACT_TYPE.characterUnassigned, 'campaigns'],
+  ])('projette %s sur %s au lieu de le quarantiner', async (factType, resource) => {
+    const updateOne = vi.fn().mockResolvedValue({});
+    const notifier = aNotifier();
+    const relay = relayFor(campaignFactMessage(factType), notifier, updateOne);
+
+    await relay.drainOnce();
+
+    expect(notifier.notifyUsers).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ resource }),
+    );
+    expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.delivered);
   });
 
   it('ne draine rien quand l outbox est vide', async () => {
@@ -186,17 +241,25 @@ function pausedOutbox() {
 }
 
 function friendshipMessage(): OutboxMessageDocument {
-  return userMessage('friendship.requested', {
+  return userMessage(OUTBOX_FACT_TYPE.friendshipRequested, {
     policy: OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
     userIds: [ALICE_ID, BOB_ID],
   });
 }
 
+/**
+ * Un fait hors vocabulaire ne peut plus etre PRODUIT — la fabrique le refuse a la
+ * compilation. Il peut encore etre LU : un document ecrit par une version
+ * anterieure. Le cast est donc a sa place, a la frontiere de la base.
+ */
 function unknownFactMessage(): OutboxMessageDocument {
-  return userMessage('friendship.blocked', {
-    policy: OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
-    userIds: [ALICE_ID, BOB_ID],
-  });
+  return {
+    ...userMessage(OUTBOX_FACT_TYPE.friendshipRequested, {
+      policy: OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
+      userIds: [ALICE_ID, BOB_ID],
+    }),
+    factType: 'friendship.blocked',
+  };
 }
 
 function invitationMessage(): OutboxMessageDocument {
@@ -206,7 +269,7 @@ function invitationMessage(): OutboxMessageDocument {
     causationId: 'command-2',
     aggregateId: 'invitation-1',
     aggregateRevision: 0,
-    factType: 'campaign.invitation.created',
+    factType: OUTBOX_FACT_TYPE.campaignInvitationCreated,
     fact: {},
     audience: { policy: OUTBOX_AUDIENCE_POLICY.targetUser, userIds: [BOB_ID] },
     deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
@@ -215,7 +278,14 @@ function invitationMessage(): OutboxMessageDocument {
 }
 
 /** Un fait de campagne : ses destinataires ne sont PAS dans l'enveloppe. */
-function campaignFactMessage(factType: string): OutboxMessageDocument {
+function gameMasterFactMessage(): OutboxMessageDocument {
+  return {
+    ...campaignFactMessage(OUTBOX_FACT_TYPE.campaignInvitationRefused),
+    audiencePolicy: OUTBOX_AUDIENCE_POLICY.campaignGameMasters,
+  };
+}
+
+function campaignFactMessage(factType: OutboxFactType): OutboxMessageDocument {
   return createOutboxMessage({
     ownerModule: 'characters',
     campaignId: CAMPAIGN_ID,
@@ -231,7 +301,7 @@ function campaignFactMessage(factType: string): OutboxMessageDocument {
 }
 
 function userMessage(
-  factType: string,
+  factType: OutboxFactType,
   audience: Extract<OutboxAudience, { userIds: readonly string[] }>,
 ): OutboxMessageDocument {
   return createOutboxMessage({

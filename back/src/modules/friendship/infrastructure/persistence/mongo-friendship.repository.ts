@@ -5,6 +5,8 @@ import { UserId } from '@kernel/domain/user-id';
 import {
   OUTBOX_AUDIENCE_POLICY,
   OUTBOX_DELIVERY_CHANNEL,
+  OUTBOX_FACT_TYPE,
+  type OutboxFactType,
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 import {
@@ -33,11 +35,13 @@ import {
 import { FRIENDSHIP_MODEL } from './friendship.schema';
 
 const OWNER_MODULE = 'friendship';
+// Les libelles viennent du vocabulaire ferme du kernel : les redeclarer ici
+// laisserait un fait exister sans que le relais soit oblige de le projeter.
 const FRIENDSHIP_FACT = {
-  requested: 'friendship.requested',
-  accepted: 'friendship.accepted',
-  refused: 'friendship.refused',
-  removed: 'friendship.removed',
+  requested: OUTBOX_FACT_TYPE.friendshipRequested,
+  accepted: OUTBOX_FACT_TYPE.friendshipAccepted,
+  refused: OUTBOX_FACT_TYPE.friendshipRefused,
+  removed: OUTBOX_FACT_TYPE.friendshipRemoved,
 } as const;
 
 @Injectable()
@@ -191,7 +195,7 @@ export class MongoFriendshipRepository implements FriendshipRepositoryPort {
 /** Ce qu'il faut savoir pour écrire un fait : l'état, sa nature, et sa cause. */
 interface FriendshipNotification {
   document: FriendshipDocument;
-  factType: string;
+  factType: OutboxFactType;
   commandId: CommandId;
 }
 
@@ -220,7 +224,7 @@ function refusedPairFilter(document: FriendshipDocument) {
   };
 }
 
-function transitionFact(document: FriendshipDocument): string {
+function transitionFact(document: FriendshipDocument): OutboxFactType {
   return document.status === FRIENDSHIP_STATUS.accepted
     ? FRIENDSHIP_FACT.accepted
     : FRIENDSHIP_FACT.refused;
@@ -248,7 +252,7 @@ function friendshipOutboxMessage(
  * donc personne n'incrémente sa révision. Le fait, lui, succède bien au dernier
  * état connu.
  */
-function notifiedRevision(document: FriendshipDocument, factType: string): number {
+function notifiedRevision(document: FriendshipDocument, factType: OutboxFactType): number {
   return factType === FRIENDSHIP_FACT.removed
     ? document.revision + 1
     : document.revision;

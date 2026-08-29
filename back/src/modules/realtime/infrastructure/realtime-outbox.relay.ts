@@ -17,7 +17,9 @@ import { CLOCK, type Clock } from '@kernel/application/clock.port';
 import {
   OUTBOX_AUDIENCE_POLICY,
   OUTBOX_DELIVERY_CHANNEL,
+  OUTBOX_FACT_TYPE,
   OUTBOX_STATUS,
+  type OutboxFactType,
 } from '@kernel/infrastructure/outbox-message.contract';
 import {
   OUTBOX_MESSAGE_MODEL,
@@ -37,18 +39,50 @@ const LEASE_DURATION_MS = 30_000;
 const MAX_MESSAGES_PER_POLL = 20;
 
 
+/** Un fait qui n'a rien à faire diffuser en temps réel, et pourquoi. */
+const NOT_BROADCAST = null;
+
 /**
- * Ce que le client doit réinvalider pour chaque fait. Table fermée : un fait absent
- * ne se diffuse pas, il part en quarantaine. Une faute de frappe ne doit jamais
+ * Ce que le client doit réinvalider pour chaque fait produit.
+ *
+ * La table est **totale** sur le vocabulaire fermé du kernel : ajouter un fait
+ * sans lui donner de projection ne compile pas. C'est la seule garantie qui
+ * empêche un fait connu de partir silencieusement en quarantaine — ce qui est
+ * pire que `pending`, puisque la quarantaine est terminale.
+ *
+ * Les faits de campagne visent `campaigns` : la ressource existe déjà dans le
+ * vocabulaire navigateur, et le client y invalide tout le préfixe `["campaigns"]`,
+ * détails et personnages compris. Aucun élargissement de `shared` n'est donc
+ * nécessaire pour les livrer.
+ *
+ * Un fait ABSENT de la table reste possible côté Mongo — un document écrit par une
+ * version antérieure — et part en quarantaine. Une faute de frappe ne doit jamais
  * pouvoir déclencher une diffusion par défaut.
  */
-const RESOURCE_BY_FACT: Record<string, RealtimeResource> = {
-  'friendship.requested': REALTIME_RESOURCE.friendships,
-  'friendship.accepted': REALTIME_RESOURCE.friendships,
-  'friendship.refused': REALTIME_RESOURCE.friendships,
-  'friendship.removed': REALTIME_RESOURCE.friendships,
-  'campaign.invitation.created': REALTIME_RESOURCE['campaign-invitations'],
-  'campaign.invitation.cancelled': REALTIME_RESOURCE['campaign-invitations'],
+const RESOURCE_BY_FACT: Record<OutboxFactType, RealtimeResource | null> = {
+  [OUTBOX_FACT_TYPE.friendshipRequested]: REALTIME_RESOURCE.friendships,
+  [OUTBOX_FACT_TYPE.friendshipAccepted]: REALTIME_RESOURCE.friendships,
+  [OUTBOX_FACT_TYPE.friendshipRefused]: REALTIME_RESOURCE.friendships,
+  [OUTBOX_FACT_TYPE.friendshipRemoved]: REALTIME_RESOURCE.friendships,
+  [OUTBOX_FACT_TYPE.campaignCreated]: REALTIME_RESOURCE.campaigns,
+  [OUTBOX_FACT_TYPE.campaignMemberPromoted]: REALTIME_RESOURCE.campaigns,
+  [OUTBOX_FACT_TYPE.campaignMemberDemoted]: REALTIME_RESOURCE.campaigns,
+  [OUTBOX_FACT_TYPE.campaignMemberExcluded]: REALTIME_RESOURCE.campaigns,
+  [OUTBOX_FACT_TYPE.campaignMemberLeft]: REALTIME_RESOURCE.campaigns,
+  [OUTBOX_FACT_TYPE.campaignOwnershipTransferred]: REALTIME_RESOURCE.campaigns,
+  [OUTBOX_FACT_TYPE.campaignInvitationCreated]:
+    REALTIME_RESOURCE['campaign-invitations'],
+  [OUTBOX_FACT_TYPE.campaignInvitationCancelled]:
+    REALTIME_RESOURCE['campaign-invitations'],
+  // Acceptee et refusee ne visent pas l'invite mais la table : l'audience est
+  // campaign-members pour l'une, campaign-game-masters pour l'autre.
+  [OUTBOX_FACT_TYPE.campaignInvitationAccepted]: REALTIME_RESOURCE.campaigns,
+  [OUTBOX_FACT_TYPE.campaignInvitationRefused]: REALTIME_RESOURCE.campaigns,
+  // Canal `email` : jamais reclame par ce relais, donc jamais projete. L'entree
+  // existe pour que la table reste totale, pas pour etre atteinte.
+  [OUTBOX_FACT_TYPE.campaignInvitationEmailRequested]: NOT_BROADCAST,
+  [OUTBOX_FACT_TYPE.characterAssigned]: REALTIME_RESOURCE.campaigns,
+  [OUTBOX_FACT_TYPE.characterUnassigned]: REALTIME_RESOURCE.campaigns,
 };
 
 /**
@@ -150,9 +184,9 @@ export class RealtimeOutboxRelay
       return this.quarantine(message._id, 'enveloppe illisible');
     }
 
-    const resource = RESOURCE_BY_FACT[parsed.data.factType];
+    const resource = projectionOf(parsed.data.factType);
     if (!resource) {
-      return this.quarantine(message._id, `fait inconnu ${parsed.data.factType}`);
+      return this.quarantine(message._id, `fait sans projection ${parsed.data.factType}`);
     }
 
     const recipients = await this.recipientsOf(message);
@@ -229,6 +263,14 @@ function claimableFilter(now: Date) {
       { status: OUTBOX_STATUS.processing, leaseUntil: { $lte: now } },
     ],
   };
+}
+
+/**
+ * Un `factType` lu en base n'est pas contraint par le vocabulaire : un document
+ * ecrit par une version anterieure peut en porter un que la table ignore.
+ */
+function projectionOf(factType: string): RealtimeResource | null {
+  return RESOURCE_BY_FACT[factType as OutboxFactType] ?? NOT_BROADCAST;
 }
 
 /** Les deux audiences dont les destinataires sont immuables et écrits au commit. */
