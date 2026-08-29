@@ -3,30 +3,31 @@ import type {
   CharacterAssignmentSummary,
 } from '@donjon-dragon/shared/character-schema';
 
-import type { CharacterDirectoryPort } from './ports/character-directory.port';
+import type { CharacterDirectoryUser } from './ports/character-directory.port';
 import type { Character } from '../domain/character';
 
-export async function toAssignmentResult(
-  directory: CharacterDirectoryPort,
+/** Les joueurs concernes, deja lus par le use-case : le mapper n'interroge rien. */
+export type AssignedPlayers = Map<string, CharacterDirectoryUser>;
+
+export function toAssignmentResult(
+  players: AssignedPlayers,
   character: Character,
   previousCharacter: Character | null,
-): Promise<CharacterAssignmentCommandResult> {
+): CharacterAssignmentCommandResult {
   return {
     campaignId: character.campaignId.value,
-    character: await toSummary(directory, character),
-    previousCharacter: previousCharacter
-      ? await toSummary(directory, previousCharacter)
-      : null,
+    character: toSummary(players, character),
+    previousCharacter: previousCharacter ? toSummary(players, previousCharacter) : null,
   };
 }
 
-async function toSummary(
-  directory: CharacterDirectoryPort,
+function toSummary(
+  players: AssignedPlayers,
   character: Character,
-): Promise<CharacterAssignmentSummary> {
+): CharacterAssignmentSummary {
   const user = character.assignedTo
-    ? await directory.findById(character.assignedTo.value)
-    : null;
+    ? players.get(character.assignedTo.value)
+    : undefined;
   return {
     id: character.id.value,
     revision: character.revision,

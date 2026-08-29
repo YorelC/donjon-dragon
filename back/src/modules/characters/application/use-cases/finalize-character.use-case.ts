@@ -11,6 +11,7 @@ import { UserId } from '@kernel/domain/user-id';
 import {
   CHARACTER_DIRECTORY,
   type CharacterDirectoryPort,
+  type CharacterDirectoryUser,
 } from '../ports/character-directory.port';
 import {
   CHARACTER_REPOSITORY,
@@ -19,7 +20,7 @@ import {
 import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
 import { assertEquipmentIsKnown } from '../item.lookup';
 import { loadCampaignCharacter, resolveAccessContext } from '../character.lookup';
-import { toCharacterDtoResolved } from '../character.mapper';
+import { toCharacterDto } from '../character.mapper';
 import { AbilityRoll } from '../../domain/ability-roll';
 import type { Character, CharacterAccessContext } from '../../domain/character';
 import { CharacterName } from '../../domain/character-name';
@@ -71,7 +72,14 @@ export class FinalizeCharacterUseCase {
     );
 
     await this.characterRepo.save(character);
-    return toCharacterDtoResolved(this.directory, character, UserId.create(dto.actorId));
+    const assignedPlayer = await this.assignedPlayer(character);
+    return toCharacterDto(character, UserId.create(dto.actorId), assignedPlayer);
+  }
+
+  /** La lecture d'annuaire appartient au use-case : le mapper ne fait plus d'I/O. */
+  private async assignedPlayer(character: Character): Promise<CharacterDirectoryUser | null> {
+    const assignedTo = character.assignedTo;
+    return assignedTo ? this.directory.findById(assignedTo.value) : null;
   }
 
   /**

@@ -4,19 +4,27 @@ import type {
 } from '@donjon-dragon/shared/character-schema';
 import type { UserId } from '@kernel/domain/user-id';
 
-import type { CharacterDirectoryPort } from './ports/character-directory.port';
-import { toCharacterDtoResolved } from './character.mapper';
+import type { CharacterDirectoryUser } from './ports/character-directory.port';
+import { toCharacterDto } from './character.mapper';
 import type { Character } from '../domain/character';
 
-export async function toCharacterListItem(
-  directory: CharacterDirectoryPort,
+/**
+ * La projection depend de qui regarde. Le joueur assigne arrive resolu par le
+ * use-case : ce mapper ne lit rien, il choisit une forme.
+ */
+export interface CharacterListViewer {
+  id: UserId;
+  isGameMaster: boolean;
+}
+
+export function toCharacterListItem(
   character: Character,
-  viewerId: UserId,
-  viewerIsGameMaster: boolean,
-): Promise<CampaignCharacterListItem> {
-  const dto = await toCharacterDtoResolved(directory, character, viewerId);
-  if (viewerIsGameMaster) return gameMasterProjection(dto);
-  if (character.assignedTo?.equals(viewerId)) return controlledProjection(dto);
+  viewer: CharacterListViewer,
+  assignedPlayer: CharacterDirectoryUser | null,
+): CampaignCharacterListItem {
+  const dto = toCharacterDto(character, viewer.id, assignedPlayer);
+  if (viewer.isGameMaster) return gameMasterProjection(dto);
+  if (character.assignedTo?.equals(viewer.id)) return controlledProjection(dto);
   return poolProjection(dto);
 }
 

@@ -58,7 +58,7 @@ describe('attribution transactionnelle d un personnage', () => {
       characters, assignments, directory, membership, clock,
     );
     unassign = new UnassignCharacterUseCase(
-      characters, assignments, directory, membership, clock,
+      characters, assignments, membership, clock,
     );
   });
 

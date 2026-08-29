@@ -13,4 +13,11 @@ export interface CharacterDirectoryUser {
 export interface CharacterDirectoryPort {
   findById(id: string): Promise<CharacterDirectoryUser | null>;
   findByDisplayName(displayName: string): Promise<CharacterDirectoryUser | null>;
+
+  /**
+   * La liste des personnages d'une campagne affiche le joueur de chaque fiche
+   * assignee : une lecture par fiche serait un N+1 des la deuxieme. L'ordre
+   * n'est pas garanti et un identifiant inconnu est absent du resultat.
+   */
+  findManyByIds(ids: string[]): Promise<CharacterDirectoryUser[]>;
 }

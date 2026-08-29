@@ -7,12 +7,15 @@ import { UserId } from '@kernel/domain/user-id';
 import {
   CHARACTER_DIRECTORY,
   type CharacterDirectoryPort,
+  type CharacterDirectoryUser,
 } from '../ports/character-directory.port';
 import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
+import { indexCharacterDirectoryUsers } from '../directory-index';
 import { toCharacterListItem } from '../character-list.mapper';
+import type { Character } from '../../domain/character';
 import { CharacterNotFoundError } from '../../domain/character.errors';
 import { OwningCampaignId } from '../../domain/owning-campaign-id';
 
@@ -35,6 +38,11 @@ export class ListCampaignCharactersUseCase {
     private readonly membership: GetCampaignMembershipUseCase,
   ) {}
 
+  /**
+   * Quatre lectures quel que soit le nombre de fiches : l'adhesion, les
+   * personnages, puis les joueurs assignes en un seul lot. La resolution ligne
+   * par ligne coutait une lecture d'annuaire par fiche assignee.
+   */
   async execute(dto: ListCampaignCharactersDto): Promise<CampaignCharacterListItem[]> {
     const role = await this.membership.execute({
       campaignId: dto.campaignId,
@@ -42,15 +50,31 @@ export class ListCampaignCharactersUseCase {
     });
     if (!role.isActiveMember) throw new CharacterNotFoundError();
 
-    const viewerId = UserId.create(dto.actorId);
     const characters = await this.characterRepo.findByCampaignId(
       OwningCampaignId.create(dto.campaignId),
     );
+    const players = await indexCharacterDirectoryUsers(
+      this.directory,
+      assignedPlayerIds(characters),
+    );
+    const viewer = { id: UserId.create(dto.actorId), isGameMaster: role.isGameMaster };
 
-    return Promise.all(
-      characters.map((character) =>
-        toCharacterListItem(this.directory, character, viewerId, role.isGameMaster),
-      ),
+    return characters.map((character) =>
+      toCharacterListItem(character, viewer, playerOf(players, character)),
     );
   }
+}
+
+function assignedPlayerIds(characters: readonly Character[]): string[] {
+  return characters.flatMap((character) =>
+    character.assignedTo ? [character.assignedTo.value] : [],
+  );
+}
+
+function playerOf(
+  players: Map<string, CharacterDirectoryUser>,
+  character: Character,
+): CharacterDirectoryUser | null {
+  const assignedTo = character.assignedTo;
+  return assignedTo ? players.get(assignedTo.value) ?? null : null;
 }

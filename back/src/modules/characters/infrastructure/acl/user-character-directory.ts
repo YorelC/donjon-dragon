@@ -18,4 +18,8 @@ export class UserCharacterDirectory implements CharacterDirectoryPort {
   async findByDisplayName(displayName: string): Promise<CharacterDirectoryUser | null> {
     return this.getUserProfile.identityByDisplayName(displayName);
   }
+
+  async findManyByIds(ids: string[]): Promise<CharacterDirectoryUser[]> {
+    return this.getUserProfile.identitiesByIds(ids);
+  }
 }

@@ -9,16 +9,16 @@ import type { Character } from '../domain/character';
 import { BACKGROUNDS } from '../domain/reference/backgrounds';
 import { CLASSES } from '../domain/reference/classes';
 import { SPECIES } from '../domain/reference/species';
-import type {
-  CharacterDirectoryPort,
-  CharacterDirectoryUser,
-} from './ports/character-directory.port';
+import type { CharacterDirectoryUser } from './ports/character-directory.port';
 
 /**
  * Agrégat → contrat HTTP. `createdByMe` remplace tout id de créateur : le
- * client sait seulement s'il a lui-même créé cette fiche. `assignedPlayer`
- * arrive déjà résolu : le use-case fait une lecture d'annuaire pour toute la
- * liste, le mapper ne fait qu'y piocher — même découpage que campaigns.
+ * client sait seulement s'il a lui-même créé cette fiche.
+ *
+ * `assignedPlayer` arrive déjà résolu, et c'est la seule forme admise : un
+ * mapper qui prendrait le port pourrait être appelé dans une boucle sans que
+ * rien ne le signale. C'est exactement ce qui s'est produit ici, sous un
+ * commentaire qui décrivait le bon découpage sans que le code l'applique.
  *
  * Les noms d'espèce, de classe et d'historique sont résolus ici et non côté
  * front : les données de référence vivent au back, le client affiche.
@@ -63,16 +63,4 @@ function rollOf(character: Character): AbilityRollDto | null {
   if (!roll) return null;
 
   return { dice: roll.snapshot().dice, totals: roll.totals };
-}
-
-/** Résout `assignedTo` dans l'annuaire avant de mapper — un seul appelant. */
-export async function toCharacterDtoResolved(
-  directory: CharacterDirectoryPort,
-  character: Character,
-  viewerId: UserId,
-): Promise<CharacterDto> {
-  const assignedTo = character.assignedTo;
-  const assignedPlayer = assignedTo ? await directory.findById(assignedTo.value) : null;
-
-  return toCharacterDto(character, viewerId, assignedPlayer);
 }

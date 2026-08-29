@@ -11,6 +11,7 @@ import { UserId } from '@kernel/domain/user-id';
 import {
   CHARACTER_DIRECTORY,
   type CharacterDirectoryPort,
+  type CharacterDirectoryUser,
 } from '../ports/character-directory.port';
 import {
   CHARACTER_REPOSITORY,
@@ -18,7 +19,7 @@ import {
 } from '../ports/character.repository.port';
 import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
 import { assertEquipmentIsKnown } from '../item.lookup';
-import { toCharacterDtoResolved } from '../character.mapper';
+import { toCharacterDto } from '../character.mapper';
 import { toBuildInput } from '../character-build.mapper';
 import { AbilityRoll } from '../../domain/ability-roll';
 import { Character, type CharacterCreationInput } from '../../domain/character';
@@ -71,7 +72,13 @@ export class CreateCharacterUseCase {
     if (!role.isGameMaster) character.selfAssignToCreator(now);
 
     await this.characterRepo.save(character);
-    return toCharacterDtoResolved(this.directory, character, actorId);
+    return toCharacterDto(character, actorId, await this.assignedPlayer(character));
+  }
+
+  /** La lecture d'annuaire appartient au use-case : le mapper ne fait plus d'I/O. */
+  private async assignedPlayer(character: Character): Promise<CharacterDirectoryUser | null> {
+    const assignedTo = character.assignedTo;
+    return assignedTo ? this.directory.findById(assignedTo.value) : null;
   }
 
   private creationInputFor(

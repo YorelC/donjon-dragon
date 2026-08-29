@@ -6,20 +6,25 @@ import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
 import { hashCharacterUnassignment } from '../character-assignment-intent';
-import { toAssignmentResult } from '../character-assignment.mapper';
+import { toAssignmentResult, type AssignedPlayers } from '../character-assignment.mapper';
 import { loadCampaignCharacter } from '../character.lookup';
 import {
   CHARACTER_ASSIGNMENT_REPOSITORY,
   type CharacterAssignmentRepositoryPort,
   type CharacterAssignmentReceipt,
 } from '../ports/character-assignment.repository.port';
-import { CHARACTER_DIRECTORY, type CharacterDirectoryPort } from '../ports/character-directory.port';
 import { CHARACTER_REPOSITORY, type CharacterRepositoryPort } from '../ports/character.repository.port';
 import {
   CharacterAssignmentCommandConflictError,
   CharacterNotFoundError,
   OnlyGameMasterCanAssignError,
 } from '../../domain/character.errors';
+
+/**
+ * Desassigner vide `assignedTo` : il n'y a plus personne a nommer dans le
+ * resultat, donc aucune lecture d'annuaire a faire.
+ */
+const NO_PLAYER_TO_RESOLVE: AssignedPlayers = new Map();
 
 export interface UnassignCharacterDto {
   characterId: string;
@@ -35,7 +40,6 @@ export class UnassignCharacterUseCase {
     @Inject(CHARACTER_REPOSITORY) private readonly characters: CharacterRepositoryPort,
     @Inject(CHARACTER_ASSIGNMENT_REPOSITORY)
     private readonly assignments: CharacterAssignmentRepositoryPort,
-    @Inject(CHARACTER_DIRECTORY) private readonly directory: CharacterDirectoryPort,
     private readonly membership: GetCampaignMembershipUseCase,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
@@ -70,7 +74,7 @@ export class UnassignCharacterUseCase {
     character: import('../../domain/character').Character,
     occurredAt: Date,
   ): Promise<CharacterAssignmentCommandResult> {
-    const result = await toAssignmentResult(this.directory, character, null);
+    const result = toAssignmentResult(NO_PLAYER_TO_RESOLVE, character, null);
     const receipt = await this.assignments.execute({
       campaignId: dto.campaignId, principalId, idempotencyKey: dto.idempotencyKey,
       intentHash, occurredAt, effectiveRole: 'gameMaster', character,

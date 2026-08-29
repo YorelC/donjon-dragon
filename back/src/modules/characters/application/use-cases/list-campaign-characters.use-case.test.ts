@@ -28,6 +28,7 @@ describe('ListCampaignCharactersUseCase', () => {
 
   let useCase: ListCampaignCharactersUseCase;
   let create: CreateCharacterUseCase;
+  let directory: InMemoryCharacterDirectory;
   let campaignId: string;
 
   beforeEach(async () => {
@@ -36,8 +37,9 @@ describe('ListCampaignCharactersUseCase', () => {
     await campaignRepo.save(campaign);
     campaignId = campaign.id.value;
 
-    const directory = new InMemoryCharacterDirectory();
+    directory = new InMemoryCharacterDirectory();
     directory.register({ id: frodoId, displayName: 'Frodo' });
+    directory.register({ id: gameMasterId, displayName: 'Gandalf' });
 
     const membership = new GetCampaignMembershipUseCase(campaignRepo);
     const characterRepo = new InMemoryCharacterRepository();
@@ -82,6 +84,21 @@ describe('ListCampaignCharactersUseCase', () => {
       projection: 'gameMaster',
       assignedTo: { displayName: 'Frodo' },
     });
+  });
+
+  // Le N+1 corrigé : la lecture d'annuaire ne suit plus le nombre de fiches.
+  it('résout les joueurs assignés en une seule lecture d annuaire', async () => {
+    await create.execute({
+      ...aCharacterBody('Bilbon'), campaignId, actorId: anActor(gameMasterId),
+    });
+    directory.resetLookupCount();
+
+    const characters = await useCase.execute({
+      campaignId, actorId: anActor(gameMasterId),
+    });
+
+    expect(characters).toHaveLength(2);
+    expect(directory.batchLookupCount).toBe(1);
   });
 
   // Le cas qui motive le contrôle : un id de campagne se devine, une session non.

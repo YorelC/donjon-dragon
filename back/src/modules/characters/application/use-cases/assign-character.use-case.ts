@@ -6,7 +6,8 @@ import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
 import { hashCharacterAssignment } from '../character-assignment-intent';
-import { toAssignmentResult } from '../character-assignment.mapper';
+import { toAssignmentResult, type AssignedPlayers } from '../character-assignment.mapper';
+import { indexCharacterDirectoryUsers } from '../directory-index';
 import { loadCampaignCharacter } from '../character.lookup';
 import {
   CHARACTER_ASSIGNMENT_REPOSITORY,
@@ -79,7 +80,17 @@ export class AssignCharacterUseCase {
     const occurredAt = this.clock.now();
     if (previous) previous.unassignForCampaignTransition(occurredAt);
     character.assignTo(true, playerId, occurredAt);
-    return this.command(context, character, previous, occurredAt);
+    const players = await this.playersOf(character, previous);
+    return command({ context, occurredAt, players }, character, previous);
+  }
+
+  /** Les deux fiches concernees en une seule lecture, pour un mapper sans I/O. */
+  private playersOf(
+    character: Character,
+    previous: Character | null,
+  ): Promise<AssignedPlayers> {
+    const characters = previous ? [character, previous] : [character];
+    return indexCharacterDirectoryUsers(this.directory, assignedIds(characters));
   }
 
   private async assertActorIsGameMaster(context: AssignmentContext): Promise<void> {
@@ -121,25 +132,37 @@ export class AssignCharacterUseCase {
     return previous?.id.equals(incoming.id) ? null : previous;
   }
 
-  private async command(
-    context: AssignmentContext,
-    character: Character,
-    previousCharacter: Character | null,
-    occurredAt: Date,
-  ): Promise<CharacterAssignmentCommand> {
-    return {
-      campaignId: context.dto.campaignId,
-      principalId: context.principalId,
-      idempotencyKey: context.dto.idempotencyKey,
-      intentHash: context.intentHash,
-      occurredAt,
-      effectiveRole: 'gameMaster',
-      character,
-      previousCharacter,
-      facts: assignmentFacts(previousCharacter),
-      result: await toAssignmentResult(this.directory, character, previousCharacter),
-    };
-  }
+}
+
+interface CommandContext {
+  context: AssignmentContext;
+  occurredAt: Date;
+  players: AssignedPlayers;
+}
+
+function command(
+  { context, occurredAt, players }: CommandContext,
+  character: Character,
+  previousCharacter: Character | null,
+): CharacterAssignmentCommand {
+  return {
+    campaignId: context.dto.campaignId,
+    principalId: context.principalId,
+    idempotencyKey: context.dto.idempotencyKey,
+    intentHash: context.intentHash,
+    occurredAt,
+    effectiveRole: 'gameMaster',
+    character,
+    previousCharacter,
+    facts: assignmentFacts(previousCharacter),
+    result: toAssignmentResult(players, character, previousCharacter),
+  };
+}
+
+function assignedIds(characters: readonly Character[]): string[] {
+  return characters.flatMap((character) =>
+    character.assignedTo ? [character.assignedTo.value] : [],
+  );
 }
 
 function assignmentFacts(previous: Character | null): CharacterAssignmentFact[] {
