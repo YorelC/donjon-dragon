@@ -13,6 +13,10 @@ Audit statique en lecture seule. Le code n'a pas été modifié pendant l'analys
 les corrections appliquées ensuite sont récapitulées en fin de document, section
 « État des corrections au 29 août 2026 ».
 
+**Commit audité : `ab25c1c`.** Toutes les références `fichier:ligne` de ce
+document désignent cet état. Les fichiers cités ayant été corrigés depuis, les
+preuves ne se relisent que là — `git show ab25c1c:<chemin>`.
+
 ## Recoupement de l'audit du 28 août
 
 Tous les constats ont été repointés dans le code. **Les preuves citées visent les
@@ -99,18 +103,72 @@ manifeste pas seulement par « l'interface ne se met pas à jour ».
 `CLAUDE.md` rappelle que `docs/` décrit la cible normative et que le code décrit
 seulement l'état actuel. Ici les deux divergent, et c'est le code qui a tort.
 
-**Corrigé le 29/08 — résolveur back seul.** Le relais résout désormais les quatre
-politiques par une table fermée : les deux audiences portées par l'enveloppe se
-lisent, les deux audiences de campagne se relisent au moment d'émettre, via un
-port implémenté par le seul fichier de `realtime` qui connaît `campaigns`. Un
-membre exclu disparaît donc de la diffusion suivante, conformément au principe 4.
+**Partiellement corrigé le 29/08.**
 
-Le vocabulaire navigateur fermé (`:104-113`) n'a **pas** été touché : l'élargir
-reste une décision. Conséquence directe et voulue : `character.assigned` et
-`character.unassigned` n'y ont aucune ressource, ils passent donc de `pending`
-silencieux à **`quarantined` avec une trace d'erreur**. La fonctionnalité reste
-absente ; son absence est désormais bruyante. Elle le restera tant que la
-question du vocabulaire ne sera pas tranchée.
+Ce qui est fait : le relais résout les quatre politiques par une table fermée.
+Les deux audiences portées par l'enveloppe se lisent, les deux audiences de
+campagne se **relisent au moment d'émettre**, via un port implémenté par le seul
+fichier de `realtime` qui connaît `campaigns`. Un membre exclu disparaît donc de
+la diffusion suivante, conformément au principe 4.
+
+**Régression introduite puis corrigée, à consigner.** En cessant de filtrer sur
+`audiencePolicy`, le relais s'est mis à réclamer *tous* les messages `realtime`
+alors que sa table de projection n'en connaissait que six. **Dix faits réellement
+produits devenaient terminaux** : `campaign.created`, les cinq faits d'adhésion,
+`campaign.ownership-transferred`, `campaign.invitation.accepted` et
+`.refused`, et les deux faits d'attribution de personnage. Avant, ils restaient
+`pending`, donc livrables après coup ; la quarantaine, elle, ne se rejoue pas.
+
+L'analyse initiale ne citait que les deux faits `character.*` et invoquait un
+élargissement du vocabulaire navigateur. **Cet argument était faux** : la
+ressource `campaigns` existe déjà (`shared/src/realtime-schema.ts`), et le client
+y invalide tout le préfixe `["campaigns"]` — détails et personnages compris
+(`front/src/shared/realtime/use-realtime-invalidation.ts`). Aucun élargissement
+n'était nécessaire.
+
+Le vocabulaire des faits est désormais **fermé dans le kernel**, aux côtés des
+politiques d'audience, et la table du relais est **totale** sur lui : ajouter un
+fait sans projection ne compile plus. Une matrice de test couvre les seize faits
+un par un.
+
+**Deuxième correction, sur la frontière cette fois.** La table totale reposait
+d'abord sur un vocabulaire des faits centralisé dans `kernel/infrastructure`.
+L'exhaustivité était acquise, la frontière ne l'était pas : `kernel/` est le
+socle partagé, sans connaissance métier, et une promotion `modules/* → kernel/`
+est une décision explicite dans un commit dédié — jamais l'effet de bord d'un
+correctif. La promotion a été **annulée**.
+
+Chaque module possède désormais son vocabulaire de faits **et** sa table de
+projection (`application/realtime-projection.ts`), et le relais sélectionne la
+table par `ownerModule` avant d'y chercher le fait. Cela referme l'écart
+`ownerModule` du flux 5D (`:39-48`) : le diffuseur route, le module propriétaire
+dit ce que son fait change à l'écran. Chaque table reste totale sur son propre
+vocabulaire.
+
+Corrigé au passage, et sans rapport avec le typage : les deux tables sont
+interrogées par propriété **propre**. Un document portant `constructor`,
+`__proto__` ou `toString` récupérait sinon une propriété héritée — ni ressource
+ni `null` — la validation levait, le message restait `processing`, et
+l'expiration du bail le remettait en jeu. Une boucle au lieu d'une quarantaine.
+
+**Ce qui reste ouvert, et pourquoi le constat demeure partiel :**
+
+1. La projection reste une table de constantes exportée par chaque module, pas une
+   construction par le module propriétaire au moment d'émettre. La 5D (`:39-48`)
+   décrit un résolveur qui rend « les destinataires **et** la projection publique
+   autorisée » ; ici les destinataires sont résolus, la projection est déclarative.
+2. La granularité d'invalidation est grossière : tout fait de campagne invalide le
+   préfixe `["campaigns"]` entier. Suffisant aujourd'hui, puisque
+   `campaign-invitations` fait déjà la même chose côté client — mais c'est un choix
+   par défaut, pas une projection pensée par fait.
+3. Le vocabulaire navigateur (`:104-113`) n'a pas été touché. Une ressource dédiée
+   aux personnages affinerait l'invalidation ; elle n'est pas nécessaire pour
+   livrer, et l'élargir reste une décision.
+
+**Garantie exacte, à ne pas surestimer.** Ce qui ne compile plus, c'est un fait
+déclaré sans projection. Restent possibles : une projection *fausse*, un couple
+`ownerModule` / fait incohérent, et un fait présent en base mais absent du
+vocabulaire — ce dernier partant en quarantaine, ce qui est le comportement voulu.
 
 ### [Faible à Moyen, à mesurer] NEW-03 — Polling fixe sans backoff, et deux requêtes par message
 
@@ -700,13 +758,19 @@ Puis, dans cet ordre :
 | NEW-08 | Découplage `@Public()` / exemption CSRF | Portée réelle de la défense CSRF |
 | NEW-09 | Cardinalité maximale d'une campagne | Choix entre réécriture complète et différentielle |
 | NEW-13 | Promotion du prédicat `11000` vers `kernel/` | Protocole de déplacement, commit dédié |
+| COR-02 | Transaction Mongo ou procédure de renvoi du lien de vérification | Cohérence de la vérification d'email en cas de panne ; aujourd'hui un compte peut rester non vérifié sans recours |
+| NEW-14 | Ressource navigateur dédiée aux personnages, ou statu quo | Granularité de l'invalidation temps réel ; élargit le vocabulaire fermé de la 5D |
 
 ## État des corrections au 29 août 2026
 
-Douze lots ont été appliqués sur la branche `fix/audit-back-2026-08-29`, dans
-l'ordre de la priorisation ci-dessus, restreints à ce qui ne demande **aucune
-décision**. Chaque lot est un commit, et `pnpm --filter back typecheck`, `lint` et
-`test` passent après chacun.
+Branche `fix/audit-back-2026-08-29`, dans l'ordre de la priorisation ci-dessus,
+restreinte à ce qui ne demande **aucune décision**. `pnpm --filter back
+typecheck`, `lint` et `test` passent après chaque commit.
+
+Deux revues successives ont corrigé le travail : d'abord une régression de
+quarantaine sur NEW-14 et l'absence de tests de compte d'appels sur PERF-01 et
+PERF-02 ; ensuite une promotion de vocabulaire métier vers `kernel/` faite sans
+décision, et une lecture de table vulnérable aux propriétés héritées.
 
 | Constat | État | Ce qui a été fait |
 |---|---|---|
@@ -716,16 +780,17 @@ décision**. Chaque lot est un commit, et `pnpm --filter back typecheck`, `lint`
 | NEW-01, NEW-10 | **corrigé** | `findManyByIds` sur le port d'annuaire, index en mémoire, les trois mappers redeviennent purs et synchrones. La liste coûte 4 requêtes quels que soient `N` et `A`. Test de non-régression sur le compte d'appels. |
 | NEW-02 | **partiel** | `resolveAccessContext` passe de 4 à 2 requêtes via une lecture d'adhésions plurielle. `assign-character` **inchangé** : sa correction reste suspendue à l'arbitrage de frontière. |
 | NEW-05 | **corrigé** | `enableShutdownHooks()` dans `main.ts`, arrêt déplacé en `onModuleDestroy`, drapeau booléen remplacé par la promesse du poll en cours. |
-| NEW-14 | **corrigé (résolveur)** | Voir l'addendum du constat. Le vocabulaire navigateur reste une décision. |
+| NEW-14 | **partiel** | Résolveur d'audience en place, régression de quarantaine corrigée, sélection par `ownerModule` et projection rendue à chaque module (voir l'addendum du constat). Reste ouvert : une projection construite à l'émission plutôt que déclarative, et la granularité d'invalidation. |
 | MAINT-01 | **corrigé** | Les onze `@Param` passent par `ZodParam`. Un identifiant malformé rend 400. Aucun test back ne le couvre : le back n'a pas de test de niveau HTTP. |
-| COR-02 | **corrigé** | `delete` devient `consume`, qui rend `true` au seul appelant ayant supprimé le document. Consommation **avant** vérification. |
+| COR-02 | **partiel** | La course est réglée : `consume` ne rend `true` qu'au seul appelant ayant supprimé le document. La **cohérence sur panne ne l'est pas** — si l'écriture utilisateur échoue ensuite, le lien est perdu, le compte reste non vérifié et aucune route de renvoi n'existe. Un `it.todo` nomme le comportement cible plutôt qu'un test vert qui figerait le défaut en contrat. |
 | COR-01 (`Friendship`) | **corrigé** | Révision attendue au `findOneAndUpdate`, conflit levé au lieu d'un retour silencieux. Tolérance aux documents antérieurs au champ. |
 | NEW-13 | **partiel** | Les deux `catch` qui traduisaient tout `11000` vérifient désormais le `keyPattern`. La promotion du prédicat vers `kernel/` reste une décision. |
 | NEW-11 | non traité | Refactor structurel, commit dédié. |
-| NEW-03, NEW-04, NEW-06, NEW-07, NEW-08, NEW-09 | non traités | Suspendus aux décisions listées ci-dessous. |
+| NEW-03, NEW-04, NEW-06, NEW-07, NEW-08, NEW-09 | non traités | Suspendus aux décisions listées plus haut. |
 | SEC-01, SEC-02 | non traités | Les deux blocages de sécurité de l'audit du 28/08 restent en tête. |
+| NEW-12 | sans objet | Ce n'était pas un correctif mais une contrainte de méthode, tenue sur les cinq découpages. |
 
-Deux points à ne pas confondre avec un résultat :
+Trois points à ne pas confondre avec un résultat :
 
 - L'atomicité de COR-02 et le contrôle de révision de COR-01 sont vérifiés par des
   tests sur des doubles en mémoire. Les 7 tests d'intégration Mongo restent
@@ -735,6 +800,9 @@ Deux points à ne pas confondre avec un résultat :
   `character-build-detail.test.ts`, une erreur **antérieure** à ces lots et
   étrangère à eux : aucun fichier de `front/` n'a été modifié, et les deux ajouts
   à `shared/` n'y touchent pas.
+- NEW-14 et COR-02 sont **partiels**, pas corrigés. Les fusionner sous
+  l'étiquette « corrigé » masquerait un écart de spécification pour l'un et un
+  mode de panne bloquant pour l'autre.
 
 ## Limites de ce complément
 
