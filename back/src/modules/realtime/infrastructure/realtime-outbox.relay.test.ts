@@ -9,6 +9,7 @@ import {
 } from '@kernel/infrastructure/outbox-message.contract';
 import { createOutboxMessage } from '@kernel/infrastructure/outbox-message.factory';
 import type { OutboxMessageDocument } from '@kernel/infrastructure/outbox-message.schema';
+import type { CampaignAudiencePort } from '../application/ports/campaign-audience.port';
 import type { RealtimeNotifierPort } from '../application/ports/realtime-notifier.port';
 import { RealtimeOutboxRelay } from './realtime-outbox.relay';
 
@@ -47,20 +48,76 @@ describe('RealtimeOutboxRelay', () => {
     );
   });
 
-  it('ne revendique que le canal temps réel et les audiences résolvables', async () => {
+  // Le canal `email` porte les demandes d'invitation par courriel : elles ne
+  // sont pas du ressort du relais temps reel.
+  it('ne revendique que le canal temps réel', async () => {
     const { relay, findOneAndUpdate } = emptyOutbox();
 
     await relay.drainOnce();
 
     expect(findOneAndUpdate.mock.calls[0]?.[0]).toMatchObject({
       deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
-      audiencePolicy: {
-        $in: [
-          OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
-          OUTBOX_AUDIENCE_POLICY.targetUser,
-        ],
-      },
     });
+    expect(findOneAndUpdate.mock.calls[0]?.[0]).not.toHaveProperty('audiencePolicy');
+  });
+
+  // La 5D exige que toute audience dependant d'une adhesion soit recalculee
+  // depuis les donnees autoritaires a chaque emission.
+  it('résout campaign-members depuis les adhésions actives de la campagne', async () => {
+    const notifier = aNotifier();
+    const audience = anAudience([ALICE_ID, BOB_ID]);
+    const relay = relayFor(
+      campaignFactMessage('campaign.invitation.created'),
+      notifier, vi.fn().mockResolvedValue({}), audience,
+    );
+
+    await relay.drainOnce();
+
+    expect(audience.activeMemberIds).toHaveBeenCalledWith(CAMPAIGN_ID);
+    expect(notifier.notifyUsers).toHaveBeenCalledWith(
+      [ALICE_ID, BOB_ID],
+      expect.objectContaining({ resource: 'campaign-invitations' }),
+    );
+  });
+
+  // Une exclusion retire le destinataire des la diffusion suivante, meme si sa
+  // socket est encore ouverte : c'est tout l'interet de relire a l'emission.
+  it('exclut un membre qui n est plus actif au moment de l émission', async () => {
+    const notifier = aNotifier();
+    const relay = relayFor(
+      campaignFactMessage('campaign.invitation.created'),
+      notifier, vi.fn().mockResolvedValue({}), anAudience([ALICE_ID]),
+    );
+
+    await relay.drainOnce();
+
+    expect(notifier.notifyUsers).toHaveBeenCalledWith([ALICE_ID], expect.anything());
+  });
+
+  // NEW-14 : l'attribution d'un personnage ecrit bien en campaign-members, mais
+  // aucune ressource navigateur ne lui correspond. L'ecart devient bruyant.
+  it('met en quarantaine une attribution de personnage, faute de ressource', async () => {
+    const updateOne = vi.fn().mockResolvedValue({});
+    const notifier = aNotifier();
+    const relay = relayFor(
+      campaignFactMessage('character.assigned'), notifier, updateOne,
+    );
+
+    await relay.drainOnce();
+
+    expect(notifier.notifyUsers).not.toHaveBeenCalled();
+    expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.quarantined);
+  });
+
+  it('met en quarantaine un fait de campagne sans campaignId', async () => {
+    const updateOne = vi.fn().mockResolvedValue({});
+    const message = { ...campaignFactMessage('campaign.invitation.created') };
+    delete message.campaignId;
+    const relay = relayFor(message, aNotifier(), updateOne);
+
+    await relay.drainOnce();
+
+    expect(statusWrittenBy(updateOne)).toBe(OUTBOX_STATUS.quarantined);
   });
 
   // Une faute de frappe dans un type de fait ne doit jamais produire une diffusion
@@ -122,7 +179,7 @@ function pausedOutbox() {
   } as unknown as Model<OutboxMessageDocument>;
 
   return {
-    relay: new RealtimeOutboxRelay(model, fixedClock(), aNotifier()),
+    relay: new RealtimeOutboxRelay(model, fixedClock(), aNotifier(), anAudience()),
     releaseClaim: () => release(),
     drained: () => finished,
   };
@@ -157,6 +214,22 @@ function invitationMessage(): OutboxMessageDocument {
   });
 }
 
+/** Un fait de campagne : ses destinataires ne sont PAS dans l'enveloppe. */
+function campaignFactMessage(factType: string): OutboxMessageDocument {
+  return createOutboxMessage({
+    ownerModule: 'characters',
+    campaignId: CAMPAIGN_ID,
+    causationId: 'command-3',
+    aggregateId: 'character-1',
+    aggregateRevision: 1,
+    factType,
+    fact: {},
+    audience: { policy: OUTBOX_AUDIENCE_POLICY.campaignMembers },
+    deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
+    occurredAt: NOW,
+  });
+}
+
 function userMessage(
   factType: string,
   audience: Extract<OutboxAudience, { userIds: readonly string[] }>,
@@ -178,15 +251,28 @@ function aNotifier(): RealtimeNotifierPort {
   return { notifyUsers: vi.fn() };
 }
 
+/** Les adhesions relues a l'emission : le test choisit ce que la campagne rend. */
+function anAudience(
+  memberIds: readonly string[] = [ALICE_ID, BOB_ID],
+  gameMasterIds: readonly string[] = [ALICE_ID],
+): CampaignAudiencePort {
+  return {
+    activeMemberIds: vi.fn().mockResolvedValue(memberIds),
+    activeGameMasterIds: vi.fn().mockResolvedValue(gameMasterIds),
+  };
+}
+
 function relayFor(
   message: OutboxMessageDocument,
   notifier: RealtimeNotifierPort,
   updateOne: ReturnType<typeof vi.fn> = vi.fn().mockResolvedValue({}),
+  audience: CampaignAudiencePort = anAudience(),
 ): RealtimeOutboxRelay {
   return new RealtimeOutboxRelay(
     outboxModel(message, updateOne),
     fixedClock(),
     notifier,
+    audience,
   );
 }
 
@@ -200,7 +286,7 @@ function emptyOutbox() {
   } as unknown as Model<OutboxMessageDocument>;
 
   return {
-    relay: new RealtimeOutboxRelay(model, fixedClock(), aNotifier()),
+    relay: new RealtimeOutboxRelay(model, fixedClock(), aNotifier(), anAudience()),
     findOneAndUpdate,
   };
 }

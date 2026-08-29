@@ -24,6 +24,10 @@ import {
   type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
 import {
+  CAMPAIGN_AUDIENCE,
+  type CampaignAudiencePort,
+} from '../application/ports/campaign-audience.port';
+import {
   REALTIME_NOTIFIER,
   type RealtimeNotifierPort,
 } from '../application/ports/realtime-notifier.port';
@@ -32,18 +36,6 @@ const POLL_INTERVAL_MS = 500;
 const LEASE_DURATION_MS = 30_000;
 const MAX_MESSAGES_PER_POLL = 20;
 
-/**
- * Les audiences dont les destinataires sont écrits dans le message.
- *
- * `campaign-members` et `campaign-game-masters` en sont volontairement absentes :
- * les résoudre demande une lecture d'adhésion que la 5D n'a pas spécifiée. Leurs
- * messages restent donc `pending` — non livrés, mais pas perdus, et ils repartiront
- * le jour où un résolveur d'audience de campagne existera.
- */
-const RESOLVABLE_AUDIENCES = [
-  OUTBOX_AUDIENCE_POLICY.friendshipParticipants,
-  OUTBOX_AUDIENCE_POLICY.targetUser,
-];
 
 /**
  * Ce que le client doit réinvalider pour chaque fait. Table fermée : un fait absent
@@ -60,14 +52,14 @@ const RESOURCE_BY_FACT: Record<string, RealtimeResource> = {
 };
 
 /**
- * Le routage n'a besoin que de l'identité du message, du fait et des destinataires.
- * La cardinalité de l'audience est déjà tenue à l'écriture par la fabrique du
- * kernel : le relais ne rejoue pas une règle qui n'est pas la sienne.
+ * Le routage n'a besoin que de l'identité du message et du fait. Les
+ * destinataires n'en font PAS partie : une audience de campagne les laisse vides
+ * dans l'enveloppe et les fait relire à l'émission. C'est le résolveur, pas le
+ * schéma, qui garantit qu'on ne diffuse jamais vers personne.
  */
 const DeliverableMessageSchema = z.object({
   _id: z.string().uuid(),
   factType: z.string().min(1),
-  audienceUserIds: z.array(z.string().uuid()).min(1),
 });
 
 @Injectable()
@@ -87,6 +79,7 @@ export class RealtimeOutboxRelay
     private readonly outbox: Model<OutboxMessageDocument>,
     @Inject(CLOCK) private readonly clock: Clock,
     @Inject(REALTIME_NOTIFIER) private readonly notifier: RealtimeNotifierPort,
+    @Inject(CAMPAIGN_AUDIENCE) private readonly campaigns: CampaignAudiencePort,
   ) {}
 
   onApplicationBootstrap(): void {
@@ -162,11 +155,50 @@ export class RealtimeOutboxRelay
       return this.quarantine(message._id, `fait inconnu ${parsed.data.factType}`);
     }
 
+    const recipients = await this.recipientsOf(message);
+    if (recipients.length === 0) {
+      return this.quarantine(message._id, 'audience vide ou non résolvable');
+    }
+
     this.notifier.notifyUsers(
-      parsed.data.audienceUserIds,
+      recipients,
       RealtimeResourceChangedSchema.parse({ messageId: parsed.data._id, resource }),
     );
     await this.updateStatus(message._id, OUTBOX_STATUS.delivered);
+  }
+
+  /**
+   * Une audience portée par l'enveloppe se lit ; une audience de campagne se
+   * RELIT depuis la campagne, à l'instant de l'émission. C'est ce qui retire un
+   * membre exclu de la diffusion suivante, même si sa socket est encore ouverte.
+   *
+   * Table fermée : une politique absente ne diffuse rien.
+   */
+  private recipientsOf(message: OutboxMessageDocument): Promise<readonly string[]> {
+    const resolve = this.audienceResolvers()[message.audiencePolicy];
+    return resolve ? resolve(message) : Promise.resolve([]);
+  }
+
+  private audienceResolvers(): Record<
+    string,
+    (message: OutboxMessageDocument) => Promise<readonly string[]>
+  > {
+    return {
+      [OUTBOX_AUDIENCE_POLICY.targetUser]: carriedByEnvelope,
+      [OUTBOX_AUDIENCE_POLICY.friendshipParticipants]: carriedByEnvelope,
+      [OUTBOX_AUDIENCE_POLICY.campaignMembers]: (message) =>
+        this.readCampaign(message, (id) => this.campaigns.activeMemberIds(id)),
+      [OUTBOX_AUDIENCE_POLICY.campaignGameMasters]: (message) =>
+        this.readCampaign(message, (id) => this.campaigns.activeGameMasterIds(id)),
+    };
+  }
+
+  /** Une politique de campagne sans `campaignId` est une enveloppe incohérente. */
+  private async readCampaign(
+    message: OutboxMessageDocument,
+    read: (campaignId: string) => Promise<readonly string[]>,
+  ): Promise<readonly string[]> {
+    return message.campaignId ? read(message.campaignId) : [];
   }
 
   private async quarantine(messageId: string, reason: string): Promise<void> {
@@ -185,13 +217,23 @@ export class RealtimeOutboxRelay
   }
 }
 
+/**
+ * Toutes les politiques d'audience sont désormais résolvables : le filtre ne
+ * trie plus que sur le canal. Le canal `email` reste hors du relais temps réel.
+ */
 function claimableFilter(now: Date) {
   return {
     deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
-    audiencePolicy: { $in: RESOLVABLE_AUDIENCES },
     $or: [
       { status: OUTBOX_STATUS.pending, availableAt: { $lte: now } },
       { status: OUTBOX_STATUS.processing, leaseUntil: { $lte: now } },
     ],
   };
+}
+
+/** Les deux audiences dont les destinataires sont immuables et écrits au commit. */
+function carriedByEnvelope(
+  message: OutboxMessageDocument,
+): Promise<readonly string[]> {
+  return Promise.resolve(message.audienceUserIds);
 }
