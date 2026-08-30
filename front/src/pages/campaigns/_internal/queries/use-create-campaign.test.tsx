@@ -14,6 +14,7 @@ vi.mock("@/shared/api/api", () => ({
 
 import { toast } from "sonner";
 import { api } from "@/shared/api/api";
+import { IDEMPOTENCY_KEY_HEADER } from "@donjon-dragon/shared";
 import { useCreateCampaign } from "./use-create-campaign";
 import { MY_CAMPAIGNS_KEY } from "./use-my-campaigns";
 
@@ -52,9 +53,11 @@ describe("useCreateCampaign", () => {
     result.current.mutate(CREATED.name);
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(api.post).toHaveBeenCalledWith("/api/campaigns", {
-      name: CREATED.name,
-    });
+    expect(api.post).toHaveBeenCalledWith(
+      "/api/campaigns",
+      { name: CREATED.name },
+      { [IDEMPOTENCY_KEY_HEADER]: expect.any(String) },
+    );
   });
 
   it("ajoute la campagne créée au cache de la liste, sans refetch", async () => {

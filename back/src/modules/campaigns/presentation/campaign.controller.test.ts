@@ -281,6 +281,7 @@ describe('CampaignController — protection des routes', () => {
 
 describe('CampaignController — Idempotency-Key', () => {
   const MUTATIONS = [
+    ['createCampaign', 2],
     ['inviteToCampaign', 3],
     ['acceptCampaignInvitation', 2],
     ['refuseCampaignInvitation', 2],

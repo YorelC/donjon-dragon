@@ -6,6 +6,7 @@ import {
 import { toast } from "sonner";
 import type { CampaignSummary } from "@donjon-dragon/shared";
 import { api } from "@/shared/api/api";
+import { commandHeaders } from "@/shared/api/idempotency";
 import { API_ROUTES } from "@/shared/constants/api-routes";
 import { MY_CAMPAIGNS_KEY } from "./use-my-campaigns";
 
@@ -30,7 +31,11 @@ export function useCreateCampaign() {
 
   return useMutation({
     mutationFn: (name: string) =>
-      api.post<CampaignSummary>(API_ROUTES.campaigns.create, { name }),
+      api.post<CampaignSummary>(
+        API_ROUTES.campaigns.create,
+        { name },
+        commandHeaders(),
+      ),
     onSuccess: (campaign) => handleSuccess(queryClient, campaign),
     onError: handleError,
   });
