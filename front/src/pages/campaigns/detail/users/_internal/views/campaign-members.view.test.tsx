@@ -1,7 +1,10 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { CampaignDetail } from "@donjon-dragon/shared";
+import type {
+  CampaignCharacterListItem,
+  CampaignDetail,
+} from "@donjon-dragon/shared";
 import type { MemberManagement } from "../hooks/use-member-management";
 import type { MemberViewer } from "./member-row.view";
 import { CampaignMembersView } from "./campaign-members.view";
@@ -38,11 +41,13 @@ function renderMembers(
   campaign: CampaignDetail = aCampaign(),
   viewer: MemberViewer = { displayName: "Gandalf", canManage: true },
   actions: MemberManagement = management(),
+  characters: CampaignCharacterListItem[] = [],
 ) {
   return {
     ...render(
       <CampaignMembersView
         campaign={campaign}
+        characters={characters}
         viewer={viewer}
         management={actions}
       />,

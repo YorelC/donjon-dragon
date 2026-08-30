@@ -1,12 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useAuthStore } from "@/shared/stores/auth.store";
 import { useMemberManagement } from "../hooks/use-member-management";
+import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
 import { useCampaignDetail } from "@/shared/queries/use-campaign-detail";
 import { CampaignMembersView } from "../views/campaign-members.view";
 
 export function CampaignMembersContainer() {
   const { campaignId = "" } = useParams();
   const { data } = useCampaignDetail(campaignId);
+  const { data: characters } = useCampaignCharacters(campaignId);
   const displayName = useAuthStore((s) => s.user?.displayName ?? "");
   const management = useMemberManagement(campaignId);
 
@@ -16,6 +18,7 @@ export function CampaignMembersContainer() {
   return (
     <CampaignMembersView
       campaign={data}
+      characters={characters ?? []}
       viewer={{ displayName, canManage: data.myRole === "gameMaster" }}
       management={management}
     />

@@ -11,6 +11,8 @@ export interface MemberRow {
   displayName: string;
   isOwner: boolean;
   kind: MemberKind;
+  /** Le personnage mené à cette table, quand le lecteur a le droit de le savoir. */
+  meta?: string;
 }
 
 export interface MemberViewer {
@@ -44,11 +46,16 @@ function MemberIdentity({ member }: { member: MemberRow }) {
   return (
     <div className="flex min-w-0 items-center gap-[18px]">
       <MemberMedallion member={member} />
-      <div className="flex min-w-0 items-center gap-3">
-        <span className="truncate text-[15px] tracking-name text-foreground">
-          {member.displayName}
-        </span>
-        {member.isOwner ? <Badge variant="stamp">Propriétaire</Badge> : null}
+      <div className="flex min-w-0 flex-col gap-1">
+        <div className="flex min-w-0 items-center gap-3">
+          <span className="truncate text-[15px] tracking-name text-foreground">
+            {member.displayName}
+          </span>
+          {member.isOwner ? <Badge variant="stamp">Propriétaire</Badge> : null}
+        </div>
+        {member.meta ? (
+          <span className="meta-line truncate">{member.meta}</span>
+        ) : null}
       </div>
     </div>
   );

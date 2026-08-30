@@ -20,7 +20,11 @@ export function DeleteCharacterButton({ characterName, onDelete }: DeleteCharact
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" size="sm">
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-ink-meta hover:text-gold-value"
+        >
           Supprimer
         </Button>
       </AlertDialogTrigger>
@@ -33,7 +37,9 @@ export function DeleteCharacterButton({ characterName, onDelete }: DeleteCharact
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Annuler</AlertDialogCancel>
-          <AlertDialogAction onClick={onDelete}>Supprimer</AlertDialogAction>
+          <AlertDialogAction variant="destructive" onClick={onDelete}>
+            Supprimer
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

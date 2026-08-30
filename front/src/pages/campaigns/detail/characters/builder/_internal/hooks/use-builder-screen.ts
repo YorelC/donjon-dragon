@@ -1,5 +1,10 @@
 import { useMemo } from "react";
-import type { Character, ComputedCharacter, DndCatalog, Item } from "@donjon-dragon/shared";
+import type {
+  CampaignCharacterListItem,
+  ComputedCharacter,
+  DndCatalog,
+  Item,
+} from "@donjon-dragon/shared";
 import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
 import { useClassSpells, useDndCatalog } from "@/shared/queries/use-dnd-catalog";
 import { useItemCatalog } from "@/shared/queries/use-item-catalog";
@@ -55,7 +60,7 @@ const NEW_CHARACTER_TITLE = "Nouveau personnage";
 
 function characterNameOf(
   target: BuilderTarget,
-  character: Character | undefined,
+  character: CampaignCharacterListItem | undefined,
   builder: BuilderState,
 ): string {
   if (target.characterId) return character?.name ?? "";
@@ -66,7 +71,7 @@ function characterNameOf(
 interface BuilderContext {
   catalog: DndCatalog | undefined;
   items: Item[];
-  character: Character | undefined;
+  character: CampaignCharacterListItem | undefined;
   buildDetail: ReturnType<typeof useCharacterBuild>;
   builder: BuilderState;
   preview: ComputedCharacter | null;
@@ -111,7 +116,9 @@ function stepContext(
   return catalog ? { catalog, composition: builder.composition } : null;
 }
 
-function useExistingCharacter(target: BuilderTarget): Character | undefined {
+function useExistingCharacter(
+  target: BuilderTarget,
+): CampaignCharacterListItem | undefined {
   const { data: characters } = useCampaignCharacters(target.campaignId);
   if (!target.characterId) return undefined;
 

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
-import type { Character } from "@donjon-dragon/shared";
+import type { CampaignCharacterListItem } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { PageHeader } from "@/shared/components/molecules/page-header";
 import { ROUTES, toCharacterNew } from "@/shared/constants/routes";
-import { CharacterRowView, type CharacterRowViewer } from "./character-row.view";
+import type { CharacterViewer } from "../hooks/use-character-viewer";
+import { CharacterRowView } from "./character-row.view";
 import { OwnerRoleToggleView } from "./owner-role-toggle.view";
 
 export interface OwnerToggle {
@@ -15,8 +16,8 @@ export interface OwnerToggle {
 }
 
 interface CampaignCharactersViewProps {
-  characters: Character[];
-  viewer: CharacterRowViewer;
+  characters: CampaignCharacterListItem[];
+  viewer: CharacterViewer;
   campaign: { id: string; name: string };
   ownerToggle: OwnerToggle;
   onDelete: (characterId: string) => void;
@@ -48,7 +49,7 @@ export function CampaignCharactersView(props: CampaignCharactersViewProps) {
 interface CharacterActionsProps {
   campaignId: string;
   ownerToggle: OwnerToggle;
-  viewer: CharacterRowViewer;
+  viewer: CharacterViewer;
 }
 
 function CharacterActions({
@@ -77,7 +78,7 @@ function CharacterActions({
 }
 
 interface CharacterListProps {
-  characters: Character[];
+  characters: CampaignCharacterListItem[];
   rest: Omit<CampaignCharactersViewProps, "characters" | "ownerToggle">;
 }
 
@@ -87,17 +88,16 @@ function CharacterList({ characters, rest }: CharacterListProps) {
   }
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <ul className="flex flex-col gap-2.5">
       {characters.map((character) => (
         <CharacterRowView
           key={character.id}
           character={character}
-          viewer={rest.viewer}
           campaignId={rest.campaign.id}
           onDelete={rest.onDelete}
           onUnassign={rest.onUnassign}
         />
       ))}
-    </div>
+    </ul>
   );
 }
