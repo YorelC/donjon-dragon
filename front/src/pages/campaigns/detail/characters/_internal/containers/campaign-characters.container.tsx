@@ -19,7 +19,7 @@ export function CampaignCharactersContainer() {
     <CampaignCharactersView
       characters={characters}
       viewer={viewer}
-      campaignId={campaignId}
+      campaign={{ id: campaignId, name: campaign.name }}
       ownerToggle={ownerToggle}
       {...actions}
     />

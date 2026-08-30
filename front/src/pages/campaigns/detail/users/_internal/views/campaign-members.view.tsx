@@ -1,4 +1,5 @@
 import type { CampaignDetail, UserSummary } from "@donjon-dragon/shared";
+import { SectionHeading } from "@/shared/components/molecules/section-heading";
 import type { MemberManagement } from "../hooks/use-member-management";
 import {
   MemberRowView,
@@ -19,7 +20,7 @@ export function CampaignMembersView({
   management,
 }: CampaignMembersViewProps) {
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-[22px]">
       <MemberSection
         title="Maîtres du jeu"
         members={toRows(campaign.gameMasters, "gameMaster", campaign.owner)}
@@ -52,11 +53,20 @@ interface MemberSectionProps {
 
 function MemberSection({ title, members, crew }: MemberSectionProps) {
   return (
-    <section className="space-y-2">
-      <h2 className="section-title text-base">{title}</h2>
-      {members.length === 0 ? (
-        <p className="empty-state-text">Personne pour le moment.</p>
-      ) : null}
+    <section className="flex flex-col gap-3">
+      <SectionHeading label={title} />
+      <MemberList members={members} crew={crew} />
+    </section>
+  );
+}
+
+function MemberList({ members, crew }: Omit<MemberSectionProps, "title">) {
+  if (members.length === 0) {
+    return <p className="empty-state-text">Personne pour le moment.</p>;
+  }
+
+  return (
+    <ul className="flex flex-col gap-2.5">
       {members.map((member) => (
         <MemberRowView
           key={member.displayName}
@@ -65,7 +75,7 @@ function MemberSection({ title, members, crew }: MemberSectionProps) {
           management={crew.management}
         />
       ))}
-    </section>
+    </ul>
   );
 }
 

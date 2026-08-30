@@ -54,7 +54,7 @@ function renderMembers(
 function rowOf(displayName: string): HTMLElement {
   const label = screen.getByText(displayName);
 
-  return label.closest('[data-slot="card"]') as HTMLElement;
+  return label.closest("li") as HTMLElement;
 }
 
 // ── Tests ────────────────────────────────────────────────────────────────────
@@ -113,7 +113,9 @@ describe("CampaignMembersView — qui peut agir", () => {
     renderMembers();
 
     expect(
-      within(rowOf("Sam")).getByRole("button", { name: "Annuler l'invitation" }),
+      within(rowOf("Sam")).getByRole("button", {
+        name: "Annuler l'invitation de Sam",
+      }),
     ).toBeInTheDocument();
   });
 
@@ -174,7 +176,9 @@ describe("CampaignMembersView — actions", () => {
     const { actions } = renderMembers();
 
     await userEvent.click(
-      within(rowOf("Sam")).getByRole("button", { name: "Annuler l'invitation" }),
+      within(rowOf("Sam")).getByRole("button", {
+        name: "Annuler l'invitation de Sam",
+      }),
     );
 
     expect(actions.onCancelInvitation).toHaveBeenCalledWith("Sam");
@@ -188,7 +192,9 @@ describe("CampaignMembersView — actions", () => {
       within(rowOf("Frodon")).getByRole("button", { name: "Promouvoir" }),
     ).toBeDisabled();
     expect(
-      within(rowOf("Sam")).getByRole("button", { name: "Annuler l'invitation" }),
+      within(rowOf("Sam")).getByRole("button", {
+        name: "Annuler l'invitation de Sam",
+      }),
     ).toBeEnabled();
   });
 });

@@ -1,19 +1,35 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
 import type { CampaignDetail } from "@donjon-dragon/shared";
-import { buttonVariants } from "@/shared/components/atoms/button";
-import { ROUTES } from "@/shared/constants/routes";
+import {
+  SidebarLayoutView,
+  type SidebarFooter,
+  type SidebarNav,
+} from "@/shared/components/layout/sidebar-layout.view";
 import type { QueryState } from "@/shared/types/ui-state";
-import { cn } from "@/shared/utils/utils";
+import { toCampaignIdentity } from "../utils/campaign-identity";
 import type { CampaignDetailNavItem } from "../constants/campaign-detail-nav-items";
+
+export interface CampaignDetailNavigation {
+  items: CampaignDetailNavItem[];
+  isMenuOpen: boolean;
+  onToggleMenu: () => void;
+  onNavigate: () => void;
+}
 
 interface CampaignDetailLayoutViewProps {
   campaign: QueryState<CampaignDetail | null>;
-  items: CampaignDetailNavItem[];
+  nav: CampaignDetailNavigation;
 }
 
+const SIDEBAR_HEADING = "Campagne";
+const MENU_LABEL = "Menu de la campagne";
+
+/**
+ * Le cadre de la campagne ouverte. Le titre n'est pas ici : chaque écran porte
+ * son propre en-tête, parce qu'il y pose aussi son action.
+ */
 export function CampaignDetailLayoutView({
   campaign,
-  items,
+  nav,
 }: CampaignDetailLayoutViewProps) {
   if (campaign.loading)
     return <div className="empty-state-text">Chargement...</div>;
@@ -25,52 +41,26 @@ export function CampaignDetailLayoutView({
     );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 p-6">
-      <CampaignDetailHeader campaign={campaign.data} />
-      <div className="flex gap-6">
-        <CampaignDetailSidebar items={items} />
-        <main className="flex-1">
-          <Outlet />
-        </main>
-      </div>
-    </div>
+    <SidebarLayoutView
+      nav={toSidebarNav(nav)}
+      footer={toSidebarFooter(campaign.data)}
+    />
   );
 }
 
-function CampaignDetailHeader({ campaign }: { campaign: CampaignDetail }) {
-  return (
-    <header className="space-y-2">
-      <Link to={ROUTES.campaigns} className="muted-text-xs hover:underline">
-        ← Toutes mes campagnes
-      </Link>
-      <h1 className="section-title text-2xl">{campaign.name}</h1>
-    </header>
-  );
+function toSidebarNav(nav: CampaignDetailNavigation): SidebarNav {
+  return {
+    heading: SIDEBAR_HEADING,
+    menuLabel: MENU_LABEL,
+    items: nav.items,
+    isOpen: nav.isMenuOpen,
+    onToggle: nav.onToggleMenu,
+    onNavigate: nav.onNavigate,
+  };
 }
 
-function CampaignDetailSidebar({ items }: { items: CampaignDetailNavItem[] }) {
-  return (
-    <aside className="w-48 shrink-0 border-r border-sidebar-border pr-4">
-      <nav role="navigation" className="flex flex-col gap-1">
-        {items.map((item) => (
-          <CampaignDetailNavLink key={item.route} item={item} />
-        ))}
-      </nav>
-    </aside>
-  );
-}
+function toSidebarFooter(campaign: CampaignDetail): SidebarFooter {
+  const identity = toCampaignIdentity(campaign);
 
-function CampaignDetailNavLink({ item }: { item: CampaignDetailNavItem }) {
-  return (
-    <NavLink to={item.route} className={toNavLinkClassName}>
-      {item.label}
-    </NavLink>
-  );
-}
-
-function toNavLinkClassName({ isActive }: { isActive: boolean }): string {
-  return cn(
-    buttonVariants({ variant: isActive ? "secondary" : "ghost" }),
-    "w-full justify-start",
-  );
+  return { title: identity.roleLabel, subtitle: identity.membersLabel };
 }

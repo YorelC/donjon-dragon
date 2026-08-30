@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import type { Character } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
-import { toCharacterNew } from "@/shared/constants/routes";
+import { Diamond } from "@/shared/components/molecules/diamond";
+import { PageHeader } from "@/shared/components/molecules/page-header";
+import { ROUTES, toCharacterNew } from "@/shared/constants/routes";
 import { CharacterRowView, type CharacterRowViewer } from "./character-row.view";
 import { OwnerRoleToggleView } from "./owner-role-toggle.view";
 
@@ -15,47 +17,62 @@ export interface OwnerToggle {
 interface CampaignCharactersViewProps {
   characters: Character[];
   viewer: CharacterRowViewer;
-  campaignId: string;
+  campaign: { id: string; name: string };
   ownerToggle: OwnerToggle;
   onDelete: (characterId: string) => void;
   onUnassign: (characterId: string) => void;
 }
 
+const BACK_TO_CAMPAIGNS = {
+  to: ROUTES.campaigns,
+  label: "Toutes mes campagnes",
+};
+
 export function CampaignCharactersView(props: CampaignCharactersViewProps) {
   const { characters, ownerToggle } = props;
 
   return (
-    <div className="space-y-4">
-      <Header campaignId={props.campaignId} ownerToggle={ownerToggle} viewer={props.viewer} />
+    <div className="flex flex-col gap-6">
+      <PageHeader back={BACK_TO_CAMPAIGNS} title={props.campaign.name}>
+        <CharacterActions
+          campaignId={props.campaign.id}
+          ownerToggle={ownerToggle}
+          viewer={props.viewer}
+        />
+      </PageHeader>
       <CharacterList characters={characters} rest={props} />
     </div>
   );
 }
 
-interface HeaderProps {
+interface CharacterActionsProps {
   campaignId: string;
   ownerToggle: OwnerToggle;
   viewer: CharacterRowViewer;
 }
 
-function Header({ campaignId, ownerToggle, viewer }: HeaderProps) {
+function CharacterActions({
+  campaignId,
+  ownerToggle,
+  viewer,
+}: CharacterActionsProps) {
   return (
-    <div className="flex items-center justify-between gap-2">
-      <h2 className="section-title text-base">Personnages</h2>
-      <div className="flex gap-2">
-        {ownerToggle.isOwner ? (
-          <OwnerRoleToggleView
-            isGameMaster={viewer.isGameMaster}
-            onPromote={ownerToggle.onPromote}
-            onDemote={ownerToggle.onDemote}
-            isPending={ownerToggle.isPending}
-          />
-        ) : null}
-        <Button asChild size="sm">
-          <Link to={toCharacterNew(campaignId)}>Nouveau personnage</Link>
-        </Button>
-      </div>
-    </div>
+    <>
+      {ownerToggle.isOwner ? (
+        <OwnerRoleToggleView
+          isGameMaster={viewer.isGameMaster}
+          onPromote={ownerToggle.onPromote}
+          onDemote={ownerToggle.onDemote}
+          isPending={ownerToggle.isPending}
+        />
+      ) : null}
+      <Button asChild>
+        <Link to={toCharacterNew(campaignId)}>
+          <Diamond tone="filled" />
+          Créer
+        </Link>
+      </Button>
+    </>
   );
 }
 
@@ -70,13 +87,13 @@ function CharacterList({ characters, rest }: CharacterListProps) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="flex flex-col gap-2.5">
       {characters.map((character) => (
         <CharacterRowView
           key={character.id}
           character={character}
           viewer={rest.viewer}
-          campaignId={rest.campaignId}
+          campaignId={rest.campaign.id}
           onDelete={rest.onDelete}
           onUnassign={rest.onUnassign}
         />

@@ -9,6 +9,7 @@ import {
   DialogTrigger,
 } from "@/shared/components/atoms/dialog";
 import { Label } from "@/shared/components/atoms/label";
+import { Diamond } from "@/shared/components/molecules/diamond";
 import {
   Select,
   SelectContent,
@@ -28,7 +29,8 @@ export function InviteToCampaignView({ invite }: InviteToCampaignViewProps) {
   return (
     <Dialog open={invite.open} onOpenChange={invite.onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button>
+          <Diamond tone="filled" />
           Inviter
         </Button>
       </DialogTrigger>

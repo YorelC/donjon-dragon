@@ -1,7 +1,8 @@
 import type { ReactElement } from "react";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
-import { Card, CardContent } from "@/shared/components/atoms/card";
+import { Diamond } from "@/shared/components/molecules/diamond";
+import { toInitials } from "@/shared/utils/display-meta";
 import type { MemberManagement } from "../hooks/use-member-management";
 
 export type MemberKind = "gameMaster" | "player" | "pending";
@@ -25,20 +26,50 @@ interface MemberRowProps {
 
 export function MemberRowView({ member, viewer, management }: MemberRowProps) {
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between gap-4 p-3">
-        <div className="flex items-center gap-2">
-          <span className="font-medium">{member.displayName}</span>
-          {member.isOwner ? <Badge variant="outline">Propriétaire</Badge> : null}
-        </div>
+    <li className="list-row">
+      <MemberIdentity member={member} />
+      <div className="flex shrink-0 items-center gap-2.5">
+        <PendingMark kind={member.kind} />
         <MemberActions
           member={member}
           viewer={viewer}
           management={management}
         />
-      </CardContent>
-    </Card>
+      </div>
+    </li>
   );
+}
+
+function MemberIdentity({ member }: { member: MemberRow }) {
+  return (
+    <div className="flex min-w-0 items-center gap-[18px]">
+      <MemberMedallion member={member} />
+      <div className="flex min-w-0 items-center gap-3">
+        <span className="truncate text-[15px] tracking-name text-foreground">
+          {member.displayName}
+        </span>
+        {member.isOwner ? <Badge variant="stamp">Propriétaire</Badge> : null}
+      </div>
+    </div>
+  );
+}
+
+/** L'or du médaillon dit le rôle. Un invité n'en porte pas : il n'est pas à la table. */
+function MemberMedallion({ member }: { member: MemberRow }) {
+  const tone = MEDALLION_TONES[member.kind];
+  if (tone === null) return null;
+
+  return (
+    <Diamond size="badge" tone={tone}>
+      {toInitials(member.displayName)}
+    </Diamond>
+  );
+}
+
+function PendingMark({ kind }: { kind: MemberKind }) {
+  if (kind !== "pending") return null;
+
+  return <span className="pill">En attente</span>;
 }
 
 /**
@@ -75,7 +106,7 @@ function DemoteAction({ member, management }: ActionsProps) {
 
 function PlayerActions({ member, management }: ActionsProps) {
   return (
-    <div className="flex shrink-0 gap-2">
+    <div className="flex shrink-0 items-center gap-2.5">
       <Button
         size="sm"
         disabled={isBusy(member, management)}
@@ -84,7 +115,7 @@ function PlayerActions({ member, management }: ActionsProps) {
         Promouvoir
       </Button>
       <Button
-        variant="destructive"
+        variant="outline"
         size="sm"
         disabled={isBusy(member, management)}
         onClick={() => management.onRemove(member.displayName)}
@@ -95,15 +126,17 @@ function PlayerActions({ member, management }: ActionsProps) {
   );
 }
 
+/** « Annuler » suffit sur la ligne ; hors contexte, il faut dire quoi. */
 function CancelInvitationAction({ member, management }: ActionsProps) {
   return (
     <Button
-      variant="destructive"
+      variant="outline"
       size="sm"
+      aria-label={`Annuler l'invitation de ${member.displayName}`}
       disabled={isBusy(member, management)}
       onClick={() => management.onCancelInvitation(member.displayName)}
     >
-      Annuler l'invitation
+      Annuler
     </Button>
   );
 }
@@ -116,6 +149,12 @@ const ACTIONS_BY_KIND: Record<
   gameMaster: DemoteAction,
   player: PlayerActions,
   pending: CancelInvitationAction,
+};
+
+const MEDALLION_TONES: Record<MemberKind, "active" | "idle" | null> = {
+  gameMaster: "active",
+  player: "idle",
+  pending: null,
 };
 
 function isBusy(member: MemberRow, management: MemberManagement): boolean {

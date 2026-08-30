@@ -10,10 +10,11 @@ import { toInitials } from "@/shared/utils/display-meta";
  */
 export type FriendRowTone = "settled" | "pending" | "distant";
 
+/** Seule la demande recue s'ecarte de la ligne au repos : elle attend un geste. */
 const ROW_TONES: Record<FriendRowTone, string> = {
-  settled: "border-gold/16 bg-surface hover:border-gold/40",
-  pending: "border-gold/28 bg-gold/5",
-  distant: "border-gold/16 bg-surface hover:border-gold/40",
+  settled: "",
+  pending: "border-gold/28 bg-gold/5 hover:border-gold/28",
+  distant: "",
 };
 
 const MEDALLION_TONES: Record<FriendRowTone, "active" | "idle"> = {
@@ -32,12 +33,7 @@ interface FriendRowProps {
 
 export function FriendRow({ name, meta, tone, children }: FriendRowProps) {
   return (
-    <li
-      className={cn(
-        "flex items-center justify-between gap-5 border px-[18px] py-3.5 transition-[border-color] duration-[.18s]",
-        ROW_TONES[tone],
-      )}
-    >
+    <li className={cn("list-row", ROW_TONES[tone])}>
       <FriendIdentity name={name} tone={tone} meta={meta} />
       <div className="flex items-center gap-2.5">{children}</div>
     </li>

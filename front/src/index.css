@@ -297,6 +297,12 @@
     @apply border border-gold/16 bg-surface;
   }
 
+  /* Ligne d'une liste de la charte : medaillon losange, identite, actions. Amis
+     et membres d'une campagne partagent la meme grammaire. */
+  .list-row {
+    @apply flex items-center justify-between gap-5 border border-gold/16 bg-surface px-[18px] py-3.5 transition-[border-color] duration-[.18s] hover:border-gold/40;
+  }
+
   /* --- Filets et ornements ----------------------------------------------- */
 
   .rule-line {
@@ -366,7 +372,7 @@
   }
 
   .app-header {
-    @apply flex shrink-0 items-center justify-between gap-6 border-b border-gold/16 px-6 py-[22px] md:px-10;
+    @apply flex shrink-0 items-center justify-between gap-6 border-b border-gold/22 px-6 py-[22px] md:px-10;
   }
 
   .wordmark {

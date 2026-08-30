@@ -1,11 +1,15 @@
 import { useParams } from "react-router-dom";
 import { useCampaignDetail } from "@/shared/queries/use-campaign-detail";
-import { toCampaignDetailNavItems } from "../constants/campaign-detail-nav-items";
-import { CampaignDetailLayoutView } from "../views/campaign-detail-layout.view";
+import { useCampaignDetailNav } from "../hooks/use-campaign-detail-nav";
+import {
+  CampaignDetailLayoutView,
+  type CampaignDetailNavigation,
+} from "../views/campaign-detail-layout.view";
 
 export function CampaignDetailLayoutContainer() {
   const { campaignId = "" } = useParams();
   const detailQuery = useCampaignDetail(campaignId);
+  const nav = useCampaignDetailNav(campaignId);
 
   return (
     <CampaignDetailLayoutView
@@ -14,7 +18,18 @@ export function CampaignDetailLayoutContainer() {
         loading: detailQuery.isLoading,
         error: detailQuery.isError,
       }}
-      items={toCampaignDetailNavItems(campaignId)}
+      nav={toNavigation(nav)}
     />
   );
+}
+
+function toNavigation(
+  nav: ReturnType<typeof useCampaignDetailNav>,
+): CampaignDetailNavigation {
+  return {
+    items: nav.items,
+    isMenuOpen: nav.isMenuOpen,
+    onToggleMenu: nav.toggleMenu,
+    onNavigate: nav.closeMenu,
+  };
 }

@@ -13,6 +13,8 @@ const badgeVariants = cva(
         secondary: "border-gold/14 bg-surface text-ink-idle",
         destructive: "border-destructive/55 bg-destructive/10 text-destructive",
         outline: "border-gold/24 text-gold-value",
+        stamp:
+          "border-gold/24 bg-gold/5 px-[11px] py-[5px] text-overline tracking-title text-gold-value uppercase",
         ghost: "border-transparent text-ink-help [a&]:hover:text-gold-selected",
         link: "border-transparent text-gold-link [a&]:hover:text-gold-link-hover",
       },

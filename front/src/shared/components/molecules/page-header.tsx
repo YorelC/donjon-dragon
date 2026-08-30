@@ -19,8 +19,8 @@ interface PageHeaderProps {
  */
 function PageHeader({ back, title, children }: PageHeaderProps) {
   return (
-    <header className="flex items-end justify-between gap-6">
-      <div>
+    <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+      <div className="min-w-0">
         <BackLink back={back} />
         <h1 className="page-title mt-2">{title}</h1>
       </div>

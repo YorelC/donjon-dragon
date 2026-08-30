@@ -10,6 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/shared/components/atoms/alert-dialog";
 import { Button } from "@/shared/components/atoms/button";
+import { GoldRule } from "@/shared/components/molecules/gold-rule";
 import type { CampaignExit } from "../hooks/use-campaign-exit";
 import { SuccessorPickerView } from "./successor-picker.view";
 
@@ -19,10 +20,15 @@ interface CampaignExitViewProps {
 
 export function CampaignExitView({ exit }: CampaignExitViewProps) {
   return (
-    <div className="flex flex-wrap gap-2 border-t pt-6">
-      <LeaveDialog exit={exit} />
-      {exit.isOwner ? <TransferDialog exit={exit} /> : null}
-      {exit.isOwner ? <DeleteDialog exit={exit} /> : null}
+    <div className="flex flex-col gap-4">
+      <div className="flex">
+        <GoldRule />
+      </div>
+      <div className="flex flex-wrap items-center gap-2.5">
+        <LeaveDialog exit={exit} />
+        {exit.isOwner ? <TransferDialog exit={exit} /> : null}
+        {exit.isOwner ? <DeleteDialog exit={exit} /> : null}
+      </div>
     </div>
   );
 }
@@ -94,7 +100,11 @@ function DeleteDialog({ exit }: CampaignExitViewProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" disabled={exit.isBusy}>
+        <Button
+          variant="outline"
+          disabled={exit.isBusy}
+          className="text-ink-meta hover:text-gold-value"
+        >
           Supprimer la campagne
         </Button>
       </AlertDialogTrigger>
