@@ -42,9 +42,11 @@ export function SidebarLayoutView({ nav, footer }: SidebarLayoutViewProps) {
     <div className="flex min-h-0 flex-1 gap-4 p-5">
       <SidebarMenuButton nav={nav} />
       <Sidebar nav={nav} footer={footer} />
-      <main className="panel min-w-0 flex-1">
+      <main className="panel-surface relative flex min-w-0 flex-1 flex-col">
         <OrnateCorners />
-        <Outlet />
+        <div className="panel-scroll">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

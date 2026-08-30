@@ -36,7 +36,9 @@ function App() {
         <BrowserRouter>
           <div className="app-shell">
             <AppHeader />
-            <AppRoutes />
+            <div className="app-main">
+              <AppRoutes />
+            </div>
           </div>
         </BrowserRouter>
       </TooltipProvider>
