@@ -13,3 +13,8 @@ front/dist/
 
 docs/books/*
 docs/ui-design/*
+
+# Cache pnpm local et bac a sable de travail : ni l'un ni l'autre n'a de valeur
+# partagee, et tmp/ porte des images lourdes.
+.pnpm-store/
+tmp/
