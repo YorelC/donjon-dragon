@@ -4,11 +4,29 @@
 - **Contexte :** les jets doivent rester excitants visuellement sans sacrifier la
   fiabilité des règles ou la confidentialité du MJ.
 
+## Amendement du 31 août 2026 — fin de l'exception de création
+
+La rédaction initiale admettait les jets de caractéristiques de la création comme
+« seule exception provisoire », le tirage étant fait dans le navigateur. Cette
+exception est levée : le serveur émet le tirage par le port `DICE`, le conserve dans
+un reçu de commande et le consomme une seule fois. Le client ne transporte plus de
+dés, seulement la référence du tirage qu'il désigne.
+
+Décidé avec cette levée : les relances avant création sont **illimitées**, et un
+tirage émis n'est **consommé qu'une fois**, dans la transaction qui écrit le
+personnage. Détail et preuves dans
+[la Spec 009](../../specs/009-level-one-character-creation.md).
+
+Ce qui arrive à un personnage **déjà créé** n'est pas tranché : voir la
+`DÉCISION REQUISE` de la Spec 009. L'implémentation actuelle refuse la relance,
+mais c'est une limite technique — `FinalizeCharacterUseCase` n'a pas d'enveloppe
+transactionnelle — et non une règle produit.
+
 ## Décision
 
-Tous les jets qui ont une conséquence de partie sont générés au backend. Les jets de
-caractéristiques de la création constituent la seule exception provisoire. Animation,
-son et suspense représentent un résultat déjà déterminé et ne peuvent le modifier.
+Tous les jets qui ont une conséquence de partie sont générés au backend, sans
+exception. Animation, son et suspense représentent un résultat déjà déterminé et ne
+peuvent le modifier.
 
 Les tests hors combat sont lancés depuis la fiche, avec bonus automatique et choix
 normal, avantage ou désavantage. Cela conserve l'action du joueur sans lui imposer une
