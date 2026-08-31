@@ -7,12 +7,26 @@ vraie base.
 
 ```bash
 pnpm seed                        # une fois : crée les comptes utilisés ici
+pnpm seed:items                  # une fois : le catalogue d'objets
 pnpm --filter front test:e2e     # build du back + vite + chromium, automatique
 pnpm --filter front test:e2e:ui  # mode inspecteur, pour écrire un nouveau test
 ```
 
 Prérequis : MongoDB démarré, et `back/.env` renseigné. Le reste — build du back,
 serveur d'API, serveur vite — est démarré par `playwright.config.ts`.
+
+**Les deux seeds, pas un seul.** Sans `seed:items`, le paquetage de départ ne se
+résout pas : le serveur refuse toute création en « Unknown item in equipment »,
+et le parcours de création échoue pour une raison qui n'a rien à voir avec le
+code. Une base de développement qui n'a jamais vu ce seed est dans cet état.
+
+Pour tourner contre une base jetable plutôt que la base de développement, il
+suffit d'exporter l'URI : `playwright.config.ts` transmet `process.env` au back,
+et `@nestjs/config` laisse `process.env` primer sur `back/.env`.
+
+```bash
+MONGODB_URI="mongodb://localhost:27017/donjon-dragon-e2e-pw?replicaSet=donjonDragon&directConnection=true" pnpm --filter front test:e2e
+```
 
 Ces tests **ne font pas partie de `pnpm test`** : ils sont lents, demandent Mongo et
 un navigateur. Les garder séparés, c'est garder la suite unitaire utilisable en
@@ -35,6 +49,11 @@ Ce qui appartient à cet étage :
   persistance réelle d'une suppression.
 - **Ce qui s'affiche vraiment.** Qu'un email ne soit pas dans le HTML, même par
   accident.
+- **Ce qu'une collection HTTP ne peut pas prouver.** Bruno envoie des corps écrits
+  à la main : il reste vert quand le WIZARD, lui, n'émet plus un champ que le
+  contrat exige. C'est exactement ce qui est arrivé à l'état civil, au gabarit et
+  aux langues. `character-creation.spec.ts` part donc de l'interface et va jusqu'à
+  la fiche persistée.
 
 Ce qui n'appartient PAS à cet étage : la logique de domaine (tests back), le rendu
 d'un composant (vitest + testing-library), le mapping d'un message d'erreur

@@ -1,0 +1,26 @@
+meta {
+  name: 110 - Replay ability roll
+  type: http
+  seq: 110
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{rollCampaignId}}/characters/ability-roll
+  body: none
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{firstAbilityRollKey}}
+}
+
+tests {
+  test('rejoue le meme tirage, sans relancer les des', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().rollId).to.equal(bru.getVar('abilityRollId'));
+    expect(JSON.stringify(res.getBody().totals))
+      .to.equal(bru.getVar('abilityRollTotals'));
+  });
+}

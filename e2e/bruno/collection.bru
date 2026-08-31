@@ -35,6 +35,10 @@ script:pre-request {
     'excludeGandalfKey',
     'replacementKey',
     'missingCampaignId',
+    'rollCampaignKey',
+    'rollOtherCampaignKey',
+    'firstAbilityRollKey',
+    'rolledCharacterKey',
   ];
   keys.forEach((key) => {
     if (!bru.hasVar(key)) bru.setVar(key, bru.interpolate('{{$randomUUID}}'));

@@ -1,11 +1,11 @@
 meta {
-  name: 89 - GM creates replacement character
+  name: 117 - Create character without idempotency key
   type: http
-  seq: 89
+  seq: 117
 }
 
 post {
-  url: {{baseUrl}}/campaigns/{{campaignId}}/characters
+  url: {{baseUrl}}/campaigns/{{rollCampaignId}}/characters
   body: json
   auth: none
 }
@@ -13,12 +13,11 @@ post {
 headers {
   content-type: application/json
   x-csrf-token: {{csrfToken}}
-  Idempotency-Key: {{$randomUUID}}
 }
 
 body:json {
   {
-    "name": "Remplaçant E2E",
+    "name": "Sans cle E2E",
     "alignment": "neutralGood",
     "age": 33,
     "heightCm": 105,
@@ -30,7 +29,6 @@ body:json {
     "standardLanguages": ["elvish", "dwarvish"],
     "classKey": "rogue",
     "backgroundKey": "charlatan",
-    "abilityMethod": "standardArray",
     "base": {
       "strength": 8,
       "dexterity": 15,
@@ -61,18 +59,13 @@ body:json {
       "classOptionId": "B",
       "backgroundOptionId": "B"
     },
+    "abilityMethod": "standardArray",
     "abilityRollId": null
   }
 }
 
-script:post-response {
-  bru.setVar('replacementCharacterId', res.getBody().id);
-  bru.setVar('replacementRevision', res.getBody().revision);
-}
-
 tests {
-  test('crée le personnage entrant dans le vivier', function() {
-    expect(res.getStatus()).to.equal(201);
-    expect(res.getBody().assignedTo).to.equal(null);
+  test('exige la cle d idempotence a la creation', function() {
+    expect(res.getStatus()).to.equal(400);
   });
 }

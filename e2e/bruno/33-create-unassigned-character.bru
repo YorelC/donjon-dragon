@@ -13,16 +13,24 @@ post {
 headers {
   content-type: application/json
   x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{$randomUUID}}
 }
 
 body:json {
   {
     "name": "Bilbon E2E",
+    "alignment": "neutralGood",
+    "age": 33,
+    "heightCm": 105,
+    "weightKg": 18,
+    "description": "Un voyageur prudent aux yeux vifs.",
     "speciesKey": "halfling",
     "lineageKey": null,
+    "size": "Small",
+    "standardLanguages": ["elvish", "dwarvish"],
     "classKey": "rogue",
     "backgroundKey": "charlatan",
-    "abilityMethod": "roll",
+    "abilityMethod": "standardArray",
     "base": {
       "strength": 8,
       "dexterity": 15,
@@ -36,24 +44,24 @@ body:json {
       {
         "source": { "type": "class", "key": "rogue" },
         "skills": ["acrobatics", "insight", "perception", "stealth"],
-        "expertise": ["stealth", "perception"]
+        "expertise": ["stealth", "perception"],
+        "languages": ["gnomish"],
+        "weaponMasteries": ["dagger", "shortbow"]
+      },
+      {
+        "source": { "type": "feat", "key": "skilled" },
+        "skills": ["arcana", "history", "medicine"]
       }
     ],
     "equipment": {
-      "armorKey": "leather",
+      "armorKey": null,
       "shield": false,
-      "items": [
-        { "itemKey": "leather", "quantity": 1 },
-        { "itemKey": "dagger", "quantity": 2 }
-      ],
-      "gold": 8,
-      "classOptionId": "A",
-      "backgroundOptionId": "A"
+      "items": [],
+      "gold": 0,
+      "classOptionId": "B",
+      "backgroundOptionId": "B"
     },
-    "abilityRoll": {
-      "dice": [[6,5,4,1],[6,4,4,2],[5,4,4,3],[4,4,4,1],[4,3,3,2],[3,3,2,1]],
-      "totals": [15,14,13,12,10,8]
-    }
+    "abilityRollId": null
   }
 }
 

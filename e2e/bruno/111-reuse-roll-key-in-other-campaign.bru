@@ -1,0 +1,23 @@
+meta {
+  name: 111 - Reuse roll key in other campaign
+  type: http
+  seq: 111
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{rollOtherCampaignId}}/characters/ability-roll
+  body: none
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{firstAbilityRollKey}}
+}
+
+tests {
+  test('refuse la meme cle pour une autre intention', function() {
+    expect(res.getStatus()).to.equal(409);
+  });
+}

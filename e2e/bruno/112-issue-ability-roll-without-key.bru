@@ -1,0 +1,22 @@
+meta {
+  name: 112 - Issue ability roll without key
+  type: http
+  seq: 112
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{rollCampaignId}}/characters/ability-roll
+  body: none
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+}
+
+tests {
+  test('exige la cle d idempotence', function() {
+    expect(res.getStatus()).to.equal(400);
+  });
+}

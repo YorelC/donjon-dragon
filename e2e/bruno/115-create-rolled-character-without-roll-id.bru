@@ -1,11 +1,11 @@
 meta {
-  name: 89 - GM creates replacement character
+  name: 115 - Create rolled character without roll id
   type: http
-  seq: 89
+  seq: 115
 }
 
 post {
-  url: {{baseUrl}}/campaigns/{{campaignId}}/characters
+  url: {{baseUrl}}/campaigns/{{rollCampaignId}}/characters
   body: json
   auth: none
 }
@@ -18,7 +18,7 @@ headers {
 
 body:json {
   {
-    "name": "Remplaçant E2E",
+    "name": "Sans tirage E2E",
     "alignment": "neutralGood",
     "age": 33,
     "heightCm": 105,
@@ -30,7 +30,6 @@ body:json {
     "standardLanguages": ["elvish", "dwarvish"],
     "classKey": "rogue",
     "backgroundKey": "charlatan",
-    "abilityMethod": "standardArray",
     "base": {
       "strength": 8,
       "dexterity": 15,
@@ -61,18 +60,13 @@ body:json {
       "classOptionId": "B",
       "backgroundOptionId": "B"
     },
+    "abilityMethod": "roll",
     "abilityRollId": null
   }
 }
 
-script:post-response {
-  bru.setVar('replacementCharacterId', res.getBody().id);
-  bru.setVar('replacementRevision', res.getBody().revision);
-}
-
 tests {
-  test('crée le personnage entrant dans le vivier', function() {
-    expect(res.getStatus()).to.equal(201);
-    expect(res.getBody().assignedTo).to.equal(null);
+  test('refuse la methode roll sans tirage designe', function() {
+    expect(res.getStatus()).to.equal(400);
   });
 }

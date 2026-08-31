@@ -102,3 +102,61 @@ export async function cookiesVisibleToPageScripts(page: Page): Promise<string> {
 export async function localStorageEntries(page: Page): Promise<Record<string, string>> {
   return page.evaluate(() => ({ ...localStorage }));
 }
+
+interface CampaignRecord {
+  id: string;
+  name: string;
+}
+
+interface CharacterRecord {
+  id: string;
+  name: string;
+}
+
+/**
+ * La campagne du scénario, créée si elle n'existe pas encore.
+ *
+ * Le seed ne crée aucune campagne : sans ça, le premier passage n'aurait nulle
+ * part où poser un personnage. Les passages suivants la retrouvent par son nom.
+ */
+export async function ensureCampaign(
+  api: APIRequestContext,
+  name: string,
+): Promise<string> {
+  const campaigns: CampaignRecord[] = await getJson(api, '/api/campaigns');
+  const existing = campaigns.find((campaign) => campaign.name === name);
+  if (existing) return existing.id;
+
+  const response = await api.post('/api/campaigns', {
+    headers: { ...(await csrfHeader(api)), 'Idempotency-Key': crypto.randomUUID() },
+    data: { name },
+  });
+  if (!response.ok()) {
+    throw new Error(`Preparation echouee : campagne ${name} -> ${response.status()}`);
+  }
+
+  return ((await response.json()) as CampaignRecord).id;
+}
+
+/**
+ * Supprime TOUS les personnages qui portent ce nom dans la campagne.
+ *
+ * Le nettoyage se fait en entree, comme partout ici : un test qui echoue en cours
+ * de route ne nettoie pas, et un homonyme reste d'un passage precedent ferait
+ * echouer le suivant sur « un joueur n'a qu'un personnage ».
+ */
+export async function deleteCharactersNamed(
+  api: APIRequestContext,
+  campaignId: string,
+  name: string,
+): Promise<void> {
+  const headers = await csrfHeader(api);
+  const characters: CharacterRecord[] = await getJson(
+    api,
+    `/api/campaigns/${campaignId}/characters`,
+  );
+
+  for (const character of characters.filter((entry) => entry.name === name)) {
+    await api.delete(`/api/campaigns/${campaignId}/characters/${character.id}`, { headers });
+  }
+}

@@ -1,0 +1,48 @@
+meta {
+  name: 109 - Issue ability roll
+  type: http
+  seq: 109
+}
+
+post {
+  url: {{baseUrl}}/campaigns/{{rollCampaignId}}/characters/ability-roll
+  body: none
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{firstAbilityRollKey}}
+}
+
+script:post-response {
+  const totals = res.getBody().totals;
+  // Le serveur exige une permutation exacte des totaux qu'il a tires. La
+  // Dexterite prend +2 de l'historique et le Charisme +1 : leur donner les deux
+  // totaux les plus bas garantit qu'aucun score final ne depasse 20.
+  const ordered = [...totals].sort((left, right) => left - right);
+  const base = {
+    dexterity: ordered[0], charisma: ordered[1], strength: ordered[2],
+    constitution: ordered[3], intelligence: ordered[4], wisdom: ordered[5],
+  };
+
+  bru.setVar('abilityRollId', res.getBody().rollId);
+  bru.setVar('abilityRollTotals', JSON.stringify(totals));
+  bru.setVar('abilityRollBase', JSON.stringify(base));
+}
+
+tests {
+  test('le serveur lance six fois quatre des', function() {
+    expect(res.getStatus()).to.equal(201);
+    expect(res.getBody().rollId).to.be.a('string');
+    expect(res.getBody().dice).to.have.lengthOf(6);
+    res.getBody().dice.forEach(function(roll) {
+      expect(roll).to.have.lengthOf(4);
+      roll.forEach(function(die) {
+        expect(die).to.be.within(1, 6);
+      });
+    });
+    expect(res.getBody().totals).to.have.lengthOf(6);
+  });
+}

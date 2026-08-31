@@ -1,11 +1,11 @@
 meta {
-  name: 89 - GM creates replacement character
+  name: 119 - Edit rolled character with new roll
   type: http
-  seq: 89
+  seq: 119
 }
 
-post {
-  url: {{baseUrl}}/campaigns/{{campaignId}}/characters
+put {
+  url: {{baseUrl}}/campaigns/{{rollCampaignId}}/characters/{{rolledCharacterId}}
   body: json
   auth: none
 }
@@ -13,12 +13,11 @@ post {
 headers {
   content-type: application/json
   x-csrf-token: {{csrfToken}}
-  Idempotency-Key: {{$randomUUID}}
 }
 
 body:json {
   {
-    "name": "Remplaçant E2E",
+    "name": "Relance interdite E2E",
     "alignment": "neutralGood",
     "age": 33,
     "heightCm": 105,
@@ -30,15 +29,7 @@ body:json {
     "standardLanguages": ["elvish", "dwarvish"],
     "classKey": "rogue",
     "backgroundKey": "charlatan",
-    "abilityMethod": "standardArray",
-    "base": {
-      "strength": 8,
-      "dexterity": 15,
-      "constitution": 13,
-      "intelligence": 12,
-      "wisdom": 10,
-      "charisma": 14
-    },
+    "base": {{abilityRollBase}},
     "backgroundBonuses": { "dexterity": 2, "charisma": 1 },
     "choices": [
       {
@@ -61,18 +52,13 @@ body:json {
       "classOptionId": "B",
       "backgroundOptionId": "B"
     },
-    "abilityRollId": null
+    "abilityMethod": "roll",
+    "abilityRollId": "{{abilityRollId}}"
   }
 }
 
-script:post-response {
-  bru.setVar('replacementCharacterId', res.getBody().id);
-  bru.setVar('replacementRevision', res.getBody().revision);
-}
-
 tests {
-  test('crée le personnage entrant dans le vivier', function() {
-    expect(res.getStatus()).to.equal(201);
-    expect(res.getBody().assignedTo).to.equal(null);
+  test('refuse a l edition de redesigner un tirage', function() {
+    expect(res.getStatus()).to.equal(400);
   });
 }

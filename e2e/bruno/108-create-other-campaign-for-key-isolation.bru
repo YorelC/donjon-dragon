@@ -1,0 +1,33 @@
+meta {
+  name: 108 - Create other campaign for key isolation
+  type: http
+  seq: 108
+}
+
+post {
+  url: {{baseUrl}}/campaigns
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{rollOtherCampaignKey}}
+}
+
+body:json {
+  {
+    "name": "E2E Bruno - isolation de cle"
+  }
+}
+
+script:post-response {
+  bru.setVar('rollOtherCampaignId', res.getBody().id);
+}
+
+tests {
+  test('cree la seconde campagne', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}

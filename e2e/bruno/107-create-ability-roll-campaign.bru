@@ -1,0 +1,33 @@
+meta {
+  name: 107 - Create ability roll campaign
+  type: http
+  seq: 107
+}
+
+post {
+  url: {{baseUrl}}/campaigns
+  body: json
+  auth: none
+}
+
+headers {
+  content-type: application/json
+  x-csrf-token: {{csrfToken}}
+  Idempotency-Key: {{rollCampaignKey}}
+}
+
+body:json {
+  {
+    "name": "E2E Bruno - tirage serveur"
+  }
+}
+
+script:post-response {
+  bru.setVar('rollCampaignId', res.getBody().id);
+}
+
+tests {
+  test('cree la campagne du tirage', function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}
