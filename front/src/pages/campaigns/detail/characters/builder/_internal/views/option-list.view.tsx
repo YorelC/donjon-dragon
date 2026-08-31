@@ -13,7 +13,14 @@ interface OptionListProps {
   onSelect: (key: string) => void;
 }
 
-/** La liste de choix du builder : espèce, classe, historique, lignage. */
+/**
+ * La liste de choix du builder : espèce, classe, historique, lignage.
+ *
+ * Une carte déjà retenue ne rejoue pas son choix. Chaque appelant remet à zéro
+ * ce que son choix périme — l'espèce efface don et gabarit, la classe efface
+ * sorts et compétences — donc un simple re-clic, ou une touche Entrée sur la
+ * carte active, effaçait tout sans rien changer par ailleurs.
+ */
 export function OptionListView({ options, selectedKey, onSelect }: OptionListProps) {
   return (
     <div className="grid gap-2 sm:grid-cols-2">
@@ -36,13 +43,17 @@ interface OptionCardProps {
 }
 
 function OptionCard({ option, selected, onSelect }: OptionCardProps) {
+  const select = () => {
+    if (!selected) onSelect(option.key);
+  };
+
   return (
     <Card
       role="radio"
       aria-checked={selected}
       tabIndex={0}
-      onClick={() => onSelect(option.key)}
-      onKeyDown={(event) => event.key === "Enter" && onSelect(option.key)}
+      onClick={select}
+      onKeyDown={(event) => event.key === "Enter" && select()}
       className={cn(
         "cursor-pointer transition-colors hover:border-primary",
         selected && "border-primary ring-1 ring-primary",

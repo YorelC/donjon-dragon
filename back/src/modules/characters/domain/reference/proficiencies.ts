@@ -93,3 +93,32 @@ export const LANGUAGES = [
 ] as const;
 
 export type Language = (typeof LANGUAGES)[number];
+
+/**
+ * Libellés français, pour l'affichage et le catalogue du wizard.
+ *
+ * Terminologie arrêtée par Charly le 31/08/2026 : elle n'est sourcée nulle part
+ * dans le dépôt, le SRD versionné étant en anglais. La langue des signes
+ * courante, ajoutée par le PHB 2024, a été validée le même jour.
+ */
+export const LANGUAGE_LABELS: Record<Language, string> = {
+  common: 'Commun',
+  commonSignLanguage: 'Langue des signes courante',
+  draconic: 'Draconique',
+  dwarvish: 'Nain',
+  elvish: 'Elfique',
+  giant: 'Géant',
+  gnomish: 'Gnomique',
+  goblin: 'Gobelin',
+  halfling: 'Halfelin',
+  orc: 'Orque',
+  abyssal: 'Abyssal',
+  celestial: 'Céleste',
+  deepSpeech: 'Profond',
+  infernal: 'Infernal',
+  primordial: 'Primaire',
+  sylvan: 'Sylvestre',
+  undercommon: 'Commun des Profondeurs',
+  druidic: 'Druidique',
+  thievesCant: 'Argot des voleurs',
+};

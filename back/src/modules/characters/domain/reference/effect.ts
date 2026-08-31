@@ -163,7 +163,10 @@ export interface SpellcastingChoice {
   level1Slots: number;
 }
 
-export type GrantedSpellFrequency = 'atWill' | 'oncePerLongRest';
+export type GrantedSpellFrequency =
+  | 'atWill'
+  | 'oncePerLongRest'
+  | 'proficiencyBonusPerLongRest';
 
 export interface GrantedSpell {
   spellKey: SpellKey;

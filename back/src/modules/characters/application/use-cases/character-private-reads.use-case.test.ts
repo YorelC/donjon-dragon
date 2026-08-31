@@ -7,9 +7,13 @@ import { aCampaign, withPlayer } from '@modules/campaigns/testing/campaign.fixtu
 import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory-campaign.repository';
 
 import { CharacterNotFoundError } from '../../domain/character.errors';
-import { aCharacterBody } from '../../testing/character.fixture';
+import { aCharacterBody, seedAbilityRoll } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
+import { UserId } from '@kernel/domain/user-id';
+
+import { InMemoryAbilityRollRepository } from '../../testing/in-memory-ability-roll.repository';
+import { InMemoryCharacterCreationRepository } from '../../testing/in-memory-character-creation.repository';
 import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { GetCharacterBuildUseCase } from './get-character-build.use-case';
@@ -35,11 +39,16 @@ describe('lectures privées du personnage', () => {
     const directory = new InMemoryCharacterDirectory();
     directory.register({ id: frodoId, displayName: 'Frodo' });
     const items = new InMemoryItemCatalog();
+    const rolls = new InMemoryAbilityRollRepository();
+    seedAbilityRoll(rolls, UserId.create(frodoId), campaignId);
     const create = new CreateCharacterUseCase(
       characters, directory, items, membership, new FixedClock(),
+      new InMemoryCharacterCreationRepository(characters),
+      rolls,
     );
     characterId = (await create.execute({
       ...aCharacterBody(), campaignId, actorId: anActor(frodoId),
+      idempotencyKey: randomUUID(),
     })).id;
     sheet = new GetCharacterSheetUseCase(characters, items, membership);
     build = new GetCharacterBuildUseCase(characters, membership);

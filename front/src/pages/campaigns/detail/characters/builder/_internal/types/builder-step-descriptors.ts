@@ -1,10 +1,11 @@
-import { CHARACTER_NAME_RULES } from "@donjon-dragon/shared";
 import { isFullyAssigned } from "./character-composition";
+import { completeIdentityOf } from "./identity-fields";
 import {
   cantripQuotaOf,
   classOf,
   fightingStyleChoiceOf,
   orderChoiceOf,
+  resolvedSizeOf,
   speciesOf,
   spellQuotaOf,
   type StepContext,
@@ -13,7 +14,11 @@ import {
   areBonusesDone,
   areFeatsDone,
   chosenCantrips,
+  chosenLanguages,
   chosenSpells,
+  hasChosenLineage,
+  hasValidName,
+  STANDARD_LANGUAGE_QUOTA,
 } from "./builder-validity";
 import { hasChosenEquipment } from "./starting-equipment";
 import type { BuilderStep, StepProgress } from "./builder-steps";
@@ -31,17 +36,6 @@ const always = () => true;
 const counted = (chosen: number, total: number): StepProgress => ({ chosen, total });
 
 /**
- * L'étape du lignage porte deux choix quand l'espèce est de celles qui lancent
- * un sort mineur : la lignée, et la caractéristique qui l'incante.
- */
-function hasChosenLineage(context: StepContext): boolean {
-  if (context.composition.lineageKey === null) return false;
-  if (!speciesOf(context)?.lineage?.spellcastingAbilityOptions?.length) return true;
-
-  return context.composition.lineageSpellcastingAbility !== null;
-}
-
-/**
  * La table qui décrit le parcours.
  *
  * Une seule source pour trois choses : quelles étapes apparaissent, laquelle est
@@ -55,6 +49,7 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     isVisible: always,
     isValid: (context) =>
       Boolean(speciesOf(context)) &&
+      resolvedSizeOf(context) !== null &&
       context.composition.speciesSkills.length ===
         (speciesOf(context)?.skillChoice?.count ?? 0),
     progress: (context) =>
@@ -68,6 +63,14 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     label: "Lignage",
     isVisible: (context) => Boolean(speciesOf(context)?.lineage),
     isValid: hasChosenLineage,
+  },
+  {
+    key: "languages",
+    label: "Langues",
+    isVisible: always,
+    isValid: (context) => chosenLanguages(context).length === STANDARD_LANGUAGE_QUOTA,
+    progress: (context) =>
+      counted(chosenLanguages(context).length, STANDARD_LANGUAGE_QUOTA),
   },
   {
     key: "class",
@@ -148,11 +151,10 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     isValid: ({ catalog, composition }) => hasChosenEquipment(catalog, composition),
   },
   {
-    key: "name",
-    label: "Nom",
+    key: "identity",
+    label: "Identité",
     isVisible: always,
     isValid: ({ composition }) =>
-      composition.name.trim().length >= CHARACTER_NAME_RULES.min &&
-      composition.name.trim().length <= CHARACTER_NAME_RULES.max,
+      hasValidName(composition.name) && completeIdentityOf(composition) !== null,
   },
 ];

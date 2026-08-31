@@ -2,10 +2,12 @@ import { z } from 'zod';
 
 import {
   AbilitySchema,
+  AlignmentSchema,
   ArmorTrainingSchema,
   BackgroundKeySchema,
   ClassKeySchema,
   CreatureSizeSchema,
+  LanguageSchema,
   OriginFeatKeySchema,
   SkillNameSchema,
   SpeciesKeySchema,
@@ -111,6 +113,18 @@ export const CatalogClassChoiceSchema = z.object({
   options: z.array(CatalogFeatureSchema),
 });
 
+/**
+ * Un choix borné par une liste et un compte : maîtrises d'armes, outils.
+ *
+ * Les options viennent du serveur et de lui seul — le front ne sait pas quelles
+ * armes une classe maîtrise, ni que le barde n'apprend que des instruments là
+ * où `classes.ts` annonce « n'importe quel outil ».
+ */
+export const CatalogBoundedChoiceSchema = z.object({
+  count: z.number().int().positive(),
+  options: z.array(z.string()).min(1),
+});
+
 export const CatalogClassSchema = z.object({
   key: ClassKeySchema,
   name: z.string(),
@@ -128,6 +142,12 @@ export const CatalogClassSchema = z.object({
   expertiseCount: z.number().int().nonnegative(),
   /** Style de combat, Ordre divin, Ordre primitif — vide pour la plupart. */
   level1Choices: z.array(CatalogClassChoiceSchema),
+  /** Barbare, Guerrier, Paladin, Rôdeur, Roublard ; `null` pour les sept autres. */
+  weaponMastery: CatalogBoundedChoiceSchema.nullable(),
+  /** Barde et Moine seulement. */
+  toolChoice: CatalogBoundedChoiceSchema.nullable(),
+  /** Le Roublard choisit une langue de plus, standard ou rare. */
+  grantsLanguageChoice: z.boolean(),
 });
 
 /** Initié à la magie laisse choisir sa liste et sa caractéristique d'incantation. */
@@ -160,7 +180,33 @@ export const CatalogBackgroundSchema = z.object({
   originFeatSpellList: ClassKeySchema.nullable(),
   skillProficiencies: z.array(SkillNameSchema),
   toolProficiency: z.string(),
+  /** Les cinq historiques qui font choisir leur outil ; vide pour les onze autres. */
+  toolOptions: z.array(z.string()),
   equipment: CatalogStartingEquipmentSchema,
+});
+
+/**
+ * Les clés sont des énumérations connues, jamais des chaînes libres : une clé
+ * inconnue doit casser à la frontière, pas au moment de l'afficher.
+ */
+export const CatalogLanguageSchema = z.object({
+  key: LanguageSchema,
+  name: z.string(),
+});
+
+export const CatalogAlignmentSchema = z.object({
+  key: AlignmentSchema,
+  name: z.string(),
+});
+
+/**
+ * Les deux quotas de langues sont distincts : la création en choisit deux
+ * parmi les standards, tandis que le Roublard puise dans les deux listes. Le
+ * Commun n'y figure pas, il est accordé d'office et ne se choisit jamais.
+ */
+export const CatalogLanguagesSchema = z.object({
+  standard: z.array(CatalogLanguageSchema),
+  rare: z.array(CatalogLanguageSchema),
 });
 
 export const DndCatalogSchema = z.object({
@@ -170,6 +216,8 @@ export const DndCatalogSchema = z.object({
   originFeats: z.array(CatalogOriginFeatSchema),
   /** Les libellés français des 18 compétences, pour que le front n'en tienne pas la table. */
   skillLabels: z.record(SkillNameSchema, z.string()),
+  languages: CatalogLanguagesSchema,
+  alignments: z.array(CatalogAlignmentSchema),
 });
 
 export const CatalogSpellSchema = z.object({
@@ -191,6 +239,10 @@ export const CatalogSpellListSchema = z.object({
   level1: z.array(CatalogSpellSchema),
 });
 
+export type CatalogBoundedChoice = z.infer<typeof CatalogBoundedChoiceSchema>;
+export type CatalogLanguage = z.infer<typeof CatalogLanguageSchema>;
+export type CatalogLanguages = z.infer<typeof CatalogLanguagesSchema>;
+export type CatalogAlignment = z.infer<typeof CatalogAlignmentSchema>;
 export type CatalogSkillChoice = z.infer<typeof CatalogSkillChoiceSchema>;
 export type CatalogFeature = z.infer<typeof CatalogFeatureSchema>;
 export type CatalogEquipmentEntry = z.infer<typeof CatalogEquipmentEntrySchema>;

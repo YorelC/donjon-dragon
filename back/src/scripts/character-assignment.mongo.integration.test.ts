@@ -14,7 +14,7 @@ import {
   OUTBOX_MESSAGE_MODEL, OutboxMessageSchema, type OutboxMessageDocument,
 } from '@kernel/infrastructure/outbox-message.schema';
 import { toBuildInput } from '@modules/characters/application/character-build.mapper';
-import { AbilityRoll } from '@modules/characters/domain/ability-roll';
+import { STANDARD_ARRAY_ROLL } from '@modules/characters/testing/character-build.fixture';
 import { Character } from '@modules/characters/domain/character';
 import { CharacterName } from '@modules/characters/domain/character-name';
 import { CharacterRevisionConflictError } from '@modules/characters/domain/character.errors';
@@ -182,7 +182,7 @@ function character(campaignId: string, name: string): Character {
     identity: A_CHARACTER_IDENTITY,
     createdBy: UserId.create(randomUUID()),
     build: toBuildInput(body),
-    roll: AbilityRoll.restore(requiredRoll(body.abilityRoll)),
+    roll: STANDARD_ARRAY_ROLL,
     now: TEST_INSTANT,
   });
 }
@@ -203,9 +203,4 @@ async function expectCounts(
 function requiredMongoUri(): string {
   if (!MONGO_URI) throw new Error('MONGODB_INTEGRATION_URI is required');
   return MONGO_URI;
-}
-
-function requiredRoll<T>(roll: T | null): T {
-  if (!roll) throw new Error('Character roll is required');
-  return roll;
 }

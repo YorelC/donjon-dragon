@@ -12,10 +12,14 @@ import {
   NotEditableByActorError,
   UnknownItemError,
 } from '../../domain/character.errors';
-import { aCharacterBody } from '../../testing/character.fixture';
+import { aCharacterBody, anEditBody, seedAbilityRoll } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
 import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
+import { UserId } from '@kernel/domain/user-id';
+
+import { InMemoryAbilityRollRepository } from '../../testing/in-memory-ability-roll.repository';
+import { InMemoryCharacterCreationRepository } from '../../testing/in-memory-character-creation.repository';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { FinalizeCharacterUseCase } from './finalize-character.use-case';
 
@@ -47,12 +51,18 @@ describe('FinalizeCharacterUseCase', () => {
     const memberships = new GetCampaignMembershipsUseCase(campaignRepo);
     const characterRepo = new InMemoryCharacterRepository();
     const clock = new FixedClock();
+    const rolls = new InMemoryAbilityRollRepository();
+    seedAbilityRoll(rolls, UserId.create(frodoId), campaignId);
+    seedAbilityRoll(rolls, UserId.create(gameMasterId), campaignId);
+    seedAbilityRoll(rolls, UserId.create(samId), campaignId);
     create = new CreateCharacterUseCase(
       characterRepo,
       directory,
       new InMemoryItemCatalog(),
       membership,
       clock,
+      new InMemoryCharacterCreationRepository(characterRepo),
+      rolls,
     );
     useCase = new FinalizeCharacterUseCase(
       characterRepo,
@@ -68,6 +78,7 @@ describe('FinalizeCharacterUseCase', () => {
       ...aCharacterBody(),
       campaignId,
       actorId: anActor(creatorId),
+      idempotencyKey: randomUUID(),
     });
     return character.id;
   }
@@ -76,7 +87,7 @@ describe('FinalizeCharacterUseCase', () => {
     const characterId = await characterCreatedBy(frodoId);
 
     const result = await useCase.execute({
-      ...aCharacterBody('Frodon Sacquet'),
+      ...anEditBody('Frodon Sacquet'),
       characterId,
       campaignId,
       actorId: anActor(frodoId),
@@ -89,7 +100,7 @@ describe('FinalizeCharacterUseCase', () => {
     const characterId = await characterCreatedBy(frodoId);
 
     const result = await useCase.execute({
-      ...aCharacterBody('Frodon le Neuf'),
+      ...anEditBody('Frodon le Neuf'),
       characterId,
       campaignId,
       actorId: anActor(gameMasterId),
@@ -105,7 +116,7 @@ describe('FinalizeCharacterUseCase', () => {
 
     await expect(
       useCase.execute({
-        ...aCharacterBody('Détourné'),
+        ...anEditBody('Détourné'),
         characterId,
         campaignId,
         actorId: anActor(samId),
@@ -116,7 +127,7 @@ describe('FinalizeCharacterUseCase', () => {
   it('refuse un personnage inconnu', async () => {
     await expect(
       useCase.execute({
-        ...aCharacterBody(),
+        ...anEditBody(),
         characterId: randomUUID(),
         campaignId,
         actorId: anActor(gameMasterId),
@@ -131,7 +142,7 @@ describe('FinalizeCharacterUseCase', () => {
 
     await expect(
       useCase.execute({
-        ...aCharacterBody(),
+        ...anEditBody(),
         equipment: {
           armorKey: 'leather',
           shield: false,
@@ -154,7 +165,7 @@ describe('FinalizeCharacterUseCase', () => {
 
     await expect(
       useCase.execute({
-        ...aCharacterBody('Détourné'),
+        ...anEditBody('Détourné'),
         characterId,
         campaignId,
         actorId: anActor(samId),
@@ -162,7 +173,7 @@ describe('FinalizeCharacterUseCase', () => {
     ).rejects.toThrow(NotEditableByActorError);
 
     const reread = await useCase.execute({
-      ...aCharacterBody('Frodon Sacquet'),
+      ...anEditBody('Frodon Sacquet'),
       characterId,
       campaignId,
       actorId: anActor(frodoId),

@@ -1,13 +1,44 @@
-import type { Ability, CharacterBuildDetailDto } from "@donjon-dragon/shared";
+import type { Ability, CharacterBuildDetailDto, DndCatalog } from "@donjon-dragon/shared";
 import { STANDARD_ARRAY } from "@donjon-dragon/shared";
 import { ABILITIES, POINT_BUY_FLOOR, type CharacterComposition } from "./character-composition";
 
 /** Le build déjà éclaté du personnage → la composition dont le wizard part pour l'édition. */
-export function toComposition(dto: CharacterBuildDetailDto): CharacterComposition {
+export function toComposition(
+  dto: CharacterBuildDetailDto,
+  catalog: DndCatalog,
+): CharacterComposition {
   return {
     ...coreFieldsOf(dto),
+    ...identityFieldsOf(dto),
+    ...originFieldsOf(dto, catalog),
     ...choiceFieldsOf(dto),
     ...abilityFieldsOf(dto),
+  };
+}
+
+/** L'état civil, figé à la création : il est relu, jamais recalculé. */
+function identityFieldsOf(dto: CharacterBuildDetailDto) {
+  return {
+    alignment: dto.alignment,
+    age: dto.age,
+    heightCm: dto.heightCm,
+    weightKg: dto.weightKg,
+    description: dto.description,
+  };
+}
+
+/**
+ * La taille persistée ne devient un choix explicite que si l'espèce en offre
+ * un. Sinon elle reste dérivée : la reprendre ferait ressurgir, par la porte de
+ * derrière, la rémanence que `resolvedSizeOf` sert justement à empêcher.
+ */
+function originFieldsOf(dto: CharacterBuildDetailDto, catalog: DndCatalog) {
+  const species = catalog.species.find((entry) => entry.key === dto.speciesKey);
+  const isChosen = (species?.sizeOptions.length ?? 0) > 1;
+
+  return {
+    selectedSize: isChosen ? dto.size : null,
+    standardLanguages: [...dto.standardLanguages],
   };
 }
 
@@ -50,6 +81,7 @@ function abilityFieldsOf(dto: CharacterBuildDetailDto) {
   return {
     abilityMethod: dto.abilityMethod,
     abilityRoll: dto.abilityRoll,
+    abilityRollId: null,
     assignment: assignmentOf(dto),
     pointBuyScores: pointBuyScoresOf(dto),
   };

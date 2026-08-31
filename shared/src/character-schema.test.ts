@@ -5,7 +5,9 @@ import {
   AbilityScoresSchema,
   AssignCharacterSchema,
   CampaignCharacterListItemSchema,
+  CreateCharacterSchema,
   FinalizeCharacterSchema,
+  IssuedAbilityRollSchema,
 } from './character-schema.js';
 
 describe('contrats d attribution et de projection', () => {
@@ -37,7 +39,10 @@ const VALID_SCORES = {
   charisma: 13,
 };
 
-const A_FINALIZED_CHARACTER = {
+const A_ROLL_ID = '7d2b1c90-3e4f-4a56-9b81-0c5d6e7f8a90';
+
+/** Le corps du `POST` : la création est le seul moment où un tirage se désigne. */
+const A_CREATION_BODY = {
   name: 'Frodo Sacquet',
   alignment: 'chaoticGood',
   age: 33,
@@ -71,17 +76,88 @@ const A_FINALIZED_CHARACTER = {
     classOptionId: 'A',
     backgroundOptionId: 'A',
   },
-  abilityRoll: null,
+  abilityRollId: A_ROLL_ID,
 };
 
-describe('FinalizeCharacterSchema', () => {
+/** Le corps du `PUT` : le personnage garde le tirage qu'il a déjà. */
+const AN_EDIT_BODY = { ...A_CREATION_BODY, abilityRollId: null };
+
+describe('composition et tirage', () => {
+  // Le contrat ne transporte plus de dés : un client ne peut plus les inventer.
+  it('refuse un tirage envoyé à la place de sa référence', () => {
+    const forged = { ...A_CREATION_BODY, abilityRollId: { totals: [18, 18, 18] } };
+
+    expect(CreateCharacterSchema.safeParse(forged).success).toBe(false);
+  });
+
+  it("n'accepte comme référence qu'un identifiant de tirage", () => {
+    const arbitrary = { ...A_CREATION_BODY, abilityRollId: 'tirage-42' };
+
+    expect(CreateCharacterSchema.safeParse(arbitrary).success).toBe(false);
+  });
+
+  // Sans cette regle, un `pointBuy` consommerait un tirage avant qu'on l'ignore.
+  it('exige un tirage pour la méthode « roll » à la création', () => {
+    const rolled = { ...A_CREATION_BODY, abilityMethod: 'roll', abilityRollId: null };
+
+    expect(CreateCharacterSchema.safeParse(rolled).success).toBe(false);
+  });
+
+  it('refuse un tirage pour les méthodes qui n’en ont pas', () => {
+    const bought = {
+      ...A_CREATION_BODY,
+      abilityMethod: 'pointBuy',
+      abilityRollId: '3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8',
+    };
+
+    expect(CreateCharacterSchema.safeParse(bought).success).toBe(false);
+  });
+
+  it('accepte le tirage émis par le serveur', () => {
+    const issued = {
+      rollId: '3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8',
+      dice: SIX_ROLLS_OF_FOUR,
+      totals: [15, 14, 13, 12, 10, 8],
+    };
+
+    expect(IssuedAbilityRollSchema.safeParse(issued).success).toBe(true);
+  });
+});
+
+const SIX_ROLLS_OF_FOUR = [
+  [6, 5, 4, 1], [6, 4, 4, 2], [5, 4, 4, 3],
+  [4, 4, 4, 1], [4, 3, 3, 2], [3, 3, 2, 1],
+];
+
+// Le `POST` et le `PUT` portent la même composition sous deux contrats. Les
+// confondre casse l'édition de tout personnage tiré aux dés : c'est arrivé.
+describe('création et édition, deux contrats distincts', () => {
+  it('laisse éditer un personnage tiré aux dés, sans redésigner de tirage', () => {
+    expect(FinalizeCharacterSchema.safeParse(AN_EDIT_BODY).success).toBe(true);
+    expect(CreateCharacterSchema.safeParse(AN_EDIT_BODY).success).toBe(false);
+  });
+
+  it("refuse à l'édition de désigner un tirage, quelle que soit la méthode", () => {
+    ['roll', 'standardArray', 'pointBuy'].forEach((abilityMethod) => {
+      const edit = { ...A_CREATION_BODY, abilityMethod, abilityRollId: A_ROLL_ID };
+
+      expect(FinalizeCharacterSchema.safeParse(edit).success).toBe(false);
+    });
+  });
+
+  it('accepte la même composition à la création quand le tirage est désigné', () => {
+    expect(CreateCharacterSchema.safeParse(A_CREATION_BODY).success).toBe(true);
+  });
+});
+
+describe('composition partagée par le POST et le PUT', () => {
   it('accepte une fiche complète', () => {
-    expect(FinalizeCharacterSchema.safeParse(A_FINALIZED_CHARACTER).success).toBe(true);
+    expect(CreateCharacterSchema.safeParse(A_CREATION_BODY).success).toBe(true);
   });
 
   it('refuse une espèce inconnue', () => {
     const result = FinalizeCharacterSchema.safeParse({
-      ...A_FINALIZED_CHARACTER,
+      ...A_CREATION_BODY,
       speciesKey: 'hobbit',
     });
 
@@ -90,7 +166,7 @@ describe('FinalizeCharacterSchema', () => {
 
   it('refuse un bonus d’historique que le PHB ne prévoit pas', () => {
     const result = FinalizeCharacterSchema.safeParse({
-      ...A_FINALIZED_CHARACTER,
+      ...A_CREATION_BODY,
       backgroundBonuses: { dexterity: 3 },
     });
 
@@ -99,25 +175,48 @@ describe('FinalizeCharacterSchema', () => {
 
   it('refuse une compétence inconnue dans un choix', () => {
     const result = FinalizeCharacterSchema.safeParse({
-      ...A_FINALIZED_CHARACTER,
+      ...A_CREATION_BODY,
       choices: [{ source: { type: 'class', key: 'rogue' }, skills: ['cuisine'] }],
     });
 
     expect(result.success).toBe(false);
   });
 
+  it.each(['alignment', 'age', 'heightCm', 'weightKg', 'size', 'standardLanguages']) (
+    'refuse le champ de création obligatoire absent : %s',
+    (field) => {
+      const incomplete = { ...A_CREATION_BODY } as Record<string, unknown>;
+      delete incomplete[field];
+
+      expect(FinalizeCharacterSchema.safeParse(incomplete).success).toBe(false);
+    },
+  );
+
+  it('refuse une identité hors contrat', () => {
+    expect(FinalizeCharacterSchema.safeParse({
+      ...A_CREATION_BODY, alignment: 'pragmatique',
+    }).success).toBe(false);
+    expect(FinalizeCharacterSchema.safeParse({
+      ...A_CREATION_BODY, age: 33.5,
+    }).success).toBe(false);
+    expect(FinalizeCharacterSchema.safeParse({
+      ...A_CREATION_BODY, heightCm: 0,
+    }).success).toBe(false);
+  });
+
   it('n’accepte que les trois méthodes de génération connues', () => {
     ['roll', 'standardArray', 'pointBuy'].forEach((abilityMethod) => {
-      const result = FinalizeCharacterSchema.safeParse({
-        ...A_FINALIZED_CHARACTER,
+      const result = CreateCharacterSchema.safeParse({
+        ...A_CREATION_BODY,
         abilityMethod,
+        abilityRollId: abilityMethod === 'roll' ? A_ROLL_ID : null,
       });
 
       expect(result.success).toBe(true);
     });
 
-    const invented = FinalizeCharacterSchema.safeParse({
-      ...A_FINALIZED_CHARACTER,
+    const invented = CreateCharacterSchema.safeParse({
+      ...A_CREATION_BODY,
       abilityMethod: 'freeform',
     });
 

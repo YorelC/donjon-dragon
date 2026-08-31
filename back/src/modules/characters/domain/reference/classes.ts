@@ -297,7 +297,7 @@ const CLASS_LIST: readonly CharacterClass[] = [
     },
     weaponProficiencies: ['simple'],
     armorTraining: ['light', 'shields'],
-    toolProficiencies: ["matériel d'herboriste"],
+    toolProficiencies: ['herbalism-kit'],
     toolChoice: null,
     startingEquipment: {
       options: [
@@ -659,7 +659,7 @@ const CLASS_LIST: readonly CharacterClass[] = [
     },
     weaponProficiencies: ['simple', 'martialFinesseOrLight'],
     armorTraining: ['light'],
-    toolProficiencies: ['outils de voleur'],
+    toolProficiencies: ['thieves-tools'],
     toolChoice: null,
     startingEquipment: {
       options: [

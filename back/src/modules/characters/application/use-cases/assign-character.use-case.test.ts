@@ -17,10 +17,14 @@ import {
   NotAssignedError,
   OnlyGameMasterCanAssignError,
 } from '../../domain/character.errors';
-import { aCharacterBody } from '../../testing/character.fixture';
+import { aCharacterBody, seedAbilityRoll } from '../../testing/character.fixture';
 import { InMemoryCharacterAssignmentRepository } from '../../testing/in-memory-character-assignment.repository';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
+import { UserId } from '@kernel/domain/user-id';
+
+import { InMemoryAbilityRollRepository } from '../../testing/in-memory-ability-roll.repository';
+import { InMemoryCharacterCreationRepository } from '../../testing/in-memory-character-creation.repository';
 import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { AssignCharacterUseCase } from './assign-character.use-case';
 import { CreateCharacterUseCase } from './create-character.use-case';
@@ -51,8 +55,13 @@ describe('attribution transactionnelle d un personnage', () => {
     characters = new InMemoryCharacterRepository();
     assignments = new InMemoryCharacterAssignmentRepository(characters);
     const clock = new FixedClock();
+    const rolls = new InMemoryAbilityRollRepository();
+    seedAbilityRoll(rolls, UserId.create(gameMasterId), campaignId);
+    seedAbilityRoll(rolls, UserId.create(frodoId), campaignId);
     create = new CreateCharacterUseCase(
       characters, directory, new InMemoryItemCatalog(), membership, clock,
+      new InMemoryCharacterCreationRepository(characters),
+      rolls,
     );
     assign = new AssignCharacterUseCase(
       characters, assignments, directory, membership, clock,
@@ -157,7 +166,10 @@ describe('attribution transactionnelle d un personnage', () => {
   });
 
   async function freeCharacter(name: string) {
-    return create.execute({ ...aCharacterBody(name), campaignId, actorId: anActor(gameMasterId) });
+    return create.execute({
+      ...aCharacterBody(name), campaignId, actorId: anActor(gameMasterId),
+      idempotencyKey: randomUUID(),
+    });
   }
 
   function assignCommand(characterId: string, playerDisplayName: string) {

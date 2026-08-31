@@ -14,6 +14,19 @@ export const ALIGNMENTS = [
 
 export type Alignment = (typeof ALIGNMENTS)[number];
 
+/** Libellés français, arrêtés par Charly le 31/08/2026. */
+export const ALIGNMENT_LABELS: Record<Alignment, string> = {
+  lawfulGood: 'Loyal bon',
+  neutralGood: 'Neutre bon',
+  chaoticGood: 'Chaotique bon',
+  lawfulNeutral: 'Loyal neutre',
+  trueNeutral: 'Neutre pur',
+  chaoticNeutral: 'Chaotique neutre',
+  lawfulEvil: 'Loyal mauvais',
+  neutralEvil: 'Neutre mauvais',
+  chaoticEvil: 'Chaotique mauvais',
+};
+
 export interface CharacterIdentitySnapshot {
   alignment: Alignment;
   age: number;

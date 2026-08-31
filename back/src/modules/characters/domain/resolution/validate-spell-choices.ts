@@ -22,6 +22,7 @@ function assertClassSpells(input: ChoicesToValidate): void {
   const chosen = classChoices(input).flatMap(spellsOf);
   const extra = extraCantrips(input);
   if (!spellcasting) return assertSpellSet(chosen, input.classKey, 0, 0);
+  assertGrantedClassSpellsAreNotChosen(input, chosen);
   assertSpellSet(
     chosen,
     input.classKey,
@@ -34,7 +35,7 @@ function assertMagicInitiate(input: ChoicesToValidate): void {
   const choices = input.choices.from({ type: 'feat', key: 'magic-initiate' });
   if (choices.length !== magicInitiateCount(input)) fail('magic-initiate');
   choices.forEach(assertMagicInitiateChoice);
-  assertFixedBackgroundList(input, choices.map((choice) => choice.spellList));
+  assertFixedBackgroundList(input, choices);
 }
 
 function assertMagicInitiateChoice(choice: CharacterChoice): void {
@@ -49,16 +50,47 @@ function assertMagicInitiateChoice(choice: CharacterChoice): void {
 
 function assertFixedBackgroundList(
   input: ChoicesToValidate,
-  lists: readonly (ClassKey | undefined)[],
+  choices: readonly CharacterChoice[],
 ): void {
   const fixed = BACKGROUNDS[input.backgroundKey].originFeatSpellList;
-  if (fixed && !lists.includes(fixed)) fail('magic-initiate background list');
+  if (!fixed) return;
+  const backgroundChoice = choiceGrantedByBackground(input, choices);
+  if (backgroundChoice?.spellList !== fixed) fail('magic-initiate background list');
+}
+
+function assertGrantedClassSpellsAreNotChosen(
+  input: ChoicesToValidate,
+  chosen: readonly SpellKey[],
+): void {
+  const granted = CLASSES[input.classKey].level1Features.flatMap((feature) => feature.effects)
+    .flatMap((effect) => effect.grants?.spells ?? [])
+    .map((spell) => spell.spellKey);
+  if (granted.some((spell) => chosen.includes(spell))) fail('granted class spells');
+}
+
+function choiceGrantedByBackground(
+  input: ChoicesToValidate,
+  choices: readonly CharacterChoice[],
+): CharacterChoice | undefined {
+  if (choices.length === 1) return choices[0];
+  return choices.find((choice) =>
+    choice.source.grantedBy?.type === 'background'
+    && choice.source.grantedBy.key === input.backgroundKey,
+  );
 }
 
 function assertWizardSpellbook(input: ChoicesToValidate): void {
+  if (input.classKey !== 'wizard') return assertNoSpellbook(input);
   const spellbook = classChoices(input).flatMap((choice) => choice.spellbook ?? []);
-  const expected = input.classKey === 'wizard' ? 6 : 0;
-  assertKnownUnique(spellbook, expected, 'wizard', 1, 'spellbook');
+  assertKnownUnique(spellbook, 6, 'wizard', 1, 'spellbook');
+  const prepared = classChoices(input).flatMap(spellsOf)
+    .filter((key) => SPELLS[key]?.level === 1);
+  if (!prepared.every((key) => spellbook.includes(key))) fail('wizard prepared spells');
+}
+
+function assertNoSpellbook(input: ChoicesToValidate): void {
+  const spellbook = classChoices(input).flatMap((choice) => choice.spellbook ?? []);
+  assertEmpty(spellbook, 'spellbook');
 }
 
 function assertPactTome(input: ChoicesToValidate): void {
@@ -72,6 +104,9 @@ function assertPactTome(input: ChoicesToValidate): void {
     fail('pact-of-the-tome');
   }
   assertKnownUnique(spells, 5, undefined, undefined, 'pact-of-the-tome');
+  const prepared = input.choices.all.flatMap(spellsOf)
+    .filter((key) => SPELLS[key]?.level === 1);
+  if (rituals.some((key) => prepared.includes(key))) fail('pact-of-the-tome');
 }
 
 function assertSpellSet(

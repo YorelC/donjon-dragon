@@ -1,8 +1,12 @@
 import type {
+  CatalogAlignment,
   CatalogBackground,
+  CatalogBoundedChoice,
   CatalogClass,
   CatalogClassChoice,
   CatalogFeature,
+  CatalogLanguage,
+  CatalogLanguages,
   CatalogLineageChoice,
   CatalogOriginFeat,
   CatalogSkillChoice,
@@ -12,12 +16,21 @@ import type {
   DndCatalog,
 } from '@donjon-dragon/shared/dnd-catalog-schema';
 
+import { ALIGNMENTS, ALIGNMENT_LABELS, type Alignment } from '../domain/character-identity';
 import { BACKGROUNDS, type Background } from '../domain/reference/backgrounds';
 import { CLASSES, type CharacterClass } from '../domain/reference/classes';
 import { CLASS_ORDERS } from '../domain/reference/class-orders';
 import { FIGHTING_STYLES } from '../domain/reference/fighting-styles';
 import type { Feature, GrantPayload, SkillChoice } from '../domain/reference/effect';
 import { ORIGIN_FEATS, type OriginFeat } from '../domain/reference/origin-feats';
+import { RARE_LANGUAGES, STANDARD_LANGUAGES } from '../domain/reference/creation-options';
+import {
+  backgroundToolOptions,
+  classToolOptions,
+  weaponMasteryCount,
+  weaponMasteryOptions,
+} from '../domain/resolution/class-options';
+import { LANGUAGE_LABELS, type Language } from '../domain/reference/proficiencies';
 import { SKILL_LABELS } from '../domain/reference/skills';
 import { SPECIES, type Species } from '../domain/reference/species';
 import type { StartingEquipment } from '../domain/reference/starting-equipment';
@@ -38,7 +51,28 @@ export function toDndCatalog(): DndCatalog {
     backgrounds: Object.values(BACKGROUNDS).map(toCatalogBackground),
     originFeats: Object.values(ORIGIN_FEATS).map(toCatalogOriginFeat),
     skillLabels: { ...SKILL_LABELS },
+    languages: toCatalogLanguages(),
+    alignments: ALIGNMENTS.map(toCatalogAlignment),
   };
+}
+
+/**
+ * Le front ne redit pas ces listes : il les reçoit. Le Commun en est absent des
+ * deux côtés — il est accordé d'office et ne se choisit jamais.
+ */
+function toCatalogLanguages(): CatalogLanguages {
+  return {
+    standard: STANDARD_LANGUAGES.map(toCatalogLanguage),
+    rare: RARE_LANGUAGES.map(toCatalogLanguage),
+  };
+}
+
+function toCatalogLanguage(key: Language): CatalogLanguage {
+  return { key, name: LANGUAGE_LABELS[key] };
+}
+
+function toCatalogAlignment(key: Alignment): CatalogAlignment {
+  return { key, name: ALIGNMENT_LABELS[key] };
 }
 
 function toCatalogSpecies(species: Species): CatalogSpecies {
@@ -88,7 +122,36 @@ function toCatalogClass(characterClass: CharacterClass): CatalogClass {
     level1Features: characterClass.level1Features.map(toCatalogFeature),
     expertiseCount: expertiseCountOf(characterClass.level1Features),
     level1Choices: level1ChoicesOf(characterClass),
+    ...boundedChoicesOf(characterClass),
   };
+}
+
+/** Les trois bornes que le wizard doit connaître pour ne rien proposer d'invalide. */
+function boundedChoicesOf(characterClass: CharacterClass) {
+  return {
+    weaponMastery: weaponMasteryOf(characterClass.key),
+    toolChoice: toolChoiceOf(characterClass),
+    grantsLanguageChoice: characterClass.key === ROGUE,
+  };
+}
+
+/** Le Roublard, et lui seul, apprend une langue de plus au niveau 1. */
+const ROGUE = 'rogue';
+
+/**
+ * Ce que le wizard doit proposer vient des MÊMES fonctions que la validation.
+ * Publier une liste calculée ici la ferait diverger au premier errata.
+ */
+function weaponMasteryOf(classKey: CharacterClass['key']): CatalogBoundedChoice | null {
+  const count = weaponMasteryCount(classKey);
+
+  return count > 0 ? { count, options: [...weaponMasteryOptions(classKey)] } : null;
+}
+
+function toolChoiceOf(characterClass: CharacterClass): CatalogBoundedChoice | null {
+  const count = characterClass.toolChoice?.count ?? 0;
+
+  return count > 0 ? { count, options: [...classToolOptions(characterClass.key)] } : null;
 }
 
 /**
@@ -154,6 +217,7 @@ function toCatalogBackground(background: Background): CatalogBackground {
     originFeatSpellList: background.originFeatSpellList ?? null,
     skillProficiencies: [...background.skillProficiencies],
     toolProficiency: background.toolProficiency,
+    toolOptions: [...backgroundToolOptions(background.key)],
     equipment: toCatalogStartingEquipment(background.equipment),
   };
 }

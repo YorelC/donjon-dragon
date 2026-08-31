@@ -65,6 +65,8 @@ export const API_ROUTES = {
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,
     create: (campaignId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters`,
+    abilityRoll: (campaignId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/ability-roll`,
     finalize: (campaignId: string, characterId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}`,
     sheet: (campaignId: string, characterId: string) =>

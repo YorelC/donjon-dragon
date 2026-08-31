@@ -13,10 +13,12 @@ import {
   CharacterNotFoundError,
   NotEditableByActorError,
 } from '../../domain/character.errors';
-import { aCharacterBody } from '../../testing/character.fixture';
+import { aCharacterBody, seedAbilityRoll } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
 import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
+import { InMemoryAbilityRollRepository } from '../../testing/in-memory-ability-roll.repository';
+import { InMemoryCharacterCreationRepository } from '../../testing/in-memory-character-creation.repository';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { DeleteCharacterUseCase } from './delete-character.use-case';
 
@@ -52,12 +54,18 @@ describe('DeleteCharacterUseCase', () => {
     const membership = new GetCampaignMembershipUseCase(campaignRepo);
     const memberships = new GetCampaignMembershipsUseCase(campaignRepo);
     characterRepo = new InMemoryCharacterRepository();
+    const rolls = new InMemoryAbilityRollRepository();
+    seedAbilityRoll(rolls, UserId.create(frodoId), campaignId);
+    seedAbilityRoll(rolls, UserId.create(ownerId), campaignId);
+    seedAbilityRoll(rolls, UserId.create(secondMasterId), campaignId);
     create = new CreateCharacterUseCase(
       characterRepo,
       directory,
       new InMemoryItemCatalog(),
       membership,
       new FixedClock(),
+      new InMemoryCharacterCreationRepository(characterRepo),
+      rolls,
     );
     useCase = new DeleteCharacterUseCase(characterRepo, memberships);
   });
@@ -67,6 +75,7 @@ describe('DeleteCharacterUseCase', () => {
       ...aCharacterBody(),
       campaignId,
       actorId: anActor(creatorId),
+      idempotencyKey: randomUUID(),
     });
     return character.id;
   }

@@ -28,7 +28,7 @@ export const ARTISAN_TOOLS = [
   'brewers-supplies',
   'calligraphers-supplies',
   'carpenters-tools',
-  'cartographers-tools',
+  'cartographer-tools',
   'cobblers-tools',
   'cooks-utensils',
   'glassblowers-tools',
@@ -87,7 +87,7 @@ export const BACKGROUND_FIXED_TOOLS: Readonly<Record<BackgroundKey, string | nul
   entertainer: null,
   farmer: 'carpenters-tools',
   guard: null,
-  guide: 'cartographers-tools',
+  guide: 'cartographer-tools',
   hermit: 'herbalism-kit',
   merchant: 'navigators-tools',
   noble: null,
@@ -96,6 +96,20 @@ export const BACKGROUND_FIXED_TOOLS: Readonly<Record<BackgroundKey, string | nul
   scribe: 'calligraphers-supplies',
   soldier: null,
   wayfarer: 'thieves-tools',
+};
+
+/**
+ * Les cinq historiques dont la MAÎTRISE d'outil est un choix, et le catalogue
+ * dans lequel il se prend. À ne pas confondre avec le choix d'OBJET d'un
+ * paquetage de départ : le Voyageur concrétise une boîte de jeux dans son
+ * paquetage sans en gagner la maîtrise, son outil étant fixe.
+ */
+export const BACKGROUND_TOOL_CHOICES: Partial<Record<BackgroundKey, readonly string[]>> = {
+  artisan: ARTISAN_TOOLS,
+  entertainer: MUSICAL_INSTRUMENTS,
+  guard: GAMING_SETS,
+  noble: GAMING_SETS,
+  soldier: GAMING_SETS,
 };
 
 export const LEVEL_ONE_INVOCATIONS = [
@@ -117,12 +131,31 @@ export const SPECIAL_FAMILIAR_FORMS = [
   'venomous-snake',
 ] as const;
 
+export const STANDARD_FAMILIAR_FORMS = [
+  'bat',
+  'cat',
+  'frog',
+  'hawk',
+  'lizard',
+  'octopus',
+  'owl',
+  'rat',
+  'raven',
+  'spider',
+  'weasel',
+] as const;
+
+export const LEVEL_ONE_FAMILIAR_FORMS = [
+  ...STANDARD_FAMILIAR_FORMS,
+  ...SPECIAL_FAMILIAR_FORMS,
+] as const;
+
 const TOOL_LABELS: Readonly<Record<string, string>> = {
   'alchemists-supplies': "Matériel d'alchimiste",
   'brewers-supplies': 'Matériel de brasseur',
   'calligraphers-supplies': 'Matériel de calligraphe',
   'carpenters-tools': 'Outils de charpentier',
-  'cartographers-tools': 'Outils de cartographe',
+  'cartographer-tools': 'Outils de cartographe',
   'cobblers-tools': 'Outils de cordonnier',
   'cooks-utensils': 'Ustensiles de cuisinier',
   'glassblowers-tools': 'Outils de souffleur de verre',

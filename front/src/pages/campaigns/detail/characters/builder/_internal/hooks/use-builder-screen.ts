@@ -3,6 +3,7 @@ import type {
   CampaignCharacterListItem,
   ComputedCharacter,
   DndCatalog,
+  IssuedAbilityRoll,
   Item,
 } from "@donjon-dragon/shared";
 import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
@@ -13,10 +14,10 @@ import type { BuilderState } from "./use-character-builder";
 import { useCharacterBuilder } from "./use-character-builder";
 import { useCharacterPreview } from "./use-character-preview";
 import { useCharacterBuild } from "../queries/use-character-build";
+import { useRollAbilities } from "../queries/use-character-creation";
 import { useFinishAction } from "./use-finish-action";
 import { isFullyAssigned, type CharacterComposition } from "../types/character-composition";
 import { toComposition } from "../types/character-build-detail";
-import { rollAbilities } from "../types/roll-abilities";
 import {
   backgroundOf,
   classCantripsOf,
@@ -50,8 +51,9 @@ export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
     abilities: context.abilities,
     spells: context.spells,
     characterName: characterNameOf(target, context.character, builder),
+    isEditing: target.characterId !== null,
     canFinish:
-      isFullyAssigned(builder.composition) && preview !== null && builder.isValid("name"),
+      isFullyAssigned(builder.composition) && preview !== null && builder.isValid("identity"),
     ...context.finish,
   };
 }
@@ -86,8 +88,9 @@ function useBuilderContext(target: BuilderTarget): BuilderContext {
   const { data: items } = useItemCatalog();
   const character = useExistingCharacter(target);
   const buildDetail = useCharacterBuild(target.campaignId, target.characterId);
-  const initial = useInitialComposition(buildDetail.data);
+  const initial = useInitialComposition(buildDetail.data, catalog);
   const builder = useCharacterBuilder(catalog, initial);
+  const rollAbilities = useRollAbilities(target.campaignId);
 
   return {
     catalog,
@@ -96,16 +99,21 @@ function useBuilderContext(target: BuilderTarget): BuilderContext {
     buildDetail,
     builder,
     preview: useCharacterPreview(target.campaignId, builder.composition, catalog),
-    abilities: useAbilitiesStep(builder, stepContext(catalog, builder)),
+    abilities: useAbilitiesStep(builder, stepContext(catalog, builder), rollAbilities),
     spells: useSpellsStep(stepContext(catalog, builder)),
     finish: useFinishAction(target, builder, catalog),
   };
 }
 
+/** Sans catalogue, la taille n'est pas classable en choix ou en dérivée. */
 function useInitialComposition(
   buildDetail: ReturnType<typeof useCharacterBuild>["data"],
+  catalog: DndCatalog | undefined,
 ): CharacterComposition | null {
-  return useMemo(() => (buildDetail ? toComposition(buildDetail) : null), [buildDetail]);
+  return useMemo(
+    () => (buildDetail && catalog ? toComposition(buildDetail, catalog) : null),
+    [buildDetail, catalog],
+  );
 }
 
 /** `null` tant que le catalogue n'est pas là : rien n'est dérivable sans lui. */
@@ -128,12 +136,22 @@ function useExistingCharacter(
 function useAbilitiesStep(
   builder: BuilderState,
   context: StepContext | null,
+  rollAbilities: ReturnType<typeof useRollAbilities>,
 ): BuilderScreen["abilities"] {
   return {
     roll: builder.composition.abilityRoll,
-    onRoll: () => builder.update({ abilityRoll: rollAbilities() }),
+    onRoll: () => rollAbilities.mutate(undefined, { onSuccess: (issued) => keep(builder, issued) }),
+    isRolling: rollAbilities.isPending,
     background: context ? backgroundOf(context) ?? null : null,
   };
+}
+
+/** Les dés servent à l'affichage, l'identité au serveur : on garde les deux. */
+function keep(builder: BuilderState, issued: IssuedAbilityRoll): void {
+  builder.update({
+    abilityRoll: { dice: issued.dice, totals: issued.totals },
+    abilityRollId: issued.rollId,
+  });
 }
 
 /**

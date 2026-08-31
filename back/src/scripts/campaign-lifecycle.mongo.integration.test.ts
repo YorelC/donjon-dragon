@@ -42,7 +42,7 @@ import { MongoCampaignLifecycleRepository } from '@modules/campaigns/infrastruct
 import { MongoCampaignPersistenceRepository } from '@modules/campaigns/infrastructure/persistence/mongo-campaign-persistence.repository';
 import { aCampaign, withPlayer } from '@modules/campaigns/testing/campaign.fixture';
 import { toBuildInput } from '@modules/characters/application/character-build.mapper';
-import { AbilityRoll } from '@modules/characters/domain/ability-roll';
+import { STANDARD_ARRAY_ROLL } from '@modules/characters/testing/character-build.fixture';
 import { Character } from '@modules/characters/domain/character';
 import { CharacterName } from '@modules/characters/domain/character-name';
 import { OwningCampaignId } from '@modules/characters/domain/owning-campaign-id';
@@ -229,7 +229,7 @@ function assignedCharacter(
     identity: A_CHARACTER_IDENTITY,
     createdBy: UserId.create(ownerId),
     build: toBuildInput(body),
-    roll: AbilityRoll.restore(requiredRoll(body.abilityRoll)),
+    roll: STANDARD_ARRAY_ROLL,
     now: TEST_INSTANT,
   });
   character.assignTo(true, UserId.create(playerId), TEST_INSTANT);
@@ -355,9 +355,4 @@ async function expectEnvelopeCounts(
 function requiredMongoUri(): string {
   if (!MONGO_URI) throw new Error('MONGODB_INTEGRATION_URI is required');
   return MONGO_URI;
-}
-
-function requiredRoll<T>(roll: T | null): T {
-  if (!roll) throw new Error('Character roll is required');
-  return roll;
 }

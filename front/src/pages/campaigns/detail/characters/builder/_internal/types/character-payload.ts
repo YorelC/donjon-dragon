@@ -1,8 +1,7 @@
 import type {
   Ability,
-  CharacterChoice,
-  ClassKey,
   DndCatalog,
+  CreateCharacterDto,
   FinalizeCharacterDto,
 } from "@donjon-dragon/shared";
 import {
@@ -11,7 +10,11 @@ import {
   isFullyAssigned,
   type CharacterComposition,
 } from "./character-composition";
-import { grantedGold, grantedItems } from "./starting-equipment";
+import { resolvedSizeOf } from "./builder-lookups";
+import { completeIdentityOf } from "./identity-fields";
+import { choicesOf } from "./payload-choices";
+import { equipmentPayloadOf } from "./starting-equipment";
+import { STANDARD_LANGUAGE_QUOTA } from "./builder-validity";
 
 /** Un score neutre tant que rien n'est réparti : l'aperçu doit répondre. */
 const UNASSIGNED_SCORE = 10;
@@ -33,134 +36,88 @@ function baseScoresOf(composition: CharacterComposition): Record<Ability, number
 }
 
 /**
- * Les choix, regroupés par provenance. Le back en a besoin pour savoir quoi
- * retirer si la source disparaît, et pour vérifier que chaque source a bien fait
- * choisir ce qu'elle devait.
+ * L'aperçu, dont le contrat est plus permissif que celui de la création : il
+ * exige l'origine — espèce, gabarit, langues, classe, historique — mais pas
+ * l'état civil. Un joueur voit donc sa fiche bien avant de choisir son âge.
  */
-function choicesOf(composition: CharacterComposition): CharacterChoice[] {
-  return [
-    ...speciesChoices(composition),
-    ...lineageChoices(composition),
-    ...classChoices(composition),
-    ...magicInitiateChoice(composition),
-    ...skilledChoice(composition),
-  ];
-}
-
-/**
- * La caractéristique d'incantation du sort mineur de lignée. Elle est portée par
- * la lignée et non par l'espèce : c'est elle qui donne le sort.
- */
-function lineageChoices(composition: CharacterComposition): CharacterChoice[] {
-  if (!composition.lineageKey || !composition.lineageSpellcastingAbility) return [];
-
-  return [
-    {
-      source: { type: "lineage", key: composition.lineageKey },
-      spellcastingAbility: composition.lineageSpellcastingAbility,
-    },
-  ];
-}
-
-function speciesChoices(composition: CharacterComposition): CharacterChoice[] {
-  if (!composition.speciesKey) return [];
-
-  return [
-    {
-      source: { type: "species", key: composition.speciesKey },
-      skills: composition.speciesSkills,
-      ...(composition.speciesFeat ? { originFeat: composition.speciesFeat } : {}),
-    },
-  ];
-}
-
-function classChoices(composition: CharacterComposition): CharacterChoice[] {
-  if (!composition.classKey) return [];
-
-  return [
-    {
-      source: { type: "class", key: composition.classKey },
-      skills: composition.classSkills,
-      expertise: composition.expertise,
-      spells: [...composition.classCantrips, ...composition.classSpells],
-      ...(composition.fightingStyle ? { fightingStyle: composition.fightingStyle } : {}),
-      ...(composition.classOrder ? { classOrder: composition.classOrder } : {}),
-    },
-  ];
-}
-
-/** Initié à la magie porte sa liste, sa caractéristique et ses sorts. */
-function magicInitiateChoice(composition: CharacterComposition): CharacterChoice[] {
-  if (!composition.spellcastingAbility || !composition.spellList) return [];
-
-  return [
-    {
-      source: { type: "feat", key: "magic-initiate" },
-      spellcastingAbility: composition.spellcastingAbility,
-      spellList: composition.spellList as ClassKey,
-      spells: [...composition.featCantrips, ...composition.featSpells],
-    },
-  ];
-}
-
-function skilledChoice(composition: CharacterComposition): CharacterChoice[] {
-  if (composition.featSkills.length === 0 && composition.featTools.length === 0) return [];
-
-  return [
-    {
-      source: { type: "feat", key: "skilled" },
-      skills: composition.featSkills,
-      tools: composition.featTools,
-    },
-  ];
-}
-
-/**
- * L'équipement envoyé au back. `items` et `gold` ne sont pas saisis : ils se
- * recalculent depuis les options retenues, pour que la composition n'ait qu'une
- * seule source de vérité — le choix, pas sa conséquence.
- */
-function equipmentOf(
-  catalog: DndCatalog,
-  composition: CharacterComposition,
-): FinalizeCharacterDto["equipment"] {
-  return {
-    armorKey: composition.armorKey,
-    shield: composition.shield,
-    items: grantedItems(catalog, composition),
-    gold: grantedGold(catalog, composition),
-    classOptionId: composition.classEquipmentOptionId,
-    backgroundOptionId: composition.backgroundEquipmentOptionId,
-  };
-}
-
 export function toPreviewPayload(
   catalog: DndCatalog,
   composition: CharacterComposition,
-): Omit<FinalizeCharacterDto, "name" | "abilityRoll"> | null {
-  if (!composition.speciesKey || !composition.classKey || !composition.backgroundKey) {
-    return null;
-  }
+): Omit<FinalizeCharacterDto, "name" | "abilityRollId"> | null {
+  const origin = originOf(catalog, composition);
+  if (!origin) return null;
 
   return {
-    speciesKey: composition.speciesKey,
-    lineageKey: composition.lineageKey,
-    classKey: composition.classKey,
-    backgroundKey: composition.backgroundKey,
+    ...origin,
     abilityMethod: composition.abilityMethod,
     base: baseScoresOf(composition),
     backgroundBonuses: composition.backgroundBonuses,
     choices: choicesOf(composition),
-    equipment: equipmentOf(catalog, composition),
+    equipment: equipmentPayloadOf(catalog, composition),
   };
 }
 
-export function toFinalizePayload(
+type PayloadOrigin = Pick<
+  FinalizeCharacterDto,
+  "speciesKey" | "lineageKey" | "size" | "standardLanguages" | "classKey" | "backgroundKey"
+>;
+
+/** Ce que l'espèce, le gabarit, les langues, la classe et l'historique fixent. */
+function originOf(
+  catalog: DndCatalog,
+  composition: CharacterComposition,
+): PayloadOrigin | null {
+  const { speciesKey, classKey, backgroundKey, standardLanguages } = composition;
+  const size = resolvedSizeOf({ catalog, composition });
+  if (!speciesKey || !classKey || !backgroundKey || !size) return null;
+  if (standardLanguages.length !== STANDARD_LANGUAGE_QUOTA) return null;
+
+  return {
+    speciesKey, lineageKey: composition.lineageKey, size,
+    standardLanguages: [...standardLanguages], classKey, backgroundKey,
+  };
+}
+
+/** Le corps du `POST` : la création est le seul moment où un tirage se désigne. */
+export function toCreatePayload(
+  catalog: DndCatalog,
+  composition: CharacterComposition,
+): CreateCharacterDto | null {
+  const named = toNamedComposition(catalog, composition);
+  if (!named) return null;
+
+  return { ...named, abilityRollId: composition.abilityRollId };
+}
+
+/**
+ * Le corps du `PUT`. Le tirage n'y figure jamais : le personnage garde le sien,
+ * et le serveur refuse toute composition qui prétend en redésigner un.
+ */
+export function toEditPayload(
   catalog: DndCatalog,
   composition: CharacterComposition,
 ): FinalizeCharacterDto | null {
-  const preview = toPreviewPayload(catalog, composition);
-  if (!preview || !isFullyAssigned(composition)) return null;
+  const named = toNamedComposition(catalog, composition);
+  if (!named) return null;
 
-  return { ...preview, name: composition.name, abilityRoll: composition.abilityRoll };
+  return { ...named, abilityRollId: null };
+}
+
+/**
+ * La part commune aux deux contrats : tout, sauf le sort réservé au tirage.
+ *
+ * `completeIdentityOf` est un rétrécissement de type, pas une affirmation :
+ * tant qu'un champ d'état civil manque, il n'y a pas de payload du tout. Le
+ * serveur reste le juge — cette garde évite d'envoyer un corps qu'on sait
+ * incomplet, elle ne prétend pas rendre le `400` impossible.
+ */
+function toNamedComposition(
+  catalog: DndCatalog,
+  composition: CharacterComposition,
+): Omit<CreateCharacterDto, "abilityRollId"> | null {
+  const preview = toPreviewPayload(catalog, composition);
+  const identity = completeIdentityOf(composition);
+  if (!preview || !identity || !isFullyAssigned(composition)) return null;
+
+  return { ...preview, ...identity };
 }

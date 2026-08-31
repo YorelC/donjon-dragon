@@ -4,6 +4,7 @@ import type { StepContext } from "./builder-lookups";
 export const BUILDER_STEPS = [
   "species",
   "lineage",
+  "languages",
   "class",
   "classSkills",
   "expertise",
@@ -15,7 +16,7 @@ export const BUILDER_STEPS = [
   "cantrips",
   "spells",
   "equipment",
-  "name",
+  "identity",
 ] as const;
 
 export type BuilderStep = (typeof BUILDER_STEPS)[number];

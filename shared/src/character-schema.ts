@@ -77,6 +77,9 @@ export const BackgroundAbilityBonusesSchema = z.object({
  * sa manière : permutation du tirage persisté, permutation du tableau standard,
  * ou bornes et budget pour l'achat de points.
  */
+/** La seule methode qui s'appuie sur un tirage, et donc sur un tirage emis. */
+export const ROLL_METHOD = 'roll';
+
 export const AbilityMethodSchema = z.enum(['roll', 'standardArray', 'pointBuy']);
 
 export const STANDARD_ARRAY = [15, 14, 13, 12, 10, 8] as const;
@@ -112,6 +115,14 @@ export const AbilityRollSchema = z.object({
     .length(ABILITY_ROLL_COUNT),
 });
 
+/**
+ * Ce que rend l'émission d'un tirage : les dés, leurs totaux, et l'identité qui
+ * permettra à la création de désigner ce tirage-là et pas un autre.
+ */
+export const IssuedAbilityRollSchema = AbilityRollSchema.extend({
+  rollId: z.string().uuid(),
+});
+
 // ---------------------------------------------------------------------------
 // Choix de création
 // ---------------------------------------------------------------------------
@@ -119,6 +130,12 @@ export const AbilityRollSchema = z.object({
 export const ChoiceSourceSchema = z.object({
   type: EffectSourceTypeSchema,
   key: z.string().min(1),
+  grantedBy: z
+    .object({
+      type: z.enum(['background', 'species']),
+      key: z.string().min(1),
+    })
+    .optional(),
 });
 
 /**
@@ -184,12 +201,15 @@ export const CharacterEquipmentSchema = z.object({
 
 /**
  * Le wizard rend sa copie complète — un personnage n'existe qu'à ce moment-là,
- * jamais avant. Ce même schéma sert à la création (`POST`) et à l'édition d'un
- * personnage déjà créé (`PUT`, montée de niveau ou correction).
+ * jamais avant. Cette composition est la forme commune aux deux commandes, et
+ * n'est exportée par aucune des deux : `CreateCharacterSchema` la referme pour
+ * le `POST`, `FinalizeCharacterSchema` pour le `PUT`, et leurs invariants de
+ * tirage sont opposés. Les confondre casse l'édition — c'est arrivé une fois.
  *
- * Le tirage de caractéristiques est fait côté client et envoyé tel quel : le
- * serveur ne le vérifie plus. `abilityRoll` est `null` pour les méthodes
- * `standardArray`/`pointBuy`, qui n'ont jamais de tirage.
+ * Le tirage de caractéristiques n'est plus fait côté client : le serveur l'émet
+ * et le conserve. La composition ne transporte donc que `abilityRollId`, la
+ * référence du tirage à consommer — `null` pour les deux méthodes sans tirage,
+ * et sur `PUT`, où le personnage garde le sien.
  */
 const CharacterCompositionSchema = z.object({
   name: characterNameField(),
@@ -209,18 +229,42 @@ const CharacterCompositionSchema = z.object({
   backgroundBonuses: BackgroundAbilityBonusesSchema,
   choices: z.array(CharacterChoiceSchema),
   equipment: CharacterEquipmentSchema,
-  abilityRoll: AbilityRollSchema.nullable(),
+  abilityRollId: z.string().uuid().nullable(),
 });
 
+/**
+ * Le corps du `POST`. La création est le seul moment où un tirage se désigne :
+ * la méthode et le tirage doivent s'accorder.
+ */
+export const CreateCharacterSchema = CharacterCompositionSchema.superRefine(
+  (value, context) => {
+    requireCompleteIdentity(value, context);
+    requireRollMatchesMethod(value, context);
+  },
+);
+
+/**
+ * Le corps du `PUT`. Le personnage garde le tirage qu'il a déjà : l'édition
+ * n'en désigne aucun, quelle que soit sa méthode. Le serveur le recharge depuis
+ * le personnage persisté.
+ */
 export const FinalizeCharacterSchema = CharacterCompositionSchema.superRefine(
-  requireCompleteIdentity,
+  (value, context) => {
+    requireCompleteIdentity(value, context);
+    refuseRollOnEdit(value, context);
+  },
 );
 
 /** L'aperçu du wizard : les mêmes choix, mais rien n'est persisté ni vérifié. */
 export const PreviewCharacterSheetSchema = CharacterCompositionSchema.omit({
   name: true,
-  abilityRoll: true,
+  abilityRollId: true,
 }).superRefine(requireCompleteOrigin);
+
+type RollCandidate = {
+  abilityMethod?: unknown;
+  abilityRollId?: unknown;
+};
 
 type IdentityCandidate = {
   alignment?: unknown;
@@ -239,6 +283,26 @@ function requireCompleteIdentity(value: IdentityCandidate, context: z.Refinement
   addRequiredIssue(value.weightKg, 'weightKg', context);
 }
 
+/**
+ * La méthode et le tirage vont ensemble ou pas du tout. Sans cette règle, un
+ * `pointBuy` pourrait désigner un tirage — que le serveur consommerait avant de
+ * l'ignorer, brûlant un tirage pour rien.
+ */
+function refuseRollOnEdit(value: RollCandidate, context: z.RefinementCtx): void {
+  if (!value.abilityRollId) return;
+  addIssue('abilityRollId', 'An existing character keeps its ability roll', context);
+}
+
+function requireRollMatchesMethod(value: RollCandidate, context: z.RefinementCtx): void {
+  const needsRoll = value.abilityMethod === ROLL_METHOD;
+  if (needsRoll && !value.abilityRollId) {
+    addIssue('abilityRollId', 'An ability roll is required for the roll method', context);
+  }
+  if (!needsRoll && value.abilityRollId) {
+    addIssue('abilityRollId', 'This ability method takes no ability roll', context);
+  }
+}
+
 function requireCompleteOrigin(value: IdentityCandidate, context: z.RefinementCtx): void {
   addRequiredIssue(value.size, 'size', context);
   addRequiredIssue(value.standardLanguages, 'standardLanguages', context);
@@ -250,7 +314,11 @@ function addRequiredIssue(
   context: z.RefinementCtx,
 ): void {
   if (value !== undefined) return;
-  context.addIssue({ code: z.ZodIssueCode.custom, path: [field], message: 'Required' });
+  addIssue(field, 'Required', context);
+}
+
+function addIssue(field: string, message: string, context: z.RefinementCtx): void {
+  context.addIssue({ code: z.ZodIssueCode.custom, path: [field], message });
 }
 
 export const AssignCharacterSchema = z.object({
@@ -317,6 +385,8 @@ export const CharacterBuildDetailSchema = z.object({
   fightingStyle: z.string().nullable(),
   classOrder: z.string().nullable(),
   weaponMasteries: z.array(z.string()),
+  /** Les outils que la CLASSE fait choisir — barde, moine. */
+  classTools: z.array(z.string()),
   invocation: z.string().nullable(),
   invocationSpells: z.array(z.string()),
   familiarForm: z.string().nullable(),
@@ -324,6 +394,8 @@ export const CharacterBuildDetailSchema = z.object({
   spellbook: z.array(z.string()),
 
   backgroundKey: BackgroundKeySchema,
+  /** L'outil que l'HISTORIQUE fait choisir ; `null` quand il l'impose. */
+  backgroundTool: z.string().nullable(),
   backgroundBonuses: BackgroundAbilityBonusesSchema,
 
   featSkills: z.array(SkillNameSchema),
@@ -332,6 +404,16 @@ export const CharacterBuildDetailSchema = z.object({
   spellList: ClassKeySchema.nullable(),
   featCantrips: z.array(z.string()),
   featSpells: z.array(z.string()),
+  magicInitiateChoices: z.array(z.object({
+    grantedBy: z.object({
+      type: z.enum(['background', 'species']),
+      key: z.string(),
+    }).nullable(),
+    spellcastingAbility: AbilitySchema,
+    spellList: ClassKeySchema,
+    cantrips: z.array(z.string()),
+    spells: z.array(z.string()),
+  })),
 
   abilityMethod: AbilityMethodSchema,
   base: AbilityScoresSchema,
@@ -422,6 +504,8 @@ export type CharacterChoice = z.infer<typeof CharacterChoiceSchema>;
 export type CharacterItem = z.infer<typeof CharacterItemSchema>;
 export type CharacterEquipment = z.infer<typeof CharacterEquipmentSchema>;
 export type CharacterStatus = z.infer<typeof CharacterStatusSchema>;
+export type IssuedAbilityRoll = z.infer<typeof IssuedAbilityRollSchema>;
+export type CreateCharacterDto = z.infer<typeof CreateCharacterSchema>;
 export type FinalizeCharacterDto = z.infer<typeof FinalizeCharacterSchema>;
 export type PreviewCharacterSheetDto = z.infer<typeof PreviewCharacterSheetSchema>;
 export type AssignCharacterDto = z.infer<typeof AssignCharacterSchema>;

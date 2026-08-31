@@ -74,7 +74,10 @@ function BonusCell({ ability, grid, bonus }: BonusCellProps) {
 
   return (
     <div className="flex justify-center">
+      {/* Sans nom accessible, six cases identiques se suivent sans qu'on sache
+          laquelle porte quel bonus, ni sur quelle caractéristique. */}
       <Checkbox
+        aria-label={`${ABILITY_LABELS[ability]} +${bonus}`}
         className={allowed ? "border-primary" : "opacity-30"}
         checked={(grid.control.composition.backgroundBonuses[ability] ?? 0) === bonus}
         disabled={!allowed || grid.plan === "spread"}

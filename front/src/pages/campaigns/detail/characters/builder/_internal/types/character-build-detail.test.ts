@@ -1,6 +1,12 @@
 import { describe, it, expect } from "vitest";
 import type { CharacterBuildDetailDto } from "@donjon-dragon/shared";
+import { FinalizeCharacterSchema } from "@donjon-dragon/shared";
+import { aCatalog, aSpecies, aSpeciesWithSizeChoice } from "./catalog.fixture";
+import { toEditPayload } from "./character-payload";
 import { toComposition } from "./character-build-detail";
+
+/** Le halfelin du DTO : taille imposée, comme huit espèces sur dix. */
+const CATALOG = aCatalog({ species: [aSpecies({ key: "halfling", sizeOptions: ["Small"], size: "Small" })] });
 
 const BASE_DTO: CharacterBuildDetailDto = {
   name: "Frodo Sacquet",
@@ -24,12 +30,14 @@ const BASE_DTO: CharacterBuildDetailDto = {
   fightingStyle: null,
   classOrder: null,
   weaponMasteries: [],
+  classTools: [],
   invocation: null,
   invocationSpells: [],
   familiarForm: null,
   pactWeaponKey: null,
   spellbook: [],
   backgroundKey: "charlatan",
+  backgroundTool: null,
   backgroundBonuses: { dexterity: 2, charisma: 1 },
   featSkills: [],
   featTools: [],
@@ -37,6 +45,7 @@ const BASE_DTO: CharacterBuildDetailDto = {
   spellList: null,
   featCantrips: [],
   featSpells: [],
+  magicInitiateChoices: [],
   abilityMethod: "standardArray",
   base: { strength: 8, dexterity: 15, constitution: 13, intelligence: 12, wisdom: 10, charisma: 14 },
   abilityRoll: null,
@@ -56,7 +65,7 @@ const BASE_DTO: CharacterBuildDetailDto = {
 
 describe("toComposition — assignment", () => {
   it("reconstruit les emplacements du tableau standard à partir des scores", () => {
-    const composition = toComposition(BASE_DTO);
+    const composition = toComposition(BASE_DTO, CATALOG);
 
     expect(composition.assignment).toEqual({
       strength: 5, // 8
@@ -76,7 +85,7 @@ describe("toComposition — assignment", () => {
       abilityRoll: { dice: [], totals: [9, 9, 13, 12, 10, 14] },
     };
 
-    const composition = toComposition(dto);
+    const composition = toComposition(dto, CATALOG);
 
     expect(composition.assignment.strength).toBe(0);
     expect(composition.assignment.dexterity).toBe(1);
@@ -85,8 +94,8 @@ describe("toComposition — assignment", () => {
   it("ne plante pas si la méthode est « roll » sans tirage — cas défensif", () => {
     const dto: CharacterBuildDetailDto = { ...BASE_DTO, abilityMethod: "roll", abilityRoll: null };
 
-    expect(() => toComposition(dto)).not.toThrow();
-    expect(toComposition(dto).assignment).toEqual({});
+    expect(() => toComposition(dto, CATALOG)).not.toThrow();
+    expect(toComposition(dto, CATALOG).assignment).toEqual({});
   });
 
   it("copie les scores directement en achat de points, sans emplacement", () => {
@@ -96,7 +105,7 @@ describe("toComposition — assignment", () => {
       base: { strength: 15, dexterity: 14, constitution: 13, intelligence: 12, wisdom: 10, charisma: 8 },
     };
 
-    const composition = toComposition(dto);
+    const composition = toComposition(dto, CATALOG);
 
     expect(composition.assignment).toEqual({});
     expect(composition.pointBuyScores).toEqual(dto.base);
@@ -105,7 +114,7 @@ describe("toComposition — assignment", () => {
 
 describe("toComposition — reste des champs", () => {
   it("recopie les champs granulaires tels quels", () => {
-    const composition = toComposition(BASE_DTO);
+    const composition = toComposition(BASE_DTO, CATALOG);
 
     expect(composition.name).toBe("Frodo Sacquet");
     expect(composition.speciesKey).toBe("halfling");
@@ -120,9 +129,61 @@ describe("toComposition — reste des champs", () => {
   // Le wizard se rouvre sur le choix, pas sur sa conséquence : l'inventaire se
   // recalcule depuis les options au moment d'envoyer.
   it("reprend les options de paquetage retenues", () => {
-    const composition = toComposition(BASE_DTO);
+    const composition = toComposition(BASE_DTO, CATALOG);
 
     expect(composition.classEquipmentOptionId).toBe("A");
     expect(composition.backgroundEquipmentOptionId).toBe("A");
+  });
+
+  it("relit l état civil, figé depuis la création", () => {
+    const composition = toComposition(BASE_DTO, CATALOG);
+
+    expect(composition.alignment).toBe("chaoticGood");
+    expect(composition.age).toBe(33);
+    expect(composition.heightCm).toBe(96);
+    expect(composition.weightKg).toBe(30);
+    expect(composition.standardLanguages).toEqual(["common", "halfling"]);
+  });
+
+  /**
+   * Une taille imposee n'est pas une decision : la reprendre comme choix
+   * explicite ferait ressurgir la remanence que `resolvedSizeOf` empeche.
+   */
+  it("ne fait de la taille un choix explicite que si l espece en offre un", () => {
+    expect(toComposition(BASE_DTO, CATALOG).selectedSize).toBeNull();
+
+    const withChoice = aCatalog({
+      species: [aSpeciesWithSizeChoice("halfling")],
+    });
+
+    expect(toComposition(BASE_DTO, withChoice).selectedSize).toBe("Small");
+  });
+});
+
+/**
+ * L'aller-retour d'edition. Volontairement `toEditPayload` et non
+ * `toCreatePayload` : un personnage tire aux des n'expose plus d'identifiant de
+ * tirage consommable, et le contrat de creation le refuserait a juste titre.
+ */
+describe("aller-retour edition", () => {
+  it("restitue au serveur ce qu il en avait recu", () => {
+    const payload = toEditPayload(CATALOG, toComposition(BASE_DTO, CATALOG));
+
+    expect(payload).toMatchObject({
+      name: BASE_DTO.name,
+      alignment: BASE_DTO.alignment,
+      age: BASE_DTO.age,
+      heightCm: BASE_DTO.heightCm,
+      weightKg: BASE_DTO.weightKg,
+      size: BASE_DTO.size,
+      standardLanguages: BASE_DTO.standardLanguages,
+      abilityRollId: null,
+    });
+  });
+
+  it("produit un corps que le contrat d edition accepte", () => {
+    const payload = toEditPayload(CATALOG, toComposition(BASE_DTO, CATALOG));
+
+    expect(FinalizeCharacterSchema.safeParse(payload).success).toBe(true);
   });
 });

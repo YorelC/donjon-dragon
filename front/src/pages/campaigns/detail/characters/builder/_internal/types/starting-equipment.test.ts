@@ -81,6 +81,9 @@ const FIGHTER: CatalogClass = {
   level1Features: [],
   expertiseCount: 0,
   level1Choices: [],
+  weaponMastery: null,
+  toolChoice: null,
+  grantsLanguageChoice: false,
 };
 
 const SOLDIER: CatalogBackground = {
@@ -92,6 +95,7 @@ const SOLDIER: CatalogBackground = {
   originFeatSpellList: null,
   skillProficiencies: ["athletics", "intimidation"],
   toolProficiency: "",
+  toolOptions: [],
   equipment: {
     options: [
       anOption("A", [{ itemKey: "javelin", quantity: 2 }, { itemKey: "tente", quantity: 1 }], 14),

@@ -52,7 +52,9 @@ function ScoreSelect({ ability, control }: AbilityValueControlProps) {
         control.onChange({ assignment: place(composition, ability, value) })
       }
     >
-      <SelectTrigger className="w-24">
+      {/* Sans nom accessible, le menu n'est qu'un « combobox » de plus pour un
+          lecteur d'écran, et rien ne dit quelle caractéristique il sert. */}
+      <SelectTrigger className="w-24" aria-label={ABILITY_LABELS[ability]}>
         <SelectValue placeholder="—" />
       </SelectTrigger>
       <SelectContent>

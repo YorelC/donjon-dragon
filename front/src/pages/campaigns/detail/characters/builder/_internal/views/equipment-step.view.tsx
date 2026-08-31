@@ -36,6 +36,7 @@ export function EquipmentStepView({
   return (
     <div className="grid gap-6">
       <EquipmentOptionGroupView
+        groupKey="class"
         title="Paquetage de classe"
         options={classEquipmentOptions(catalog, composition)}
         selectedId={composition.classEquipmentOptionId}
@@ -45,6 +46,7 @@ export function EquipmentStepView({
         }}
       />
       <EquipmentOptionGroupView
+        groupKey="background"
         title="Paquetage d'historique"
         options={backgroundEquipmentOptions(catalog, composition)}
         selectedId={composition.backgroundEquipmentOptionId}

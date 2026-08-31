@@ -6,6 +6,7 @@ import type {
 
 import type { Character } from '../domain/character';
 import type { CharacterChoice } from '../domain/character-choices';
+import { IncompleteMagicInitiateChoiceError } from '../domain/character.errors';
 import type { SpellKey } from '../domain/reference/keys';
 import { SPELLS } from '../domain/reference/spells';
 
@@ -26,6 +27,7 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
     classKey: build.classKey,
     ...classFieldsOf(choices),
     backgroundKey: build.backgroundKey,
+    backgroundTool: backgroundToolOf(choices),
     ...magicInitiateFieldsOf(choices),
     ...skilledFieldsOf(choices),
     ...abilityFieldsOf(character),
@@ -111,6 +113,7 @@ function classFieldsOf(choices: readonly CharacterChoice[]) {
     fightingStyle: choice?.fightingStyle ?? null,
     classOrder: choice?.classOrder ?? null,
     weaponMasteries: [...(choice?.weaponMasteries ?? [])],
+    classTools: [...(choice?.tools ?? [])],
     invocation: choice?.invocation ?? null,
     invocationSpells: [...(choice?.invocationSpells ?? [])],
     familiarForm: choice?.familiarForm ?? null,
@@ -119,10 +122,19 @@ function classFieldsOf(choices: readonly CharacterChoice[]) {
   };
 }
 
+/**
+ * Cinq historiques font choisir leur outil ; les onze autres l'imposent, et
+ * n'émettent alors aucun choix. `null` dit « rien à rouvrir », pas « perdu ».
+ */
+function backgroundToolOf(choices: readonly CharacterChoice[]): string | null {
+  const choice = choices.find((entry) => entry.source.type === 'background');
+
+  return choice?.tools?.[0] ?? null;
+}
+
 function magicInitiateFieldsOf(choices: readonly CharacterChoice[]) {
-  const choice = choices.find(
-    (entry) => entry.source.type === 'feat' && entry.source.key === 'magic-initiate',
-  );
+  const matching = choices.filter(isMagicInitiateChoice);
+  const choice = matching[0];
   const spells = choice?.spells ?? [];
 
   return {
@@ -130,7 +142,28 @@ function magicInitiateFieldsOf(choices: readonly CharacterChoice[]) {
     spellList: choice?.spellList ?? null,
     featCantrips: cantripsOf(spells),
     featSpells: levelOneOf(spells),
+    magicInitiateChoices: matching.map(magicInitiateDetail),
   };
+}
+
+function isMagicInitiateChoice(entry: CharacterChoice): boolean {
+  return entry.source.type === 'feat' && entry.source.key === 'magic-initiate';
+}
+
+function magicInitiateDetail(choice: CharacterChoice) {
+  const spells = choice.spells ?? [];
+  return {
+    grantedBy: choice.source.grantedBy ? { ...choice.source.grantedBy } : null,
+    spellcastingAbility: required(choice.spellcastingAbility),
+    spellList: required(choice.spellList),
+    cantrips: cantripsOf(spells),
+    spells: levelOneOf(spells),
+  };
+}
+
+function required<T>(value: T | undefined): T {
+  if (value === undefined) throw new IncompleteMagicInitiateChoiceError();
+  return value;
 }
 
 function skilledFieldsOf(choices: readonly CharacterChoice[]) {

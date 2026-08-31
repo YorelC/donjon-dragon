@@ -9,12 +9,12 @@ import {
   LEVEL_ONE_INVOCATIONS,
   MUSICAL_INSTRUMENTS,
   RARE_LANGUAGES,
-  SPECIAL_FAMILIAR_FORMS,
+  LEVEL_ONE_FAMILIAR_FORMS,
   STANDARD_LANGUAGES,
 } from '../reference/creation-options';
 import type { SkillChoice } from '../reference/effect';
 import { FIGHTING_STYLE_KEYS } from '../reference/fighting-styles';
-import type { ClassKey, OriginFeatKey, SpeciesKey } from '../reference/keys';
+import type { OriginFeatKey, SpeciesKey } from '../reference/keys';
 import { ORIGIN_FEATS } from '../reference/origin-feats';
 import type { Language } from '../reference/proficiencies';
 import { SKILLS, type SkillName } from '../reference/skills';
@@ -28,17 +28,104 @@ import {
   fail,
   type ChoicesToValidate,
 } from './choice-validation';
+import {
+  backgroundToolOptions,
+  classToolOptions,
+  weaponMasteryCount,
+  weaponMasteryOptions,
+} from './class-options';
 import { validateSpellChoices } from './validate-spell-choices';
 
 export function validateChoices(input: ChoicesToValidate): void {
+  assertChoiceSources(input);
   assertLineage(input);
   assertSize(input);
   assertLanguages(input);
+  assertLineageSpellcastingAbility(input);
   assertSkills(input);
   assertTools(input);
   assertOriginFeats(input);
   assertClassOptions(input);
   validateSpellChoices(input);
+}
+
+function assertChoiceSources(input: ChoicesToValidate): void {
+  const allowed = allowedSources(input);
+  input.choices.all.forEach((choice) => {
+    const source = `${choice.source.type}:${choice.source.key}`;
+    if (!allowed.has(source)) fail('choice source');
+    assertGrantedBy(input, choice);
+    assertChoiceFields(choice);
+  });
+}
+
+const CHOICE_FIELDS: Readonly<Record<CharacterChoice['source']['type'], readonly string[]>> = {
+  species: ['skills', 'originFeat'],
+  lineage: ['spellcastingAbility'],
+  class: [
+    'skills', 'expertise', 'tools', 'languages', 'spells', 'fightingStyle',
+    'classOrder', 'weaponMasteries', 'invocation', 'invocationSpells',
+    'familiarForm', 'pactWeaponKey', 'spellbook',
+  ],
+  background: ['tools'],
+  feat: ['skills', 'tools', 'spells', 'spellcastingAbility', 'spellList'],
+  spell: [],
+};
+
+function assertChoiceFields(choice: CharacterChoice): void {
+  const allowed = CHOICE_FIELDS[choice.source.type];
+  const submitted = Object.entries(choice)
+    .filter(([key, value]) => key !== 'source' && value !== undefined)
+    .map(([key]) => key);
+  if (!submitted.every((field) => allowed.includes(field))) fail('choice fields');
+}
+
+function allowedSources(input: ChoicesToValidate): Set<string> {
+  const sources = [
+    `class:${input.classKey}`,
+    `species:${input.speciesKey}`,
+    `background:${input.backgroundKey}`,
+    ...(input.lineageKey ? [`lineage:${input.lineageKey}`] : []),
+    ...grantedFeats(input).map(({ feat }) => `feat:${feat}`),
+  ];
+  return new Set(sources);
+}
+
+function assertGrantedBy(input: ChoicesToValidate, choice: CharacterChoice): void {
+  if (choice.source.type !== 'feat') {
+    if (choice.source.grantedBy) fail('choice source');
+    return;
+  }
+  const grants = grantedFeats(input).filter(({ feat }) => feat === choice.source.key);
+  const owner = choice.source.grantedBy;
+  if (!owner && grants.length === 1) return;
+  if (!owner || !grants.some(({ grantedBy }) => sameGrant(grantedBy, owner))) {
+    fail('feat provenance');
+  }
+}
+
+interface GrantedFeat {
+  feat: OriginFeatKey;
+  grantedBy: { type: 'background' | 'species'; key: string };
+}
+
+function grantedFeats(input: ChoicesToValidate): GrantedFeat[] {
+  const background: GrantedFeat = {
+    feat: BACKGROUNDS[input.backgroundKey].originFeat,
+    grantedBy: { type: 'background', key: input.backgroundKey },
+  };
+  const human = choicesFrom(input, 'species', input.speciesKey).flatMap(originFeatOf);
+  return [background, ...human.map((feat): GrantedFeat => ({
+    feat,
+    grantedBy: { type: 'species', key: input.speciesKey },
+  }))];
+}
+
+function sameGrant(
+  left: GrantedFeat['grantedBy'],
+  right: GrantedFeat['grantedBy'],
+): boolean {
+  return left.type === right.type && left.key === right.key;
 }
 
 function assertLineage(input: ChoicesToValidate): void {
@@ -54,6 +141,18 @@ function assertSize(input: ChoicesToValidate): void {
   const species = SPECIES[input.speciesKey];
   const allowed = species.sizeOptions ?? [species.size];
   if (!input.size || !allowed.includes(input.size)) fail('size');
+}
+
+function assertLineageSpellcastingAbility(input: ChoicesToValidate): void {
+  const lineage = SPECIES[input.speciesKey].lineage;
+  const allowed = lineage?.spellcastingAbilityOptions ?? [];
+  const choices = input.lineageKey
+    ? choicesFrom(input, 'lineage', input.lineageKey)
+    : [];
+  const selected = choices.flatMap((choice) =>
+    choice.spellcastingAbility ? [choice.spellcastingAbility] : [],
+  );
+  assertExactUnique(selected, allowed.length > 0 ? 1 : 0, allowed, 'lineage spellcasting');
 }
 
 function assertLanguages(input: ChoicesToValidate): void {
@@ -139,10 +238,8 @@ function assertTools(input: ChoicesToValidate): void {
 function assertBackgroundTool(input: ChoicesToValidate): void {
   const background = BACKGROUNDS[input.backgroundKey];
   const chosen = choicesFrom(input, 'background', input.backgroundKey).flatMap(toolValues);
-  const selectable = background.toolProficiency.includes('choix');
-  const allowed = background.toolProficiency.includes('artisan')
-    ? ARTISAN_TOOLS
-    : ALL_CONCRETE_TOOLS;
+  const allowed = backgroundToolOptions(input.backgroundKey);
+  const selectable = allowed.length > 0;
   assertExactUnique(chosen, selectable ? 1 : 0, allowed, background.name);
 }
 
@@ -172,10 +269,8 @@ function assertWeaponMasteries(
   choices: readonly CharacterChoice[],
 ): void {
   const chosen = choices.flatMap((choice) => choice.weaponMasteries ?? []);
-  const allowed = Object.values(WEAPONS)
-    .filter((weapon) => weaponIsProficient(input.classKey, weapon))
-    .map((weapon) => weapon.key);
-  assertExactUnique(chosen, masteryCount(input.classKey), allowed, 'weapon masteries');
+  const allowed = weaponMasteryOptions(input.classKey);
+  assertExactUnique(chosen, weaponMasteryCount(input.classKey), allowed, 'weapon masteries');
 }
 
 function assertInvocation(input: ChoicesToValidate, choices: readonly CharacterChoice[]): void {
@@ -189,7 +284,7 @@ function assertInvocation(input: ChoicesToValidate, choices: readonly CharacterC
 function assertInvocationDetails(choice: CharacterChoice): void {
   const key = choice.invocation;
   if (key === 'pact-of-the-chain') {
-    assertExactlyOne(choice.familiarForm, SPECIAL_FAMILIAR_FORMS, key);
+    assertExactlyOne(choice.familiarForm, LEVEL_ONE_FAMILIAR_FORMS, key);
     return;
   }
   if (key === 'pact-of-the-blade') return assertPactWeapon(choice, key);
@@ -238,31 +333,6 @@ function countValues<T>(values: readonly T[]): Map<T, number> {
   const counts = new Map<T, number>();
   values.forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1));
   return counts;
-}
-
-function masteryCount(classKey: ClassKey): number {
-  return CLASSES[classKey].level1Features.flatMap((feature) => feature.effects)
-    .reduce((count, effect) => count + (effect.grants?.weaponMasteryCount ?? 0), 0);
-}
-
-function weaponIsProficient(
-  classKey: ClassKey,
-  weapon: (typeof WEAPONS)[string],
-): boolean {
-  const proficiencies = CLASSES[classKey].weaponProficiencies;
-  return proficiencies.includes(weapon.category)
-    || proficiencies.includes('martialFinesseOrLight') && hasFinesseOrLight(weapon);
-}
-
-function hasFinesseOrLight(weapon: (typeof WEAPONS)[string]): boolean {
-  const eligible = weapon.properties.some((property) => property === 'finesse' || property === 'light');
-  return weapon.category === 'martial' && eligible;
-}
-
-function classToolOptions(classKey: ClassKey): readonly string[] {
-  if (classKey === 'bard') return MUSICAL_INSTRUMENTS;
-  if (classKey === 'monk') return [...ARTISAN_TOOLS, ...MUSICAL_INSTRUMENTS];
-  return ALL_CONCRETE_TOOLS;
 }
 
 function choicesFrom(

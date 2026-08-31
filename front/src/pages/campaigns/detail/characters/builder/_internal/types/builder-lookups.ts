@@ -1,6 +1,7 @@
 import type {
   CatalogClass,
   CatalogOriginFeat,
+  CreatureSize,
   DndCatalog,
   SkillName,
 } from "@donjon-dragon/shared";
@@ -14,6 +15,24 @@ export interface StepContext {
 
 export function speciesOf({ catalog, composition }: StepContext) {
   return catalog.species.find((entry) => entry.key === composition.speciesKey);
+}
+
+/**
+ * La taille effective du personnage — seule source, pour la validité d'étape
+ * comme pour les payloads.
+ *
+ * Une espèce n'offrant qu'une taille l'IMPOSE : le choix explicite est alors
+ * ignoré, et non pas repris. Sans quoi un Humain passé en Small, puis changé
+ * pour un Nain, resterait Small.
+ */
+export function resolvedSizeOf(context: StepContext): CreatureSize | null {
+  const species = speciesOf(context);
+  if (!species) return null;
+  if (species.sizeOptions.length <= 1) return species.size;
+
+  const chosen = context.composition.selectedSize;
+
+  return chosen && species.sizeOptions.includes(chosen) ? chosen : null;
 }
 
 export function classOf({ catalog, composition }: StepContext): CatalogClass | undefined {

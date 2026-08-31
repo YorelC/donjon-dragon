@@ -24,14 +24,35 @@ export function toCharacterSheetDto(
   return {
     ...sheet,
     equipment: { ...equipment, items: equipment.items.map((item) => ({ ...item })) },
+    ...copyDerivedValues(sheet),
+    ...copyCollections(sheet),
+  };
+}
+
+function copyDerivedValues(sheet: ComputedCharacter) {
+  return {
     maxHitPoints: { ...sheet.maxHitPoints, sources: [...sheet.maxHitPoints.sources] },
+    currentHitPoints: {
+      ...sheet.currentHitPoints,
+      sources: [...sheet.currentHitPoints.sources],
+    },
     armorClass: { ...sheet.armorClass, sources: [...sheet.armorClass.sources] },
     initiative: { ...sheet.initiative, sources: [...sheet.initiative.sources] },
     speed: { ...sheet.speed, sources: [...sheet.speed.sources] },
+  };
+}
+
+function copyCollections(sheet: ComputedCharacter) {
+  return {
     skills: sheet.skills.map((skill) => ({ ...skill })),
     proficiencies: { ...sheet.proficiencies },
     spellcasting: sheet.spellcasting.map((entry) => ({ ...entry })),
     features: sheet.features.map((feature) => ({ ...feature })),
     resources: sheet.resources.map((resource) => ({ ...resource })),
+    attacks: sheet.attacks.map((attack) => ({
+      ...attack,
+      range: attack.range ? { ...attack.range } : null,
+    })),
+    spellbook: sheet.spellbook.map((spell) => ({ ...spell })),
   };
 }

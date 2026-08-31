@@ -66,13 +66,23 @@ export const ResolvedSpellSchema = z.object({
   name: z.string(),
 });
 
+export const ResolvedCastableSpellSchema = ResolvedSpellSchema.extend({
+  alwaysPrepared: z.boolean(),
+  ritualOnly: z.boolean(),
+  freeCastFrequency: z.enum([
+    'atWill',
+    'oncePerLongRest',
+    'proficiencyBonusPerLongRest',
+  ]).nullable(),
+});
+
 export const ResolvedSpellcastingSchema = z.object({
   origin: z.string(),
   ability: AbilitySchema,
   saveDc: z.number().int(),
   attackBonus: z.number().int(),
-  cantripsKnown: z.array(ResolvedSpellSchema),
-  spellsPrepared: z.array(ResolvedSpellSchema),
+  cantripsKnown: z.array(ResolvedCastableSpellSchema),
+  spellsPrepared: z.array(ResolvedCastableSpellSchema),
   level1Slots: z.number().int().nonnegative(),
   slotsRecoverOnShortRest: z.boolean(),
 });
@@ -124,10 +134,24 @@ export const ResolvedEquipmentSchema = z.object({
   stealthDisadvantage: z.boolean(),
 });
 
+export const ResolvedAttackSchema = z.object({
+  weaponKey: z.string(),
+  name: z.string(),
+  ability: AbilitySchema,
+  attackBonus: z.number().int(),
+  damage: z.string(),
+  damageType: z.string(),
+  range: z.object({ normal: z.number(), max: z.number() }).nullable(),
+  proficient: z.boolean(),
+  mastery: z.boolean(),
+});
+
 export const ComputedCharacterSchema = z.object({
   equipment: ResolvedEquipmentSchema,
   level: z.number().int().min(1).max(20),
+  experiencePoints: z.number().int().nonnegative(),
   proficiencyBonus: z.number().int(),
+  hitDie: z.number().int().positive(),
   speciesName: z.string(),
   lineageName: z.string().nullable(),
   className: z.string(),
@@ -138,6 +162,7 @@ export const ComputedCharacterSchema = z.object({
   abilityMethod: z.enum(['roll', 'standardArray', 'pointBuy']),
   abilities: abilityRecord(ResolvedAbilitySchema),
   maxHitPoints: ResolvedValueSchema,
+  currentHitPoints: ResolvedValueSchema,
   armorClass: ResolvedValueSchema,
   initiative: ResolvedValueSchema,
   speed: ResolvedValueSchema,
@@ -150,6 +175,8 @@ export const ComputedCharacterSchema = z.object({
   spellcasting: z.array(ResolvedSpellcastingSchema),
   features: z.array(ResolvedFeatureSchema),
   resources: z.array(ResolvedResourceSchema),
+  attacks: z.array(ResolvedAttackSchema),
+  spellbook: z.array(ResolvedSpellSchema),
 });
 
 export type ResolvedValue = z.infer<typeof ResolvedValueSchema>;
@@ -163,4 +190,5 @@ export type ResolvedFeature = z.infer<typeof ResolvedFeatureSchema>;
 export type ResolvedResource = z.infer<typeof ResolvedResourceSchema>;
 export type ResolvedItem = z.infer<typeof ResolvedItemSchema>;
 export type ResolvedEquipment = z.infer<typeof ResolvedEquipmentSchema>;
+export type ResolvedAttack = z.infer<typeof ResolvedAttackSchema>;
 export type ComputedCharacter = z.infer<typeof ComputedCharacterSchema>;

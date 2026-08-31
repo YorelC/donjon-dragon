@@ -15,14 +15,18 @@ import {
   OutboxMessageSchema,
 } from '@kernel/infrastructure/outbox-message.schema';
 import { CampaignsModule } from '@modules/campaigns/campaigns.module';
+import { DiceModule } from '@kernel/infrastructure/dice.module';
 import { ItemsModule } from '@modules/items/items.module';
 import { UserModule } from '@modules/user/user.module';
 import { CHARACTER_DIRECTORY } from './application/ports/character-directory.port';
+import { ABILITY_ROLL_REPOSITORY } from './application/ports/ability-roll.repository.port';
 import { CHARACTER_ASSIGNMENT_REPOSITORY } from './application/ports/character-assignment.repository.port';
+import { CHARACTER_CREATION_REPOSITORY } from './application/ports/character-creation.repository.port';
 import { CHARACTER_REPOSITORY } from './application/ports/character.repository.port';
 import { ITEM_CATALOG } from './application/ports/item-catalog.port';
 import { AssignCharacterUseCase } from './application/use-cases/assign-character.use-case';
 import { CreateCharacterUseCase } from './application/use-cases/create-character.use-case';
+import { RollAbilitiesUseCase } from './application/use-cases/roll-abilities.use-case';
 import { DeleteCharacterUseCase } from './application/use-cases/delete-character.use-case';
 import { ExcludeCampaignMemberWithCharacterUseCase } from './application/use-cases/exclude-campaign-member-with-character.use-case';
 import { FinalizeCharacterUseCase } from './application/use-cases/finalize-character.use-case';
@@ -43,6 +47,8 @@ import {
 } from './infrastructure/persistence/character.schema';
 import { MongoCharacterRepository } from './infrastructure/persistence/mongo-character.repository';
 import { MongoCharacterAssignmentRepository } from './infrastructure/persistence/mongo-character-assignment.repository';
+import { MongoAbilityRollRepository } from './infrastructure/persistence/mongo-ability-roll.repository';
+import { MongoCharacterCreationRepository } from './infrastructure/persistence/mongo-character-creation.repository';
 import { CharacterController } from './presentation/character.controller';
 import { CampaignCharacterLifecycleController } from './presentation/campaign-character-lifecycle.controller';
 import { DndCatalogController } from './presentation/dnd-catalog.controller';
@@ -59,6 +65,7 @@ import { DndCatalogController } from './presentation/dnd-catalog.controller';
     CampaignsModule,
     ItemsModule,
     ClockModule,
+    DiceModule,
   ],
   controllers: [
     CharacterController,
@@ -71,10 +78,16 @@ import { DndCatalogController } from './presentation/dnd-catalog.controller';
       provide: CHARACTER_ASSIGNMENT_REPOSITORY,
       useClass: MongoCharacterAssignmentRepository,
     },
+    {
+      provide: CHARACTER_CREATION_REPOSITORY,
+      useClass: MongoCharacterCreationRepository,
+    },
+    { provide: ABILITY_ROLL_REPOSITORY, useClass: MongoAbilityRollRepository },
     { provide: CHARACTER_DIRECTORY, useClass: UserCharacterDirectory },
     { provide: ITEM_CATALOG, useClass: ItemsItemCatalog },
     ListCampaignCharactersUseCase,
     CreateCharacterUseCase,
+    RollAbilitiesUseCase,
     FinalizeCharacterUseCase,
     PreviewCharacterSheetUseCase,
     GetCharacterSheetUseCase,

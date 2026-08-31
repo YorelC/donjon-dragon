@@ -29,6 +29,11 @@ const METHODS: { key: AbilityMethod; label: string; hint: string }[] = [
   },
 ];
 
+function rollLabel(step: AbilitiesStep): string {
+  if (step.isRolling) return "Lancer en cours…";
+  return step.roll ? "Relancer" : "Lancer les dés";
+}
+
 const PLANS: { key: BonusPlan; label: string }[] = [
   { key: "focused", label: "+2 et +1" },
   { key: "spread", label: "+1 partout" },
@@ -37,6 +42,7 @@ const PLANS: { key: BonusPlan; label: string }[] = [
 export interface AbilitiesStep {
   roll: AbilityRoll | null;
   onRoll: () => void;
+  isRolling: boolean;
   background: CatalogBackground | null;
 }
 
@@ -111,8 +117,8 @@ function RollBanner({ step, composition }: AbilitiesStepViewProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Button type="button" onClick={step.onRoll}>
-        {step.roll ? "Relancer" : "Lancer les dés"}
+      <Button type="button" onClick={step.onRoll} disabled={step.isRolling}>
+        {rollLabel(step)}
       </Button>
       {step.roll ? (
         <span className="text-sm text-muted-foreground">

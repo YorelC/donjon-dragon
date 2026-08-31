@@ -7,12 +7,14 @@ import { anActor } from '@kernel/testing/actor.fixture';
 import { AssignCharacterUseCase } from '../application/use-cases/assign-character.use-case';
 import { CreateCharacterUseCase } from '../application/use-cases/create-character.use-case';
 import { DeleteCharacterUseCase } from '../application/use-cases/delete-character.use-case';
+import { RollAbilitiesUseCase } from '../application/use-cases/roll-abilities.use-case';
 import { FinalizeCharacterUseCase } from '../application/use-cases/finalize-character.use-case';
 import { GetCharacterBuildUseCase } from '../application/use-cases/get-character-build.use-case';
 import { GetCharacterSheetUseCase } from '../application/use-cases/get-character-sheet.use-case';
 import { ListCampaignCharactersUseCase } from '../application/use-cases/list-campaign-characters.use-case';
 import { PreviewCharacterSheetUseCase } from '../application/use-cases/preview-character-sheet.use-case';
 import { UnassignCharacterUseCase } from '../application/use-cases/unassign-character.use-case';
+import { aCharacterBody, anEditBody } from '../testing/character.fixture';
 import { CharacterController } from './character.controller';
 
 const mockUseCase = (): { execute: ReturnType<typeof vi.fn> } => ({ execute: vi.fn() });
@@ -22,10 +24,12 @@ const user = (userId: string): AuthenticatedActor => ({ userId: anActor(userId) 
 const CAMPAIGN_ID = '550e8400-e29b-41d4-a716-446655440000';
 const CHARACTER_ID = '660e8400-e29b-41d4-a716-446655440001';
 const ACTOR_ID = '770e8400-e29b-41d4-a716-446655440002';
+const IDEMPOTENCY_KEY = 'character-create-command';
 
 describe('CharacterController', () => {
   let controller: CharacterController;
   let create: CreateCharacterUseCase;
+  let roll: RollAbilitiesUseCase;
   let finalize: FinalizeCharacterUseCase;
   let preview: PreviewCharacterSheetUseCase;
   let sheet: GetCharacterSheetUseCase;
@@ -37,6 +41,7 @@ describe('CharacterController', () => {
       providers: [
         { provide: ListCampaignCharactersUseCase, useValue: mockUseCase() },
         { provide: CreateCharacterUseCase, useValue: mockUseCase() },
+        { provide: RollAbilitiesUseCase, useValue: mockUseCase() },
         { provide: FinalizeCharacterUseCase, useValue: mockUseCase() },
         { provide: PreviewCharacterSheetUseCase, useValue: mockUseCase() },
         { provide: GetCharacterSheetUseCase, useValue: mockUseCase() },
@@ -49,6 +54,7 @@ describe('CharacterController', () => {
 
     controller = module.get(CharacterController);
     create = module.get(CreateCharacterUseCase);
+    roll = module.get(RollAbilitiesUseCase);
     finalize = module.get(FinalizeCharacterUseCase);
     preview = module.get(PreviewCharacterSheetUseCase);
     sheet = module.get(GetCharacterSheetUseCase);
@@ -60,43 +66,54 @@ describe('CharacterController', () => {
   // bien celui du jeton.
   it('crée le personnage avec l identité du jeton, jamais celle du corps', async () => {
     const actor = user(ACTOR_ID);
-    const body = { name: 'Frodo Sacquet' } as Parameters<typeof controller.createCharacter>[2];
+    const body = aCharacterBody();
 
-    await controller.createCharacter(actor, CAMPAIGN_ID, body);
+    await controller.createCharacter(actor, CAMPAIGN_ID, body, IDEMPOTENCY_KEY);
 
     expect(create.execute).toHaveBeenCalledWith({
+      ...body,
       campaignId: CAMPAIGN_ID,
       actorId: actor.userId,
-      name: 'Frodo Sacquet',
+      idempotencyKey: IDEMPOTENCY_KEY,
+    });
+  });
+
+  it('demande le tirage au serveur, pour l identité du jeton', async () => {
+    const actor = user(ACTOR_ID);
+
+    await controller.rollAbilities(actor, CAMPAIGN_ID, IDEMPOTENCY_KEY);
+
+    expect(roll.execute).toHaveBeenCalledWith({
+      campaignId: CAMPAIGN_ID,
+      actorId: actor.userId,
+      idempotencyKey: IDEMPOTENCY_KEY,
     });
   });
 
   it('transmet la copie du wizard au use-case de finalisation', async () => {
     const actor = user(ACTOR_ID);
-    const body = { name: 'Frodo Sacquet' } as Parameters<
-      typeof controller.finalizeCharacter
-    >[3];
+    const body = anEditBody();
 
     await controller.finalizeCharacter(actor, CAMPAIGN_ID, CHARACTER_ID, body);
 
     expect(finalize.execute).toHaveBeenCalledWith({
+      ...body,
       campaignId: CAMPAIGN_ID,
       characterId: CHARACTER_ID,
       actorId: actor.userId,
-      name: 'Frodo Sacquet',
     });
   });
 
   it('calcule un aperçu sans identifiant de personnage', async () => {
     const actor = user(ACTOR_ID);
-    const body = { classKey: 'rogue' } as Parameters<typeof controller.previewSheet>[2];
+    const { name: _name, abilityRollId: _rollId, ...body } = aCharacterBody();
 
     await controller.previewSheet(actor, CAMPAIGN_ID, body);
 
     expect(preview.execute).toHaveBeenCalledWith({
+      ...body,
       campaignId: CAMPAIGN_ID,
       actorId: actor.userId,
-      classKey: 'rogue',
     });
   });
 
@@ -133,6 +150,7 @@ describe('CharacterController — protection des routes', () => {
   const ROUTES = [
     'listCampaignCharacters',
     'createCharacter',
+    'rollAbilities',
     'finalizeCharacter',
     'previewSheet',
     'getCharacterSheet',

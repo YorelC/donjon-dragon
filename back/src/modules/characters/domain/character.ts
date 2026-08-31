@@ -152,9 +152,9 @@ export interface CharacterAccessContext {
  * caractéristiques, choix — et c'est cette copie-là qui devient le personnage.
  * Il n'y a pas d'entre-deux persisté.
  *
- * Le tirage de caractéristiques est fait côté client et n'est plus vérifié ici
- * contre quoi que ce soit de déjà enregistré : un joueur qui triche sur sa
- * propre fiche n'abîme que la sienne.
+ * Le tirage provisoirement effectué côté client conserve ses quatre dés. Le
+ * domaine recalcule chaque total et vérifie que les six résultats sont affectés
+ * exactement une fois avant d'accepter la copie.
  *
  * Aucune valeur dérivée n'est stockée ici : ni PV, ni CA, ni initiative. Elles
  * sortent du moteur à chaque lecture.
@@ -250,8 +250,7 @@ export class Character {
 
   /**
    * Relance les dés sur un personnage déjà persisté — montée de niveau ou
-   * correction. Rien ne vérifie plus ce tirage contre quoi que ce soit :
-   * seule l'autorisation d'édition compte.
+   * correction. La finalisation suivante recalcule et valide son affectation.
    */
   rollAbilities(roll: AbilityRoll, context: CharacterAccessContext, now: Date): void {
     this.assertEditableBy(context);

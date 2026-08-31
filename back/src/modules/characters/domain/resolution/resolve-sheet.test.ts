@@ -480,6 +480,45 @@ describe('occultiste', () => {
     expect(pact?.level1Slots).toBe(1);
     expect(pact?.slotsRecoverOnShortRest).toBe(true);
   });
+
+  it('projette le sort gratuit du Pacte de la chaîne séparément', () => {
+    const sheet = resolveSheetOf(aBuild({
+      speciesKey: 'halfling', classKey: 'warlock', backgroundKey: 'farmer',
+      base: {
+        strength: 8, dexterity: 13, constitution: 14,
+        intelligence: 12, wisdom: 10, charisma: 15,
+      },
+      backgroundBonuses: { constitution: 2, wisdom: 1 },
+      choices: [{
+        source: { type: 'class', key: 'warlock' },
+        invocation: 'pact-of-the-chain', familiarForm: 'owl',
+      }],
+    }));
+    const invocation = sheet.spellcasting.find((entry) => entry.origin.includes('pact-of-the-chain'));
+
+    expect(invocation?.spellsPrepared[0]).toMatchObject({
+      spellKey: 'find-familiar', alwaysPrepared: true, freeCastFrequency: 'atWill',
+    });
+  });
+});
+
+describe('rôdeur', () => {
+  it('ajoute Marque du chasseur sans consommer un choix préparé', () => {
+    const sheet = resolveSheetOf(aBuild({
+      speciesKey: 'halfling', classKey: 'ranger', backgroundKey: 'farmer',
+      base: {
+        strength: 10, dexterity: 15, constitution: 13,
+        intelligence: 8, wisdom: 14, charisma: 12,
+      },
+      backgroundBonuses: { wisdom: 2, dexterity: 1 },
+      choices: [{ source: { type: 'class', key: 'ranger' }, spells: ['cure-wounds', 'fog-cloud'] }],
+    }));
+    const ranger = sheet.spellcasting.find((entry) => entry.origin === 'Rôdeur');
+
+    expect(ranger?.spellsPrepared.map((spell) => spell.spellKey)).toContain('hunter-s-mark');
+    expect(ranger?.spellsPrepared.find((spell) => spell.spellKey === 'hunter-s-mark'))
+      .toMatchObject({ alwaysPrepared: true, freeCastFrequency: 'oncePerLongRest' });
+  });
 });
 
 // Le sort mineur de la lignée sortait bien dans les Capacités, mais jamais dans
@@ -514,7 +553,10 @@ describe('magicien haut-elfe', () => {
     const lineage = sheet.spellcasting.find((entry) => entry.origin === 'Haut-elfe');
 
     expect(lineage?.cantripsKnown).toEqual([
-      { spellKey: 'prestidigitation', name: 'Prestidigitation' },
+      {
+        spellKey: 'prestidigitation', name: 'Prestidigitation',
+        alwaysPrepared: false, ritualOnly: false, freeCastFrequency: 'atWill',
+      },
     ]);
     expect(sheet.spellcasting.flatMap((entry) => entry.cantripsKnown)).toHaveLength(4);
   });
@@ -535,5 +577,21 @@ describe('magicien haut-elfe', () => {
 
     expect(lineage?.ability).toBe('charisma');
     expect(lineage?.saveDc).toBe(8 + 2 + sheet.abilities.charisma.modifier);
+  });
+});
+
+describe('elfe drow', () => {
+  it('applique la portée de vision propre au lignage', () => {
+    const sheet = resolveSheetOf(aBuild({
+      speciesKey: 'elf', lineageKey: 'drow', classKey: 'fighter',
+      backgroundKey: 'soldier',
+      base: {
+        strength: 15, dexterity: 13, constitution: 14,
+        intelligence: 10, wisdom: 12, charisma: 8,
+      },
+      backgroundBonuses: { strength: 2, constitution: 1 },
+    }));
+
+    expect(sheet.darkvision).toBe(36);
   });
 });

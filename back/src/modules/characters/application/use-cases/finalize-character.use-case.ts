@@ -21,9 +21,9 @@ import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
 import { assertEquipmentIsKnown } from '../item.lookup';
 import { loadCampaignCharacter, resolveAccessContext } from '../character.lookup';
 import { toCharacterDto } from '../character.mapper';
-import { AbilityRoll } from '../../domain/ability-roll';
 import type { Character, CharacterAccessContext } from '../../domain/character';
 import { CharacterName } from '../../domain/character-name';
+import { AbilityRollNotEditableError } from '../../domain/character.errors';
 import { toBuildInput } from '../character-build.mapper';
 
 export type FinalizeCharacterDto = FinalizeCharacterBody & {
@@ -39,7 +39,7 @@ export type FinalizeCharacterDto = FinalizeCharacterBody & {
  *
  * Le même use-case sert à l'édition d'un personnage déjà créé : montée de
  * niveau ou correction, rejouer les choix repasse par les mêmes vérifications.
- * Le tirage, s'il y en a un, vient du client comme à la création.
+ * Le tirage, s'il y en a un, conserve ses dés et est revalidé comme à la création.
  */
 @Injectable()
 export class FinalizeCharacterUseCase {
@@ -82,18 +82,18 @@ export class FinalizeCharacterUseCase {
   }
 
   /**
-   * Les trois mutations que porte la copie du wizard, dans l'ordre ou l'agregat
-   * les attend : le nom, le tirage s'il y en a un, puis le build. Un seul
-   * instant les date toutes les trois.
+   * Les deux mutations que porte la copie du wizard, dans l'ordre ou l'agregat
+   * les attend : le nom, puis le build. Un seul instant les date toutes les
+   * deux. Le tirage, lui, ne bouge plus : un personnage garde le sien.
    */
   private applyWizardOutput(
     character: Character,
     dto: FinalizeCharacterDto,
     context: CharacterAccessContext,
   ): void {
+    if (dto.abilityRollId) throw new AbilityRollNotEditableError();
     const now = this.clock.now();
     character.rename(CharacterName.create(dto.name), context, now);
-    if (dto.abilityRoll) character.rollAbilities(AbilityRoll.restore(dto.abilityRoll), context, now);
     character.finalize(toBuildInput(dto), context, now);
   }
 }

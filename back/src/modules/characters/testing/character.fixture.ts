@@ -1,9 +1,18 @@
-import type { FinalizeCharacterDto } from '@donjon-dragon/shared/character-schema';
+import type {
+  CreateCharacterDto,
+  FinalizeCharacterDto,
+} from '@donjon-dragon/shared/character-schema';
+
+import type { UserId } from '@kernel/domain/user-id';
 
 import type { CharacterBuildInput } from '../domain/character';
-import { STANDARD_ARRAY_DICE, STANDARD_ARRAY_ROLL } from './character-build.fixture';
+import { STANDARD_ARRAY_DICE } from './character-build.fixture';
+import type { InMemoryAbilityRollRepository } from './in-memory-ability-roll.repository';
 
 export const A_CHARACTER_NAME = 'Frodo Sacquet';
+
+/** Le tirage que le serveur est censé avoir émis avant ce corps de requête. */
+export const A_ABILITY_ROLL_ID = 'b1e3a0f4-7c2d-4a51-9f60-2d8c4b7e1a03';
 export const A_CHARACTER_IDENTITY = {
   alignment: 'neutralGood' as const,
   age: 33,
@@ -62,14 +71,14 @@ export const A_CHARACTER_BUILD: CharacterBuildInput = {
 
 /**
  * Le même personnage, mais dans la forme que le wizard envoie : le corps HTTP
- * de `create` et de `finalize`, tirage compris.
+ * du `POST`, tirage désigné compris. L'édition en dérive en le retirant.
  *
  * Il ne dérive pas de `A_CHARACTER_BUILD` : les deux formes se ressemblent sans
  * être la même chose — le contrat HTTP borne les bonus à 1 ou 2 et n'admet que
  * des tableaux mutables, là où le domaine est plus large. C'est le même écart
  * que traduit `character-build.mapper.ts`.
  */
-const A_CHARACTER_BODY: FinalizeCharacterDto = {
+const A_CHARACTER_BODY: CreateCharacterDto = {
   name: A_CHARACTER_NAME,
   ...A_CHARACTER_IDENTITY,
   speciesKey: 'halfling',
@@ -102,13 +111,33 @@ const A_CHARACTER_BODY: FinalizeCharacterDto = {
     classOptionId: 'B',
     backgroundOptionId: 'B',
   },
-  abilityRoll: {
-    dice: STANDARD_ARRAY_DICE.map((roll) => [...roll]),
-    totals: STANDARD_ARRAY_ROLL.totals,
-  },
+  abilityRollId: A_ABILITY_ROLL_ID,
 };
 
+/**
+ * Le corps d'une édition : un personnage garde son tirage, il ne redésigne
+ * jamais celui d'un autre.
+ */
+export function anEditBody(name: string = A_CHARACTER_NAME): FinalizeCharacterDto {
+  return { ...A_CHARACTER_BODY, name, abilityRollId: null };
+}
+
 /** Le même corps, sous le nom que le test veut donner à son personnage. */
-export function aCharacterBody(name: string = A_CHARACTER_NAME): FinalizeCharacterDto {
+export function aCharacterBody(name: string = A_CHARACTER_NAME): CreateCharacterDto {
   return { ...A_CHARACTER_BODY, name };
+}
+
+/**
+ * Pose le tirage que `A_CHARACTER_BODY` désigne. Tout test qui crée un
+ * personnage par le use-case doit l'appeler : le serveur n'accepte plus un
+ * tirage qu'il n'a pas émis lui-même.
+ */
+export function seedAbilityRoll(
+  rolls: InMemoryAbilityRollRepository,
+  principalId: UserId,
+  campaignId: string,
+): void {
+  rolls.store(A_ABILITY_ROLL_ID, principalId, campaignId, {
+    dice: STANDARD_ARRAY_DICE.map((roll) => [...roll]),
+  });
 }

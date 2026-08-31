@@ -39,6 +39,8 @@ import {
   resolveSpellcasting,
   type ResolvedSpellcasting,
 } from './resolve-spellcasting';
+import { resolveAttacks, type ResolvedAttack } from './resolve-attacks';
+import { SPELLS } from '../reference/spells';
 
 /**
  * La fiche jouable. Rien de ce qu'elle contient n'est stocké : elle se
@@ -47,7 +49,9 @@ import {
  */
 export interface ComputedCharacter {
   level: number;
+  experiencePoints: number;
   proficiencyBonus: number;
+  hitDie: number;
   abilityMethod: AbilityMethod;
   speciesName: string;
   lineageName: string | null;
@@ -58,6 +62,7 @@ export interface ComputedCharacter {
 
   abilities: Record<Ability, ResolvedAbility>;
   maxHitPoints: ResolvedValue;
+  currentHitPoints: ResolvedValue;
   armorClass: ResolvedValue;
   initiative: ResolvedValue;
   speed: ResolvedValue;
@@ -70,6 +75,8 @@ export interface ComputedCharacter {
   spellcasting: ResolvedSpellcasting[];
   features: ResolvedFeature[];
   resources: ResolvedResource[];
+  attacks: ResolvedAttack[];
+  spellbook: { spellKey: string; name: string }[];
 }
 
 /**
@@ -89,14 +96,41 @@ export function resolveSheet(build: CharacterBuild, worn: WornEquipment): Comput
     ...identityOf(build),
     ...derivedValuesOf(derived),
     ...skillsOf({ ...context, effects, proficiencies }),
+    ...progressionOf(build, derived, abilities),
+    ...resolvedFeaturesOf(build, effects, context),
+    proficiencies,
+  };
+}
+
+function progressionOf(
+  build: CharacterBuild,
+  derived: DerivedInput,
+  abilities: Record<Ability, ResolvedAbility>,
+) {
+  const maxHitPoints = resolveMaxHitPoints(derived);
+  return {
     level: build.level,
-    proficiencyBonus: context.proficiencyBonus,
+    experiencePoints: 0,
+    proficiencyBonus: derived.context.proficiencyBonus,
+    hitDie: CLASSES[build.classKey].hitDie,
     abilityMethod: build.abilities.method,
     abilities,
-    proficiencies,
+    maxHitPoints,
+    currentHitPoints: { ...maxHitPoints, sources: [...maxHitPoints.sources] },
+  };
+}
+
+function resolvedFeaturesOf(
+  build: CharacterBuild,
+  effects: ReturnType<typeof collectEffects>,
+  context: FormulaContext,
+) {
+  return {
     spellcasting: resolveSpellcasting({ ...context, build, effects }),
     features: resolveFeatures(effects),
     resources: resolveResources(effects, context),
+    attacks: resolveAttacks(build, context),
+    spellbook: spellbookOf(build),
   };
 }
 
@@ -104,17 +138,21 @@ function derivedValuesOf(
   derived: DerivedInput,
 ): Pick<
   ComputedCharacter,
-  'maxHitPoints' | 'armorClass' | 'initiative' | 'speed' | 'unarmedDamage'
+  'armorClass' | 'initiative' | 'speed' | 'unarmedDamage'
 > {
   const { build, effects, context, worn } = derived;
 
   return {
-    maxHitPoints: resolveMaxHitPoints(derived),
     armorClass: resolveArmorClass({ equipment: build.equipment, worn, effects, context }),
     initiative: resolveInitiative(derived),
     speed: resolveSpeed(derived),
     unarmedDamage: resolveUnarmedDamage(effects),
   };
+}
+
+function spellbookOf(build: CharacterBuild): { spellKey: string; name: string }[] {
+  return build.choices.all.flatMap((choice) => choice.spellbook ?? [])
+    .map((spellKey) => ({ spellKey, name: SPELLS[spellKey]?.name ?? spellKey }));
 }
 
 function contextFor(
@@ -167,6 +205,6 @@ function identityOf(
     className: CLASSES[build.classKey].name,
     backgroundName: BACKGROUNDS[build.backgroundKey].name,
     size: build.size,
-    darkvision: species.darkvision,
+    darkvision: lineage?.darkvision ?? species.darkvision,
   };
 }

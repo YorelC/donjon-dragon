@@ -10,10 +10,12 @@ import {
 import {
   AssignCharacterSchema,
   CharacterIdSchema,
+  CreateCharacterSchema,
   FinalizeCharacterSchema,
   PreviewCharacterSheetSchema,
   UnassignCharacterSchema,
   type AssignCharacterDto as AssignCharacterBody,
+  type CreateCharacterDto as CreateCharacterBody,
   type FinalizeCharacterDto as FinalizeCharacterBody,
   type PreviewCharacterSheetDto as PreviewCharacterSheetBody,
   type UnassignCharacterDto as UnassignCharacterBody,
@@ -29,6 +31,7 @@ import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { ZodBody, ZodHeader, ZodParam } from '@common/decorators/zod-validated.decorator';
 import { AssignCharacterUseCase } from '../application/use-cases/assign-character.use-case';
 import { CreateCharacterUseCase } from '../application/use-cases/create-character.use-case';
+import { RollAbilitiesUseCase } from '../application/use-cases/roll-abilities.use-case';
 import { DeleteCharacterUseCase } from '../application/use-cases/delete-character.use-case';
 import { FinalizeCharacterUseCase } from '../application/use-cases/finalize-character.use-case';
 import { GetCharacterBuildUseCase } from '../application/use-cases/get-character-build.use-case';
@@ -42,15 +45,17 @@ import { UnassignCharacterUseCase } from '../application/use-cases/unassign-char
  * APP_GUARD. Les routes vivent sous /campaigns/:campaignId/characters, jamais
  * sous /characters seul : un personnage n'existe qu'au sein d'une campagne.
  *
- * Un personnage se crée d'un coup, déjà complet : `FinalizeCharacterSchema`
- * sert de corps de requête à la fois pour `POST` (création) et `PUT`
- * (édition d'un personnage déjà créé — montée de niveau, correction).
+ * Un personnage se crée d'un coup, déjà complet. Les deux routes portent la
+ * même composition, sous deux contrats : `CreateCharacterSchema` pour `POST`,
+ * où le tirage se désigne, et `FinalizeCharacterSchema` pour `PUT`, où le
+ * personnage garde le sien.
  */
 @Controller('campaigns/:campaignId/characters')
 export class CharacterController {
   constructor(
     @Inject(ListCampaignCharactersUseCase) private list: ListCampaignCharactersUseCase,
     @Inject(CreateCharacterUseCase) private create: CreateCharacterUseCase,
+    @Inject(RollAbilitiesUseCase) private roll: RollAbilitiesUseCase,
     @Inject(FinalizeCharacterUseCase) private finalize: FinalizeCharacterUseCase,
     @Inject(PreviewCharacterSheetUseCase) private preview: PreviewCharacterSheetUseCase,
     @Inject(GetCharacterSheetUseCase) private sheet: GetCharacterSheetUseCase,
@@ -72,9 +77,24 @@ export class CharacterController {
   async createCharacter(
     @CurrentUser() user: AuthenticatedActor,
     @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
-    @ZodBody(FinalizeCharacterSchema) body: FinalizeCharacterBody,
+    @ZodBody(CreateCharacterSchema) body: CreateCharacterBody,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
-    return this.create.execute({ campaignId, actorId: user.userId, ...body });
+    return this.create.execute({
+      campaignId, actorId: user.userId, idempotencyKey, ...body,
+    });
+  }
+
+  /** Le serveur lance les dés. Le client ne fait qu'en demander un jeu. */
+  @Post('ability-roll')
+  async rollAbilities(
+    @CurrentUser() user: AuthenticatedActor,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
+  ) {
+    return this.roll.execute({ campaignId, actorId: user.userId, idempotencyKey });
   }
 
   @Put(':characterId')

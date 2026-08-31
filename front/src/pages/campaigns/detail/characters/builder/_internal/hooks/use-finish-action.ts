@@ -1,5 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import type { DndCatalog, FinalizeCharacterDto } from "@donjon-dragon/shared";
+import type {
+  CreateCharacterDto,
+  DndCatalog,
+  FinalizeCharacterDto,
+} from "@donjon-dragon/shared";
 import { toCampaignDetailCharacters, toCharacterSheet } from "@/shared/constants/routes";
 import type { BuilderScreen } from "../views/character-builder.view";
 import type { BuilderState } from "./use-character-builder";
@@ -8,7 +12,7 @@ import {
   useCreateCharacter,
   useFinalizeCharacter,
 } from "../queries/use-character-creation";
-import { toFinalizePayload } from "../types/character-payload";
+import { toCreatePayload, toEditPayload } from "../types/character-payload";
 
 type Navigate = ReturnType<typeof useNavigate>;
 type FinishAction = Pick<BuilderScreen, "isFinishing" | "finishLabel" | "onFinish">;
@@ -26,18 +30,21 @@ export function useFinishAction(
   const navigate = useNavigate();
   const create = useCreateCharacter(target.campaignId);
   const finalize = useFinalizeCharacter(target.campaignId, target.characterId ?? "");
-  // Sans catalogue, le paquetage n'est pas résoluble : rien à envoyer.
-  const payload = () => (catalog ? toFinalizePayload(catalog, builder.composition) : null);
+  const { composition } = builder;
 
-  return target.characterId
-    ? editFinishAction(target.campaignId, { payload, finalize }, navigate)
-    : createFinishAction(target.campaignId, { payload, create }, navigate);
+  // Deux contrats, deux payloads : l'édition ne redésigne jamais de tirage.
+  // Sans catalogue, le paquetage n'est pas résoluble : rien à envoyer.
+  if (target.characterId) {
+    const payload = () => (catalog ? toEditPayload(catalog, composition) : null);
+    return editFinishAction(target.campaignId, { payload, finalize }, navigate);
+  }
+
+  const payload = () => (catalog ? toCreatePayload(catalog, composition) : null);
+  return createFinishAction(target.campaignId, { payload, create }, navigate);
 }
 
-type BuildPayload = () => FinalizeCharacterDto | null;
-
 interface CreateSubmission {
-  payload: BuildPayload;
+  payload: () => CreateCharacterDto | null;
   create: ReturnType<typeof useCreateCharacter>;
 }
 
@@ -61,7 +68,7 @@ function createFinishAction(
 }
 
 interface EditSubmission {
-  payload: BuildPayload;
+  payload: () => FinalizeCharacterDto | null;
   finalize: ReturnType<typeof useFinalizeCharacter>;
 }
 

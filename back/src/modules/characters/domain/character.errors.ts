@@ -58,6 +58,48 @@ export class CharacterAssignmentCommandConflictError extends ConflictDomainError
   }
 }
 
+export class AbilityRollCommandConflictError extends ConflictDomainError {
+  constructor() {
+    super('The idempotency key was already used for another ability roll');
+  }
+}
+
+export class AbilityRollNotEditableError extends InvalidDomainError {
+  constructor() {
+    super('This edit command cannot replace the ability roll of an existing character');
+  }
+}
+
+export class AbilityRollNotExpectedError extends InvalidDomainError {
+  constructor() {
+    super('This ability method takes no ability roll');
+  }
+}
+
+export class AbilityRollNotIssuedError extends InvalidDomainError {
+  constructor() {
+    super('This ability roll was not issued to you for this campaign');
+  }
+}
+
+export class AbilityRollAlreadyUsedError extends ConflictDomainError {
+  constructor() {
+    super('This ability roll has already been used by a character');
+  }
+}
+
+export class IncompleteMagicInitiateChoiceError extends InvalidDomainError {
+  constructor() {
+    super('A validated magic initiate choice must carry its ability and its spell list');
+  }
+}
+
+export class CharacterCreationCommandConflictError extends ConflictDomainError {
+  constructor() {
+    super('The idempotency key was already used for another character creation');
+  }
+}
+
 export class CharacterAssignedToAnotherPlayerError extends ConflictDomainError {
   constructor() {
     super('This character is already assigned to another player');

@@ -21,6 +21,8 @@ export interface Lineage {
   key: LineageKey;
   name: string;
   description: string;
+  /** Un lignage peut porter la Vision dans le noir plus loin que son espèce. */
+  darkvision?: number;
   traits: readonly Feature[];
 }
 
@@ -310,6 +312,7 @@ const SPECIES_LIST: readonly Species[] = [
           key: 'drow',
           name: 'Drow',
           description: "Vision dans le noir portée à 36 m, et le sort mineur Lumières dansantes.",
+          darkvision: DARKVISION_LONG,
           traits: [
             {
               key: 'superior-darkvision',
@@ -401,7 +404,10 @@ const SPECIES_LIST: readonly Species[] = [
                   application: 'grant',
                   grants: {
                     spells: [
-                      { spellKey: 'speak-with-animals', frequency: 'oncePerLongRest' },
+                      {
+                        spellKey: 'speak-with-animals',
+                        frequency: 'proficiencyBonusPerLongRest',
+                      },
                     ],
                   },
                 },

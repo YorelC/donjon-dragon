@@ -10,7 +10,8 @@ import { BackgroundStepView } from "./background-step.view";
 import { ClassStepView } from "./class-step.view";
 import { EquipmentStepView } from "./equipment-step.view";
 import { FeatsStepView } from "./feats-step.view";
-import { NameStepView } from "./name-step.view";
+import { IdentityStepView } from "./identity-step.view";
+import { LanguagesStepView } from "./languages-step.view";
 import { ClassSkillsStepView, ExpertiseStepView } from "./skill-choice-step.view";
 import { SpeciesStepView } from "./species-step.view";
 import type { SpellsStep } from "./spells-step.view";
@@ -29,6 +30,8 @@ export interface BuilderScreen {
   preview: ComputedCharacter | null;
   /** Sert le titre de la page ; la vue elle-même le lit sur la composition. */
   characterName: string;
+  /** Édition d'un personnage existant : son état civil est déjà figé. */
+  isEditing: boolean;
   canFinish: boolean;
   isFinishing: boolean;
   finishLabel: string;
@@ -77,6 +80,7 @@ function StepContent({ screen }: { screen: BuilderScreen }) {
   const screens: Record<BuilderStep, () => ReactElement | null> = {
     species: () => <SpeciesStepView {...shared} />,
     lineage: () => <LineageStep screen={screen} />,
+    languages: () => <LanguagesStepView {...shared} />,
     class: () => <ClassStepView {...shared} />,
     classSkills: () => <ClassSkillsStepView {...shared} />,
     expertise: () => <ExpertiseStepView {...shared} />,
@@ -94,7 +98,7 @@ function StepContent({ screen }: { screen: BuilderScreen }) {
     cantrips: () => <CantripsStepView {...spells} />,
     spells: () => <SpellsStepView {...spells} />,
     equipment: () => <EquipmentStepView {...shared} items={screen.items} />,
-    name: () => <NameStepView {...shared} />,
+    identity: () => <IdentityStepView {...shared} isFrozen={screen.isEditing} />,
   };
 
   return screens[builder.step]();

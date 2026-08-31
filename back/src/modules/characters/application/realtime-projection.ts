@@ -7,6 +7,7 @@ export const CHARACTERS_OWNER_MODULE = 'characters';
 
 /** Les faits que ce module écrit dans l'outbox. Vocabulaire fermé, et à lui. */
 export const CHARACTER_FACT = {
+  created: 'character.created',
   assigned: 'character.assigned',
   unassigned: 'character.unassigned',
 } as const;
@@ -24,6 +25,7 @@ export const CHARACTER_REALTIME_PROJECTION: Record<
   CharacterFact,
   RealtimeResource | null
 > = {
+  [CHARACTER_FACT.created]: REALTIME_RESOURCE.campaigns,
   [CHARACTER_FACT.assigned]: REALTIME_RESOURCE.campaigns,
   [CHARACTER_FACT.unassigned]: REALTIME_RESOURCE.campaigns,
 };

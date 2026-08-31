@@ -45,9 +45,9 @@ function characterWith(build: CharacterBuildInput): Character {
 /**
  * Une source par branche du mapper : l'espèce avec son don d'origine, la
  * classe avec Style de combat + Ordre + un sort mineur et un sort de niveau 1
- * mélangés, Initié à la magie, et Doué. `validateChoices` ne vérifie que les
- * comptes de compétences et le lignage — le reste est accepté tel quel, donc
- * rien n'empêche ce cumul dans un fixture de test.
+ * mélangés, Initié à la magie, et Doué. Cette fixture exerce le mapper sur une
+ * composition restaurée historiquement ; les créations HTTP passent, elles,
+ * par la validation autoritaire complète.
  */
 const FULL_BUILD: CharacterBuildInput = {
   speciesKey: 'human',

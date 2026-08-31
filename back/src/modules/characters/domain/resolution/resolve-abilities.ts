@@ -1,7 +1,6 @@
 import type { AbilityAssignment } from '../ability-assignment';
 import {
   ABILITIES,
-  MAX_ABILITY_SCORE_AT_CREATION,
   abilityModifier,
   type Ability,
 } from '../reference/abilities';
@@ -14,8 +13,8 @@ export interface ResolvedAbility {
 export type ResolvedAbilities = Record<Ability, ResolvedAbility>;
 
 /**
- * Le tirage posé sur chaque caractéristique, plus les bonus de l'historique,
- * plafonné à 20 — c'est le plafond de la création, pas celui du jeu.
+ * Le tirage posé sur chaque caractéristique, plus les bonus de l'historique.
+ * L'agrégat a déjà refusé une composition qui dépasserait 20.
  *
  * Aucun effet passif n'entre ici : au niveau 1, en 2024, aucun trait d'espèce ni
  * don d'Origines n'augmente une caractéristique. Le jour où il y en aura un, il
@@ -26,10 +25,7 @@ export function resolveAbilities(assignment: AbilityAssignment): ResolvedAbiliti
 
   return Object.fromEntries(
     ABILITIES.map((ability) => {
-      const score = Math.min(
-        base[ability] + (backgroundBonuses[ability] ?? 0),
-        MAX_ABILITY_SCORE_AT_CREATION,
-      );
+      const score = base[ability] + (backgroundBonuses[ability] ?? 0);
       return [ability, { score, modifier: abilityModifier(score) }];
     }),
   ) as ResolvedAbilities;

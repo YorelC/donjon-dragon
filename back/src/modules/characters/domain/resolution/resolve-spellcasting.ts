@@ -1,7 +1,13 @@
 import type { CharacterChoice, CharacterChoices } from '../character-choices';
 import type { Ability } from '../reference/abilities';
 import { CLASSES } from '../reference/classes';
-import type { CollectedEffect, EffectSource, EffectSourceType } from '../reference/effect';
+import type {
+  CollectedEffect,
+  EffectSource,
+  EffectSourceType,
+  GrantedSpell,
+  GrantedSpellFrequency,
+} from '../reference/effect';
 import type { ClassKey, SpellKey } from '../reference/keys';
 import { SPECIES } from '../reference/species';
 import { SPELLS } from '../reference/spells';
@@ -11,6 +17,7 @@ import type { CharacterBuild } from './character-build';
 const SPELL_SAVE_DC_BASE = 8;
 
 const CANTRIP_LEVEL = 0;
+const LEVEL_ONE = 1;
 
 /**
  * Un sort connu porte son nom en plus de sa clé : la fiche l'affiche, et le
@@ -20,6 +27,9 @@ const CANTRIP_LEVEL = 0;
 export interface NamedSpell {
   spellKey: SpellKey;
   name: string;
+  alwaysPrepared: boolean;
+  ritualOnly: boolean;
+  freeCastFrequency: GrantedSpellFrequency | null;
 }
 
 export interface ResolvedSpellcasting {
@@ -48,7 +58,12 @@ export interface SpellcastingInput {
  * emplacement mais lance quand même ses sorts mineurs.
  */
 export function resolveSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
-  return [...classSpellcasting(input), ...featSpellcasting(input), ...originSpellcasting(input)];
+  return [
+    ...classSpellcasting(input),
+    ...featSpellcasting(input),
+    ...originSpellcasting(input),
+    ...invocationSpellcasting(input),
+  ];
 }
 
 function classSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
@@ -57,13 +72,14 @@ function classSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
   if (!spellcasting) return [];
 
   const chosen = spellsChosenBy(input.build.choices, 'class', characterClass.key);
+  const granted = grantedClassSpells(input, characterClass.key);
   return [
     {
       ...scoresFor(spellcasting.ability, input),
       origin: characterClass.name,
       ability: spellcasting.ability,
-      cantripsKnown: chosen.cantrips,
-      spellsPrepared: chosen.prepared,
+      cantripsKnown: [...chosen.cantrips, ...granted.filter(isGrantedCantrip).map(grantedNamed)],
+      spellsPrepared: [...chosen.prepared, ...granted.filter(isGrantedLevelOne).map(grantedNamed)],
       level1Slots: spellcasting.level1Slots,
       slotsRecoverOnShortRest: spellcasting.kind === 'pact',
     },
@@ -111,8 +127,8 @@ function originSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
       ...scoresFor(ability, input),
       origin: granted.source.label,
       ability,
-      cantripsKnown: granted.spellKeys.filter(isCantrip).map(named),
-      spellsPrepared: granted.spellKeys.filter(isNotCantrip).map(named),
+      cantripsKnown: granted.spells.filter(isGrantedCantrip).map(grantedNamed),
+      spellsPrepared: granted.spells.filter(isGrantedLevelOne).map(grantedNamed),
       level1Slots: 0,
       slotsRecoverOnShortRest: false,
     };
@@ -121,7 +137,7 @@ function originSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
 
 interface GrantedByOrigin {
   source: EffectSource;
-  spellKeys: SpellKey[];
+  spells: GrantedSpell[];
 }
 
 /** Une entrée par origine : l'espèce et la lignée ne se mélangent pas. */
@@ -133,9 +149,9 @@ function grantedSpellsBySource(
   effects.filter(isOriginSpellGrant).forEach((collected) => {
     const existing = bySource.get(collected.source.key) ?? {
       source: collected.source,
-      spellKeys: [],
+      spells: [],
     };
-    existing.spellKeys.push(...(collected.effect.grants?.spells ?? []).map((s) => s.spellKey));
+    existing.spells.push(...(collected.effect.grants?.spells ?? []));
     bySource.set(collected.source.key, existing);
   });
 
@@ -179,6 +195,38 @@ function isMagicInitiateChoice(choice: CharacterChoice): choice is MagicInitiate
   return Boolean(choice.spellcastingAbility && choice.spellList);
 }
 
+function invocationSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
+  const choice = input.build.choices.all.find((candidate) => candidate.invocation !== undefined);
+  if (!choice) return [];
+  const fixed = fixedInvocationSpell(choice.invocation);
+  const spells = fixed ? [fixed] : choice.invocationSpells ?? [];
+  if (spells.length === 0) return [];
+  return [{
+    ...scoresFor('charisma', input), origin: invocationName(choice.invocation),
+    ability: 'charisma', cantripsKnown: spells.filter(isCantrip).map(atWillNamed),
+    spellsPrepared: spells.filter(isNotCantrip).map(fixed ? atWillPrepared : ritualNamed),
+    level1Slots: 0, slotsRecoverOnShortRest: false,
+  }];
+}
+
+function fixedInvocationSpell(invocation: string | undefined): SpellKey | null {
+  const spells: Readonly<Record<string, SpellKey>> = {
+    'armor-of-shadows': 'mage-armor',
+    'pact-of-the-chain': 'find-familiar',
+  };
+  return invocation ? spells[invocation] ?? null : null;
+}
+
+function invocationName(invocation: string | undefined): string {
+  return `Manifestation occulte (${invocation ?? ''})`;
+}
+
+function grantedClassSpells(input: SpellcastingInput, classKey: ClassKey): GrantedSpell[] {
+  return input.effects.filter((collected) =>
+    collected.source.type === 'class' && collected.source.key === classKey)
+    .flatMap((collected) => collected.effect.grants?.spells ?? []);
+}
+
 function scoresFor(
   ability: Ability,
   input: SpellcastingInput,
@@ -197,22 +245,65 @@ function spellsChosenBy(
 ): { cantrips: NamedSpell[]; prepared: NamedSpell[] } {
   const chosen = choices.from({ type, key });
   return {
-    cantrips: chosen.flatMap((choice) => choice.spells ?? []).filter(isCantrip).map(named),
-    prepared: chosen.flatMap((choice) => choice.spells ?? []).filter(isNotCantrip).map(named),
+    cantrips: chosen.flatMap((choice) => choice.spells ?? []).filter(isCantrip).map(atWillNamed),
+    prepared: chosen.flatMap((choice) => choice.spells ?? []).filter(isNotCantrip).map(preparedNamed),
   };
 }
 
 function cantripsOf(choice: MagicInitiateChoice): NamedSpell[] {
-  return (choice.spells ?? []).filter(isCantrip).map(named);
+  return (choice.spells ?? []).filter(isCantrip).map(atWillNamed);
 }
 
 function level1SpellsOf(choice: MagicInitiateChoice): NamedSpell[] {
-  return (choice.spells ?? []).filter(isNotCantrip).map(named);
+  return (choice.spells ?? []).filter(isNotCantrip).map(freeOnceNamed);
 }
 
-/** Une clé inconnue se rend telle quelle : mieux qu'un trou dans la fiche. */
-function named(spellKey: SpellKey): NamedSpell {
-  return { spellKey, name: SPELLS[spellKey]?.name ?? spellKey };
+/**
+ * Ce qu'un sort devient une fois posé sur la fiche : toujours préparé ou non,
+ * rituel seul, et la cadence à laquelle il se lance sans dépenser d'emplacement.
+ * Cinq états nommés, parce qu'une série de booléens anonymes ne se relit pas.
+ */
+interface SpellFlags {
+  alwaysPrepared: boolean;
+  ritualOnly: boolean;
+  freeCastFrequency: GrantedSpellFrequency | null;
+}
+
+const AT_WILL: SpellFlags = {
+  alwaysPrepared: false, ritualOnly: false, freeCastFrequency: 'atWill',
+};
+const PREPARED: SpellFlags = {
+  alwaysPrepared: false, ritualOnly: false, freeCastFrequency: null,
+};
+const FREE_ONCE: SpellFlags = {
+  alwaysPrepared: true, ritualOnly: false, freeCastFrequency: 'oncePerLongRest',
+};
+const AT_WILL_PREPARED: SpellFlags = {
+  alwaysPrepared: true, ritualOnly: false, freeCastFrequency: 'atWill',
+};
+const RITUAL: SpellFlags = {
+  alwaysPrepared: false, ritualOnly: true, freeCastFrequency: 'atWill',
+};
+
+function spellNamed(spellKey: SpellKey, flags: SpellFlags): NamedSpell {
+  return { spellKey, name: SPELLS[spellKey]?.name ?? spellKey, ...flags };
+}
+
+const atWillNamed = (key: SpellKey): NamedSpell => spellNamed(key, AT_WILL);
+const preparedNamed = (key: SpellKey): NamedSpell => spellNamed(key, PREPARED);
+const freeOnceNamed = (key: SpellKey): NamedSpell => spellNamed(key, FREE_ONCE);
+const atWillPrepared = (key: SpellKey): NamedSpell => spellNamed(key, AT_WILL_PREPARED);
+const ritualNamed = (key: SpellKey): NamedSpell => spellNamed(key, RITUAL);
+const grantedNamed = (spell: GrantedSpell): NamedSpell =>
+  spellNamed(spell.spellKey, grantedFlags(spell));
+
+/** Un octroi d'espèce ou de classe est toujours préparé, à sa propre cadence. */
+function grantedFlags(spell: GrantedSpell): SpellFlags {
+  return {
+    alwaysPrepared: SPELLS[spell.spellKey]?.level === LEVEL_ONE,
+    ritualOnly: false,
+    freeCastFrequency: spell.frequency,
+  };
 }
 
 function isCantrip(spellKey: SpellKey): boolean {
@@ -221,4 +312,12 @@ function isCantrip(spellKey: SpellKey): boolean {
 
 function isNotCantrip(spellKey: SpellKey): boolean {
   return !isCantrip(spellKey);
+}
+
+function isGrantedCantrip(spell: GrantedSpell): boolean {
+  return isCantrip(spell.spellKey);
+}
+
+function isGrantedLevelOne(spell: GrantedSpell): boolean {
+  return isNotCantrip(spell.spellKey);
 }

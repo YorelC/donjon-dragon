@@ -9,7 +9,12 @@ import {
 } from './ability-generation';
 import type { AbilityRoll } from './ability-roll';
 import { AbilitiesNotRolledError } from './character.errors';
-import { ABILITIES, type Ability, type AbilityRecord } from './reference/abilities';
+import {
+  ABILITIES,
+  MAX_ABILITY_SCORE_AT_CREATION,
+  type Ability,
+  type AbilityRecord,
+} from './reference/abilities';
 import { BACKGROUND_ABILITY_BONUS_PLANS } from './reference/backgrounds';
 
 export type AbilityBonuses = Partial<Record<Ability, number>>;
@@ -50,6 +55,12 @@ export class PointBuyBudgetExceededError extends InvalidDomainError {
 export class InvalidBackgroundBonusesError extends InvalidDomainError {
   constructor() {
     super('Background ability bonuses must be +2/+1 or +1/+1/+1 on its three abilities');
+  }
+}
+
+export class AbilityScoreAtCreationExceededError extends InvalidDomainError {
+  constructor() {
+    super(`Ability score cannot exceed ${MAX_ABILITY_SCORE_AT_CREATION} at creation`);
   }
 }
 
@@ -100,6 +111,7 @@ export class AbilityAssignment {
 
   static create(input: AbilityAssignmentInput): AbilityAssignment {
     VALIDATORS[input.method](Object.values(input.base), input.roll);
+    assertFinalScores(input.base, input.backgroundBonuses);
 
     return new AbilityAssignment(
       { ...input.base },
@@ -137,6 +149,13 @@ export class AbilityAssignment {
       method: this.method,
     };
   }
+}
+
+function assertFinalScores(base: AbilityRecord, bonuses: AbilityBonuses): void {
+  const exceedsMaximum = ABILITIES.some(
+    (ability) => base[ability] + (bonuses[ability] ?? 0) > MAX_ABILITY_SCORE_AT_CREATION,
+  );
+  if (exceedsMaximum) throw new AbilityScoreAtCreationExceededError();
 }
 
 function isPermutationOf(expected: readonly number[], actual: readonly number[]): boolean {

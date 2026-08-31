@@ -4,6 +4,8 @@ import { Label } from "@/shared/components/atoms/label";
 import { RadioGroup, RadioGroupItem } from "@/shared/components/atoms/radio-group";
 
 interface EquipmentOptionGroupProps {
+  /** Distingue les deux groupes dans le DOM : leurs options portent les mêmes id. */
+  groupKey: string;
   title: string;
   options: CatalogEquipmentOption[];
   selectedId: string | null;
@@ -16,6 +18,7 @@ interface EquipmentOptionGroupProps {
  * découle.
  */
 export function EquipmentOptionGroupView({
+  groupKey,
   title,
   options,
   selectedId,
@@ -30,6 +33,7 @@ export function EquipmentOptionGroupView({
         {options.map((option) => (
           <EquipmentOptionCard
             key={option.id}
+            groupKey={groupKey}
             option={option}
             items={selection.items}
             selected={option.id === selectedId}
@@ -41,13 +45,20 @@ export function EquipmentOptionGroupView({
 }
 
 interface EquipmentOptionCardProps {
+  groupKey: string;
   option: CatalogEquipmentOption;
   items: Item[];
   selected: boolean;
 }
 
-function EquipmentOptionCard({ option, items, selected }: EquipmentOptionCardProps) {
-  const inputId = `equipment-option-${option.id}`;
+/**
+ * Les deux paquetages nomment leurs options « A » et « B ». Sans le groupe dans
+ * l'identifiant, les deux « A » partagent un id DOM : le libellé de l'historique
+ * pointe alors la radio de la classe, et le paquetage d'historique devient
+ * impossible à choisir.
+ */
+function EquipmentOptionCard({ groupKey, option, items, selected }: EquipmentOptionCardProps) {
+  const inputId = `equipment-option-${groupKey}-${option.id}`;
 
   return (
     <div

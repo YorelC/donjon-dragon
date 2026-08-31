@@ -10,10 +10,14 @@ import {
 } from '@modules/campaigns/testing/campaign.fixture';
 import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory-campaign.repository';
 import { CharacterNotFoundError } from '../../domain/character.errors';
-import { aCharacterBody } from '../../testing/character.fixture';
+import { aCharacterBody, seedAbilityRoll } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
 import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
+import { UserId } from '@kernel/domain/user-id';
+
+import { InMemoryAbilityRollRepository } from '../../testing/in-memory-ability-roll.repository';
+import { InMemoryCharacterCreationRepository } from '../../testing/in-memory-character-creation.repository';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { ListCampaignCharactersUseCase } from './list-campaign-characters.use-case';
 
@@ -43,17 +47,23 @@ describe('ListCampaignCharactersUseCase', () => {
 
     const membership = new GetCampaignMembershipUseCase(campaignRepo);
     const characterRepo = new InMemoryCharacterRepository();
+    const rolls = new InMemoryAbilityRollRepository();
+    seedAbilityRoll(rolls, UserId.create(frodoId), campaignId);
+    seedAbilityRoll(rolls, UserId.create(gameMasterId), campaignId);
     create = new CreateCharacterUseCase(
       characterRepo,
       directory,
       new InMemoryItemCatalog(),
       membership,
       new FixedClock(),
+      new InMemoryCharacterCreationRepository(characterRepo),
+      rolls,
     );
     await create.execute({
       ...aCharacterBody(),
       campaignId,
       actorId: anActor(frodoId),
+      idempotencyKey: randomUUID(),
     });
 
     useCase = new ListCampaignCharactersUseCase(characterRepo, directory, membership);
@@ -62,6 +72,7 @@ describe('ListCampaignCharactersUseCase', () => {
   it('ne livre aucun champ privé des autres personnages au joueur', async () => {
     await create.execute({
       ...aCharacterBody('Bilbon'), campaignId, actorId: anActor(gameMasterId),
+      idempotencyKey: randomUUID(),
     });
     const characters = await useCase.execute({ campaignId, actorId: anActor(frodoId) });
     const controlled = characters.find((item) => item.projection === 'controlled');
@@ -90,6 +101,7 @@ describe('ListCampaignCharactersUseCase', () => {
   it('résout les joueurs assignés en une seule lecture d annuaire', async () => {
     await create.execute({
       ...aCharacterBody('Bilbon'), campaignId, actorId: anActor(gameMasterId),
+      idempotencyKey: randomUUID(),
     });
     directory.resetLookupCount();
 

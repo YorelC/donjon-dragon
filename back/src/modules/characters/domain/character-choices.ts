@@ -14,6 +14,7 @@ import type { SkillName } from './reference/skills';
 export interface ChoiceSource {
   type: EffectSourceType;
   key: string;
+  grantedBy?: { type: 'background' | 'species'; key: string };
 }
 
 /**
@@ -94,7 +95,7 @@ export class CharacterChoices {
 function copyChoice(choice: CharacterChoice): CharacterChoice {
   return {
     ...choice,
-    source: { ...choice.source },
+    source: copySource(choice.source),
     skills: choice.skills ? [...choice.skills] : undefined,
     expertise: choice.expertise ? [...choice.expertise] : undefined,
     tools: choice.tools ? [...choice.tools] : undefined,
@@ -104,4 +105,9 @@ function copyChoice(choice: CharacterChoice): CharacterChoice {
     invocationSpells: choice.invocationSpells ? [...choice.invocationSpells] : undefined,
     spellbook: choice.spellbook ? [...choice.spellbook] : undefined,
   };
+}
+
+function copySource(source: ChoiceSource): ChoiceSource {
+  if (!source.grantedBy) return { type: source.type, key: source.key };
+  return { ...source, grantedBy: { ...source.grantedBy } };
 }

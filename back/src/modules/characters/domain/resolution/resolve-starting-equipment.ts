@@ -35,12 +35,18 @@ const CLASS_CHOICE_CATALOG: Partial<Record<ClassKey, readonly string[]>> = {
   monk: [...ARTISAN_TOOLS, ...MUSICAL_INSTRUMENTS],
 };
 
+/**
+ * Les objets génériques qu'un paquetage d'historique laisse concrétiser. C'est
+ * un choix d'OBJET, pas de maîtrise : le Voyageur y figure alors que sa
+ * maîtrise d'outil, elle, est fixe.
+ */
 const BACKGROUND_CHOICE_CATALOG: Partial<Record<BackgroundKey, readonly string[]>> = {
   artisan: ARTISAN_TOOLS,
   entertainer: MUSICAL_INSTRUMENTS,
   guard: GAMING_SETS,
   noble: GAMING_SETS,
   soldier: GAMING_SETS,
+  wayfarer: GAMING_SETS,
 };
 
 const GENERIC_ITEM_KEYS = new Set(['musical-instrument', 'gaming-set']);

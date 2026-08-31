@@ -2,6 +2,7 @@ import type {
   CatalogEquipmentOption,
   CharacterItem,
   DndCatalog,
+  FinalizeCharacterDto,
   Item,
 } from "@donjon-dragon/shared";
 import type { CharacterComposition } from "./character-composition";
@@ -98,4 +99,23 @@ export function hasChosenEquipment(
   composition: CharacterComposition,
 ): boolean {
   return chosenEquipmentOptions(catalog, composition).length === 2;
+}
+
+/**
+ * L'équipement envoyé au back. `items` et `gold` ne sont pas saisis : ils se
+ * recalculent depuis les options retenues, pour que la composition n'ait qu'une
+ * seule source de vérité — le choix, pas sa conséquence.
+ */
+export function equipmentPayloadOf(
+  catalog: DndCatalog,
+  composition: CharacterComposition,
+): FinalizeCharacterDto["equipment"] {
+  return {
+    armorKey: composition.armorKey,
+    shield: composition.shield,
+    items: grantedItems(catalog, composition),
+    gold: grantedGold(catalog, composition),
+    classOptionId: composition.classEquipmentOptionId,
+    backgroundOptionId: composition.backgroundEquipmentOptionId,
+  };
 }
