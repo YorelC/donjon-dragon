@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { test, expect, STORAGE_STATE } from './fixtures/test';
 import { deleteCharactersNamed, ensureCampaign } from './fixtures/api';
 import {
@@ -19,6 +19,7 @@ test.use({ storageState: STORAGE_STATE.gandalf });
 
 const CAMPAIGN_NAME = 'E2E creation de personnage';
 const CHARACTER_NAME = 'Thorin E2E';
+const REJECTION_REASON = 'Les langues ne collent pas au personnage.';
 
 const IDENTITY: CharacterIdentity = {
   name: CHARACTER_NAME,
@@ -122,6 +123,59 @@ test.describe('Créer un personnage depuis le wizard', () => {
   });
 });
 
+test.describe('Soumettre une fiche au MJ et la faire valider', () => {
+  /**
+   * Le cycle entier en un seul test, et non quatre.
+   *
+   * Chaque état n'existe que par le précédent : `SOUMISE` suppose une soumission,
+   * `REFUSÉE` un refus motivé, la resoumission une correction. Les découper
+   * obligerait à fabriquer un état de départ par un chemin que le produit
+   * n'offre pas — ce serait tester la fixture, pas le parcours.
+   *
+   * Gandalf crée et valide : `SF-002` l'autorise explicitement pour une fiche
+   * créée par un MJ.
+   */
+  test('parcourt brouillon, soumission, refus motivé, correction et acceptation', async ({
+    page,
+  }) => {
+    const builder = new CharacterBuilderPage(page);
+    await createCleric(builder, DWARF);
+    await page.goto(`/campaigns/${campaignId}/characters`);
+
+    const row = characterRow(page);
+    await expect(row.getByText('Brouillon')).toBeVisible();
+
+    await row.getByRole('button', { name: 'Soumettre' }).click();
+    await expect(row.getByText('En attente de validation')).toBeVisible();
+    // Une fiche à l'examen ne se corrige pas dans le dos du MJ.
+    await expect(row.getByRole('link', { name: 'Éditer' })).toHaveCount(0);
+
+    await refuse(page, row, REJECTION_REASON);
+    await expect(row.getByText('À corriger')).toBeVisible();
+    await expect(row.getByText(`Motif : ${REJECTION_REASON}`)).toBeVisible();
+    // Refusée, elle redevient corrigeable : c'est ce que « correction » veut dire.
+    await expect(row.getByRole('link', { name: 'Éditer' })).toBeVisible();
+
+    await row.getByRole('button', { name: 'Soumettre' }).click();
+    await row.getByRole('button', { name: 'Accepter' }).click();
+
+    await expect(row.getByText('Acceptée')).toBeVisible();
+    await expect(row.getByRole('link', { name: 'Éditer' })).toHaveCount(0);
+  });
+});
+
+/** La ligne du personnage du test, et non celle d'un voisin resté d'un autre passage. */
+function characterRow(page: Page): Locator {
+  return page.getByRole('listitem').filter({ hasText: CHARACTER_NAME });
+}
+
+async function refuse(page: Page, row: Locator, reason: string): Promise<void> {
+  await row.getByRole('button', { name: 'Refuser' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('textbox').fill(reason);
+  await dialog.getByRole('button', { name: 'Confirmer' }).click();
+}
+
 /** Le parcours complet, jusqu'à la fiche affichée. */
 async function createCleric(
   builder: CharacterBuilderPage,
@@ -155,11 +209,15 @@ async function composeCleric(
   await chooseFrom(builder, 'Langues', LANGUAGES);
   await builder.openStep('Classe');
   await builder.choose('Clerc');
+  // L'historique passe AVANT les compétences de classe : c'est le fil réordonné,
+  // celui qui laisse l'étape des compétences exclure ce que l'historique donne
+  // déjà. Choisir la classe puis ses compétences d'abord rendait les étapes
+  // suivantes injoignables.
+  await builder.openStep('Historique');
+  await builder.choose('Fermier');
   await chooseFrom(builder, 'Compétences', CLASS_SKILLS);
   await builder.openStep('Ordre');
   await builder.choose('Protecteur');
-  await builder.openStep('Historique');
-  await builder.choose('Fermier');
   await assignStandardArray(builder);
   await chooseFrom(builder, 'Sorts mineurs', CANTRIPS);
   await chooseFrom(builder, 'Sorts', SPELLS);

@@ -114,4 +114,85 @@ export class CharacterBuilderPage {
   frozenField(label: string): Locator {
     return this.page.getByLabel(label);
   }
+
+  /**
+   * Un bouton d'une étape bornée — maîtrise d'arme, outil, langue de classe.
+   *
+   * Rendu comme locator et non comme clic : ces étapes se prouvent autant par ce
+   * qu'elles REFUSENT que par ce qu'elles acceptent. Un choix déjà pris ailleurs
+   * doit être désactivé sous les yeux du joueur, pas silencieusement absent.
+   */
+  choice(label: string): Locator {
+    return this.stepPanel().getByRole('button', { name: label, exact: true });
+  }
+
+  /**
+   * Le panneau de l'étape ouverte, pour ne pas confondre ses boutons avec ceux
+   * du fil conducteur ni avec « Précédent » / « Suivant ».
+   *
+   * C'est le seul contenu de carte qui porte un titre de niveau 2 : le fil et le
+   * résumé n'en ont pas.
+   */
+  stepPanel(): Locator {
+    return this.page
+      .locator('[data-slot="card-content"]')
+      .filter({ has: this.page.getByRole('heading', { level: 2 }) });
+  }
+
+  /** Les options que le compteur laisse encore prendre dans l'étape ouverte. */
+  availableChoices(): Locator {
+    return this.stepPanel().getByRole('button').and(this.page.locator(':enabled'));
+  }
+
+  /**
+   * Prend les `count` premières options disponibles, et rend leurs libellés.
+   *
+   * Les libellés d'armes et d'instruments sont exactement ce qui bougera à la
+   * première errata : les nommer un par un ferait tomber le test sur un
+   * renommage plutôt que sur une régression. Ce qui se prouve ici, c'est le
+   * quota et le fait que l'étape devienne franchissable.
+   *
+   * `nth(index)` et non `first()` : une option retenue reste cliquable — c'est
+   * ainsi qu'on la retire — donc reprendre la première la DÉSÉLECTIONNERAIT.
+   * L'ordre, lui, ne bouge pas : aucune option ne se désactive avant que le
+   * quota soit atteint.
+   */
+  async chooseAvailable(count: number): Promise<string[]> {
+    const labels: string[] = [];
+
+    for (let index = 0; index < count; index += 1) {
+      const option = this.availableChoices().nth(index);
+      labels.push(((await option.textContent()) ?? '').trim());
+      await option.click();
+    }
+
+    return labels;
+  }
+
+  /** Le compteur d'une étape bornée, tel que son badge l'affiche — « 2 / 2 ». */
+  boundedCounter(): Locator {
+    return this.stepPanel().getByText(/^\d+ \/ \d+$/);
+  }
+
+  /** Un menu du catalogue, nommé par son libellé depuis le correctif d'accessibilité. */
+  async selectCatalogOption(label: string, option: string): Promise<void> {
+    await this.page.getByRole('combobox', { name: label }).click();
+    await this.page.getByRole('option', { name: option, exact: true }).click();
+  }
+
+  /**
+   * La première option d'un menu du catalogue.
+   *
+   * Même raison que `chooseAvailable` : les noms des boîtes de jeux et des
+   * instruments viennent du catalogue d'objets, et ce test porte sur le fait
+   * qu'un objet concret DOIT être choisi, pas sur lequel.
+   */
+  async selectFirstCatalogOption(label: string): Promise<string> {
+    await this.page.getByRole('combobox', { name: label }).click();
+    const first = this.page.getByRole('option').first();
+    const chosen = (await first.textContent()) ?? '';
+    await first.click();
+
+    return chosen;
+  }
 }
