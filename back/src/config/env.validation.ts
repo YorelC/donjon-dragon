@@ -41,7 +41,7 @@ const EnvSchema = z.object({
     .string()
     .min(1)
     .default('http://localhost:5173')
-    .transform((value) => value.split(',').map((origin) => origin.trim())),
+    .transform((value, context) => parseOrigins(value, context)),
 }).superRefine((env, context) => {
   if (!env.EMAIL_CAPTURE_PATH || env.NODE_ENV === 'test') return;
   context.addIssue({
@@ -52,6 +52,20 @@ const EnvSchema = z.object({
 });
 
 type Env = z.infer<typeof EnvSchema>;
+
+function parseOrigins(value: string, context: z.RefinementCtx): string[] {
+  const origins = value.split(',').map((origin) => origin.trim());
+  if (origins.every(isUrl)) return origins;
+  context.addIssue({
+    code: z.ZodIssueCode.custom,
+    message: 'CORS_ORIGINS contient une URL invalide',
+  });
+  return z.NEVER;
+}
+
+function isUrl(value: string): boolean {
+  return z.string().url().safeParse(value).success;
+}
 
 /**
  * Mémoïsé sur l'objet d'environnement reçu : ConfigModule appelle `validate`, et

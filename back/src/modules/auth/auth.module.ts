@@ -19,6 +19,7 @@ import { VerifyEmailUseCase } from './application/use-cases/verify-email.use-cas
 import { RefreshTokensUseCase } from './application/use-cases/refresh-tokens.use-case';
 import { LogoutUseCase } from './application/use-cases/logout.use-case';
 import { VerifyAccessTokenUseCase } from './application/use-cases/verify-access-token.use-case';
+import { ApplicationOriginPolicy } from './application/application-origin.policy';
 import { ACCESS_TOKEN_VERIFIER } from './application/ports/access-token-verifier.port';
 import { BcryptPasswordHasher } from './infrastructure/crypto/bcrypt-password-hasher';
 import { NodemailerEmailSender } from './infrastructure/mail/nodemailer-email-sender';
@@ -68,6 +69,14 @@ import { JwtStrategy } from './presentation/strategies/jwt.strategy';
     JwtStrategy,
     SessionCookies,
     CsrfTokenService,
+    {
+      provide: ApplicationOriginPolicy,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) =>
+        new ApplicationOriginPolicy(
+          config.getOrThrow<readonly string[]>('security.corsOrigins'),
+        ),
+    },
     { provide: TOKEN_SERVICE, useClass: JwtTokenService },
     { provide: ACCESS_TOKEN_VERIFIER, useClass: JwtAccessTokenVerifier },
     // useFactory assumé : l'adapter reçoit une valeur primitive, pas un service.

@@ -35,7 +35,7 @@ export class RefreshTokensUseCase {
     // l'émission de son remplaçant doivent être datées du même moment, sinon la
     // fenêtre de grâce se mesure contre une horloge qui a bougé entre-temps.
     const now = this.clock.now();
-    const presented = await this.consumePresentedToken(plainToken, now);
+    const presented = await this.readPresentedToken(plainToken, now);
     const rotated = await this.rotate(presented, now);
 
     const user = await this.getUserProfile.ownProfile(presented.userId.value);
@@ -59,7 +59,7 @@ export class RefreshTokensUseCase {
    * en place. La fenêtre de grâce les sépare — juste après la rotation, c'est une
    * concurrence entre onglets ; plus tard, c'est un secret qui a circulé.
    */
-  private async consumePresentedToken(
+  private async readPresentedToken(
     plainToken: string,
     now: Date,
   ): Promise<RefreshToken> {
@@ -79,9 +79,6 @@ export class RefreshTokensUseCase {
 
     if (token.isExpired(now)) throw new RefreshTokenExpiredError();
 
-    token.revoke(now);
-    await this.refreshRepo.save(token);
-
     return token;
   }
 
@@ -92,7 +89,9 @@ export class RefreshTokensUseCase {
       now,
       consumed.familyId,
     );
-    await this.refreshRepo.save(token);
+    consumed.revoke(now);
+    const wonRace = await this.refreshRepo.rotate(consumed, token);
+    if (!wonRace) throw new RefreshRaceError();
 
     return plainToken;
   }

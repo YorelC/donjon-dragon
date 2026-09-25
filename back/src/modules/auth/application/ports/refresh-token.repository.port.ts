@@ -7,6 +7,9 @@ export const REFRESH_TOKEN_REPOSITORY = Symbol('REFRESH_TOKEN_REPOSITORY');
 export interface RefreshTokenRepositoryPort {
   save(token: RefreshToken): Promise<void>;
 
+  /** Révoque le token présenté et insère son successeur dans une transaction. */
+  rotate(consumed: RefreshToken, successor: RefreshToken): Promise<boolean>;
+
   /** On cherche par empreinte : le secret en clair ne descend jamais ici. */
   findBySecret(secret: TokenSecret): Promise<RefreshToken | null>;
 

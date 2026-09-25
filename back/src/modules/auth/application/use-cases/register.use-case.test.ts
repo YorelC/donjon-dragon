@@ -5,11 +5,16 @@ import type { RegisterDto } from '@donjon-dragon/shared/user-schema';
 
 import { RegisterUserUseCase } from '@modules/user/application/use-cases/register-user.use-case';
 import { InMemoryUserRepository } from '@modules/user/testing/in-memory-user.repository';
+import { Email } from '@modules/user/domain/email';
 import { InMemoryEmailVerificationTokenRepository } from '../../testing/in-memory-email-verification-token.repository';
 import { InMemoryPasswordHasher } from '../../testing/in-memory-password-hasher';
 import { InMemoryEmailSender } from '../../testing/in-memory-email-sender';
 import { TokenSecret } from '../../domain/token-secret';
 import { RegisterUseCase } from './register.use-case';
+import {
+  ApplicationOriginPolicy,
+  UntrustedApplicationOriginError,
+} from '../application-origin.policy';
 
 // Ce use-case ORCHESTRE : hash, delegation de la creation a user, envoi du lien.
 // Les invariants d'unicite sont testes chez leur proprietaire,
@@ -38,6 +43,7 @@ describe('RegisterUseCase', () => {
       new InMemoryPasswordHasher(),
       emailSender,
       clock,
+      new ApplicationOriginPolicy(['http://localhost:5173']),
     );
   });
 
@@ -57,7 +63,7 @@ describe('RegisterUseCase', () => {
     expect(stored?.passwordHash).not.toBe(dto.password);
   });
 
-  it('envoie un lien de verification construit sur appOrigin', async () => {
+  it('envoie un lien de verification construit sur une origine autorisée', async () => {
     await useCase.execute(dto);
 
     expect(emailSender.sent).toHaveLength(1);
@@ -65,6 +71,15 @@ describe('RegisterUseCase', () => {
     expect(emailSender.sent[0]!.verificationUrl).toMatch(
       /^http:\/\/localhost:5173\/verify-email\?token=.+/,
     );
+  });
+
+  it('refuse une origine extérieure avant de créer le compte', async () => {
+    const attack = { ...dto, appOrigin: 'https://attacker.example' };
+
+    await expect(useCase.execute(attack)).rejects.toThrow(UntrustedApplicationOriginError);
+
+    expect(await userRepo.findByEmail(Email.create(attack.email))).toBeNull();
+    expect(emailSender.sent).toHaveLength(0);
   });
 
   it('persiste un token de verification pour le compte cree', async () => {

@@ -66,9 +66,8 @@ export const RegisterSchema = z.object({
   email: emailField(),
   displayName: displayNameField(),
   password: passwordField(),
-  // Origine (window.location.origin) envoyée par le front pour construire
-  // le lien de vérification — marche en local/LAN/tunnel Cloudflare sans config.
-  // Aucun message soigné : ce champ n'est pas saisi, un échec ici est un bug.
+  // Origine demandée par le navigateur. Le serveur ne l'utilise qu'après
+  // correspondance exacte avec sa liste CORS configurée.
   appOrigin: z.string().url(),
 });
 

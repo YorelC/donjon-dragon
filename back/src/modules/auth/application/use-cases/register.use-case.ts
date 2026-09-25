@@ -11,6 +11,7 @@ import {
 import { PASSWORD_HASHER, type PasswordHasherPort } from '../ports/password-hasher.port';
 import { EMAIL_SENDER, type EmailSenderPort } from '../ports/email-sender.port';
 import { EmailVerificationToken } from '../../domain/email/email-verification-token';
+import { ApplicationOriginPolicy } from '../application-origin.policy';
 
 /**
  * Orchestre l'inscription : hash du mot de passe (préoccupation d'auth), puis
@@ -28,16 +29,18 @@ export class RegisterUseCase {
     @Inject(PASSWORD_HASHER) private readonly passwordHasher: PasswordHasherPort,
     @Inject(EMAIL_SENDER) private readonly emailSender: EmailSenderPort,
     @Inject(CLOCK) private readonly clock: Clock,
+    private readonly originPolicy: ApplicationOriginPolicy,
   ) {}
 
   async execute(dto: RegisterDto): Promise<PublicUser> {
+    const applicationOrigin = this.originPolicy.authorize(dto.appOrigin);
     const user = await this.registerUser.execute({
       email: dto.email,
       displayName: dto.displayName,
       passwordHash: await this.passwordHasher.hash(dto.password),
     });
 
-    await this.sendVerificationLink(user, dto.appOrigin);
+    await this.sendVerificationLink(user, applicationOrigin);
 
     return user;
   }

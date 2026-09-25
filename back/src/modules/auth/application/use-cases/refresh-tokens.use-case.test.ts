@@ -88,6 +88,20 @@ describe('RefreshTokensUseCase', () => {
     expect(active[0]!.familyId.equals(familyBefore)).toBe(true);
   });
 
+  it('ne laisse gagner qu une rotation concurrente', async () => {
+    const plainToken = await issueTokenForAlice();
+
+    const results = await Promise.allSettled([
+      useCase.execute(plainToken),
+      useCase.execute(plainToken),
+    ]);
+
+    expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+    const rejection = results.find((result) => result.status === 'rejected');
+    expect(rejection).toMatchObject({ reason: expect.any(RefreshRaceError) });
+    expect(refreshRepo.all().filter((token) => !token.isRevoked)).toHaveLength(1);
+  });
+
   // Deux onglets presentent le meme token : le second arrive juste apres la
   // rotation. Sans fenetre de grace, la detection de fuite deconnectait les deux.
   it('traite un rejeu immédiat comme une course, sans toucher à la lignée', async () => {
