@@ -20,10 +20,9 @@ build, les sorts, l'équipement et la fiche calculée d'un personnage exactement
 niveau 1. Il couvre aussi l'aperçu, qui emploie le même validateur et le même moteur
 sans persister.
 
-Conformément à la demande d'incrément, la revue par le MJ, la correction après refus,
-la progression, l'état d'aventure et le combat restent hors périmètre. Les lignes
-`B01-VAL-002` à `B01-VAL-005` ne sont donc pas déclarées implémentées par cette spec.
-L'auto-attribution et la confidentialité restent celles de la Spec 007.
+L'incrément couvre également la revue par le MJ et la correction après refus, selon
+le workflow décrit plus bas. La progression, l'état d'aventure et le combat restent
+hors périmètre. L'auto-attribution et la confidentialité restent celles de la Spec 007.
 
 ## Audit initial des 85 règles
 
@@ -35,12 +34,12 @@ partie du chemin ; `ABSENTE`, non représentable ou sans contrôle utile.
 |---|---|---|---|
 | B01-ID-001 | PARTIELLE | CONFORME | Création transactionnelle : reçu, personnage, audit et outbox dans une session ; `mongo-character-creation.repository.test.ts`. |
 | B01-ID-002 | PARTIELLE | CONFORME | `progressionOf` rend niveau, PX initiaux, bonus de maîtrise et dé de vie ; `resolve-sheet.test.ts`. |
-| B01-ID-003 | PARTIELLE | PARTIELLE | Nom Zod 2-50 ; le verrou après acceptation dépend de `B01-VAL-002`, hors périmètre. |
+| B01-ID-003 | PARTIELLE | PARTIELLE | Nom Zod 2-50 ; le verrou de revue existe dans le domaine, son parcours transactionnel reste à prouver. |
 | B01-ID-004 | ABSENTE | CONFORME | `AlignmentSchema` au contrat, exigé par `requireCompleteIdentity`, persisté requis. |
 | B01-ID-005 | ABSENTE | CONFORME | `age` entier positif, exigé par `requireCompleteIdentity`, persisté requis. |
 | B01-ID-006 | ABSENTE | CONFORME | `heightCm` et `weightKg` positifs, exigés par `requireCompleteIdentity`, persistés requis. |
 | B01-ID-007 | ABSENTE | CONFORME | `description` nullable au contrat et en base. |
-| B01-ID-008 | ABSENTE | ABSENTE | Aucun stockage décidé : voir la `DÉCISION REQUISE` plus bas. Rien n'est inventé. |
+| B01-ID-008 | ABSENTE | ABSENTE | Le stockage objet est décidé ; fournisseur, contrat de sécurité et téléversement restent à réaliser. |
 | B01-ID-009 | PARTIELLE | CONFORME | Douze classes et dix espèces, Aasimar compris (`species.ts`). |
 | B01-ID-010 | PARTIELLE | CONFORME | `assertChoiceSources` ferme les sources, `assertChoiceFields` ferme les champs par source. |
 | B01-CAR-001 | CONFORME | CONFORME | Inchangé : `VALIDATORS` par méthode dans `ability-assignment.ts`. |
@@ -91,12 +90,12 @@ partie du chemin ; `ABSENTE`, non représentable ou sans contrôle utile.
 | B01-CLA-RGR | PARTIELLE | CONFORME | Armes et sorts contrôlés. Les 120 combinaisons passent (`level-one-combinations.test.ts`). |
 | B01-CLA-ROG | PARTIELLE | CONFORME | Expertise bornée aux compétences choisies, outils et langue contrôlés. Les 120 combinaisons passent (`level-one-combinations.test.ts`). |
 | B01-CLA-SOR | PARTIELLE | CONFORME | Listes et cardinalités contrôlées. Les 120 combinaisons passent (`level-one-combinations.test.ts`). |
-| B01-CLA-WLK | PARTIELLE | PARTIELLE | Invocation sélectionnable et validée ; les 120 combinaisons passent. La fiche reste incomplète pour le Pacte de la Lame, cf. `B01-CLA-004`. |
+| B01-CLA-WLK | PARTIELLE | CONFORME | Invocation et sous-choix publiés au wizard ; Pacte de la Lame calculé et affiché avec sa provenance. Les 120 combinaisons passent. |
 | B01-CLA-WIZ | PARTIELLE | CONFORME | Quatre sorts préparés et grimoire de six. Les 120 combinaisons passent (`level-one-combinations.test.ts`). |
 | B01-CLA-001 | PARTIELLE | CONFORME | Quotas, listes, doublons et conflits avec les octrois fixes contrôlés (`assertNoDuplicateProficiencies`, `assertGrantedClassSpellsAreNotChosen`). |
 | B01-CLA-002 | ABSENTE | CONFORME | `assertWeaponMasteries` borne les bottes au catalogue et au quota de la classe. |
 | B01-CLA-003 | PARTIELLE | CONFORME | `assertSingleOption` borne la clé de style aux dix styles de référence. |
-| B01-CLA-004 | ABSENTE | PARTIELLE | `assertInvocation` et `assertInvocationDetails` valident invocation, familier, arme de pacte et grimoire de pacte ; mais `resolveAttacks` n'itère que l'équipement possédé, donc l'arme du Pacte de la Lame n'apparaît dans aucune attaque calculée — ni sa maîtrise, ni le Charisme, ni sa provenance. |
+| B01-CLA-004 | ABSENTE | CONFORME | `assertInvocationDetails` ferme les sous-choix ; `resolveAttacks` ajoute l'arme de pacte maîtrisée au Charisme et la fiche affiche sa provenance. |
 | B01-SOR-001 | PARTIELLE | PARTIELLE | 98 sorts de niveaux 0-1, le seul périmètre qu'une fiche de niveau 1 consomme ; le corpus 391 relève de B06. |
 | B01-SOR-002 | PARTIELLE | CONFORME | Chaque origine valide ses propres sorts (`spellsChosenBy`, `assertMagicInitiate`). |
 | B01-SOR-003 | PARTIELLE | CONFORME | `assertKnownUnique` refuse une clé absente de `SPELLS`. |
@@ -113,39 +112,36 @@ partie du chemin ; `ABSENTE`, non représentable ou sans contrôle utile.
 | B01-FIC-003 | PARTIELLE | PARTIELLE | Sources portées par PV, PV courants, CA, initiative et vitesse ; pas encore par compétence ni attaque. |
 | B01-FIC-004 | CONFORME | CONFORME | Inchangé : aperçu et lecture appellent le même `resolveSheet`. |
 | B01-VAL-001 | PARTIELLE | PARTIELLE | Création en un geste, avec reçu et audit ; aucun état soumis versionné. |
-| B01-VAL-002 | ABSENTE | ABSENTE | Hors périmètre revendiqué. |
-| B01-VAL-003 | ABSENTE | ABSENTE | Hors périmètre revendiqué. |
-| B01-VAL-004 | ABSENTE | ABSENTE | Hors périmètre revendiqué. |
-| B01-VAL-005 | ABSENTE | ABSENTE | Hors périmètre revendiqué. |
+| B01-VAL-002 | ABSENTE | PARTIELLE | États et transitions représentés dans le domaine ; commande transactionnelle à prouver. |
+| B01-VAL-003 | ABSENTE | PARTIELLE | Acceptation et refus représentés ; autorisation MJ et routes à prouver. |
+| B01-VAL-004 | ABSENTE | PARTIELLE | Motif obligatoire et conservé dans le domaine ; projection privée et audit à prouver. |
+| B01-VAL-005 | ABSENTE | PARTIELLE | Retour en correction représenté ; version immuable et resoumission à prouver. |
 | B01-VAL-006 | CONFORME | CONFORME | Inchangé : Spec 007, projections privées joueur/MJ. |
 
 **Bilan initial : 5 conformes, 65 partielles, 15 absentes.**
 
-**Bilan après incrément, validation domaine uniquement : 72 conformes,
-8 partielles, 5 absentes.**
+**Bilan après incrément, validation domaine uniquement : 74 conformes,
+10 partielles, 1 absente.**
 
 > **Portée de ce chiffre.** Il qualifie ce que le serveur valide et calcule,
 > prouvé par les tests unitaires du domaine et des use-cases. Il ne dit rien du
-> parcours réel : le wizard ne sait pas encore produire toutes les compositions
-> que ces règles acceptent — `weaponMasteries`, outils de classe et
-> d'historique, invocations, grimoire, second Initié à la magie et objets
-> génériques manquent au modèle front. Le chiffre définitif ne sera établi
+> parcours réel. Le wizard représente désormais maîtrises, outils, invocations,
+> grimoire, dons répétés et objets concrets, mais le chiffre définitif ne sera établi
 > qu'après cet audit de contrat, sur quatre niveaux de preuve distincts :
 > validation domaine, parcours HTTP, parcours wizard, persistance Mongo
 > réellement exécutée.
 
-Les huit partielles restantes tiennent à cinq causes, toutes assumées : le Pacte
-de la Lame est validé mais absent de la fiche calculée (`B01-CLA-004`,
-`B01-CLA-WLK`), les révélations de l'Aasimar restent descriptives
-(`B01-ESP-002`), le corpus complet des 391 sorts appartient à B06
+Les dix partielles restantes tiennent à cinq causes, toutes assumées : les
+révélations de l'Aasimar restent descriptives (`B01-ESP-002`), le corpus complet
+des 391 sorts appartient à B06
 (`B01-SOR-001`), le magasin et l'achat sont hors périmètre (`B01-EQP-005`), et
-les sources par compétence comme le verrou d'acceptation dépendent d'incréments
-ultérieurs (`B01-FIC-003`, `B01-ID-003`, `B01-VAL-001`). Les cinq absentes sont
-le portrait, faute de décision de stockage, et les quatre lignes de validation
-par le MJ.
+les sources par compétence restent incomplètes (`B01-FIC-003`), et le workflow de
+validation attend encore ses preuves transactionnelles et HTTP (`B01-ID-003`,
+`B01-VAL-001` à `B01-VAL-005`). La seule ligne absente est le téléversement du
+portrait, dont le stockage objet est décidé mais pas encore spécifié techniquement.
 
-Une règle validée mais dont la conséquence n'atteint pas la fiche n'est pas
-conforme : `B01-CLA-004` est redescendue pour cette raison.
+Une règle validée dont la conséquence n'atteint pas la fiche ne serait pas
+conforme ; le calcul et l'affichage du Pacte de la Lame ferment désormais cet écart.
 
 
 ## Tirage des caractéristiques
@@ -411,6 +407,117 @@ dépôt : `docs/characteres/srd-2024/5e-SRD-Languages.json` est en anglais. Ils 
 liste transmise ; « Langue des signes courante » a été validé le 31/08/2026. La
 langue est bien offerte au choix, au même titre que les huit autres standards.
 
+## Parcours de création — ordre et invalidation des choix
+
+Le wizard ordonne chaque choix après toutes les sources dont sa validité dépend :
+
+```text
+espèce → lignage → langues → classe → historique → compétences de classe
+→ style ou ordre → dons → expertise → caractéristiques → sorts → équipement
+→ identité
+```
+
+Les étapes conditionnelles ajoutées par les incréments suivants restent placées
+derrière leur source : outil d'historique après l'historique ; maîtrises d'armes,
+outils et langue de classe après la classe ; expertise après les dons.
+
+Changer une source invalide immédiatement ses conséquences, y compris lorsque
+l'utilisateur revient à une étape antérieure :
+
+| Transition | Choix invalidés ou filtrés |
+|---|---|
+| Classe | compétences, expertise, sorts, style, ordre et paquetage de classe ; armure et bouclier conservés seulement s'ils restent possédés |
+| Historique | bonus, paquetage et configuration du don si son octroi change ; compétences de classe devenues doublons et expertise devenue orpheline sont filtrées ; armure et bouclier suivent la possession restante |
+| Don configuré | expertise limitée aux compétences encore maîtrisées |
+
+La configuration d'un don ne se résume pas à sa clé. Acolyte, Guide et Sage
+accordent tous `magic-initiate`, mais avec trois listes imposées différentes. Un
+changement de cette configuration remet donc à zéro liste, caractéristique,
+sorts mineurs, sort de niveau 1, compétences et outils choisis par les dons. Tant
+que ces choix restent à plat, cette remise à zéro est volontairement globale.
+
+L'expertise propose toutes les compétences déjà maîtrisées, quelle que soit leur
+source. Elle n'est jamais conservée sur une compétence qui ne l'est plus.
+
+### Critères d'acceptation du socle
+
+1. Recliquer sur la classe ou l'historique courant ne modifie aucune sélection.
+2. Changer de classe conserve une armure ou un bouclier seulement si le paquetage
+   d'historique encore sélectionné le fournit.
+3. Changer d'historique retire toute compétence de classe désormais accordée par
+   le nouvel historique et filtre l'expertise sur les maîtrises restantes.
+4. Passer d'Acolyte à Guide remet à zéro la configuration d'Initié à la magie,
+   bien que la clé du don ne change pas.
+5. L'expertise du Roublard peut cibler une compétence d'historique ou de don.
+
+**Décision du 1er septembre 2026 — langue supplémentaire du Roublard.** Elle
+doit être distincte des deux langues standards déjà choisies. Le serveur refuse
+le doublon et le front désactive ces deux options avec leur provenance.
+
+## Parcours de création — objets concrets et babiole
+
+Une option de paquetage publie explicitement le choix d'objet concret qu'elle
+exige. Le wizard ne le déduit jamais de son libellé ni de la présence d'une
+entrée générique : l'option A du Moine exige bien un outil ou un instrument sans
+porter de sentinelle dans `entries`.
+
+- le choix de classe et le choix d'historique sont indépendants ;
+- chacun porte exactement une clé prise dans la liste publiée pour l'option ;
+- choisir l'option « or seul » remet sa clé concrète à `null` ;
+- changer d'option remet armure et bouclier à zéro ;
+- une babiole facultative est choisie par son identifiant de 1 à 100 ;
+- la babiole est ajoutée une fois à l'inventaire sans modifier l'or.
+
+Le catalogue HTTP publie, par option, `itemChoice` avec les clés et libellés
+autorisés, ainsi que les cent babioles. La composition conserve
+`classChoiceItemKey`, `backgroundChoiceItemKey` et `trinketId`; le payload les
+transmet sans recalculer leur validité côté client.
+
+### Critères d'acceptation
+
+1. Un Barde ou un Moine ayant retenu l'option A ne peut terminer l'étape sans
+   choisir l'objet concret annoncé.
+2. Un Voyageur ayant retenu l'option A choisit une boîte de jeux sans gagner une
+   maîtrise supplémentaire.
+3. Passer d'une option avec objet concret à l'or seul efface la clé précédente.
+4. Une babiole peut rester absente ; si elle est choisie, la réouverture restitue
+   son identifiant et l'or reste identique.
+
+## Parcours de création — magie et manifestations occultes
+
+Le catalogue publie les cinq manifestations occultes disponibles au niveau 1 et
+le type de sous-choix que chacune exige. Le wizard ne déduit jamais ce sous-choix
+du nom de la manifestation : Pacte de la Chaîne choisit une forme de familier,
+Pacte de la Lame une arme de corps à corps et Pacte du Grimoire trois sorts
+mineurs ainsi que deux rituels de niveau 1.
+
+Les choix d'Initié à la magie restent séparés par leur provenance. L'historique
+et le don d'espèce de l'Humain peuvent donc accorder deux occurrences distinctes,
+chacune avec sa liste imposée ou choisie, sa caractéristique et ses propres sorts.
+
+Le Magicien choisit quatre sorts préparés et six sorts de niveau 1 dans son
+grimoire. Les quatre préparés doivent appartenir aux six ; le wizard applique la
+même contrainte que le serveur et restitue les deux ensembles à la réouverture.
+
+Pacte de la Lame produit une attaque calculée même si l'arme n'appartient pas au
+paquetage. Cette attaque emploie le Charisme, ajoute le bonus de maîtrise et porte
+la provenance « Pacte de la Lame ». Si le paquetage contient la même arme, la
+version de pacte remplace son attaque ordinaire afin de ne pas afficher deux lignes
+indistinguables pour une même arme.
+
+### Critères d'acceptation
+
+1. Un Occultiste ne peut franchir l'étape sans une manifestation et son éventuel
+   sous-choix complet ; changer de manifestation efface les détails précédents.
+2. Pacte de la Lame n'offre que les armes de corps à corps et produit une attaque
+   maîtrisée au Charisme, y compris sans possession de l'arme.
+3. Un Magicien ne peut préparer un sort absent de son grimoire, ni terminer avec
+   moins de six sorts de grimoire distincts.
+4. Deux dons Initié à la magie conservent deux choix sourcés et deux quotas
+   indépendants dans le payload.
+5. Pacte du Grimoire refuse tout doublon, tout sort mineur manquant et tout sort
+   de niveau 1 qui n'est pas un rituel.
+
 ## Cas d'idempotence et leur preuve
 
 Les deux commandes — émission d'un tirage, création d'un personnage — partagent
@@ -439,7 +546,7 @@ Deux limites assumées, à ne pas lire comme des garanties :
   perdre la course. Ils sont jetés sans être écrits : ce qui est garanti, c'est
   qu'une clé ne rend jamais deux résultats — pas qu'aucun dé n'a été tiré.
 
-## DÉCISION REQUISE — relance du tirage après création
+## Décision — relance du tirage après création
 
 Les relances **avant** création sont tranchées : illimitées, avec consommation
 unique du tirage retenu. Ce qui arrive **après** ne l'est pas. L'implémentation
@@ -460,10 +567,13 @@ Options à arbitrer :
    matrice B03, mais rien de tout cela n'existe : la décision resterait sans
    effet jusqu'à cet incrément-là.
 
-Tant que rien n'est tranché, l'option 1 est ce que le code fait, et la Spec ne la
-déclare pas normative.
+Charly a retenu l'option 1 le 1er septembre 2026. Les demandes de tirage restent
+illimitées avant la création ; le tirage consommé ne peut jamais être remplacé.
+Avant acceptation, ses six valeurs peuvent être réaffectées. Après acceptation,
+classe et caractéristiques ne changent que par la respécialisation de DEC-003,
+qui conserve elle aussi méthode et six valeurs sans nouveau tirage.
 
-## DÉCISION REQUISE — stockage des portraits
+## Décision — stockage des portraits
 
 La cible fonctionnelle impose un portrait facultatif et un visuel générique, mais 5A,
 5B et 5C reportent explicitement stockage, formats et limites. Aucun mécanisme n'est
@@ -478,18 +588,43 @@ Options à arbitrer :
 3. stockage objet : diffusion et montée en charge adaptées, mais nouveau service,
    secrets, coûts et stratégie transactionnelle à décider.
 
-La décision doit aussi fixer formats, taille maximale, traitement d'image, suppression,
-URL/projection et portrait générique exact avant tout champ de téléversement.
+Charly a retenu le stockage objet le 1er septembre 2026. Le contrat technique du
+fournisseur, les formats, la taille maximale, le traitement, la suppression et
+la forme des URL doivent être fixés avant d'introduire le téléversement ; ce choix
+de stockage n'autorise pas à inventer ces paramètres de sécurité.
+
+## Workflow de validation par le MJ
+
+L'état de validation est distinct de l'état d'aventure et suit exclusivement :
+
+```text
+BROUILLON → SOUMISE → ACCEPTÉE
+                  ↘ REFUSÉE → SOUMISE
+```
+
+- la création complète produit un brouillon ;
+- le créateur ou le joueur auquel la fiche est attribuée soumet la révision
+  courante ; la version soumise est figée ;
+- pendant `SOUMISE`, aucune correction silencieuse n'est possible ;
+- tout MJ actif peut accepter ou refuser seul ; le refus exige un motif non vide ;
+- seul le créateur autorisé corrige une fiche `REFUSÉE`, puis la resoumet ;
+- chaque soumission conserve un snapshot numéroté, et chaque décision conserve
+  auteur, date, motif éventuel et révision examinée ;
+- l'acceptation verrouille nom, alignement, origine, historique et catégorie de
+  taille. Classe et caractéristiques relèvent ensuite de la respécialisation ;
+- une fiche non acceptée ne peut pas être sélectionnée comme participante d'un
+  combat.
+
+Soumission, correction, resoumission, refus et acceptation emploient la même
+enveloppe transactionnelle que la création : filtre de révision, reçu durable,
+audit fonctionnel et fait d'outbox dans une transaction Mongo. Une collision de
+révision ne fusionne jamais deux versions.
 
 ## Hors périmètre volontaire
 
-- validation, refus, correction et acceptation par le MJ (`B01-VAL-002` à
-  `B01-VAL-005`) ;
 - progression au-delà du niveau 1, respécialisation, aventure et combat ;
 - magasin, achat, fabrication, commerce et variante de taille d'équipement ;
-- téléversement de portrait jusqu'à résolution de la décision ci-dessus ;
+- téléversement de portrait jusqu'à définition du fournisseur et du contrat de sécurité ;
 - modification des seeds, migrations, `.env` ou CI ;
-- relance du tirage d'un personnage déjà créé : `PUT` exige `abilityRollId: null`.
-  C'est une limite technique de l'incrément, pas une règle tranchée — voir la
-  `DÉCISION REQUISE` correspondante.
-
+- relance du tirage d'un personnage déjà créé, interdite par la décision ci-dessus :
+  `PUT` exige `abilityRollId: null`.
