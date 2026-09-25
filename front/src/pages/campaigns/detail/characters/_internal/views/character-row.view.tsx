@@ -20,9 +20,9 @@ const UNASSIGNED_LABEL = "Non attribué";
 
 export function CharacterRowView(props: CharacterRowProps) {
   return (
-    <li className="list-row">
+    <li className="list-row flex-wrap">
       <CharacterIdentity character={props.character} />
-      <div className="flex shrink-0 items-center gap-2.5">
+      <div className="flex flex-wrap items-center justify-end gap-2.5">
         <span className="pill">{toAssignmentLabel(props.character)}</span>
         <RowActions {...props} />
       </div>
@@ -36,7 +36,7 @@ function CharacterIdentity({
   character: CampaignCharacterListItem;
 }) {
   return (
-    <div className="flex min-w-0 items-center gap-[18px]">
+    <div className="flex min-w-0 flex-1 basis-64 items-center gap-[18px]">
       <Diamond
         size="badge"
         tone={character.assignmentStatus === "assigned" ? "active" : "idle"}
@@ -63,7 +63,7 @@ function RowActions({
   if (character.projection === "pool") return null;
 
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex flex-wrap items-center justify-end gap-2.5">
       <SheetLink campaignId={campaignId} characterId={character.id} />
       {isCorrectable(character) ? (
         <BuilderLink campaignId={campaignId} characterId={character.id} />

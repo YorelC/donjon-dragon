@@ -14,7 +14,7 @@ export function CharacterReviewStatusView({
   character: CampaignCharacterListItem;
 }) {
   return (
-    <div className="flex min-w-0 items-center gap-2">
+    <div className="flex min-w-0 flex-wrap items-center gap-2">
       <Badge variant="outline">{REVIEW_LABELS[character.review.status]}</Badge>
       <RejectionReason character={character} />
     </div>
@@ -31,7 +31,7 @@ function RejectionReason({
   }
 
   return (
-    <span className="muted-text-xs truncate">
+    <span className="muted-text-xs break-words">
       Motif : {character.review.lastRejectionReason}
     </span>
   );
