@@ -60,13 +60,9 @@ function speciesChangePatch(
 
 /**
  * Les choix qu'un don a fait faire — compétences, outils, liste de sorts — sont
- * à plat, sans dire de quel don ils viennent : le modèle ne distingue pas encore
- * le don de l'espèce de celui de l'historique. Quand le premier disparaît, on ne
- * peut donc pas savoir lesquels lui appartenaient.
- *
- * On les efface tous, et seulement dans ce cas. Ils restent ressaisissables à
- * l'étape des dons, alors qu'un choix orphelin, lui, bloque définitivement. La
- * distinction par provenance appartient au lot des dons multiples.
+ * Les anciens champs à plat sont remis à zéro pour la compatibilité des builds
+ * existants. Les choix sourcés permettent désormais de ne retirer que celui de
+ * l'espèce ; l'occurrence accordée par l'historique reste intacte.
  */
 function orphanedFeatChoices(
   composition: CharacterComposition,
@@ -80,6 +76,9 @@ function orphanedFeatChoices(
     spellList: null,
     featCantrips: [],
     featSpells: [],
+    magicInitiateChoices: composition.magicInitiateChoices.filter(
+      (choice) => choice.grantedBy.type !== "species",
+    ),
   };
 }
 

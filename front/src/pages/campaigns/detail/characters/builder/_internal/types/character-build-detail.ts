@@ -53,6 +53,9 @@ function coreFieldsOf(dto: CharacterBuildDetailDto) {
     backgroundBonuses: dto.backgroundBonuses,
     classEquipmentOptionId: dto.classOptionId,
     backgroundEquipmentOptionId: dto.backgroundOptionId,
+    classChoiceItemKey: dto.classChoiceItemKey,
+    backgroundChoiceItemKey: dto.backgroundChoiceItemKey,
+    trinketId: dto.trinketId,
     armorKey: dto.armorKey,
     shield: dto.shield,
   };
@@ -62,18 +65,45 @@ function choiceFieldsOf(dto: CharacterBuildDetailDto) {
   return {
     speciesSkills: dto.speciesSkills,
     speciesFeat: dto.speciesFeat,
+    ...classChoiceFieldsOf(dto),
+    backgroundTool: dto.backgroundTool,
+    ...featChoiceFieldsOf(dto),
+  };
+}
+
+function classChoiceFieldsOf(dto: CharacterBuildDetailDto) {
+  return {
     classSkills: dto.classSkills,
     expertise: dto.expertise,
     classCantrips: dto.classCantrips,
     classSpells: dto.classSpells,
     fightingStyle: dto.fightingStyle,
     classOrder: dto.classOrder,
+    weaponMasteries: dto.weaponMasteries,
+    classTools: dto.classTools,
+    classLanguage: dto.classLanguage,
+    invocation: dto.invocation,
+    invocationSpells: dto.invocationSpells,
+    familiarForm: dto.familiarForm,
+    pactWeaponKey: dto.pactWeaponKey,
+    spellbook: dto.spellbook,
+  };
+}
+
+function featChoiceFieldsOf(dto: CharacterBuildDetailDto) {
+  return {
     featSkills: dto.featSkills,
     featTools: dto.featTools,
     spellcastingAbility: dto.spellcastingAbility,
     spellList: dto.spellList,
     featCantrips: dto.featCantrips,
     featSpells: dto.featSpells,
+    magicInitiateChoices: dto.magicInitiateChoices.flatMap((choice) => choice.grantedBy ? [{
+      ...choice,
+      grantedBy: { ...choice.grantedBy },
+      cantrips: [...choice.cantrips],
+      spells: [...choice.spells],
+    }] : []),
   };
 }
 

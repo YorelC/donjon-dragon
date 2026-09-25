@@ -19,8 +19,9 @@ function anOption(
   id: string,
   entries: CatalogEquipmentOption["entries"],
   gold: number,
+  itemChoice: CatalogEquipmentOption["itemChoice"] = null,
 ): CatalogEquipmentOption {
-  return { id, label: `option ${id}`, entries, gold };
+  return { id, label: `option ${id}`, entries, gold, itemChoice };
 }
 
 function anItem(key: string, name: string, armor: Item["armor"]): Item {
@@ -110,6 +111,11 @@ const CATALOG = {
   backgrounds: [SOLDIER],
   originFeats: [],
   skillLabels: {},
+  toolLabels: {},
+  weaponLabels: {},
+  languages: { standard: [], rare: [] },
+  alignments: [],
+  trinkets: [{ id: 42, itemKey: "trinket-42", name: "Babiole 42" }],
 } as unknown as DndCatalog;
 
 function aComposition(overrides: Partial<CharacterComposition> = {}): CharacterComposition {
@@ -203,5 +209,43 @@ describe("hasChosenEquipment", () => {
     expect(hasChosenEquipment(CATALOG, aComposition())).toBe(false);
     expect(hasChosenEquipment(CATALOG, aComposition({ classEquipmentOptionId: "A" }))).toBe(false);
     expect(hasChosenEquipment(CATALOG, BOTH_CHOSEN)).toBe(true);
+  });
+
+  it("exige l'objet concret annoncé par le paquetage", () => {
+    const choice = { options: [{ key: "dice-set", name: "Jeu de dés" }], replacesItemKeys: ["gaming-set"] };
+    const catalog = {
+      ...CATALOG,
+      backgrounds: [{ ...SOLDIER, equipment: { options: [
+        anOption("A", [{ itemKey: "gaming-set", quantity: 1 }], 0, choice),
+      ] } }],
+    };
+
+    expect(hasChosenEquipment(catalog, BOTH_CHOSEN)).toBe(false);
+    expect(hasChosenEquipment(catalog, {
+      ...BOTH_CHOSEN, backgroundChoiceItemKey: "dice-set",
+    })).toBe(true);
+  });
+});
+
+describe("objets concrets et babiole", () => {
+  it("remplace l'entrée générique et ajoute la babiole", () => {
+    const choice = { options: [{ key: "dice-set", name: "Jeu de dés" }], replacesItemKeys: ["gaming-set"] };
+    const catalog = {
+      ...CATALOG,
+      backgrounds: [{ ...SOLDIER, equipment: { options: [
+        anOption("A", [{ itemKey: "gaming-set", quantity: 1 }], 0, choice),
+      ] } }],
+    };
+    const composition = {
+      ...BOTH_CHOSEN, backgroundChoiceItemKey: "dice-set", trinketId: 42,
+    };
+
+    expect(grantedItems(catalog, composition)).toEqual(expect.arrayContaining([
+      { itemKey: "dice-set", quantity: 1 },
+      { itemKey: "trinket-42", quantity: 1 },
+    ]));
+    expect(grantedItems(catalog, composition)).not.toContainEqual({
+      itemKey: "gaming-set", quantity: 1,
+    });
   });
 });

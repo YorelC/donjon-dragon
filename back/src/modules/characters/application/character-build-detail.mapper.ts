@@ -114,6 +114,7 @@ function classFieldsOf(choices: readonly CharacterChoice[]) {
     classOrder: choice?.classOrder ?? null,
     weaponMasteries: [...(choice?.weaponMasteries ?? [])],
     classTools: [...(choice?.tools ?? [])],
+    classLanguage: choice?.languages?.[0] ?? null,
     invocation: choice?.invocation ?? null,
     invocationSpells: [...(choice?.invocationSpells ?? [])],
     familiarForm: choice?.familiarForm ?? null,

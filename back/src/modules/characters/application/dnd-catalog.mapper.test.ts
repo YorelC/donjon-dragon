@@ -126,6 +126,30 @@ describe('toDndCatalog', () => {
     catalog.alignments.forEach((entry) => {
       expect(entry.name).toBe(ALIGNMENT_LABELS[entry.key]);
     });
+    expect(Object.values(catalog.toolLabels).every(Boolean)).toBe(true);
+    expect(Object.values(catalog.weaponLabels).every(Boolean)).toBe(true);
+  });
+
+  it('publie le choix concret du barde, du moine et du voyageur', () => {
+    expect(classNamed('bard').startingEquipment.options[0]?.itemChoice).not.toBeNull();
+    expect(classNamed('monk').startingEquipment.options[0]?.itemChoice).not.toBeNull();
+    expect(backgroundNamed('wayfarer').equipment.options[0]?.itemChoice).not.toBeNull();
+  });
+
+  it('publie exactement cent babioles identifiées', () => {
+    const trinkets = toDndCatalog().trinkets;
+
+    expect(trinkets).toHaveLength(100);
+    expect(new Set(trinkets.map((entry) => entry.id)).size).toBe(100);
+  });
+
+  it('publie les invocations et leurs sous-choix fermés', () => {
+    const catalog = toDndCatalog();
+
+    expect(catalog.invocations).toHaveLength(5);
+    expect(catalog.familiarForms).toContainEqual({ key: 'owl', name: 'Owl' });
+    expect(catalog.pactWeaponOptions.some((weapon) => weapon.key === 'longsword')).toBe(true);
+    expect(catalog.pactWeaponOptions.some((weapon) => weapon.key === 'longbow')).toBe(false);
   });
 });
 

@@ -23,8 +23,14 @@ export function aCatalog(overrides: Partial<DndCatalog> = {}): DndCatalog {
     backgrounds: [aBackground()],
     originFeats: [],
     skillLabels: {},
+    toolLabels: {},
+    weaponLabels: {},
     languages: { standard: STANDARD_LANGUAGES.map(named), rare: RARE_LANGUAGES.map(named) },
     alignments: [{ key: "neutralGood", name: "Neutre bon" }],
+    trinkets: [],
+    invocations: [],
+    familiarForms: [],
+    pactWeaponOptions: [],
     ...overrides,
   };
 }
@@ -106,7 +112,7 @@ export function aClass(overrides: Partial<CatalogClass> = {}): CatalogClass {
     toolProficiencies: [],
     armorTraining: [],
     weaponProficiencies: [],
-    startingEquipment: { options: [{ id: "A", label: "A", entries: [], gold: 0 }] },
+    startingEquipment: emptyEquipment(),
     spellcasting: null,
     level1Features: [],
     expertiseCount: 0,
@@ -114,6 +120,10 @@ export function aClass(overrides: Partial<CatalogClass> = {}): CatalogClass {
     ...NO_BOUNDED_CHOICE,
     ...overrides,
   };
+}
+
+function emptyEquipment() {
+  return { options: [{ id: "A", label: "A", entries: [], gold: 0, itemChoice: null }] };
 }
 
 export function aBackground(overrides: Partial<CatalogBackground> = {}): CatalogBackground {
@@ -127,7 +137,9 @@ export function aBackground(overrides: Partial<CatalogBackground> = {}): Catalog
     skillProficiencies: [],
     toolProficiency: "",
     toolOptions: [],
-    equipment: { options: [{ id: "A", label: "A", entries: [], gold: 0 }] },
+    equipment: {
+      options: [{ id: "A", label: "A", entries: [], gold: 0, itemChoice: null }],
+    },
     ...overrides,
   };
 }

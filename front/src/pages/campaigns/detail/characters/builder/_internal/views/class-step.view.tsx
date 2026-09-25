@@ -1,6 +1,7 @@
 import type { CatalogClass, ClassKey, DndCatalog } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Separator } from "@/shared/components/atoms/separator";
+import { classChangePatch } from "../types/builder-transitions";
 import type { CharacterComposition } from "../types/character-composition";
 import { OptionListView } from "./option-list.view";
 
@@ -23,17 +24,7 @@ export function ClassStepView({ catalog, composition, onChange }: ClassStepViewP
       <OptionListView
         options={catalog.classes.map((entry) => ({ key: entry.key, name: entry.name }))}
         selectedKey={composition.classKey}
-        onSelect={(key) =>
-          onChange({
-            classKey: key as ClassKey,
-            classSkills: [],
-            expertise: [],
-            classCantrips: [],
-            classSpells: [],
-            fightingStyle: null,
-            classOrder: null,
-          })
-        }
+        onSelect={(key) => onChange(classChangePatch(key as ClassKey, { catalog, composition }))}
       />
       {characterClass ? <ClassDetails characterClass={characterClass} /> : null}
     </div>

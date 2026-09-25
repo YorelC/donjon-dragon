@@ -4,14 +4,10 @@ import { Button } from "@/shared/components/atoms/button";
 import { Switch } from "@/shared/components/atoms/switch";
 import { Label } from "@/shared/components/atoms/label";
 import type { CharacterComposition } from "../types/character-composition";
-import {
-  backgroundEquipmentOptions,
-  classEquipmentOptions,
-  grantedItems,
-  ownedArmors,
-  ownedShield,
-} from "../types/starting-equipment";
+import { backgroundEquipmentOptions, classEquipmentOptions, grantedItems,
+  ownedArmors, ownedShield } from "../types/starting-equipment";
 import { EquipmentOptionGroupView } from "./equipment-option-group.view";
+import { TrinketChoiceView } from "./trinket-choice.view";
 
 interface EquipmentStepViewProps {
   catalog: DndCatalog;
@@ -42,7 +38,9 @@ export function EquipmentStepView({
         selectedId={composition.classEquipmentOptionId}
         selection={{
           items,
-          onSelect: (optionId) => onChange(resetWorn({ classEquipmentOptionId: optionId })),
+          selectedItemKey: composition.classChoiceItemKey,
+          onSelect: (optionId) => onChange(resetClassPackage(optionId)),
+          onItemSelect: (classChoiceItemKey) => onChange({ classChoiceItemKey }),
         }}
       />
       <EquipmentOptionGroupView
@@ -52,13 +50,20 @@ export function EquipmentStepView({
         selectedId={composition.backgroundEquipmentOptionId}
         selection={{
           items,
-          onSelect: (optionId) => onChange(resetWorn({ backgroundEquipmentOptionId: optionId })),
+          selectedItemKey: composition.backgroundChoiceItemKey,
+          onSelect: (optionId) => onChange(resetBackgroundPackage(optionId)),
+          onItemSelect: (backgroundChoiceItemKey) => onChange({ backgroundChoiceItemKey }),
         }}
       />
       <WornEquipment
         worn={{ armors: ownedArmors(items, granted), shield: ownedShield(items, granted) }}
         composition={composition}
         onChange={onChange}
+      />
+      <TrinketChoiceView
+        trinkets={catalog.trinkets}
+        selectedId={composition.trinketId}
+        onSelect={(trinketId) => onChange({ trinketId })}
       />
     </div>
   );
@@ -70,6 +75,14 @@ export function EquipmentStepView({
  */
 function resetWorn(patch: Partial<CharacterComposition>): Partial<CharacterComposition> {
   return { ...patch, armorKey: null, shield: false };
+}
+
+function resetClassPackage(optionId: string): Partial<CharacterComposition> {
+  return resetWorn({ classEquipmentOptionId: optionId, classChoiceItemKey: null });
+}
+
+function resetBackgroundPackage(optionId: string): Partial<CharacterComposition> {
+  return resetWorn({ backgroundEquipmentOptionId: optionId, backgroundChoiceItemKey: null });
 }
 
 interface WornEquipmentProps {

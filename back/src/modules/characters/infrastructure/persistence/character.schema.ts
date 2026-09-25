@@ -8,6 +8,7 @@ import type {
 } from '../../domain/character-equipment';
 import type { CharacterBuildSnapshot, CharacterSnapshot } from '../../domain/character';
 import type { CharacterIdentitySnapshot } from '../../domain/character-identity';
+import type { CharacterReviewSnapshot } from '../../domain/character-review';
 
 export const CHARACTER_MODEL = 'Character';
 
@@ -35,6 +36,16 @@ const CharacterIdentitySubSchema = new Schema<CharacterIdentitySnapshot>(
     heightCm: { type: Number, required: true, min: Number.MIN_VALUE },
     weightKg: { type: Number, required: true, min: Number.MIN_VALUE },
     description: { type: String, default: null },
+  },
+  subSchema,
+);
+
+const CharacterReviewSubSchema = new Schema<CharacterReviewSnapshot>(
+  {
+    status: { type: String, required: true },
+    submittedVersion: { type: Number, default: null },
+    lastSubmissionVersion: { type: Number, required: true, min: 0 },
+    lastRejectionReason: { type: String, default: null },
   },
   subSchema,
 );
@@ -97,6 +108,7 @@ export const CharacterSchema = new Schema<CharacterSnapshot>(
     createdBy: { type: String, required: true },
     assignedTo: { type: String, default: null },
     revision: { type: Number, required: true, min: 0 },
+    review: { type: CharacterReviewSubSchema, required: true },
     createdAt: { type: String, required: true },
     updatedAt: { type: String, required: true },
   },

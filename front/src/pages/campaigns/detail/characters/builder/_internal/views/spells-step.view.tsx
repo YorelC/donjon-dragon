@@ -1,4 +1,4 @@
-import type { CatalogSpell, CatalogSpellList } from "@donjon-dragon/shared";
+import type { CatalogSpell, CatalogSpellList, ClassKey } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
 import type { CharacterComposition } from "../types/character-composition";
@@ -11,6 +11,8 @@ export interface SpellsStep {
   featSpells: CatalogSpellList | null;
   featCantripsKnown: number;
   featSpellsPrepared: number;
+  featSpellLists: Partial<Record<ClassKey, CatalogSpellList>>;
+  tomeSpells: { cantrips: CatalogSpell[]; rituals: CatalogSpell[] };
   isLoading: boolean;
 }
 
@@ -33,13 +35,7 @@ export function CantripsStepView({ step, composition, onChange }: SpellsStepView
         selected={composition.classCantrips}
         onChange={(classCantrips) => onChange({ classCantrips })}
       />
-      <SpellGroup
-        title="Sorts mineurs — Initié à la magie"
-        spells={step.featSpells?.cantrips ?? []}
-        limit={step.featCantripsKnown}
-        selected={composition.featCantrips}
-        onChange={(featCantrips) => onChange({ featCantrips })}
-      />
+      <MagicInitiateGroups kind="cantrips" {...{ step, composition, onChange }} />
     </div>
   );
 }
@@ -52,20 +48,58 @@ export function SpellsStepView({ step, composition, onChange }: SpellsStepViewPr
     <div className="grid gap-6">
       <SpellGroup
         title="Sorts préparés"
-        spells={step.classSpells?.level1 ?? []}
+        spells={withoutInvocationSpells(step.classSpells?.level1 ?? [], composition)}
         limit={step.classSpellsPrepared}
         selected={composition.classSpells}
         onChange={(classSpells) => onChange({ classSpells })}
       />
-      <SpellGroup
-        title="Sort de niveau 1 — Initié à la magie"
-        spells={step.featSpells?.level1 ?? []}
-        limit={step.featSpellsPrepared}
-        selected={composition.featSpells}
-        onChange={(featSpells) => onChange({ featSpells })}
-      />
+      {composition.classKey === "wizard" ? (
+        <SpellGroup
+          title="Grimoire"
+          spells={step.classSpells?.level1 ?? []}
+          limit={6}
+          selected={composition.spellbook}
+          onChange={(spellbook) => onChange({
+            spellbook,
+            classSpells: composition.classSpells.filter((key) => spellbook.includes(key)),
+          })}
+        />
+      ) : null}
+      <MagicInitiateGroups kind="spells" {...{ step, composition, onChange }} />
     </div>
   );
+}
+
+function MagicInitiateGroups(props: SpellsStepViewProps & { kind: "cantrips" | "spells" }) {
+  return <>{props.composition.magicInitiateChoices.map((choice) => {
+    const list = choice.spellList ? props.step.featSpellLists[choice.spellList] : undefined;
+    const spells = props.kind === "cantrips"
+      ? list?.cantrips ?? []
+      : withoutInvocationSpells(list?.level1 ?? [], props.composition);
+    const selected = props.kind === "cantrips" ? choice.cantrips : choice.spells;
+    const limit = props.kind === "cantrips" ? 2 : 1;
+    const source = choice.grantedBy.type === "background" ? "Historique" : "Espèce";
+    return <SpellGroup key={`${choice.grantedBy.type}:${choice.grantedBy.key}`}
+      title={`${props.kind === "cantrips" ? "Sorts mineurs" : "Sort de niveau 1"} — ${source}`}
+      spells={spells} limit={limit} selected={selected}
+      onChange={(keys) => updateMagicSpells(props, choice, keys)} />;
+  })}</>;
+}
+
+function withoutInvocationSpells(spells: readonly CatalogSpell[], composition: CharacterComposition) {
+  return spells.filter((spell) => !composition.invocationSpells.includes(spell.key));
+}
+
+function updateMagicSpells(
+  props: SpellsStepViewProps & { kind: "cantrips" | "spells" },
+  selected: CharacterComposition["magicInitiateChoices"][number],
+  keys: string[],
+) {
+  props.onChange({ magicInitiateChoices: props.composition.magicInitiateChoices.map((choice) =>
+    choice.grantedBy.type === selected.grantedBy.type && choice.grantedBy.key === selected.grantedBy.key
+      ? { ...choice, [props.kind]: keys }
+      : choice),
+  });
 }
 
 function Loading() {
@@ -80,7 +114,7 @@ interface SpellGroupProps {
   onChange: (keys: string[]) => void;
 }
 
-function SpellGroup({ title, spells, limit, selected, onChange }: SpellGroupProps) {
+export function SpellGroup({ title, spells, limit, selected, onChange }: SpellGroupProps) {
   if (limit === 0 || spells.length === 0) return null;
   const chosen = spells.filter((spell) => selected.includes(spell.key));
 

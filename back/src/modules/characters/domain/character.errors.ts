@@ -113,7 +113,7 @@ export class AssigneeIsNotActivePlayerError extends ConflictDomainError {
 }
 
 /**
- * Refus d'édition/suppression : l'appelant n'est ni le créateur, ni le joueur
+ * Refus d'édition : l'appelant n'est ni le créateur, ni le joueur
  * assigné, ni un maître du jeu habilité (attribué, ou propriétaire face à un
  * personnage d'un autre MJ).
  */
@@ -126,6 +126,36 @@ export class NotEditableByActorError extends ForbiddenDomainError {
 export class OnlyGameMasterCanAssignError extends ForbiddenDomainError {
   constructor() {
     super('Only a game master can assign a character');
+  }
+}
+
+export class OnlyGameMasterCanDeleteError extends ForbiddenDomainError {
+  constructor() {
+    super('Only a game master can delete a character');
+  }
+}
+
+export class OnlyGameMasterCanReviewError extends ForbiddenDomainError {
+  constructor() {
+    super('Only a game master can review a character');
+  }
+}
+
+export class CharacterReviewStateError extends ConflictDomainError {
+  constructor() {
+    super('This character review transition is not allowed in its current state');
+  }
+}
+
+export class InvalidRejectionReasonError extends InvalidDomainError {
+  constructor() {
+    super('A rejection reason is required');
+  }
+}
+
+export class CharacterReviewCommandConflictError extends ConflictDomainError {
+  constructor() {
+    super('The idempotency key was already used for another review command');
   }
 }
 

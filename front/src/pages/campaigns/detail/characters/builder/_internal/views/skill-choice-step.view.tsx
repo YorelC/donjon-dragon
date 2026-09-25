@@ -1,6 +1,6 @@
 import type { DndCatalog, SkillName } from "@donjon-dragon/shared";
 import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
-import { classOf, knownSkillsExcept } from "../types/builder-lookups";
+import { classOf, knownSkillNames, knownSkillsExcept } from "../types/builder-lookups";
 import { SkillPickerView } from "./skill-picker.view";
 
 interface SkillChoiceStepViewProps {
@@ -34,8 +34,8 @@ export function ClassSkillsStepView({
 }
 
 /**
- * L'expertise ne s'applique qu'à une compétence déjà maîtrisée : les options
- * sont donc celles que la classe vient de faire choisir.
+ * L'expertise ne s'applique qu'à une compétence déjà maîtrisée, quelle que soit
+ * sa source : classe, historique, espèce ou don.
  */
 export function ExpertiseStepView({ catalog, composition, onChange }: SkillChoiceStepViewProps) {
   const characterClass = classOf({ catalog, composition });
@@ -49,7 +49,7 @@ export function ExpertiseStepView({ catalog, composition, onChange }: SkillChoic
       <SkillPickerView
         picker={{
           count: characterClass.expertiseCount,
-          options: composition.classSkills,
+          options: knownSkillNames({ catalog, composition }),
           selected: composition.expertise,
           labels: catalog.skillLabels,
           alreadyKnown: [],

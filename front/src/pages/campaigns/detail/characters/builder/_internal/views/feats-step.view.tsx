@@ -1,7 +1,5 @@
 import type {
-  Ability,
   CatalogOriginFeat,
-  ClassKey,
   DndCatalog,
   OriginFeatKey,
   SkillName,
@@ -9,17 +7,18 @@ import type {
 import { Badge } from "@/shared/components/atoms/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
 import { Separator } from "@/shared/components/atoms/separator";
-import { ABILITY_LABELS, allSkillsOf, type CharacterComposition } from "../types/character-composition";
+import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
+import { retainedExpertise } from "../types/builder-transitions";
 import { knownSkillsExcept } from "../types/builder-lookups";
 import { ChoiceButtonView } from "./choice-button.view";
 import { SkillPickerView } from "./skill-picker.view";
+import { MagicInitiateConfiguration } from "./magic-initiate-configuration.view";
 
 interface FeatsStepViewProps {
   catalog: DndCatalog;
   composition: CharacterComposition;
   onChange: (patch: Partial<CharacterComposition>) => void;
 }
-
 /**
  * Les dons du personnage : celui qu'impose l'historique, celui que l'espèce
  * laisse choisir, et leurs paramétrages. Un don qui ne demande rien s'affiche
@@ -33,9 +32,11 @@ export function FeatsStepView(props: FeatsStepViewProps) {
 
   return (
     <div className="grid gap-4">
-      {granted ? <FeatCard feat={granted} origin="Historique" {...props} /> : null}
+      {granted ? <FeatCard feat={granted} origin="Historique"
+        grantedBy={{ type: "background", key: background?.key ?? "" }} {...props} /> : null}
       <SpeciesFeatChoice {...props} />
-      {chosen ? <FeatCard feat={chosen} origin="Espèce" {...props} /> : null}
+      {chosen ? <FeatCard feat={chosen} origin="Espèce"
+        grantedBy={{ type: "species", key: composition.speciesKey ?? "" }} {...props} /> : null}
     </div>
   );
 }
@@ -54,7 +55,12 @@ function SpeciesFeatChoice({ catalog, composition, onChange }: FeatsStepViewProp
             key={feat.key}
             label={feat.name}
             selected={composition.speciesFeat === feat.key}
-            onSelect={() => onChange({ speciesFeat: feat.key as OriginFeatKey })}
+            onSelect={() => onChange({
+              speciesFeat: feat.key as OriginFeatKey,
+              magicInitiateChoices: composition.magicInitiateChoices.filter(
+                (choice) => choice.grantedBy.type !== "species",
+              ),
+            })}
           />
         ))}
       </div>
@@ -65,6 +71,7 @@ function SpeciesFeatChoice({ catalog, composition, onChange }: FeatsStepViewProp
 interface FeatCardProps extends FeatsStepViewProps {
   feat: CatalogOriginFeat;
   origin: string;
+  grantedBy: { type: "background" | "species"; key: string };
 }
 
 function FeatCard(props: FeatCardProps) {
@@ -92,42 +99,12 @@ function FeatConfiguration(props: FeatCardProps) {
   return (
     <div className="grid gap-4">
       <Separator />
-      {needsSpells ? <SpellListChoice {...props} /> : null}
+      {needsSpells ? <MagicInitiateConfiguration {...props} /> : null}
       {needsProficiencies ? <ProficiencyChoice {...props} /> : null}
     </div>
   );
 }
 
-/** Initié à la magie : la liste où puiser, et la caractéristique qui l'anime. */
-function SpellListChoice({ catalog, feat, composition, onChange }: FeatCardProps) {
-  const choice = feat.spellcastingChoice;
-  if (!choice) return null;
-
-  return (
-    <div className="grid gap-3">
-      <ChoiceRow label="Liste de sorts">
-        {choice.spellListOptions.map((classKey) => (
-          <ChoiceButtonView
-            key={classKey}
-            label={catalog.classes.find((entry) => entry.key === classKey)?.name ?? classKey}
-            selected={composition.spellList === classKey}
-            onSelect={() => onChange({ spellList: classKey as ClassKey, featSpells: [] })}
-          />
-        ))}
-      </ChoiceRow>
-      <ChoiceRow label="Caractéristique d'incantation">
-        {choice.abilityOptions.map((ability) => (
-          <ChoiceButtonView
-            key={ability}
-            label={ABILITY_LABELS[ability as Ability]}
-            selected={composition.spellcastingAbility === ability}
-            onSelect={() => onChange({ spellcastingAbility: ability as Ability })}
-          />
-        ))}
-      </ChoiceRow>
-    </div>
-  );
-}
 
 /** Doué accorde trois maîtrises ; on ne propose ici que les compétences. */
 function ProficiencyChoice({ catalog, feat, composition, onChange }: FeatCardProps) {
@@ -139,17 +116,17 @@ function ProficiencyChoice({ catalog, feat, composition, onChange }: FeatCardPro
         selected: composition.featSkills,
         labels: catalog.skillLabels,
         alreadyKnown: knownSkillsExcept({ catalog, composition }, "feat"),
-        onChange: (featSkills: SkillName[]) => onChange({ featSkills }),
+        onChange: (featSkills: SkillName[]) => onChange({
+          featSkills,
+          expertise: retainedExpertise(composition.expertise, [
+            ...composition.classSkills,
+            ...composition.speciesSkills,
+            ...featSkills,
+            ...(catalog.backgrounds.find((entry) => entry.key === composition.backgroundKey)
+              ?.skillProficiencies ?? []),
+          ]),
+        }),
       }}
     />
-  );
-}
-
-function ChoiceRow({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="grid gap-1.5">
-      <p className="text-sm font-medium">{label}</p>
-      <div className="flex flex-wrap gap-2">{children}</div>
-    </div>
   );
 }

@@ -63,6 +63,7 @@ export function useFinalizeCharacter(campaignId: string, characterId: string) {
       api.put<Character>(
         API_ROUTES.characters.finalize(campaignId, characterId),
         payload,
+        commandHeaders(),
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["campaigns"] });

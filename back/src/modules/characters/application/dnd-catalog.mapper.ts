@@ -23,7 +23,15 @@ import { CLASS_ORDERS } from '../domain/reference/class-orders';
 import { FIGHTING_STYLES } from '../domain/reference/fighting-styles';
 import type { Feature, GrantPayload, SkillChoice } from '../domain/reference/effect';
 import { ORIGIN_FEATS, type OriginFeat } from '../domain/reference/origin-feats';
-import { RARE_LANGUAGES, STANDARD_LANGUAGES } from '../domain/reference/creation-options';
+import {
+  ALL_CONCRETE_TOOLS,
+  RARE_LANGUAGES,
+  STANDARD_LANGUAGES,
+  creationItemName,
+  creationTrinkets,
+  LEVEL_ONE_FAMILIAR_FORMS,
+  LEVEL_ONE_INVOCATIONS,
+} from '../domain/reference/creation-options';
 import {
   backgroundToolOptions,
   classToolOptions,
@@ -33,8 +41,14 @@ import {
 import { LANGUAGE_LABELS, type Language } from '../domain/reference/proficiencies';
 import { SKILL_LABELS } from '../domain/reference/skills';
 import { SPECIES, type Species } from '../domain/reference/species';
+import {
+  backgroundEquipmentChoiceOptions,
+  classEquipmentChoiceOptions,
+  genericEquipmentItemKeys,
+} from '../domain/resolution/resolve-starting-equipment';
 import type { StartingEquipment } from '../domain/reference/starting-equipment';
 import type { Spell } from '../domain/reference/spells';
+import { WEAPONS } from '../domain/reference/weapons';
 
 /**
  * Données de référence du domaine → catalogue HTTP.
@@ -50,10 +64,49 @@ export function toDndCatalog(): DndCatalog {
     classes: Object.values(CLASSES).map(toCatalogClass),
     backgrounds: Object.values(BACKGROUNDS).map(toCatalogBackground),
     originFeats: Object.values(ORIGIN_FEATS).map(toCatalogOriginFeat),
-    skillLabels: { ...SKILL_LABELS },
+    ...catalogLabels(),
     languages: toCatalogLanguages(),
     alignments: ALIGNMENTS.map(toCatalogAlignment),
+    trinkets: creationTrinkets(),
+    invocations: LEVEL_ONE_INVOCATIONS.map(toCatalogInvocation),
+    familiarForms: LEVEL_ONE_FAMILIAR_FORMS.map((key) => ({ key, name: familiarName(key) })),
+    pactWeaponOptions: Object.values(WEAPONS)
+      .filter((weapon) => weapon.kind === 'melee')
+      .map((weapon) => ({ key: weapon.key, name: weapon.name })),
   };
+}
+
+function catalogLabels() {
+  return {
+    skillLabels: { ...SKILL_LABELS },
+    toolLabels: labelsOf(ALL_CONCRETE_TOOLS, creationItemName),
+    weaponLabels: Object.fromEntries(Object.values(WEAPONS).map((weapon) => [weapon.key, weapon.name])),
+  };
+}
+
+const INVOCATION_DETAILS = {
+  'armor-of-shadows': ['Armure des ombres', 'Lance Armure du mage sur vous-même à volonté.', 'none'],
+  'eldritch-mind': ['Esprit occulte', 'Vous avez l’avantage aux jets de sauvegarde de Constitution pour maintenir votre concentration.', 'none'],
+  'pact-of-the-chain': ['Pacte de la Chaîne', 'Vous apprenez Appel de familier et choisissez sa forme.', 'familiar'],
+  'pact-of-the-blade': ['Pacte de la Lame', 'Vous invoquez une arme de pacte de corps à corps.', 'weapon'],
+  'pact-of-the-tome': ['Pacte du Grimoire', 'Vous choisissez trois sorts mineurs et deux rituels de niveau 1.', 'tome'],
+} as const;
+
+function toCatalogInvocation(key: typeof LEVEL_ONE_INVOCATIONS[number]) {
+  const [name, description, detail] = INVOCATION_DETAILS[key];
+  return { key, name, description, detail };
+}
+
+function familiarName(key: string): string {
+  return key.split('-').map(capitalize).join(' ');
+}
+
+function capitalize(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function labelsOf(keys: readonly string[], labelOf: (key: string) => string | null) {
+  return Object.fromEntries(keys.map((key) => [key, labelOf(key) ?? key]));
 }
 
 /**
@@ -117,13 +170,20 @@ function toCatalogClass(characterClass: CharacterClass): CatalogClass {
     toolProficiencies: [...characterClass.toolProficiencies],
     armorTraining: [...characterClass.armorTraining],
     weaponProficiencies: [...characterClass.weaponProficiencies],
-    startingEquipment: toCatalogStartingEquipment(characterClass.startingEquipment),
+    startingEquipment: classStartingEquipment(characterClass),
     spellcasting: toCatalogSpellcasting(characterClass),
     level1Features: characterClass.level1Features.map(toCatalogFeature),
     expertiseCount: expertiseCountOf(characterClass.level1Features),
     level1Choices: level1ChoicesOf(characterClass),
     ...boundedChoicesOf(characterClass),
   };
+}
+
+function classStartingEquipment(characterClass: CharacterClass) {
+  return toCatalogStartingEquipment(
+    characterClass.startingEquipment,
+    classEquipmentChoiceOptions(characterClass.key),
+  );
 }
 
 /** Les trois bornes que le wizard doit connaître pour ne rien proposer d'invalide. */
@@ -218,19 +278,35 @@ function toCatalogBackground(background: Background): CatalogBackground {
     skillProficiencies: [...background.skillProficiencies],
     toolProficiency: background.toolProficiency,
     toolOptions: [...backgroundToolOptions(background.key)],
-    equipment: toCatalogStartingEquipment(background.equipment),
+    equipment: toCatalogStartingEquipment(
+      background.equipment,
+      backgroundEquipmentChoiceOptions(background.key),
+    ),
   };
 }
 
 /** Copie en profondeur : rien de ce que le domaine tient ne sort par référence. */
-function toCatalogStartingEquipment(equipment: StartingEquipment): CatalogStartingEquipment {
+function toCatalogStartingEquipment(
+  equipment: StartingEquipment,
+  choiceOptions: readonly string[],
+): CatalogStartingEquipment {
   return {
     options: equipment.options.map((option) => ({
       id: option.id,
       label: option.label,
       entries: option.entries.map((entry) => ({ ...entry })),
       gold: option.gold,
+      itemChoice: itemChoiceOf(option.entries, choiceOptions),
     })),
+  };
+}
+
+function itemChoiceOf(entries: StartingEquipment['options'][number]['entries'], options: readonly string[]) {
+  if (entries.length === 0 || options.length === 0) return null;
+
+  return {
+    options: options.map((key) => ({ key, name: creationItemName(key) ?? key })),
+    replacesItemKeys: genericEquipmentItemKeys(entries),
   };
 }
 

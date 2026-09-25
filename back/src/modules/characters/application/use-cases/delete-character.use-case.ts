@@ -32,7 +32,7 @@ export class DeleteCharacterUseCase {
       createdBy: character.createdBy,
     });
 
-    character.assertEditableBy(context);
+    character.assertDeletableBy(context);
     await this.characterRepo.deleteById(character.id);
   }
 }

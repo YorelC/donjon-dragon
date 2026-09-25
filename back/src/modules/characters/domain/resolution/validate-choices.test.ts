@@ -75,6 +75,16 @@ describe('validation autoritaire des choix B01', () => {
     })).toThrow(InvalidCharacterChoiceError);
   });
 
+  it('refuse la langue du Roublard déjà choisie comme langue standard', () => {
+    const choices = humanAcolyteChoices(true);
+
+    expect(() => validateChoices({
+      ...A_CHARACTER_BUILD, speciesKey: 'human', size: 'Small', classKey: 'rogue',
+      backgroundKey: 'acolyte', standardLanguages: ['gnomish', 'elvish'],
+      choices: CharacterChoices.create(choices),
+    })).toThrow(InvalidCharacterChoiceError);
+  });
+
   it('accepte une forme normale pour le Pacte de la chaîne', () => {
     expect(() => validateChoices(warlockInput('owl'))).not.toThrow();
   });

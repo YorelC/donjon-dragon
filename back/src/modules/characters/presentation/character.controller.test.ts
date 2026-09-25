@@ -94,13 +94,14 @@ describe('CharacterController', () => {
     const actor = user(ACTOR_ID);
     const body = anEditBody();
 
-    await controller.finalizeCharacter(actor, CAMPAIGN_ID, CHARACTER_ID, body);
+    await controller.finalizeCharacter(actor, CAMPAIGN_ID, CHARACTER_ID, body, IDEMPOTENCY_KEY);
 
     expect(finalize.execute).toHaveBeenCalledWith({
       ...body,
       campaignId: CAMPAIGN_ID,
       characterId: CHARACTER_ID,
       actorId: actor.userId,
+      idempotencyKey: IDEMPOTENCY_KEY,
     });
   });
 

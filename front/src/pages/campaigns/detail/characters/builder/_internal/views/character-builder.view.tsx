@@ -19,6 +19,13 @@ import { CantripsStepView, SpellsStepView } from "./spells-step.view";
 import { CharacterPreviewView } from "./character-preview.view";
 import { BuilderStepsView } from "./builder-steps.view";
 import { ClassChoiceStep, LineageStep } from "./builder-choice-steps.view";
+import {
+  BackgroundToolStep,
+  ClassLanguageStep,
+  ClassToolsStep,
+  WeaponMasteriesStep,
+} from "./proficiency-steps.view";
+import { InvocationStepView } from "./invocation-step.view";
 
 export interface BuilderScreen {
   catalog: DndCatalog;
@@ -82,12 +89,17 @@ function StepContent({ screen }: { screen: BuilderScreen }) {
     lineage: () => <LineageStep screen={screen} />,
     languages: () => <LanguagesStepView {...shared} />,
     class: () => <ClassStepView {...shared} />,
+    background: () => <BackgroundStepView {...shared} />,
+    backgroundTool: () => <BackgroundToolStep screen={screen} />,
     classSkills: () => <ClassSkillsStepView {...shared} />,
-    expertise: () => <ExpertiseStepView {...shared} />,
     fightingStyle: () => <ClassChoiceStep screen={screen} choiceKey="fightingStyle" />,
     classOrder: () => <ClassChoiceStep screen={screen} choiceKey="order" />,
-    background: () => <BackgroundStepView {...shared} />,
+    weaponMasteries: () => <WeaponMasteriesStep screen={screen} />,
+    classTools: () => <ClassToolsStep screen={screen} />,
+    classLanguage: () => <ClassLanguageStep screen={screen} />,
     feats: () => <FeatsStepView {...shared} />,
+    expertise: () => <ExpertiseStepView {...shared} />,
+    invocation: () => <InvocationStepView {...shared} tomeSpells={screen.spells.tomeSpells} />,
     abilities: () => (
       <AbilitiesStepView
         step={screen.abilities}

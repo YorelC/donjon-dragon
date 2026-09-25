@@ -23,10 +23,12 @@ describe('contrats d attribution et de projection', () => {
     const projection = CampaignCharacterListItemSchema.parse({
       projection: 'pool', id: '550e8400-e29b-41d4-a716-446655440000',
       name: 'Bilbon', portrait: null, status: 'waiting_adventure',
+      review: { status: 'submitted', lastRejectionReason: 'champ privé' },
       speciesName: 'Halfelin', lineageName: null, className: 'Roublard',
       level: 1, assignmentStatus: 'available', abilityRoll: { totals: [18] },
     });
     expect('abilityRoll' in projection).toBe(false);
+    expect('lastRejectionReason' in projection.review).toBe(false);
   });
 });
 
@@ -80,7 +82,7 @@ const A_CREATION_BODY = {
 };
 
 /** Le corps du `PUT` : le personnage garde le tirage qu'il a déjà. */
-const AN_EDIT_BODY = { ...A_CREATION_BODY, abilityRollId: null };
+const AN_EDIT_BODY = { ...A_CREATION_BODY, abilityRollId: null, expectedRevision: 0 };
 
 describe('composition et tirage', () => {
   // Le contrat ne transporte plus de dés : un client ne peut plus les inventer.

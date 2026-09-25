@@ -103,11 +103,14 @@ export class CharacterController {
     @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
     @ZodParam('characterId', CharacterIdSchema) characterId: string,
     @ZodBody(FinalizeCharacterSchema) body: FinalizeCharacterBody,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema)
+    idempotencyKey: string,
   ) {
     return this.finalize.execute({
       campaignId,
       characterId,
       actorId: user.userId,
+      idempotencyKey,
       ...body,
     });
   }

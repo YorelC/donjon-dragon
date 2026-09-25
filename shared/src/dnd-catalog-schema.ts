@@ -55,11 +55,22 @@ export const CatalogEquipmentEntrySchema = z.object({
   quantity: z.number().int().positive(),
 });
 
+export const CatalogNamedOptionSchema = z.object({
+  key: z.string(),
+  name: z.string(),
+});
+
+export const CatalogItemChoiceSchema = z.object({
+  options: z.array(CatalogNamedOptionSchema).min(1),
+  replacesItemKeys: z.array(z.string()),
+});
+
 export const CatalogEquipmentOptionSchema = z.object({
   id: z.string(),
   label: z.string(),
   entries: z.array(CatalogEquipmentEntrySchema),
   gold: z.number().int().nonnegative(),
+  itemChoice: CatalogItemChoiceSchema.nullable(),
 });
 
 export const CatalogStartingEquipmentSchema = z.object({
@@ -209,6 +220,18 @@ export const CatalogLanguagesSchema = z.object({
   rare: z.array(CatalogLanguageSchema),
 });
 
+export const CatalogInvocationSchema = z.object({
+  key: z.string(),
+  name: z.string(),
+  description: z.string(),
+  detail: z.enum(['none', 'familiar', 'weapon', 'tome']),
+});
+
+export const CatalogFamiliarFormSchema = z.object({
+  key: z.string(),
+  name: z.string(),
+});
+
 export const DndCatalogSchema = z.object({
   species: z.array(CatalogSpeciesSchema),
   classes: z.array(CatalogClassSchema),
@@ -216,8 +239,18 @@ export const DndCatalogSchema = z.object({
   originFeats: z.array(CatalogOriginFeatSchema),
   /** Les libellés français des 18 compétences, pour que le front n'en tienne pas la table. */
   skillLabels: z.record(SkillNameSchema, z.string()),
+  toolLabels: z.record(z.string(), z.string()),
+  weaponLabels: z.record(z.string(), z.string()),
   languages: CatalogLanguagesSchema,
   alignments: z.array(CatalogAlignmentSchema),
+  trinkets: z.array(z.object({
+    id: z.number().int().min(1).max(100),
+    itemKey: z.string(),
+    name: z.string(),
+  })),
+  invocations: z.array(CatalogInvocationSchema),
+  familiarForms: z.array(CatalogFamiliarFormSchema),
+  pactWeaponOptions: z.array(CatalogNamedOptionSchema),
 });
 
 export const CatalogSpellSchema = z.object({
@@ -243,9 +276,11 @@ export type CatalogBoundedChoice = z.infer<typeof CatalogBoundedChoiceSchema>;
 export type CatalogLanguage = z.infer<typeof CatalogLanguageSchema>;
 export type CatalogLanguages = z.infer<typeof CatalogLanguagesSchema>;
 export type CatalogAlignment = z.infer<typeof CatalogAlignmentSchema>;
+export type CatalogInvocation = z.infer<typeof CatalogInvocationSchema>;
 export type CatalogSkillChoice = z.infer<typeof CatalogSkillChoiceSchema>;
 export type CatalogFeature = z.infer<typeof CatalogFeatureSchema>;
 export type CatalogEquipmentEntry = z.infer<typeof CatalogEquipmentEntrySchema>;
+export type CatalogNamedOption = z.infer<typeof CatalogNamedOptionSchema>;
 export type CatalogEquipmentOption = z.infer<typeof CatalogEquipmentOptionSchema>;
 export type CatalogStartingEquipment = z.infer<typeof CatalogStartingEquipmentSchema>;
 export type CatalogLineage = z.infer<typeof CatalogLineageSchema>;

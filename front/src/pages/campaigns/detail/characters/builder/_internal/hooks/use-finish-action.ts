@@ -35,7 +35,11 @@ export function useFinishAction(
   // Deux contrats, deux payloads : l'édition ne redésigne jamais de tirage.
   // Sans catalogue, le paquetage n'est pas résoluble : rien à envoyer.
   if (target.characterId) {
-    const payload = () => (catalog ? toEditPayload(catalog, composition) : null);
+    const payload = () => (
+      catalog && target.expectedRevision !== undefined
+        ? toEditPayload(catalog, composition, target.expectedRevision)
+        : null
+    );
     return editFinishAction(target.campaignId, { payload, finalize }, navigate);
   }
 

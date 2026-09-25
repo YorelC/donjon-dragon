@@ -4,8 +4,10 @@ import { Button } from "@/shared/components/atoms/button";
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { toCharacterBuilder, toCharacterSheet } from "@/shared/constants/routes";
 import { toInitials } from "@/shared/utils/display-meta";
-import { CharacterAssignContainer } from "../containers/character-assign.container";
+import { CharacterReviewContainer } from "../containers/character-review.container";
+import { AssignmentActions } from "./character-assignment-actions.view";
 import { DeleteCharacterButton } from "./delete-character-button.view";
+import { CharacterReviewStatusView } from "./character-review-status.view";
 
 interface CharacterRowProps {
   character: CampaignCharacterListItem;
@@ -35,7 +37,10 @@ function CharacterIdentity({
 }) {
   return (
     <div className="flex min-w-0 items-center gap-[18px]">
-      <Diamond size="badge" tone={toMedallionTone(character)}>
+      <Diamond
+        size="badge"
+        tone={character.assignmentStatus === "assigned" ? "active" : "idle"}
+      >
         {toInitials(character.name)}
       </Diamond>
       <div className="flex min-w-0 flex-col gap-[5px]">
@@ -43,16 +48,12 @@ function CharacterIdentity({
           {character.name}
         </span>
         <span className="meta-line truncate">{toBuildLine(character)}</span>
+        <CharacterReviewStatusView character={character} />
       </div>
     </div>
   );
 }
 
-/**
- * Un joueur ne voit qu'un résumé des fiches qui ne sont pas les siennes : le
- * serveur ne lui envoie ni le détail ni le nom de celui qui les mène. Rien à
- * proposer sur ces lignes, donc — la projection dit déjà qui peut agir.
- */
 function RowActions({
   character,
   campaignId,
@@ -64,19 +65,35 @@ function RowActions({
   return (
     <div className="flex items-center gap-2.5">
       <SheetLink campaignId={campaignId} characterId={character.id} />
-      <BuilderLink campaignId={campaignId} characterId={character.id} />
-      <DeleteCharacterButton
-        characterName={character.name}
-        onDelete={() => onDelete(character.id)}
-      />
+      {isCorrectable(character) ? (
+        <BuilderLink campaignId={campaignId} characterId={character.id} />
+      ) : null}
+      <CharacterReviewContainer campaignId={campaignId} character={character} />
       {character.projection === "gameMaster" ? (
-        <AssignmentActions
+        <GameMasterActions
           character={character}
           campaignId={campaignId}
+          onDelete={onDelete}
           onUnassign={onUnassign}
         />
       ) : null}
     </div>
+  );
+}
+
+function GameMasterActions(props: CharacterRowProps) {
+  return (
+    <>
+      <DeleteCharacterButton
+        characterName={props.character.name}
+        onDelete={() => props.onDelete(props.character.id)}
+      />
+      <AssignmentActions
+        character={props.character}
+        campaignId={props.campaignId}
+        onUnassign={props.onUnassign}
+      />
+    </>
   );
 }
 
@@ -101,34 +118,6 @@ function BuilderLink({ campaignId, characterId }: CharacterLinkProps) {
   );
 }
 
-interface AssignmentActionsProps {
-  character: CampaignCharacterListItem;
-  campaignId: string;
-  onUnassign: (characterId: string) => void;
-}
-
-function AssignmentActions({
-  character,
-  campaignId,
-  onUnassign,
-}: AssignmentActionsProps) {
-  if (character.assignmentStatus === "available") {
-    return (
-      <CharacterAssignContainer
-        campaignId={campaignId}
-        characterId={character.id}
-      />
-    );
-  }
-
-  return (
-    <Button variant="outline" size="sm" onClick={() => onUnassign(character.id)}>
-      Libérer
-    </Button>
-  );
-}
-
-/** Le nom du joueur quand on a le droit de le connaître, sinon le seul statut. */
 function toAssignmentLabel(character: CampaignCharacterListItem): string {
   if (character.projection === "pool")
     return character.assignmentStatus === "assigned"
@@ -146,9 +135,8 @@ function toBuildLine(character: CampaignCharacterListItem): string {
   return `${species} · ${character.className} niveau ${character.level}`;
 }
 
-/** L'or vif dit qu'un joueur la mène ; la fiche libre reste en retrait. */
-function toMedallionTone(
-  character: CampaignCharacterListItem,
-): "active" | "idle" {
-  return character.assignmentStatus === "assigned" ? "active" : "idle";
+function isCorrectable(
+  character: Exclude<CampaignCharacterListItem, { projection: "pool" }>,
+): boolean {
+  return character.review.status === "draft" || character.review.status === "refused";
 }

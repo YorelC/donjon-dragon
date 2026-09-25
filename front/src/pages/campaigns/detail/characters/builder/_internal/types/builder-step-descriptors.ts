@@ -1,26 +1,30 @@
 import { isFullyAssigned } from "./character-composition";
 import { completeIdentityOf } from "./identity-fields";
 import {
-  cantripQuotaOf,
   classOf,
   fightingStyleChoiceOf,
   orderChoiceOf,
   resolvedSizeOf,
   speciesOf,
-  spellQuotaOf,
   type StepContext,
 } from "./builder-lookups";
 import {
   areBonusesDone,
   areFeatsDone,
-  chosenCantrips,
   chosenLanguages,
-  chosenSpells,
   hasChosenLineage,
   hasValidName,
   STANDARD_LANGUAGE_QUOTA,
 } from "./builder-validity";
 import { hasChosenEquipment } from "./starting-equipment";
+import {
+  backgroundToolDescriptor,
+  classLanguageDescriptor,
+  classToolsDescriptor,
+  invocationDescriptor,
+  weaponMasteriesDescriptor,
+} from "./builder-proficiency-step-descriptors";
+import { cantripsDescriptor, spellsDescriptor } from "./builder-spell-step-descriptors";
 import type { BuilderStep, StepProgress } from "./builder-steps";
 
 export interface StepDescriptor {
@@ -79,6 +83,13 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     isValid: ({ composition }) => composition.classKey !== null,
   },
   {
+    key: "background",
+    label: "Historique",
+    isVisible: always,
+    isValid: ({ composition }) => composition.backgroundKey !== null,
+  },
+  backgroundToolDescriptor,
+  {
     key: "classSkills",
     label: "Compétences",
     isVisible: (context) => Boolean(classOf(context)),
@@ -86,15 +97,6 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
       context.composition.classSkills.length === (classOf(context)?.skillChoice.count ?? 0),
     progress: (context) =>
       counted(context.composition.classSkills.length, classOf(context)?.skillChoice.count ?? 0),
-  },
-  {
-    key: "expertise",
-    label: "Expertise",
-    isVisible: (context) => (classOf(context)?.expertiseCount ?? 0) > 0,
-    isValid: (context) =>
-      context.composition.expertise.length === (classOf(context)?.expertiseCount ?? 0),
-    progress: (context) =>
-      counted(context.composition.expertise.length, classOf(context)?.expertiseCount ?? 0),
   },
   {
     key: "fightingStyle",
@@ -108,12 +110,9 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     isVisible: (context) => orderChoiceOf(context) !== undefined,
     isValid: ({ composition }) => composition.classOrder !== null,
   },
-  {
-    key: "background",
-    label: "Historique",
-    isVisible: always,
-    isValid: ({ composition }) => composition.backgroundKey !== null,
-  },
+  weaponMasteriesDescriptor,
+  classToolsDescriptor,
+  classLanguageDescriptor,
   {
     key: "feats",
     label: "Dons",
@@ -121,27 +120,24 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     isValid: areFeatsDone,
   },
   {
+    key: "expertise",
+    label: "Expertise",
+    isVisible: (context) => (classOf(context)?.expertiseCount ?? 0) > 0,
+    isValid: (context) =>
+      context.composition.expertise.length === (classOf(context)?.expertiseCount ?? 0),
+    progress: (context) =>
+      counted(context.composition.expertise.length, classOf(context)?.expertiseCount ?? 0),
+  },
+  invocationDescriptor,
+  {
     key: "abilities",
     label: "Caractéristiques",
     isVisible: always,
     isValid: (context) =>
       isFullyAssigned(context.composition) && areBonusesDone(context.composition),
   },
-  {
-    key: "cantrips",
-    label: "Sorts mineurs",
-    isVisible: (context) => cantripQuotaOf(context) > 0,
-    isValid: (context) => chosenCantrips(context.composition) >= cantripQuotaOf(context),
-    progress: (context) =>
-      counted(chosenCantrips(context.composition), cantripQuotaOf(context)),
-  },
-  {
-    key: "spells",
-    label: "Sorts",
-    isVisible: (context) => spellQuotaOf(context) > 0,
-    isValid: (context) => chosenSpells(context.composition) >= spellQuotaOf(context),
-    progress: (context) => counted(chosenSpells(context.composition), spellQuotaOf(context)),
-  },
+  cantripsDescriptor,
+  spellsDescriptor,
   // L'étape bloque tant que les deux paquetages ne sont pas tranchés : un
   // personnage sans équipement de départ n'est pas un personnage fini.
   {

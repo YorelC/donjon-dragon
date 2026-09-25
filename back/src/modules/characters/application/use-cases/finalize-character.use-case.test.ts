@@ -20,6 +20,7 @@ import { UserId } from '@kernel/domain/user-id';
 
 import { InMemoryAbilityRollRepository } from '../../testing/in-memory-ability-roll.repository';
 import { InMemoryCharacterCreationRepository } from '../../testing/in-memory-character-creation.repository';
+import { InMemoryCharacterCommandRepository } from '../../testing/in-memory-character-command.repository';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { FinalizeCharacterUseCase } from './finalize-character.use-case';
 
@@ -66,6 +67,7 @@ describe('FinalizeCharacterUseCase', () => {
     );
     useCase = new FinalizeCharacterUseCase(
       characterRepo,
+      new InMemoryCharacterCommandRepository(characterRepo),
       directory,
       new InMemoryItemCatalog(),
       memberships,
@@ -91,6 +93,7 @@ describe('FinalizeCharacterUseCase', () => {
       characterId,
       campaignId,
       actorId: anActor(frodoId),
+      idempotencyKey: randomUUID(),
     });
 
     expect(result.name).toBe('Frodon Sacquet');
@@ -104,6 +107,7 @@ describe('FinalizeCharacterUseCase', () => {
       characterId,
       campaignId,
       actorId: anActor(gameMasterId),
+      idempotencyKey: randomUUID(),
     });
 
     expect(result.name).toBe('Frodon le Neuf');
@@ -120,6 +124,7 @@ describe('FinalizeCharacterUseCase', () => {
         characterId,
         campaignId,
         actorId: anActor(samId),
+        idempotencyKey: randomUUID(),
       }),
     ).rejects.toThrow(NotEditableByActorError);
   });
@@ -131,6 +136,7 @@ describe('FinalizeCharacterUseCase', () => {
         characterId: randomUUID(),
         campaignId,
         actorId: anActor(gameMasterId),
+        idempotencyKey: randomUUID(),
       }),
     ).rejects.toThrow(CharacterNotFoundError);
   });
@@ -154,6 +160,7 @@ describe('FinalizeCharacterUseCase', () => {
         characterId,
         campaignId,
         actorId: anActor(frodoId),
+        idempotencyKey: randomUUID(),
       }),
     ).rejects.toThrow(UnknownItemError);
   });
@@ -169,6 +176,7 @@ describe('FinalizeCharacterUseCase', () => {
         characterId,
         campaignId,
         actorId: anActor(samId),
+        idempotencyKey: randomUUID(),
       }),
     ).rejects.toThrow(NotEditableByActorError);
 
@@ -177,6 +185,7 @@ describe('FinalizeCharacterUseCase', () => {
       characterId,
       campaignId,
       actorId: anActor(frodoId),
+      idempotencyKey: randomUUID(),
     });
     expect(reread.name).toBe('Frodon Sacquet');
   });

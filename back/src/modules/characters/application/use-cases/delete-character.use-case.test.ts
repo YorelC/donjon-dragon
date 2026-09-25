@@ -11,7 +11,7 @@ import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory
 import { CharacterId } from '../../domain/character-id';
 import {
   CharacterNotFoundError,
-  NotEditableByActorError,
+  OnlyGameMasterCanDeleteError,
 } from '../../domain/character.errors';
 import { aCharacterBody, seedAbilityRoll } from '../../testing/character.fixture';
 import { InMemoryCharacterDirectory } from '../../testing/in-memory-character-directory';
@@ -23,12 +23,8 @@ import { CreateCharacterUseCase } from './create-character.use-case';
 import { DeleteCharacterUseCase } from './delete-character.use-case';
 
 /**
- * La suppression passe par `assertEditableBy` : c'est la même matrice d'accès
- * que l'édition, sur l'opération la moins réversible du module.
- *
- * Le propriétaire de la campagne est aussi son premier MJ ; `secondMaster` est
- * un MJ promu, ce qui permet de tester le cas « MJ face à la fiche d'un autre
- * MJ », celui que le propriétaire seul peut trancher.
+ * La suppression est une autorisation distincte de l'édition et reste réservée
+ * à tout MJ actif, conformément à SF-001.
  */
 describe('DeleteCharacterUseCase', () => {
   const ownerId = randomUUID();
@@ -84,12 +80,13 @@ describe('DeleteCharacterUseCase', () => {
     return !!(await characterRepo.findById(CharacterId.create(characterId)));
   }
 
-  it('laisse un joueur supprimer la fiche qu il porte', async () => {
+  it('refuse à un joueur de supprimer la fiche qu il porte', async () => {
     const characterId = await characterCreatedBy(frodoId);
 
-    await useCase.execute({ characterId, campaignId, actorId: anActor(frodoId) });
-
-    expect(await stillExists(characterId)).toBe(false);
+    await expect(
+      useCase.execute({ characterId, campaignId, actorId: anActor(frodoId) }),
+    ).rejects.toThrow(OnlyGameMasterCanDeleteError);
+    expect(await stillExists(characterId)).toBe(true);
   });
 
   it('laisse un MJ supprimer la fiche créée par un joueur', async () => {
@@ -107,12 +104,10 @@ describe('DeleteCharacterUseCase', () => {
 
     await expect(
       useCase.execute({ characterId, campaignId, actorId: anActor(strangerId) }),
-    ).rejects.toThrow(NotEditableByActorError);
+    ).rejects.toThrow(OnlyGameMasterCanDeleteError);
     expect(await stillExists(characterId)).toBe(true);
   });
 
-  // Le propriétaire tranche : c'est la seule voie de recours sur la fiche libre
-  // d'un autre MJ, sinon elle deviendrait insupprimable.
   it('laisse le propriétaire supprimer la fiche libre d un autre MJ', async () => {
     const characterId = await characterCreatedBy(secondMasterId);
 
@@ -121,13 +116,11 @@ describe('DeleteCharacterUseCase', () => {
     expect(await stillExists(characterId)).toBe(false);
   });
 
-  it('refuse au MJ promu la fiche libre du propriétaire', async () => {
+  it('laisse un MJ promu supprimer la fiche libre du propriétaire', async () => {
     const characterId = await characterCreatedBy(ownerId);
 
-    await expect(
-      useCase.execute({ characterId, campaignId, actorId: anActor(secondMasterId) }),
-    ).rejects.toThrow(NotEditableByActorError);
-    expect(await stillExists(characterId)).toBe(true);
+    await useCase.execute({ characterId, campaignId, actorId: anActor(secondMasterId) });
+    expect(await stillExists(characterId)).toBe(false);
   });
 
   it('refuse un personnage inconnu', async () => {

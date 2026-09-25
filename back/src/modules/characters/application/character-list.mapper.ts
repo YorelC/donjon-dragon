@@ -37,7 +37,10 @@ function controlledProjection(dto: CharacterDto): CampaignCharacterListItem {
 }
 
 function controlledFields(dto: CharacterDto) {
-  return { ...poolFields(dto), build: dto.build, assignedTo: dto.assignedTo, revision: dto.revision };
+  return {
+    ...poolFields(dto), review: dto.review, build: dto.build,
+    assignedTo: dto.assignedTo, revision: dto.revision,
+  };
 }
 
 function poolProjection(dto: CharacterDto): CampaignCharacterListItem {
@@ -50,6 +53,7 @@ function poolFields(dto: CharacterDto) {
     name: dto.name,
     portrait: null,
     status: dto.status,
+    review: { status: dto.review.status },
     speciesName: dto.build.speciesName,
     lineageName: dto.build.lineageName,
     className: dto.build.className,

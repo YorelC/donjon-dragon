@@ -49,7 +49,19 @@ const BACKGROUND_CHOICE_CATALOG: Partial<Record<BackgroundKey, readonly string[]
   wayfarer: GAMING_SETS,
 };
 
+export function classEquipmentChoiceOptions(classKey: ClassKey): readonly string[] {
+  return CLASS_CHOICE_CATALOG[classKey] ?? [];
+}
+
+export function backgroundEquipmentChoiceOptions(key: BackgroundKey): readonly string[] {
+  return BACKGROUND_CHOICE_CATALOG[key] ?? [];
+}
+
 const GENERIC_ITEM_KEYS = new Set(['musical-instrument', 'gaming-set']);
+
+export function genericEquipmentItemKeys(entries: readonly EquipmentEntry[]): string[] {
+  return entries.filter((entry) => GENERIC_ITEM_KEYS.has(entry.itemKey)).map((entry) => entry.itemKey);
+}
 
 export function resolveStartingEquipment(
   classKey: ClassKey,
@@ -119,12 +131,12 @@ function entriesFor(
 ): EquipmentEntry[] {
   const classEntries = concreteEntries(
     chosen.classOption,
-    CLASS_CHOICE_CATALOG[classKey],
+    classEquipmentChoiceOptions(classKey),
     selection.classChoiceItemKey ?? null,
   );
   const backgroundEntries = concreteEntries(
     chosen.backgroundOption,
-    BACKGROUND_CHOICE_CATALOG[backgroundKey],
+    backgroundEquipmentChoiceOptions(backgroundKey),
     selection.backgroundChoiceItemKey ?? null,
   );
   return [...classEntries, ...backgroundEntries];
@@ -136,7 +148,7 @@ function concreteEntries(
   chosen: string | null,
 ): EquipmentEntry[] {
   const grantsObjects = option.entries.length > 0;
-  if (!catalog) return requireNoChoice(option.entries, chosen);
+  if (!catalog || catalog.length === 0) return requireNoChoice(option.entries, chosen);
   if (!grantsObjects) return requireNoChoice(option.entries, chosen);
   if (!chosen || !catalog.includes(chosen)) throw new InvalidStartingEquipmentError();
   return [...withoutGeneric(option.entries), { itemKey: chosen, quantity: 1 }];

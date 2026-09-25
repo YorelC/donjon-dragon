@@ -144,6 +144,7 @@ export const ResolvedAttackSchema = z.object({
   range: z.object({ normal: z.number(), max: z.number() }).nullable(),
   proficient: z.boolean(),
   mastery: z.boolean(),
+  source: z.enum(['pact-of-the-blade']).nullable(),
 });
 
 export const ComputedCharacterSchema = z.object({

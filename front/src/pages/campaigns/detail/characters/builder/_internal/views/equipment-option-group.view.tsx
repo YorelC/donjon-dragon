@@ -2,6 +2,7 @@ import type { CatalogEquipmentOption, Item } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Label } from "@/shared/components/atoms/label";
 import { RadioGroup, RadioGroupItem } from "@/shared/components/atoms/radio-group";
+import { EquipmentItemChoiceView } from "./equipment-item-choice.view";
 
 interface EquipmentOptionGroupProps {
   /** Distingue les deux groupes dans le DOM : leurs options portent les mêmes id. */
@@ -9,7 +10,12 @@ interface EquipmentOptionGroupProps {
   title: string;
   options: CatalogEquipmentOption[];
   selectedId: string | null;
-  selection: { items: Item[]; onSelect: (optionId: string) => void };
+  selection: {
+    items: Item[];
+    selectedItemKey: string | null;
+    onSelect: (optionId: string) => void;
+    onItemSelect: (itemKey: string) => void;
+  };
 }
 
 /**
@@ -33,10 +39,8 @@ export function EquipmentOptionGroupView({
         {options.map((option) => (
           <EquipmentOptionCard
             key={option.id}
-            groupKey={groupKey}
-            option={option}
-            items={selection.items}
-            selected={option.id === selectedId}
+            card={{ groupKey, option, items: selection.items, selected: option.id === selectedId }}
+            choice={{ selectedKey: selection.selectedItemKey, onSelect: selection.onItemSelect }}
           />
         ))}
       </RadioGroup>
@@ -44,11 +48,16 @@ export function EquipmentOptionGroupView({
   );
 }
 
-interface EquipmentOptionCardProps {
+interface EquipmentOptionCardState {
   groupKey: string;
   option: CatalogEquipmentOption;
   items: Item[];
   selected: boolean;
+}
+
+interface EquipmentOptionCardProps {
+  card: EquipmentOptionCardState;
+  choice: { selectedKey: string | null; onSelect: (key: string) => void };
 }
 
 /**
@@ -57,7 +66,8 @@ interface EquipmentOptionCardProps {
  * pointe alors la radio de la classe, et le paquetage d'historique devient
  * impossible à choisir.
  */
-function EquipmentOptionCard({ groupKey, option, items, selected }: EquipmentOptionCardProps) {
+function EquipmentOptionCard({ card, choice }: EquipmentOptionCardProps) {
+  const { groupKey, option, items, selected } = card;
   const inputId = `equipment-option-${groupKey}-${option.id}`;
 
   return (
@@ -74,6 +84,13 @@ function EquipmentOptionCard({ groupKey, option, items, selected }: EquipmentOpt
         </Label>
       </div>
       <GrantedItemList entries={option.entries} items={items} gold={option.gold} />
+      {selected && option.itemChoice ? (
+        <EquipmentItemChoiceView
+          choice={option.itemChoice}
+          selectedKey={choice.selectedKey}
+          onSelect={choice.onSelect}
+        />
+      ) : null}
     </div>
   );
 }

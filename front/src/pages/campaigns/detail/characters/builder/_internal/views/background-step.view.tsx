@@ -1,6 +1,7 @@
 import type { BackgroundKey, CatalogBackground, DndCatalog } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Separator } from "@/shared/components/atoms/separator";
+import { backgroundChangePatch } from "../types/builder-transitions";
 import { ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
 import { OptionListView } from "./option-list.view";
 
@@ -24,7 +25,7 @@ export function BackgroundStepView(props: BackgroundStepViewProps) {
         options={catalog.backgrounds}
         selectedKey={composition.backgroundKey}
         onSelect={(key) =>
-          onChange({ backgroundKey: key as BackgroundKey, backgroundBonuses: {} })
+          onChange(backgroundChangePatch(key as BackgroundKey, { catalog, composition }))
         }
       />
       {background ? <BackgroundDetails {...props} background={background} /> : null}

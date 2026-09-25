@@ -2,6 +2,7 @@ import type { ComputedCharacter } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Separator } from "@/shared/components/atoms/separator";
 import { CharacterAbilitiesView } from "./character-abilities.view";
+import { CharacterAttacksView } from "./character-attacks.view";
 import { CharacterEquipmentView } from "./character-equipment.view";
 import { CharacterFeaturesView } from "./character-features.view";
 import { CharacterSkillsView } from "./character-skills.view";
@@ -28,6 +29,7 @@ export function CharacterSheetView({ name, sheet, skillLabels }: CharacterSheetV
       <CharacterSkillsView sheet={sheet} labels={skillLabels} />
       <Separator />
       <CharacterEquipmentView sheet={sheet} />
+      <CharacterAttacksView sheet={sheet} />
       <Separator />
       <CharacterFeaturesView sheet={sheet} />
     </div>

@@ -5,6 +5,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { CharacterChoice } from '../character-choices';
+import { CharacterEquipment } from '../character-equipment';
 import { aBuild, type BuildInput } from '../../testing/character-build.fixture';
 import { resolveSheetOf } from '../../testing/worn-equipment.fixture';
 
@@ -499,6 +500,46 @@ describe('occultiste', () => {
     expect(invocation?.spellsPrepared[0]).toMatchObject({
       spellKey: 'find-familiar', alwaysPrepared: true, freeCastFrequency: 'atWill',
     });
+  });
+
+  it('calcule l’arme du Pacte de la Lame au Charisme sans exiger sa possession', () => {
+    const sheet = resolveSheetOf(aBuild({
+      speciesKey: 'halfling', classKey: 'warlock', backgroundKey: 'farmer',
+      base: {
+        strength: 8, dexterity: 13, constitution: 14,
+        intelligence: 12, wisdom: 10, charisma: 15,
+      },
+      backgroundBonuses: { charisma: 2, constitution: 1 },
+      choices: [{
+        source: { type: 'class', key: 'warlock' },
+        invocation: 'pact-of-the-blade', pactWeaponKey: 'longsword',
+      }],
+    }));
+    const attack = sheet.attacks.find((entry) => entry.weaponKey === 'longsword');
+
+    expect(attack).toMatchObject({
+      ability: 'charisma', attackBonus: 5, proficient: true, source: 'pact-of-the-blade',
+    });
+  });
+
+  it('conserve aussi une arme possédée du même type que l’arme de pacte', () => {
+    const build = aBuild({
+      speciesKey: 'halfling', classKey: 'warlock', backgroundKey: 'farmer',
+      base: { strength: 8, dexterity: 13, constitution: 14, intelligence: 12, wisdom: 10, charisma: 15 },
+      backgroundBonuses: { charisma: 2, constitution: 1 },
+      choices: [{
+        source: { type: 'class', key: 'warlock' },
+        invocation: 'pact-of-the-blade', pactWeaponKey: 'longsword',
+      }],
+    });
+    build.equipment = CharacterEquipment.create({
+      armorKey: null, shield: false, items: [{ itemKey: 'longsword', quantity: 1 }],
+      gold: 0, classOptionId: null, backgroundOptionId: null,
+    });
+
+    const attacks = resolveSheetOf(build).attacks.filter((attack) => attack.weaponKey === 'longsword');
+    expect(attacks).toHaveLength(2);
+    expect(attacks.map((attack) => attack.source)).toEqual([null, 'pact-of-the-blade']);
   });
 });
 

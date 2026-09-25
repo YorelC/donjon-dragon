@@ -119,7 +119,7 @@ const A_CHARACTER_BODY: CreateCharacterDto = {
  * jamais celui d'un autre.
  */
 export function anEditBody(name: string = A_CHARACTER_NAME): FinalizeCharacterDto {
-  return { ...A_CHARACTER_BODY, name, abilityRollId: null };
+  return { ...A_CHARACTER_BODY, name, abilityRollId: null, expectedRevision: 1 };
 }
 
 /** Le même corps, sous le nom que le test veut donner à son personnage. */

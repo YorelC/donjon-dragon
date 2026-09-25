@@ -31,6 +31,7 @@ const BASE_DTO: CharacterBuildDetailDto = {
   classOrder: null,
   weaponMasteries: [],
   classTools: [],
+  classLanguage: null,
   invocation: null,
   invocationSpells: [],
   familiarForm: null,
@@ -167,7 +168,7 @@ describe("toComposition — reste des champs", () => {
  */
 describe("aller-retour edition", () => {
   it("restitue au serveur ce qu il en avait recu", () => {
-    const payload = toEditPayload(CATALOG, toComposition(BASE_DTO, CATALOG));
+    const payload = toEditPayload(CATALOG, toComposition(BASE_DTO, CATALOG), 0);
 
     expect(payload).toMatchObject({
       name: BASE_DTO.name,
@@ -182,7 +183,7 @@ describe("aller-retour edition", () => {
   });
 
   it("produit un corps que le contrat d edition accepte", () => {
-    const payload = toEditPayload(CATALOG, toComposition(BASE_DTO, CATALOG));
+    const payload = toEditPayload(CATALOG, toComposition(BASE_DTO, CATALOG), 0);
 
     expect(FinalizeCharacterSchema.safeParse(payload).success).toBe(true);
   });

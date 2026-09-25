@@ -10,13 +10,21 @@ import {
   A_CHARACTER_NAME,
 } from '../testing/character.fixture';
 import { AbilityAssignmentMismatchError } from './ability-assignment';
-import { Character, type CharacterAccessContext } from './character';
+import {
+  Character,
+  type CharacterAccessContext,
+  type CharacterCorrectionInput,
+} from './character';
 import { CharacterName } from './character-name';
 import {
   AbilitiesNotRolledError,
   AlreadyAssignedToThisPlayerError,
+  CharacterReviewStateError,
+  InvalidRejectionReasonError,
   NotAssignedError,
   NotEditableByActorError,
+  OnlyGameMasterCanDeleteError,
+  OnlyGameMasterCanReviewError,
   OnlyGameMasterCanAssignError,
 } from './character.errors';
 import {
@@ -43,6 +51,10 @@ function aCharacter(createdBy: UserId = gandalf): Character {
     roll: STANDARD_ARRAY_ROLL,
     now: NOW,
   });
+}
+
+function aCorrection(build: CharacterCorrectionInput['build']): CharacterCorrectionInput {
+  return { name: NAME, identity: A_CHARACTER_IDENTITY, build };
 }
 
 function contextFor(overrides: Partial<CharacterAccessContext>): CharacterAccessContext {
@@ -126,27 +138,10 @@ describe('Character.create', () => {
   });
 });
 
-describe('Character.rollAbilities', () => {
-  it('remplace le tirage d un personnage déjà créé', () => {
-    const character = aCharacter();
-    character.rollAbilities(STANDARD_ARRAY_ROLL, asCreator, NOW);
-
-    expect(character.abilityRoll?.totals).toEqual([15, 14, 13, 12, 10, 8]);
-  });
-
-  it('refuse un acteur qui n a pas le droit d éditer', () => {
-    const character = aCharacter();
-
-    expect(() =>
-      character.rollAbilities(STANDARD_ARRAY_ROLL, contextFor({ actorId: sam }), NOW),
-    ).toThrow(NotEditableByActorError);
-  });
-});
-
-describe('Character.finalize', () => {
+describe('Character.revise', () => {
   it('remplace le build du personnage', () => {
     const character = aCharacter();
-    character.finalize(A_CHARACTER_BUILD, asCreator, NOW);
+    character.revise(aCorrection(A_CHARACTER_BUILD), asCreator, NOW);
 
     expect(character.build.classKey).toBe('rogue');
   });
@@ -160,7 +155,7 @@ describe('Character.finalize', () => {
       ),
     };
 
-    expect(() => character.finalize(tooFewSkills, asCreator, NOW)).toThrow(
+    expect(() => character.revise(aCorrection(tooFewSkills), asCreator, NOW)).toThrow(
       InvalidSkillChoiceError,
     );
   });
@@ -169,7 +164,7 @@ describe('Character.finalize', () => {
     const character = aCharacter();
 
     expect(() =>
-      character.finalize(A_CHARACTER_BUILD, contextFor({ actorId: sam }), NOW),
+      character.revise(aCorrection(A_CHARACTER_BUILD), contextFor({ actorId: sam }), NOW),
     ).toThrow(NotEditableByActorError);
   });
 });
@@ -291,5 +286,70 @@ describe('Character.assertEditableBy', () => {
         }),
       ),
     ).not.toThrow();
+  });
+});
+
+describe('Character review', () => {
+  it('fige la fiche soumise et conserve sa première version', () => {
+    const character = aCharacter(frodo);
+    character.assignTo(true, frodo, NOW);
+
+    expect(character.submitForReview(contextFor({ actorId: frodo }), NOW)).toBe(1);
+    expect(character.review).toMatchObject({ status: 'submitted', submittedVersion: 1 });
+    expect(() => character.revise(aCorrection(A_CHARACTER_BUILD), asCreator, NOW)).toThrow(
+      CharacterReviewStateError,
+    );
+  });
+
+  it('réserve acceptation et refus au MJ', () => {
+    const character = aCharacter(frodo);
+    character.assignTo(true, frodo, NOW);
+    character.submitForReview(contextFor({ actorId: frodo }), NOW);
+
+    expect(() => character.acceptReview(contextFor({ actorId: frodo }), NOW)).toThrow(
+      OnlyGameMasterCanReviewError,
+    );
+  });
+
+  it('rend une fiche refusée corrigeable et exige un motif', () => {
+    const character = aCharacter(frodo);
+    character.assignTo(true, frodo, NOW);
+    character.submitForReview(contextFor({ actorId: frodo }), NOW);
+
+    expect(() => character.refuseReview(asCreator, '   ', NOW)).toThrow(
+      InvalidRejectionReasonError,
+    );
+    character.refuseReview(asCreator, '  Revoir les compétences.  ', NOW);
+
+    expect(character.review.lastRejectionReason).toBe('Revoir les compétences.');
+    expect(() => character.revise(aCorrection(A_CHARACTER_BUILD), asCreator, NOW)).not.toThrow();
+  });
+
+  it('interdit une nouvelle décision après acceptation', () => {
+    const character = aCharacter(frodo);
+    character.assignTo(true, frodo, NOW);
+    character.submitForReview(contextFor({ actorId: frodo }), NOW);
+    character.acceptReview(asCreator, NOW);
+
+    expect(() => character.refuseReview(asCreator, 'Trop tard', NOW)).toThrow(
+      CharacterReviewStateError,
+    );
+  });
+});
+
+describe('Character.assertDeletableBy', () => {
+  it('autorise le MJ même après acceptation', () => {
+    const character = aCharacter(frodo);
+    character.assignTo(true, frodo, NOW);
+    character.submitForReview(contextFor({ actorId: frodo }), NOW);
+    character.acceptReview(asCreator, NOW);
+
+    expect(() => character.assertDeletableBy(asCreator)).not.toThrow();
+  });
+
+  it('interdit toujours la suppression définitive au joueur', () => {
+    expect(() => aCharacter(frodo).assertDeletableBy(contextFor({ actorId: frodo }))).toThrow(
+      OnlyGameMasterCanDeleteError,
+    );
   });
 });

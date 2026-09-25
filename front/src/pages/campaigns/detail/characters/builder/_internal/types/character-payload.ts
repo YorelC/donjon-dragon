@@ -3,6 +3,7 @@ import type {
   DndCatalog,
   CreateCharacterDto,
   FinalizeCharacterDto,
+  PreviewCharacterSheetDto,
 } from "@donjon-dragon/shared";
 import {
   ABILITIES,
@@ -43,7 +44,7 @@ function baseScoresOf(composition: CharacterComposition): Record<Ability, number
 export function toPreviewPayload(
   catalog: DndCatalog,
   composition: CharacterComposition,
-): Omit<FinalizeCharacterDto, "name" | "abilityRollId"> | null {
+): PreviewCharacterSheetDto | null {
   const origin = originOf(catalog, composition);
   if (!origin) return null;
 
@@ -58,7 +59,7 @@ export function toPreviewPayload(
 }
 
 type PayloadOrigin = Pick<
-  FinalizeCharacterDto,
+  CreateCharacterDto,
   "speciesKey" | "lineageKey" | "size" | "standardLanguages" | "classKey" | "backgroundKey"
 >;
 
@@ -96,11 +97,12 @@ export function toCreatePayload(
 export function toEditPayload(
   catalog: DndCatalog,
   composition: CharacterComposition,
+  expectedRevision: number,
 ): FinalizeCharacterDto | null {
   const named = toNamedComposition(catalog, composition);
   if (!named) return null;
 
-  return { ...named, abilityRollId: null };
+  return { ...named, abilityRollId: null, expectedRevision };
 }
 
 /**

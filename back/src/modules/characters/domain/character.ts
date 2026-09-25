@@ -26,11 +26,18 @@ import {
 } from './character-identity';
 import { CharacterName } from './character-name';
 import {
+  CharacterReview,
+  type CharacterReviewAuthority,
+  type CharacterReviewSnapshot,
+  type CharacterValidationStatus,
+} from './character-review';
+import {
   AlreadyAssignedToThisPlayerError,
   CharacterRevisionConflictError,
   NotAssignedError,
   NotEditableByActorError,
   OnlyGameMasterCanAssignError,
+  OnlyGameMasterCanDeleteError,
 } from './character.errors';
 import { OwningCampaignId } from './owning-campaign-id';
 import type { AbilityRecord } from './reference/abilities';
@@ -73,6 +80,7 @@ export interface CharacterSnapshot {
   createdBy: string;
   assignedTo: string | null;
   revision: number;
+  review?: CharacterReviewSnapshot;
   createdAt: string;
   updatedAt: string;
 }
@@ -90,6 +98,12 @@ export interface CharacterBuildInput {
   backgroundBonuses: AbilityBonuses;
   choices: readonly CharacterChoice[];
   equipment: CharacterEquipmentSnapshot;
+}
+
+export interface CharacterCorrectionInput {
+  name: CharacterName;
+  identity: CharacterIdentityInput;
+  build: CharacterBuildInput;
 }
 
 interface CharacterBuildState {
@@ -118,6 +132,7 @@ interface CharacterState {
   build: CharacterBuildState;
   assignedTo: UserId | null;
   revision: number;
+  review: CharacterReview;
   updatedAt: string;
 }
 
@@ -180,6 +195,7 @@ export class Character {
         build: buildFrom(input.build, input.roll),
         assignedTo: null,
         revision: INITIAL_REVISION,
+        review: CharacterReview.create(),
         updatedAt: createdAt,
       },
     );
@@ -237,6 +253,14 @@ export class Character {
     return this.state.revision;
   }
 
+  get validationStatus(): CharacterValidationStatus {
+    return this.state.review.status;
+  }
+
+  get review(): CharacterReviewSnapshot {
+    return this.state.review.snapshot();
+  }
+
   assertRevision(expectedRevision: number): void {
     if (this.state.revision !== expectedRevision) {
       throw new CharacterRevisionConflictError();
@@ -248,14 +272,20 @@ export class Character {
     return { ...this.state.build, level: LEVEL_ONE };
   }
 
-  /**
-   * Relance les dés sur un personnage déjà persisté — montée de niveau ou
-   * correction. La finalisation suivante recalcule et valide son affectation.
-   */
-  rollAbilities(roll: AbilityRoll, context: CharacterAccessContext, now: Date): void {
+  submitForReview(context: CharacterAccessContext, now: Date): number {
     this.assertEditableBy(context);
+    const version = this.state.review.submit();
+    this.touch(now);
+    return version;
+  }
 
-    this.state.roll = roll;
+  acceptReview(context: CharacterAccessContext, now: Date): void {
+    this.state.review.accept(reviewAuthorityOf(context));
+    this.touch(now);
+  }
+
+  refuseReview(context: CharacterAccessContext, reason: string, now: Date): void {
+    this.state.review.refuse(reviewAuthorityOf(context), reason);
     this.touch(now);
   }
 
@@ -264,16 +294,13 @@ export class Character {
    * l'historique et que les choix couvrent ce que l'espèce et la classe
    * demandaient, puis le personnage porte son nouveau build.
    */
-  finalize(build: CharacterBuildInput, context: CharacterAccessContext, now: Date): void {
+  revise(input: CharacterCorrectionInput, context: CharacterAccessContext, now: Date): void {
     this.assertEditableBy(context);
-
-    this.state.build = buildFrom(build, this.state.roll);
-    this.touch(now);
-  }
-
-  rename(name: CharacterName, context: CharacterAccessContext, now: Date): void {
-    this.assertEditableBy(context);
-    this.state.name = name;
+    const build = buildFrom(input.build, this.state.roll);
+    const identity = CharacterIdentity.create(input.identity);
+    this.state.name = input.name;
+    this.state.identity = identity;
+    this.state.build = build;
     this.touch(now);
   }
 
@@ -317,6 +344,7 @@ export class Character {
    * propriétaire de la campagne.
    */
   assertEditableBy(context: CharacterAccessContext): void {
+    this.state.review.assertEditable();
     if (!context.actorIsGameMaster) {
       if (!this.state.assignedTo?.equals(context.actorId)) {
         throw new NotEditableByActorError();
@@ -333,6 +361,10 @@ export class Character {
     if (!editable) throw new NotEditableByActorError();
   }
 
+  assertDeletableBy(context: CharacterAccessContext): void {
+    if (!context.actorIsGameMaster) throw new OnlyGameMasterCanDeleteError();
+  }
+
   snapshot(): CharacterSnapshot {
     return {
       id: this.id.value,
@@ -345,6 +377,7 @@ export class Character {
       createdBy: this.origin.createdBy.value,
       assignedTo: this.state.assignedTo?.value ?? null,
       revision: this.state.revision,
+      review: this.state.review.snapshot(),
       createdAt: this.origin.createdAt,
       updatedAt: this.state.updatedAt,
     };
@@ -354,6 +387,10 @@ export class Character {
     this.state.revision += REVISION_INCREMENT;
     this.state.updatedAt = now.toISOString();
   }
+}
+
+function reviewAuthorityOf(context: CharacterAccessContext): CharacterReviewAuthority {
+  return context.actorIsGameMaster ? 'gameMaster' : 'player';
 }
 
 /**
@@ -402,6 +439,7 @@ function restoreState(snapshot: CharacterSnapshot): CharacterState {
     build: restoreBuild(snapshot.build),
     assignedTo: snapshot.assignedTo ? UserId.create(snapshot.assignedTo) : null,
     revision: snapshot.revision,
+    review: CharacterReview.restore(snapshot.review),
     updatedAt: snapshot.updatedAt,
   };
 }

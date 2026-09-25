@@ -11,7 +11,8 @@ export function choicesOf(composition: CharacterComposition): CharacterChoice[] 
     ...speciesChoices(composition),
     ...lineageChoices(composition),
     ...classChoices(composition),
-    ...magicInitiateChoice(composition),
+    ...backgroundChoices(composition),
+    ...magicInitiateChoices(composition),
     ...skilledChoice(composition),
   ];
 }
@@ -45,21 +46,64 @@ function speciesChoices(composition: CharacterComposition): CharacterChoice[] {
 
 function classChoices(composition: CharacterComposition): CharacterChoice[] {
   if (!composition.classKey) return [];
+  return [{
+    source: { type: "class", key: composition.classKey },
+    ...classChoiceDetails(composition),
+  }];
+}
 
-  return [
-    {
-      source: { type: "class", key: composition.classKey },
+function classChoiceDetails(composition: CharacterComposition) {
+  return {
       skills: composition.classSkills,
       expertise: composition.expertise,
+      tools: composition.classTools,
+      languages: composition.classLanguage ? [composition.classLanguage] : [],
       spells: [...composition.classCantrips, ...composition.classSpells],
+      weaponMasteries: composition.weaponMasteries,
       ...(composition.fightingStyle ? { fightingStyle: composition.fightingStyle } : {}),
       ...(composition.classOrder ? { classOrder: composition.classOrder } : {}),
-    },
-  ];
+      ...(composition.invocation ? { invocation: composition.invocation } : {}),
+      ...(composition.invocationSpells.length > 0
+        ? { invocationSpells: composition.invocationSpells }
+        : {}),
+      ...(composition.familiarForm ? { familiarForm: composition.familiarForm } : {}),
+      ...(composition.pactWeaponKey ? { pactWeaponKey: composition.pactWeaponKey } : {}),
+      ...(composition.spellbook.length > 0 ? { spellbook: composition.spellbook } : {}),
+  };
+}
+
+function backgroundChoices(composition: CharacterComposition): CharacterChoice[] {
+  if (!composition.backgroundKey || !composition.backgroundTool) return [];
+
+  return [{
+    source: { type: "background", key: composition.backgroundKey },
+    tools: [composition.backgroundTool],
+  }];
 }
 
 /** Initié à la magie porte sa liste, sa caractéristique et ses sorts. */
-function magicInitiateChoice(composition: CharacterComposition): CharacterChoice[] {
+function magicInitiateChoices(composition: CharacterComposition): CharacterChoice[] {
+  if (composition.magicInitiateChoices.length > 0) return sourcedMagicChoices(composition);
+  return legacyMagicChoice(composition);
+}
+
+function sourcedMagicChoices(composition: CharacterComposition): CharacterChoice[] {
+  return composition.magicInitiateChoices.flatMap((choice) => {
+    if (!choice.spellcastingAbility || !choice.spellList) return [];
+    return [{
+      source: {
+        type: "feat",
+        key: "magic-initiate",
+        grantedBy: choice.grantedBy,
+      },
+      spellcastingAbility: choice.spellcastingAbility,
+      spellList: choice.spellList,
+      spells: [...choice.cantrips, ...choice.spells],
+    }];
+  });
+}
+
+function legacyMagicChoice(composition: CharacterComposition): CharacterChoice[] {
   if (!composition.spellcastingAbility || !composition.spellList) return [];
 
   return [

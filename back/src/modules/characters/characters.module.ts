@@ -21,10 +21,12 @@ import { UserModule } from '@modules/user/user.module';
 import { CHARACTER_DIRECTORY } from './application/ports/character-directory.port';
 import { ABILITY_ROLL_REPOSITORY } from './application/ports/ability-roll.repository.port';
 import { CHARACTER_ASSIGNMENT_REPOSITORY } from './application/ports/character-assignment.repository.port';
+import { CHARACTER_COMMAND_REPOSITORY } from './application/ports/character-command.repository.port';
 import { CHARACTER_CREATION_REPOSITORY } from './application/ports/character-creation.repository.port';
 import { CHARACTER_REPOSITORY } from './application/ports/character.repository.port';
 import { ITEM_CATALOG } from './application/ports/item-catalog.port';
 import { AssignCharacterUseCase } from './application/use-cases/assign-character.use-case';
+import { AcceptCharacterReviewUseCase } from './application/use-cases/accept-character-review.use-case';
 import { CreateCharacterUseCase } from './application/use-cases/create-character.use-case';
 import { RollAbilitiesUseCase } from './application/use-cases/roll-abilities.use-case';
 import { DeleteCharacterUseCase } from './application/use-cases/delete-character.use-case';
@@ -38,6 +40,8 @@ import { ListCampaignCharactersUseCase } from './application/use-cases/list-camp
 import { LeaveCampaignWithCharacterUseCase } from './application/use-cases/leave-campaign-with-character.use-case';
 import { PromoteCampaignMemberWithCharacterUseCase } from './application/use-cases/promote-campaign-member-with-character.use-case';
 import { PreviewCharacterSheetUseCase } from './application/use-cases/preview-character-sheet.use-case';
+import { RefuseCharacterReviewUseCase } from './application/use-cases/refuse-character-review.use-case';
+import { SubmitCharacterForReviewUseCase } from './application/use-cases/submit-character-for-review.use-case';
 import { UnassignCharacterUseCase } from './application/use-cases/unassign-character.use-case';
 import { ItemsItemCatalog } from './infrastructure/acl/items-item-catalog';
 import { UserCharacterDirectory } from './infrastructure/acl/user-character-directory';
@@ -45,18 +49,25 @@ import {
   CHARACTER_MODEL,
   CharacterSchema,
 } from './infrastructure/persistence/character.schema';
+import {
+  CHARACTER_BUILD_VERSION_MODEL,
+  CharacterBuildVersionSchema,
+} from './infrastructure/persistence/character-build-version.schema';
 import { MongoCharacterRepository } from './infrastructure/persistence/mongo-character.repository';
 import { MongoCharacterAssignmentRepository } from './infrastructure/persistence/mongo-character-assignment.repository';
 import { MongoAbilityRollRepository } from './infrastructure/persistence/mongo-ability-roll.repository';
 import { MongoCharacterCreationRepository } from './infrastructure/persistence/mongo-character-creation.repository';
+import { MongoCharacterCommandRepository } from './infrastructure/persistence/mongo-character-command.repository';
 import { CharacterController } from './presentation/character.controller';
 import { CampaignCharacterLifecycleController } from './presentation/campaign-character-lifecycle.controller';
 import { DndCatalogController } from './presentation/dnd-catalog.controller';
+import { CharacterReviewController } from './presentation/character-review.controller';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: CHARACTER_MODEL, schema: CharacterSchema },
+      { name: CHARACTER_BUILD_VERSION_MODEL, schema: CharacterBuildVersionSchema },
       { name: COMMAND_RECEIPT_MODEL, schema: CommandReceiptSchema },
       { name: FUNCTIONAL_AUDIT_ENTRY_MODEL, schema: FunctionalAuditEntrySchema },
       { name: OUTBOX_MESSAGE_MODEL, schema: OutboxMessageSchema },
@@ -71,6 +82,7 @@ import { DndCatalogController } from './presentation/dnd-catalog.controller';
     CharacterController,
     CampaignCharacterLifecycleController,
     DndCatalogController,
+    CharacterReviewController,
   ],
   providers: [
     { provide: CHARACTER_REPOSITORY, useClass: MongoCharacterRepository },
@@ -82,6 +94,7 @@ import { DndCatalogController } from './presentation/dnd-catalog.controller';
       provide: CHARACTER_CREATION_REPOSITORY,
       useClass: MongoCharacterCreationRepository,
     },
+    { provide: CHARACTER_COMMAND_REPOSITORY, useClass: MongoCharacterCommandRepository },
     { provide: ABILITY_ROLL_REPOSITORY, useClass: MongoAbilityRollRepository },
     { provide: CHARACTER_DIRECTORY, useClass: UserCharacterDirectory },
     { provide: ITEM_CATALOG, useClass: ItemsItemCatalog },
@@ -100,6 +113,9 @@ import { DndCatalogController } from './presentation/dnd-catalog.controller';
     PromoteCampaignMemberWithCharacterUseCase,
     ExcludeCampaignMemberWithCharacterUseCase,
     LeaveCampaignWithCharacterUseCase,
+    SubmitCharacterForReviewUseCase,
+    AcceptCharacterReviewUseCase,
+    RefuseCharacterReviewUseCase,
   ],
 })
 export class CharactersModule {}

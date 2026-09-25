@@ -203,3 +203,11 @@ export function creationVirtualItems(): { key: string; name: string }[] {
   });
   return [...tools, ...trinkets];
 }
+
+export function creationTrinkets(): { id: number; itemKey: string; name: string }[] {
+  return Array.from({ length: TRINKET_COUNT }, (_, index) => {
+    const id = index + 1;
+    const itemKey = trinketKey(id);
+    return { id, itemKey, name: creationItemName(itemKey) ?? itemKey };
+  });
+}

@@ -33,11 +33,21 @@ export function toCharacterDto(
     campaignId: character.campaignId.value,
     name: character.name.value,
     status: character.status,
+    review: reviewOf(character),
     build: buildSummaryOf(character),
     abilityRoll: rollOf(character),
     createdByMe: character.createdBy.equals(viewerId),
     assignedTo: assignedPlayer ? { displayName: assignedPlayer.displayName } : null,
     revision: character.revision,
+  };
+}
+
+function reviewOf(character: Character) {
+  const review = character.review;
+  return {
+    status: review.status,
+    submittedVersion: review.submittedVersion,
+    lastRejectionReason: review.lastRejectionReason,
   };
 }
 

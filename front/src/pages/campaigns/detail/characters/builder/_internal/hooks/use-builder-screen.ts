@@ -7,7 +7,7 @@ import type {
   Item,
 } from "@donjon-dragon/shared";
 import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
-import { useClassSpells, useDndCatalog } from "@/shared/queries/use-dnd-catalog";
+import { useDndCatalog } from "@/shared/queries/use-dnd-catalog";
 import { useItemCatalog } from "@/shared/queries/use-item-catalog";
 import type { BuilderScreen } from "../views/character-builder.view";
 import type { BuilderState } from "./use-character-builder";
@@ -18,18 +18,14 @@ import { useRollAbilities } from "../queries/use-character-creation";
 import { useFinishAction } from "./use-finish-action";
 import { isFullyAssigned, type CharacterComposition } from "../types/character-composition";
 import { toComposition } from "../types/character-build-detail";
-import {
-  backgroundOf,
-  classCantripsOf,
-  classOf,
-  featSpellcastingOf,
-  type StepContext,
-} from "../types/builder-lookups";
+import { backgroundOf, type StepContext } from "../types/builder-lookups";
+import { useSpellsStep } from "./use-spells-step";
 
 export interface BuilderTarget {
   campaignId: string;
   /** `null` : le builder crée un personnage, il n'y a pas encore d'id. */
   characterId: string | null;
+  expectedRevision?: number;
 }
 
 /**
@@ -40,8 +36,8 @@ export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
   const context = useBuilderContext(target);
   const { catalog, builder, preview } = context;
   if (!catalog) return null;
-  if (target.characterId && !context.character) return null;
-  if (target.characterId && context.buildDetail.isLoading) return null;
+  if (isExistingBuilderLoading(target, context)) return null;
+  if (context.character && !isCorrectable(context.character)) return null;
 
   return {
     catalog,
@@ -51,11 +47,23 @@ export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
     abilities: context.abilities,
     spells: context.spells,
     characterName: characterNameOf(target, context.character, builder),
-    isEditing: target.characterId !== null,
+    isEditing: false,
     canFinish:
       isFullyAssigned(builder.composition) && preview !== null && builder.isValid("identity"),
     ...context.finish,
   };
+}
+
+function isExistingBuilderLoading(target: BuilderTarget, context: BuilderContext): boolean {
+  if (!target.characterId) return false;
+
+  return !context.character || context.buildDetail.isLoading;
+}
+
+function isCorrectable(character: CampaignCharacterListItem): boolean {
+  if (character.projection === "pool") return false;
+
+  return character.review.status === "draft" || character.review.status === "refused";
 }
 
 const NEW_CHARACTER_TITLE = "Nouveau personnage";
@@ -101,8 +109,16 @@ function useBuilderContext(target: BuilderTarget): BuilderContext {
     preview: useCharacterPreview(target.campaignId, builder.composition, catalog),
     abilities: useAbilitiesStep(builder, stepContext(catalog, builder), rollAbilities),
     spells: useSpellsStep(stepContext(catalog, builder)),
-    finish: useFinishAction(target, builder, catalog),
+    finish: useFinishAction(withRevision(target, character), builder, catalog),
   };
+}
+
+function withRevision(
+  target: BuilderTarget,
+  character: CampaignCharacterListItem | undefined,
+): BuilderTarget {
+  const expectedRevision = character && 'revision' in character ? character.revision : undefined;
+  return { ...target, expectedRevision };
 }
 
 /** Sans catalogue, la taille n'est pas classable en choix ou en dérivée. */
@@ -152,25 +168,4 @@ function keep(builder: BuilderState, issued: IssuedAbilityRoll): void {
     abilityRoll: { dice: issued.dice, totals: issued.totals },
     abilityRollId: issued.rollId,
   });
-}
-
-/**
- * Deux listes de sorts peuvent coexister : celle de la classe, et celle
- * qu'Initié à la magie fait choisir — chez le clerc, le druide ou le magicien.
- */
-function useSpellsStep(context: StepContext | null): BuilderScreen["spells"] {
-  const classSpells = useClassSpells(context?.composition.classKey ?? null);
-  const featSpells = useClassSpells(context?.composition.spellList ?? null);
-  const spellcasting = context ? classOf(context)?.spellcasting : undefined;
-  const featChoice = context ? featSpellcastingOf(context) : undefined;
-
-  return {
-    classSpells: classSpells.data ?? null,
-    classCantripsKnown: context ? classCantripsOf(context) : 0,
-    classSpellsPrepared: spellcasting?.spellsPrepared ?? 0,
-    featSpells: featSpells.data ?? null,
-    featCantripsKnown: featChoice?.cantripsKnown ?? 0,
-    featSpellsPrepared: featChoice?.spellsPrepared ?? 0,
-    isLoading: classSpells.isLoading || featSpells.isLoading,
-  };
 }

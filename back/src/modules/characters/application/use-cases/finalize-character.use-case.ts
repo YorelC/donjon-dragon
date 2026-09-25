@@ -8,92 +8,128 @@ import { CLOCK, type Clock } from '@kernel/application/clock.port';
 import type { ActorId } from '@kernel/domain/actor-id';
 import { UserId } from '@kernel/domain/user-id';
 
+import { hashCharacterCorrection } from '../character-command-intent';
+import { acceptedCharacterResult } from '../character-command-result';
+import { toBuildInput } from '../character-build.mapper';
+import { loadCampaignCharacter, resolveAccessContext } from '../character.lookup';
+import { toCharacterDto } from '../character.mapper';
+import { assertEquipmentIsKnown } from '../item.lookup';
+import {
+  CHARACTER_COMMAND_REPOSITORY,
+  type CharacterCommand,
+  type CharacterCommandRepositoryPort,
+} from '../ports/character-command.repository.port';
 import {
   CHARACTER_DIRECTORY,
   type CharacterDirectoryPort,
   type CharacterDirectoryUser,
 } from '../ports/character-directory.port';
-import {
-  CHARACTER_REPOSITORY,
-  type CharacterRepositoryPort,
-} from '../ports/character.repository.port';
+import { CHARACTER_REPOSITORY, type CharacterRepositoryPort } from '../ports/character.repository.port';
 import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
-import { assertEquipmentIsKnown } from '../item.lookup';
-import { loadCampaignCharacter, resolveAccessContext } from '../character.lookup';
-import { toCharacterDto } from '../character.mapper';
 import type { Character, CharacterAccessContext } from '../../domain/character';
 import { CharacterName } from '../../domain/character-name';
 import { AbilityRollNotEditableError } from '../../domain/character.errors';
-import { toBuildInput } from '../character-build.mapper';
 
 export type FinalizeCharacterDto = FinalizeCharacterBody & {
   characterId: string;
   campaignId: string;
   actorId: ActorId;
+  idempotencyKey: string;
 };
 
-/**
- * Le wizard rend sa copie. L'agrégat vérifie que les bonus appartiennent à
- * l'historique et que les choix couvrent ce que l'espèce et la classe
- * demandaient, puis le personnage porte son nouveau build.
- *
- * Le même use-case sert à l'édition d'un personnage déjà créé : montée de
- * niveau ou correction, rejouer les choix repasse par les mêmes vérifications.
- * Le tirage, s'il y en a un, conserve ses dés et est revalidé comme à la création.
- */
+interface WizardOutput {
+  dto: FinalizeCharacterDto;
+  context: CharacterAccessContext;
+  now: Date;
+}
+
 @Injectable()
 export class FinalizeCharacterUseCase {
   constructor(
-    @Inject(CHARACTER_REPOSITORY)
-    private readonly characterRepo: CharacterRepositoryPort,
-    @Inject(CHARACTER_DIRECTORY)
-    private readonly directory: CharacterDirectoryPort,
+    @Inject(CHARACTER_REPOSITORY) private readonly characters: CharacterRepositoryPort,
+    @Inject(CHARACTER_COMMAND_REPOSITORY)
+    private readonly commands: CharacterCommandRepositoryPort,
+    @Inject(CHARACTER_DIRECTORY) private readonly directory: CharacterDirectoryPort,
     @Inject(ITEM_CATALOG) private readonly itemCatalog: ItemCatalogPort,
     private readonly memberships: GetCampaignMembershipsUseCase,
     @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   async execute(dto: FinalizeCharacterDto): Promise<CharacterDto> {
-    const character = await loadCampaignCharacter(
-      this.characterRepo, dto.campaignId, dto.characterId,
-    );
-    const context = await resolveAccessContext(this.memberships, {
-      campaignId: dto.campaignId,
-      actorId: dto.actorId,
-      createdBy: character.createdBy,
-    });
-
-    this.applyWizardOutput(character, dto, context);
-    await assertEquipmentIsKnown(
-      this.itemCatalog,
-      character.build.equipment.snapshot(),
-      dto.campaignId,
-    );
-
-    await this.characterRepo.save(character);
-    const assignedPlayer = await this.assignedPlayer(character);
-    return toCharacterDto(character, UserId.create(dto.actorId), assignedPlayer);
+    const principal = UserId.create(dto.actorId);
+    const intentHash = correctionIntent(dto);
+    const replay = await this.commands.findReceipt(principal, dto.idempotencyKey);
+    if (replay) return acceptedCharacterResult(replay, intentHash);
+    const command = await this.prepare(dto, principal, intentHash);
+    return acceptedCharacterResult(await this.commands.execute(command), intentHash);
   }
 
-  /** La lecture d'annuaire appartient au use-case : le mapper ne fait plus d'I/O. */
-  private async assignedPlayer(character: Character): Promise<CharacterDirectoryUser | null> {
-    const assignedTo = character.assignedTo;
-    return assignedTo ? this.directory.findById(assignedTo.value) : null;
-  }
-
-  /**
-   * Les deux mutations que porte la copie du wizard, dans l'ordre ou l'agregat
-   * les attend : le nom, puis le build. Un seul instant les date toutes les
-   * deux. Le tirage, lui, ne bouge plus : un personnage garde le sien.
-   */
-  private applyWizardOutput(
-    character: Character,
+  private async prepare(
     dto: FinalizeCharacterDto,
-    context: CharacterAccessContext,
-  ): void {
-    if (dto.abilityRollId) throw new AbilityRollNotEditableError();
-    const now = this.clock.now();
-    character.rename(CharacterName.create(dto.name), context, now);
-    character.finalize(toBuildInput(dto), context, now);
+    principal: UserId,
+    intentHash: string,
+  ): Promise<CharacterCommand> {
+    const character = await loadCampaignCharacter(this.characters, dto.campaignId, dto.characterId);
+    character.assertRevision(dto.expectedRevision);
+    const context = await this.accessContext(dto, character);
+    const occurredAt = this.clock.now();
+    this.applyWizardOutput(character, { dto, context, now: occurredAt });
+    await assertEquipmentIsKnown(this.itemCatalog, character.build.equipment.snapshot(), dto.campaignId);
+    const assignedPlayer = await this.assignedPlayer(character);
+    const result = toCharacterDto(character, principal, assignedPlayer);
+    return commandOf({ dto, principal, intentHash, occurredAt, context, character, result });
   }
+
+  private accessContext(
+    dto: FinalizeCharacterDto,
+    character: Character,
+  ): Promise<CharacterAccessContext> {
+    return resolveAccessContext(this.memberships, {
+      campaignId: dto.campaignId, actorId: dto.actorId, createdBy: character.createdBy,
+    });
+  }
+
+  private assignedPlayer(character: Character): Promise<CharacterDirectoryUser | null> {
+    const assignedTo = character.assignedTo;
+    return assignedTo ? this.directory.findById(assignedTo.value) : Promise.resolve(null);
+  }
+
+  private applyWizardOutput(character: Character, output: WizardOutput): void {
+    const { dto, context, now } = output;
+    if (dto.abilityRollId) throw new AbilityRollNotEditableError();
+    character.revise({
+      name: CharacterName.create(dto.name), identity: identityOf(dto), build: toBuildInput(dto),
+    }, context, now);
+  }
+}
+
+interface CorrectionCommandInput {
+  dto: FinalizeCharacterDto;
+  principal: UserId;
+  intentHash: string;
+  occurredAt: Date;
+  context: CharacterAccessContext;
+  character: Character;
+  result: CharacterDto;
+}
+
+function commandOf(input: CorrectionCommandInput): CharacterCommand {
+  const { dto, principal, intentHash, occurredAt, context, character, result } = input;
+  return {
+    campaignId: dto.campaignId, principalId: principal, idempotencyKey: dto.idempotencyKey,
+    intentHash, occurredAt, effectiveRole: context.actorIsGameMaster ? 'gameMaster' : 'player',
+    action: 'character.corrected', character, result, reason: null, buildVersion: null,
+  };
+}
+
+function identityOf(dto: FinalizeCharacterDto) {
+  return {
+    alignment: dto.alignment, age: dto.age, heightCm: dto.heightCm,
+    weightKg: dto.weightKg, description: dto.description,
+  };
+}
+
+function correctionIntent(dto: FinalizeCharacterDto): string {
+  const { actorId: _actorId, idempotencyKey: _key, campaignId, characterId, ...body } = dto;
+  return hashCharacterCorrection({ campaignId, characterId, body });
 }

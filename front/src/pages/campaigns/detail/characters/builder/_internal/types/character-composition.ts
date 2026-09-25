@@ -7,13 +7,17 @@ import type {
   BackgroundKey,
   ClassKey,
   CreatureSize,
-  DndCatalog,
   Language,
   OriginFeatKey,
   SkillName,
   SpeciesKey,
 } from "@donjon-dragon/shared";
-import { POINT_BUY_COSTS, STANDARD_ARRAY } from "@donjon-dragon/shared";
+export {
+  allSkillsOf,
+  availableScoresOf as availableScores,
+  isFullyAssigned,
+  pointBuySpent,
+} from "./composition-abilities";
 
 export const ABILITIES: Ability[] = [
   "strength",
@@ -23,6 +27,14 @@ export const ABILITIES: Ability[] = [
   "wisdom",
   "charisma",
 ];
+
+export interface MagicInitiateSelection {
+  grantedBy: { type: "background" | "species"; key: string };
+  spellcastingAbility: Ability | null;
+  spellList: ClassKey | null;
+  cantrips: string[];
+  spells: string[];
+}
 
 export const ABILITY_LABELS: Record<Ability, string> = {
   strength: "Force",
@@ -75,8 +87,17 @@ export interface CharacterComposition {
   fightingStyle: string | null;
   /** L'option d'Ordre divin (clerc) ou d'Ordre primitif (druide). */
   classOrder: string | null;
+  weaponMasteries: string[];
+  classTools: string[];
+  classLanguage: Language | null;
+  invocation: string | null;
+  invocationSpells: string[];
+  familiarForm: string | null;
+  pactWeaponKey: string | null;
+  spellbook: string[];
 
   backgroundKey: BackgroundKey | null;
+  backgroundTool: string | null;
   backgroundBonuses: BackgroundAbilityBonuses;
 
   /** Le don que l'espèce laisse choisir — l'humain, et lui seul au niveau 1. */
@@ -87,6 +108,7 @@ export interface CharacterComposition {
   spellList: ClassKey | null;
   featCantrips: string[];
   featSpells: string[];
+  magicInitiateChoices: MagicInitiateSelection[];
 
   abilityMethod: AbilityMethod;
   /** Le tirage rendu par le serveur pour la méthode « roll » ; `null` sinon. */
@@ -109,6 +131,9 @@ export interface CharacterComposition {
    */
   classEquipmentOptionId: string | null;
   backgroundEquipmentOptionId: string | null;
+  classChoiceItemKey: string | null;
+  backgroundChoiceItemKey: string | null;
+  trinketId: number | null;
   /** Ce que le personnage PORTE, à choisir parmi ce que son paquetage lui donne. */
   armorKey: string | null;
   shield: boolean;
@@ -136,7 +161,16 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   classSpells: [],
   fightingStyle: null,
   classOrder: null,
+  weaponMasteries: [],
+  classTools: [],
+  classLanguage: null,
+  invocation: null,
+  invocationSpells: [],
+  familiarForm: null,
+  pactWeaponKey: null,
+  spellbook: [],
   backgroundKey: null,
+  backgroundTool: null,
   backgroundBonuses: {},
   speciesFeat: null,
   featSkills: [],
@@ -145,6 +179,7 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   spellList: null,
   featCantrips: [],
   featSpells: [],
+  magicInitiateChoices: [],
   abilityMethod: "standardArray",
   abilityRoll: null,
   abilityRollId: null,
@@ -154,32 +189,9 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   ) as Record<Ability, number>,
   classEquipmentOptionId: null,
   backgroundEquipmentOptionId: null,
+  classChoiceItemKey: null,
+  backgroundChoiceItemKey: null,
+  trinketId: null,
   armorKey: null,
   shield: false,
 };
-
-/** Les 18 compétences, lues du catalogue plutôt que redites côté front. */
-export function allSkillsOf(catalog: DndCatalog): SkillName[] {
-  return Object.keys(catalog.skillLabels) as SkillName[];
-}
-
-/** Les six valeurs à répartir : celles du tirage, ou celles du tableau standard. */
-export function availableScores(composition: CharacterComposition): readonly number[] {
-  return composition.abilityMethod === "roll"
-    ? composition.abilityRoll?.totals ?? []
-    : STANDARD_ARRAY;
-}
-
-export function pointBuySpent(composition: CharacterComposition): number {
-  return ABILITIES.reduce(
-    (total, ability) => total + (POINT_BUY_COSTS[composition.pointBuyScores[ability]] ?? 0),
-    0,
-  );
-}
-
-/** Les six caractéristiques ont-elles chacune reçu une valeur ? */
-export function isFullyAssigned(composition: CharacterComposition): boolean {
-  if (composition.abilityMethod === "pointBuy") return true;
-
-  return ABILITIES.every((ability) => composition.assignment[ability] !== undefined);
-}

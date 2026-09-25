@@ -10,6 +10,10 @@ export const CHARACTER_FACT = {
   created: 'character.created',
   assigned: 'character.assigned',
   unassigned: 'character.unassigned',
+  corrected: 'character.corrected',
+  submitted: 'character.submitted',
+  accepted: 'character.accepted',
+  refused: 'character.refused',
 } as const;
 
 export type CharacterFact = (typeof CHARACTER_FACT)[keyof typeof CHARACTER_FACT];
@@ -28,4 +32,8 @@ export const CHARACTER_REALTIME_PROJECTION: Record<
   [CHARACTER_FACT.created]: REALTIME_RESOURCE.campaigns,
   [CHARACTER_FACT.assigned]: REALTIME_RESOURCE.campaigns,
   [CHARACTER_FACT.unassigned]: REALTIME_RESOURCE.campaigns,
+  [CHARACTER_FACT.corrected]: REALTIME_RESOURCE.campaigns,
+  [CHARACTER_FACT.submitted]: REALTIME_RESOURCE.campaigns,
+  [CHARACTER_FACT.accepted]: REALTIME_RESOURCE.campaigns,
+  [CHARACTER_FACT.refused]: REALTIME_RESOURCE.campaigns,
 };

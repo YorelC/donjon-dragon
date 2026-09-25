@@ -161,6 +161,7 @@ function assertLanguages(input: ChoicesToValidate): void {
   const rogue = choicesFrom(input, 'class', 'rogue').flatMap(languageValues);
   const allowed = [...STANDARD_LANGUAGES, ...RARE_LANGUAGES];
   assertExactUnique(rogue, input.classKey === 'rogue' ? 1 : 0, allowed, 'rogue languages');
+  if (rogue.some((language) => languages.includes(language))) fail('rogue languages');
 }
 
 function assertSkills(input: ChoicesToValidate): void {

@@ -17,11 +17,13 @@ interface FullWidthPageProps {
  * retour — sans quoi on perdrait le contexte de la campagne.
  *
  * La largeur est bornée à 100 rem : au-delà, les colonnes s'éloignent trop pour
- * se lire d'un coup d'œil.
+ * se lire d'un coup d'œil. `w-full` est indispensable : dans un parent flex,
+ * `mx-auto` seul réduit la page à son contenu, et les colonnes bougent d'une
+ * étape à l'autre selon le texte affiché.
  */
 export function FullWidthPageView(props: FullWidthPageProps) {
   return (
-    <div className="mx-auto max-w-[100rem] space-y-6 p-6">
+    <div className="mx-auto w-full max-w-[100rem] space-y-6 p-6">
       <header className="space-y-2">
         <Link to={props.backTo} className="muted-text-xs hover:underline">
           ← {props.backLabel}

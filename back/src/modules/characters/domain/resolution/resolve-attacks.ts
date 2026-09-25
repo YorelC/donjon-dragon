@@ -14,6 +14,7 @@ export interface ResolvedAttack {
   range: { normal: number; max: number } | null;
   proficient: boolean;
   mastery: boolean;
+  source: 'pact-of-the-blade' | null;
 }
 
 /** Ce qu'il faut savoir du personnage pour chiffrer une attaque, une fois. */
@@ -29,10 +30,27 @@ export function resolveAttacks(
 ): ResolvedAttack[] {
   const masteries = new Set(build.choices.all.flatMap((choice) => choice.weaponMasteries ?? []));
   const input: AttackInput = { build, context, masteries };
-  return build.equipment.items.flatMap((item) => {
+  const pactWeapon = pactWeaponOf(build);
+  const equipped = build.equipment.items.flatMap((item) => {
     const weapon = WEAPONS[item.itemKey];
     return weapon ? [attackOf(input, weapon)] : [];
   });
+  return pactWeapon ? [...equipped, pactAttackOf(input, pactWeapon)] : equipped;
+}
+
+function pactWeaponOf(build: CharacterBuild): Weapon | null {
+  const key = build.choices.all.find((choice) => choice.invocation === 'pact-of-the-blade')
+    ?.pactWeaponKey;
+  return key ? WEAPONS[key] ?? null : null;
+}
+
+function pactAttackOf(input: AttackInput, weapon: Weapon): ResolvedAttack {
+  const modifier = input.context.abilityModifiers.charisma;
+  return {
+    ...attackOf(input, weapon), ability: 'charisma', proficient: true,
+    attackBonus: modifier + input.context.proficiencyBonus,
+    damage: damageExpression(weapon.damageDice, modifier), source: 'pact-of-the-blade',
+  };
 }
 
 function attackOf(input: AttackInput, weapon: Weapon): ResolvedAttack {
@@ -50,6 +68,7 @@ function attackOf(input: AttackInput, weapon: Weapon): ResolvedAttack {
     range: weapon.range ? { ...weapon.range } : null,
     proficient,
     mastery: input.masteries.has(weapon.key),
+    source: null,
   };
 }
 

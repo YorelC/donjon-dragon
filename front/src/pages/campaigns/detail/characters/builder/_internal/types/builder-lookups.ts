@@ -95,13 +95,21 @@ export function classCantripsOf(context: StepContext): number {
 
 /** Les sorts de la classe et ceux d'un don s'additionnent, sans se confondre. */
 export function cantripQuotaOf(context: StepContext): number {
-  return classCantripsOf(context) + (featSpellcastingOf(context)?.cantripsKnown ?? 0);
+  const featCount = magicInitiateCount(context);
+  return classCantripsOf(context) + featCount * 2;
 }
 
 export function spellQuotaOf(context: StepContext): number {
   const fromClass = classOf(context)?.spellcasting?.spellsPrepared ?? 0;
 
-  return fromClass + (featSpellcastingOf(context)?.spellsPrepared ?? 0);
+  const featCount = magicInitiateCount(context);
+  return fromClass + featCount;
+}
+
+function magicInitiateCount(context: StepContext): number {
+  const background = backgroundOf(context)?.originFeat === "magic-initiate" ? 1 : 0;
+  const species = context.composition.speciesFeat === "magic-initiate" ? 1 : 0;
+  return background + species;
 }
 
 /**
@@ -119,6 +127,11 @@ export function knownSkillsExcept(
   return skillSourcesOf(context)
     .filter((source) => source.kind !== exclude)
     .flatMap((source) => source.skills.map((skill) => ({ skill, source: source.origin })));
+}
+
+/** Toutes les compétences maîtrisées, quelle que soit leur provenance. */
+export function knownSkillNames(context: StepContext): SkillName[] {
+  return [...new Set(skillSourcesOf(context).flatMap((source) => source.skills))];
 }
 
 type SkillSourceKind = "class" | "species" | "feat" | "background";

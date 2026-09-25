@@ -51,7 +51,7 @@ describe("le wizard produit un corps que le serveur accepte", () => {
   });
 
   it("satisfait le contrat d’édition", () => {
-    const payload = toEditPayload(CATALOG, aCompleteComposition());
+    const payload = toEditPayload(CATALOG, aCompleteComposition(), 0);
 
     expect(FinalizeCharacterSchema.safeParse(payload).success).toBe(true);
   });
@@ -75,7 +75,7 @@ describe("le wizard produit un corps que le serveur accepte", () => {
   it("n’envoie aucun tirage à l’édition", () => {
     const composition = { ...aCompleteComposition(), abilityRollId: "un-tirage" };
 
-    expect(toEditPayload(CATALOG, composition)?.abilityRollId).toBeNull();
+    expect(toEditPayload(CATALOG, composition, 0)?.abilityRollId).toBeNull();
   });
 });
 

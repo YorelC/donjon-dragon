@@ -1,7 +1,7 @@
 import type { CatalogOriginFeat } from "@donjon-dragon/shared";
 import { CHARACTER_NAME_RULES } from "@donjon-dragon/shared";
 import type { CharacterComposition } from "./character-composition";
-import { featsOf, speciesOf, type StepContext } from "./builder-lookups";
+import { backgroundOf, featsOf, speciesOf, type StepContext } from "./builder-lookups";
 
 /** Le Commun est accordé d'office : les deux emplacements sont des choix. */
 export const STANDARD_LANGUAGE_QUOTA = 2;
@@ -44,13 +44,32 @@ export function areFeatsDone(context: StepContext): boolean {
     return false;
   }
 
-  return featsOf(context).every((feat) => isFeatConfigured(feat, context.composition));
+  return magicInitiateIsConfigured(context)
+    && featsOf(context).every((feat) => isFeatConfigured(feat, context.composition));
+}
+
+function magicInitiateIsConfigured(context: StepContext): boolean {
+  const expected = magicInitiateGrants(context);
+  const complete = context.composition.magicInitiateChoices.filter((choice) =>
+    choice.spellList !== null && choice.spellcastingAbility !== null);
+  return complete.length === expected.length && expected.every((grant) => complete.some((choice) =>
+    choice.grantedBy.type === grant.type && choice.grantedBy.key === grant.key));
+}
+
+function magicInitiateGrants(context: StepContext) {
+  const background = backgroundOf(context);
+  return [
+    ...(background?.originFeat === "magic-initiate"
+      ? [{ type: "background" as const, key: background.key }]
+      : []),
+    ...(context.composition.speciesFeat === "magic-initiate" && context.composition.speciesKey
+      ? [{ type: "species" as const, key: context.composition.speciesKey }]
+      : []),
+  ];
 }
 
 function isFeatConfigured(feat: CatalogOriginFeat, composition: CharacterComposition): boolean {
-  if (feat.spellcastingChoice && (!composition.spellList || !composition.spellcastingAbility)) {
-    return false;
-  }
+  if (feat.spellcastingChoice) return true;
 
   return composition.featSkills.length + composition.featTools.length >= feat.skillOrToolChoiceCount;
 }
@@ -64,9 +83,25 @@ export function areBonusesDone(composition: CharacterComposition): boolean {
 }
 
 export function chosenCantrips(composition: CharacterComposition): number {
-  return composition.classCantrips.length + composition.featCantrips.length;
+  const featCount = composition.magicInitiateChoices.length > 0
+    ? composition.magicInitiateChoices.reduce((sum, choice) => sum + choice.cantrips.length, 0)
+    : composition.featCantrips.length;
+  return composition.classCantrips.length + featCount;
 }
 
 export function chosenSpells(composition: CharacterComposition): number {
-  return composition.classSpells.length + composition.featSpells.length;
+  const featCount = composition.magicInitiateChoices.length > 0
+    ? composition.magicInitiateChoices.reduce((sum, choice) => sum + choice.spells.length, 0)
+    : composition.featSpells.length;
+  return composition.classSpells.length + featCount;
+}
+
+export function isExactBoundedChoice(
+  selected: readonly string[],
+  count: number,
+  options: readonly string[],
+): boolean {
+  const valid = [...new Set(selected)].filter((entry) => options.includes(entry));
+
+  return valid.length === count && selected.length === count;
 }

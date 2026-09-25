@@ -57,7 +57,26 @@ export function useCharacterBuilder(
 
   if (!catalog) return idleState(composition, update);
 
-  return activeState({ context: { catalog, composition }, step, setStep, update });
+  const context = { catalog, composition: withDefaultSpecies(catalog, composition) };
+
+  return activeState({ context, step, setStep, update });
+}
+
+/**
+ * Le builder s'ouvre sur la première espèce du catalogue, déjà retenue : sans
+ * elle, la carte d'aperçu et la liste restent vides et la mise en page saute
+ * dès le premier clic.
+ */
+function withDefaultSpecies(
+  catalog: DndCatalog,
+  composition: CharacterComposition,
+): CharacterComposition {
+  if (composition.speciesKey) return composition;
+
+  const [firstSpecies] = catalog.species;
+  if (!firstSpecies) return composition;
+
+  return { ...composition, speciesKey: firstSpecies.key };
 }
 
 interface ActiveStateInput {

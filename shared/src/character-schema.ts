@@ -243,12 +243,16 @@ export const CreateCharacterSchema = CharacterCompositionSchema.superRefine(
   },
 );
 
+export const CharacterRevisionSchema = z.number().int().nonnegative();
+
 /**
  * Le corps du `PUT`. Le personnage garde le tirage qu'il a déjà : l'édition
  * n'en désigne aucun, quelle que soit sa méthode. Le serveur le recharge depuis
  * le personnage persisté.
  */
-export const FinalizeCharacterSchema = CharacterCompositionSchema.superRefine(
+export const FinalizeCharacterSchema = CharacterCompositionSchema.extend({
+  expectedRevision: CharacterRevisionSchema,
+}).superRefine(
   (value, context) => {
     requireCompleteIdentity(value, context);
     refuseRollOnEdit(value, context);
@@ -331,7 +335,6 @@ export const UnassignCharacterSchema = z.object({
 });
 
 export const CharacterIdSchema = z.string().uuid();
-export const CharacterRevisionSchema = z.number().int().nonnegative();
 
 // ---------------------------------------------------------------------------
 // Réponses
@@ -387,6 +390,7 @@ export const CharacterBuildDetailSchema = z.object({
   weaponMasteries: z.array(z.string()),
   /** Les outils que la CLASSE fait choisir — barde, moine. */
   classTools: z.array(z.string()),
+  classLanguage: LanguageSchema.nullable(),
   invocation: z.string().nullable(),
   invocationSpells: z.array(z.string()),
   familiarForm: z.string().nullable(),
@@ -441,12 +445,25 @@ export const CharacterBuildDetailSchema = z.object({
  * fois la partie commencée.
  */
 export const CharacterStatusSchema = z.enum(['waiting_adventure']);
+export const CharacterValidationStatusSchema = z.enum([
+  'draft', 'submitted', 'refused', 'accepted',
+]);
+
+export const CharacterPublicReviewSchema = z.object({
+  status: CharacterValidationStatusSchema,
+});
+
+export const CharacterReviewSummarySchema = CharacterPublicReviewSchema.extend({
+  submittedVersion: z.number().int().positive().nullable(),
+  lastRejectionReason: z.string().nullable(),
+});
 
 export const CharacterSchema = z.object({
   id: CharacterIdSchema,
   campaignId: z.string().uuid(),
   name: characterNameField(),
   status: CharacterStatusSchema,
+  review: CharacterReviewSummarySchema,
   build: CharacterBuildSummarySchema,
   abilityRoll: AbilityRollSchema.nullable(),
   createdByMe: z.boolean(),
@@ -459,6 +476,7 @@ export const CharacterPoolProjectionSchema = z.object({
   name: characterNameField(),
   portrait: z.string().url().nullable(),
   status: CharacterStatusSchema,
+  review: CharacterPublicReviewSchema,
   speciesName: z.string(),
   lineageName: z.string().nullable(),
   className: z.string(),
@@ -467,6 +485,7 @@ export const CharacterPoolProjectionSchema = z.object({
 });
 
 export const ControlledCharacterProjectionSchema = CharacterPoolProjectionSchema.extend({
+  review: CharacterReviewSummarySchema,
   build: CharacterBuildSummarySchema,
   assignedTo: UserSummarySchema.nullable(),
   revision: CharacterRevisionSchema,
@@ -495,6 +514,20 @@ export const CharacterAssignmentCommandResultSchema = z.object({
   previousCharacter: CharacterAssignmentSummarySchema.nullable(),
 });
 
+export const CharacterReviewCommandSchema = z.object({
+  expectedRevision: CharacterRevisionSchema,
+});
+
+export const RejectCharacterSchema = CharacterReviewCommandSchema.extend({
+  reason: z.string().trim().min(1).max(1000),
+});
+
+export const CharacterReviewCommandResultSchema = z.object({
+  id: CharacterIdSchema,
+  revision: CharacterRevisionSchema,
+  review: CharacterReviewSummarySchema,
+});
+
 export type AbilityScores = z.infer<typeof AbilityScoresSchema>;
 export type BackgroundAbilityBonuses = z.infer<typeof BackgroundAbilityBonusesSchema>;
 export type AbilityMethod = z.infer<typeof AbilityMethodSchema>;
@@ -504,6 +537,9 @@ export type CharacterChoice = z.infer<typeof CharacterChoiceSchema>;
 export type CharacterItem = z.infer<typeof CharacterItemSchema>;
 export type CharacterEquipment = z.infer<typeof CharacterEquipmentSchema>;
 export type CharacterStatus = z.infer<typeof CharacterStatusSchema>;
+export type CharacterValidationStatus = z.infer<typeof CharacterValidationStatusSchema>;
+export type CharacterReviewSummary = z.infer<typeof CharacterReviewSummarySchema>;
+export type CharacterPublicReview = z.infer<typeof CharacterPublicReviewSchema>;
 export type IssuedAbilityRoll = z.infer<typeof IssuedAbilityRollSchema>;
 export type CreateCharacterDto = z.infer<typeof CreateCharacterSchema>;
 export type FinalizeCharacterDto = z.infer<typeof FinalizeCharacterSchema>;
@@ -518,3 +554,6 @@ export type CharacterAssignmentSummary = z.infer<typeof CharacterAssignmentSumma
 export type CharacterAssignmentCommandResult = z.infer<
   typeof CharacterAssignmentCommandResultSchema
 >;
+export type CharacterReviewCommand = z.infer<typeof CharacterReviewCommandSchema>;
+export type RejectCharacterDto = z.infer<typeof RejectCharacterSchema>;
+export type CharacterReviewCommandResult = z.infer<typeof CharacterReviewCommandResultSchema>;
