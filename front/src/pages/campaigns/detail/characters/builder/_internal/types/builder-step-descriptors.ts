@@ -4,7 +4,6 @@ import {
   classOf,
   fightingStyleChoiceOf,
   orderChoiceOf,
-  resolvedSizeOf,
   speciesOf,
   type StepContext,
 } from "./builder-lookups";
@@ -53,7 +52,6 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     isVisible: always,
     isValid: (context) =>
       Boolean(speciesOf(context)) &&
-      resolvedSizeOf(context) !== null &&
       context.composition.speciesSkills.length ===
         (speciesOf(context)?.skillChoice?.count ?? 0),
     progress: (context) =>
@@ -150,7 +148,11 @@ export const STEP_DESCRIPTORS: readonly StepDescriptor[] = [
     key: "identity",
     label: "Identité",
     isVisible: always,
-    isValid: ({ composition }) =>
-      hasValidName(composition.name) && completeIdentityOf(composition) !== null,
+    isValid: (context) =>
+      hasValidName(context.composition.name) &&
+      completeIdentityOf(
+        context.composition,
+        speciesOf(context)?.physicalBounds,
+      ) !== null,
   },
 ];

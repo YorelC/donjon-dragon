@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { DndCatalog } from "@donjon-dragon/shared";
 import { EMPTY_COMPOSITION, type CharacterComposition } from "../types/character-composition";
 import type { StepContext } from "../types/builder-lookups";
+import { defaultMeasurementsOf } from "../types/identity-fields";
 import {
   isStepValid,
   stepProgress,
@@ -65,7 +66,8 @@ export function useCharacterBuilder(
 /**
  * Le builder s'ouvre sur la première espèce du catalogue, déjà retenue : sans
  * elle, la carte d'aperçu et la liste restent vides et la mise en page saute
- * dès le premier clic.
+ * dès le premier clic. Elle apporte ses mesures par défaut (DEC-008), sans
+ * écraser celles que le joueur a déjà saisies.
  */
 function withDefaultSpecies(
   catalog: DndCatalog,
@@ -75,8 +77,14 @@ function withDefaultSpecies(
 
   const [firstSpecies] = catalog.species;
   if (!firstSpecies) return composition;
+  const defaults = defaultMeasurementsOf(firstSpecies.physicalBounds);
 
-  return { ...composition, speciesKey: firstSpecies.key };
+  return {
+    ...composition,
+    speciesKey: firstSpecies.key,
+    heightCm: composition.heightCm ?? defaults.heightCm,
+    weightKg: composition.weightKg ?? defaults.weightKg,
+  };
 }
 
 interface ActiveStateInput {

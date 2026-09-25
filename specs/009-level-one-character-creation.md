@@ -17,8 +17,9 @@
 
 L'incrément rend la commande de création initiale autoritaire pour l'identité, le
 build, les sorts, l'équipement et la fiche calculée d'un personnage exactement au
-niveau 1. Il couvre aussi l'aperçu, qui emploie le même validateur et le même moteur
-sans persister.
+niveau 1. Il couvre aussi l'aperçu, qui emploie le même moteur sans persister, mais
+un validateur tolérant : il refuse une source ou une clé inconnue, jamais un choix
+encore incomplet (voir « Deux frontières »).
 
 L'incrément couvre également la revue par le MJ et la correction après refus, selon
 le workflow décrit plus bas. La progression, l'état d'aventure et le combat restent
@@ -54,10 +55,10 @@ partie du chemin ; `ABSENTE`, non représentable ou sans contrôle utile.
 | B01-ESP-006 | PARTIELLE | CONFORME | Même contrôle, et la fréquence du sort gnome passe à `proficiencyBonusPerLongRest`. |
 | B01-ESP-007 | PARTIELLE | CONFORME | Six ascendances et errata du test de caractéristique. |
 | B01-ESP-008 | PARTIELLE | CONFORME | Traits structurés, validés par les 120 combinaisons. |
-| B01-ESP-009 | PARTIELLE | CONFORME | Compétence, don et taille de l'Humain contrôlés (`assertOriginFeats`, `assertSize`). |
+| B01-ESP-009 | PARTIELLE | CONFORME | Compétence et don de l'Humain contrôlés (`assertOriginFeats`) ; taille calculée par `sizeFromHeight`. |
 | B01-ESP-010 | PARTIELLE | CONFORME | Traits orcs validés par les 120 combinaisons. |
-| B01-ESP-011 | PARTIELLE | CONFORME | Héritage tieffelin, taille et caractéristique de lignage contrôlés. |
-| B01-ESP-012 | ABSENTE | CONFORME | `assertSize` borne le choix à `sizeOptions`, et la taille est persistée. |
+| B01-ESP-011 | PARTIELLE | CONFORME | Héritage tieffelin et caractéristique de lignage contrôlés ; taille calculée par `sizeFromHeight`. |
+| B01-ESP-012 | ABSENTE | CONFORME | La catégorie est calculée par `sizeFromHeight` depuis la taille physique, puis persistée ; `assertSpeciesPhysique` borne les mesures. |
 | B01-HIS-ACOLYTE | PARTIELLE | CONFORME | Initié à la magie contrôlé, liste imposée par `assertFixedBackgroundList`. |
 | B01-HIS-ARTISAN | PARTIELLE | CONFORME | Outil d'artisan concret exigé par `BACKGROUND_TOOL_CHOICES`. |
 | B01-HIS-CHARLATAN | PARTIELLE | CONFORME | Sous-choix de Doué bornés par `assertFeatChoice`. |
@@ -330,13 +331,17 @@ donc le bouton final ne s'activait jamais.
   n'est **pas** sélectionnable : l'offrir brûlerait un des deux emplacements.
   Les langues rares relèvent d'autres sources — la langue supplémentaire du
   Roublard — et ne comptent pas dans ce quota.
-- **Le gabarit est imposé par l'espèce**, sauf pour les trois qui offrent
-  `['Small', 'Medium']`. Côté front, `selectedSize` ne représente qu'un choix
-  explicite ; la taille effective se lit par `resolvedSizeOf`, qui ignore un
-  choix que la nouvelle espèce n'autorise pas. Changer d'espèce remet ce choix à
-  zéro, **même quand la valeur resterait légale** : une décision prise pour une
-  autre espèce n'en est pas une.
-- **L'état civil est exigé à la création, et figé ensuite.**
+- **Le gabarit n'est jamais demandé au joueur** (DEC-008). Il est imposé par
+  l'espèce, sauf pour les trois qui offrent `['Small', 'Medium']` : le backend le
+  déduit alors de la taille physique (`sizeFromHeight`, seuil 122 cm). Le contrat
+  HTTP ne transporte pas `size`. Changer d'espèce remet taille et poids à leur
+  valeur par défaut pour la nouvelle espèce, milieu de plage arrondi à l'inférieur
+  (DEC-008) : des mesures prises dans les bornes d'une autre espèce n'en sont pas.
+  L'espèce proposée à l'ouverture du wizard reçoit les mêmes valeurs par défaut.
+- **L'état civil est exigé à la création, et figé à l'acceptation par le MJ**
+  (B01-ID-004). Tant que la fiche est un brouillon ou a été refusée, le wizard la
+  rouvre entièrement modifiable, état civil compris ; une fiche acceptée ne se
+  rouvre plus.
 
 ### Deux frontières, et pourquoi elles diffèrent
 
@@ -346,8 +351,17 @@ donc le bouton final ne s'activait jamais.
 | `POST .../characters` | `CreateCharacterSchema` | oui | oui |
 | `PUT .../characters/:id` | `FinalizeCharacterSchema` | oui | oui |
 
-Un joueur voit donc sa fiche calculée bien avant d'avoir choisi son âge. Côté
-front, `toPreviewPayload` s'arrête au gabarit et aux langues ; `toCreatePayload`
+Un joueur voit donc sa fiche calculée bien avant d'avoir choisi son âge, et même
+avant d'avoir fini ses choix de classe. L'aperçu n'applique pas `validateChoices` :
+les quotas (compétences, sorts, maîtrises, lignage requis…) ne sont vérifiés qu'à la
+création et à l'édition. Il applique `validateChoiceKeys` : sources de choix,
+champs autorisés par source et clés connues du référentiel, pour que le moteur ne
+calcule jamais sur une clé inventée. De même, tant qu'un paquet de départ ou l'objet
+qu'il fait choisir manque, l'aperçu calcule sans équipement
+(`previewStartingEquipment`) ; une option inconnue reste refusée. Un choix
+incomplet donne une fiche partielle, pas un `400`. Côté
+front, `toPreviewPayload` s'arrête à l'origine et aux langues, plus la taille
+physique dès qu'elle est connue ; `toCreatePayload`
 ajoute la garde d'identité, un rétrécissement de type et non un `as`.
 
 ### Création et édition — cinq champs figés
@@ -373,9 +387,9 @@ Première tranche de la matrice complète, limitée à ce lot.
 | Exigence | Représentation front | Champ HTTP | Validation serveur |
 |---|---|---|---|
 | Deux langues standards | étape « Langues », compteur 2/2 | `standardLanguages` | `assertLanguages` : exactement 2, distinctes, dans `STANDARD_LANGUAGES` |
-| Gabarit de l'espèce | étape « Espèce », choix rendu si `sizeOptions > 1` | `size` | `CreatureSizeSchema`, puis le build |
+| Gabarit de l'espèce | aucune saisie, déduit de la taille physique | aucun | `sizeFromHeight` dans le build |
 | Alignement | étape « Identité », cartes du catalogue | `alignment` | `AlignmentSchema` + `requireCompleteIdentity` |
-| Âge, taille, poids | étape « Identité », champs numériques convertis | `age`, `heightCm`, `weightKg` | entiers/nombres positifs + `requireCompleteIdentity` |
+| Âge, taille, poids | étape « Identité », âge numérique, échelles bornées par l'espèce pour taille et poids | `age`, `heightCm`, `weightKg` | nombres positifs + `requireCompleteIdentity` + `assertSpeciesPhysique` |
 | Description | étape « Identité », facultative | `description` | `z.string().nullable().optional()` |
 
 Le catalogue publie les langues (standards et rares) et les alignements, clés
@@ -384,17 +398,18 @@ ces listes, il les reçoit.
 
 ### Critères d'acceptation
 
-1. Étant donné un Nain Clerc Fermier complet, quand le joueur renseigne gabarit,
-   langues et état civil, alors l'aperçu s'affiche et la création répond `201`.
-2. Étant donné une espèce qui n'offre qu'une taille, quand le joueur ne choisit
-   rien, alors la taille effective est celle de l'espèce et l'étape est valide.
-3. Étant donné un personnage composé en Humain `Small`, quand le joueur passe au
-   Goliath, alors le gabarit redevient un choix à faire.
+1. Étant donné un Nain Clerc Fermier complet, quand le joueur renseigne langues
+   et état civil, alors l'aperçu s'affiche et la création répond `201`.
+2. Étant donné une espèce qui n'offre qu'une taille, quand le personnage est
+   créé, alors sa catégorie est celle de l'espèce, sans aucun choix à l'écran.
+3. Étant donné un Humain composé à 110 cm, quand le joueur passe au Goliath,
+   alors taille et poids valent le milieu des plages du Goliath (228 cm, 146 kg) ; un Humain
+   de 110 cm est créé `Small`, un Humain de 122 cm `Medium`.
 4. Étant donné une seule langue choisie, quand le joueur tente d'avancer, alors
    l'étape reste invalide et aucun aperçu n'est demandé.
-5. Étant donné un personnage persisté, quand le wizard le rouvre, alors état
-   civil, gabarit et langues sont restitués, et les cinq champs figés sont
-   désactivés.
+5. Étant donné un personnage persisté non accepté, quand le wizard le rouvre,
+   alors état civil et langues sont restitués et restent modifiables ; une fois la
+   fiche acceptée, le wizard ne l'ouvre plus, même par son URL.
 
 ### Terminologie française — tranchée
 

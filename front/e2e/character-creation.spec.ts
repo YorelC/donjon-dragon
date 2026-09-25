@@ -3,7 +3,9 @@ import { test, expect, STORAGE_STATE } from './fixtures/test';
 import { deleteCharactersNamed, ensureCampaign } from './fixtures/api';
 import {
   CharacterBuilderPage,
+  HEIGHT_FIELD,
   STANDARD_ARRAY_ORDER,
+  WEIGHT_FIELD,
   type CharacterIdentity,
 } from './pages/character-builder.page';
 
@@ -21,12 +23,10 @@ const CAMPAIGN_NAME = 'E2E creation de personnage';
 const CHARACTER_NAME = 'Thorin E2E';
 const REJECTION_REASON = 'Les langues ne collent pas au personnage.';
 
-const IDENTITY: CharacterIdentity = {
+const IDENTITY: Omit<CharacterIdentity, 'heightCm' | 'weightKg'> = {
   name: CHARACTER_NAME,
   alignment: 'Loyal bon',
   age: '84',
-  heightCm: '132',
-  weightKg: '68',
   description: 'Forgeron taciturne, converti sur le tard.',
 };
 
@@ -43,18 +43,19 @@ const STANDARD_ARRAY = ['15', '14', '13', '12', '10', '8'];
 
 interface SpeciesChoice {
   name: string;
-  size: string | null;
+  heightCm: string;
+  weightKg: string;
 }
 
 /**
- * Deux espèces, deux traitements du gabarit.
+ * Deux espèces, deux traitements du gabarit, jamais demandé au joueur.
  *
- * Le nain l'impose ; l'aasimar le fait choisir, sans lignage ni don d'origine
- * qui allongeraient le parcours. La réouverture se joue sur l'aasimar : c'est le
- * seul cas où `selectedSize` porte une décision à restituer.
+ * Le nain l'impose ; l'aasimar le tient de sa taille physique, sans lignage ni
+ * don d'origine qui allongeraient le parcours. Sous 122 cm, il est Petit : le
+ * serveur doit accepter une création où le gabarit n'est plus transmis.
  */
-const DWARF: SpeciesChoice = { name: 'Nain', size: null };
-const AASIMAR: SpeciesChoice = { name: 'Aasimar', size: 'Petite' };
+const DWARF: SpeciesChoice = { name: 'Nain', heightCm: '132', weightKg: '68' };
+const SMALL_AASIMAR: SpeciesChoice = { name: 'Aasimar', heightCm: '110', weightKg: '40' };
 
 let campaignId: string;
 
@@ -72,16 +73,13 @@ test.describe('Créer un personnage depuis le wizard', () => {
     await expect(page.getByText('Clerc')).toBeVisible();
   });
 
-  test('rouvre le personnage avec son état civil, son gabarit et ses langues', async ({
+  test('rouvre un aasimar de petite taille avec son état civil et ses langues', async ({
     page,
   }) => {
     const builder = new CharacterBuilderPage(page);
-    await createCleric(builder, AASIMAR);
+    await createCleric(builder, SMALL_AASIMAR);
 
     await reopenBuilder(page);
-
-    await builder.openStep('Espèce');
-    await expect(builder.selectedSize()).toContainText(AASIMAR.size as string);
 
     await builder.openStep('Langues');
     for (const language of LANGUAGES) {
@@ -90,20 +88,20 @@ test.describe('Créer un personnage depuis le wizard', () => {
 
     await builder.openStep('Identité');
     await expect(builder.nameInput).toHaveValue(CHARACTER_NAME);
-    await expect(builder.frozenField('Alignement')).toHaveValue(IDENTITY.alignment);
-    await expect(builder.frozenField('Âge (années)')).toHaveValue(IDENTITY.age);
-    await expect(builder.frozenField('Taille (cm)')).toHaveValue(IDENTITY.heightCm);
-    await expect(builder.frozenField('Poids (kg)')).toHaveValue(IDENTITY.weightKg);
-    await expect(builder.frozenField('Description (facultative)')).toHaveValue(
+    await expect(builder.selectedAlignment(IDENTITY.alignment)).toBeVisible();
+    await expect(builder.identityField('Âge (années)')).toHaveValue(IDENTITY.age);
+    await expect(builder.identityField(HEIGHT_FIELD)).toHaveValue(SMALL_AASIMAR.heightCm);
+    await expect(builder.identityField(WEIGHT_FIELD)).toHaveValue(SMALL_AASIMAR.weightKg);
+    await expect(builder.identityField('Description (facultative)')).toHaveValue(
       IDENTITY.description,
     );
   });
 
   /**
-   * L'agrégat ne mute jamais son identité : offrir le champ répondrait `200` sans
-   * rien changer, et le joueur croirait avoir corrigé son âge.
+   * B01-ID-004 : l'état civil ne se fige qu'à l'acceptation par le MJ. Avant, un
+   * brouillon ou une fiche refusée se corrige en entier, état civil compris.
    */
-  test('interdit de modifier l’état civil d’un personnage existant', async ({ page }) => {
+  test('laisse corriger l’état civil tant que la fiche n’est pas acceptée', async ({ page }) => {
     const builder = new CharacterBuilderPage(page);
     await createCleric(builder, DWARF);
 
@@ -111,14 +109,14 @@ test.describe('Créer un personnage depuis le wizard', () => {
     await builder.openStep('Identité');
 
     await expect(builder.nameInput).toBeEnabled();
+    await expect(builder.selectedAlignment(IDENTITY.alignment)).toBeEnabled();
     for (const label of [
-      'Alignement',
       'Âge (années)',
-      'Taille (cm)',
-      'Poids (kg)',
+      HEIGHT_FIELD,
+      WEIGHT_FIELD,
       'Description (facultative)',
     ]) {
-      await expect(builder.frozenField(label)).toBeDisabled();
+      await expect(builder.identityField(label)).toBeEnabled();
     }
   });
 });
@@ -154,13 +152,20 @@ test.describe('Soumettre une fiche au MJ et la faire valider', () => {
     await expect(row.getByText('À corriger')).toBeVisible();
     await expect(row.getByText(`Motif : ${REJECTION_REASON}`)).toBeVisible();
     // Refusée, elle redevient corrigeable : c'est ce que « correction » veut dire.
-    await expect(row.getByRole('link', { name: 'Éditer' })).toBeVisible();
+    const editLink = row.getByRole('link', { name: 'Éditer' });
+    await expect(editLink).toBeVisible();
+    const builderUrl = await editLink.getAttribute('href');
 
     await row.getByRole('button', { name: 'Soumettre' }).click();
     await row.getByRole('button', { name: 'Accepter' }).click();
 
     await expect(row.getByText('Acceptée')).toBeVisible();
     await expect(row.getByRole('link', { name: 'Éditer' })).toHaveCount(0);
+
+    // Acceptée, elle est figée : même l'URL directe du wizard ne l'ouvre plus.
+    await page.goto(builderUrl as string);
+    await page.waitForLoadState('networkidle');
+    await expect(builder.nameInput).toHaveCount(0);
   });
 });
 
@@ -184,7 +189,7 @@ async function createCleric(
   await builder.gotoNew(campaignId);
   await composeCleric(builder, species);
   await builder.openStep('Identité');
-  await builder.fillIdentity(IDENTITY);
+  await builder.fillIdentity({ ...IDENTITY, heightCm: species.heightCm, weightKg: species.weightKg });
 
   // Les constantes vitales ne s'affichent que si le SERVEUR a répondu : leur
   // présence prouve que le corps émis par le wizard a franchi le contrat.
@@ -205,7 +210,6 @@ async function composeCleric(
   species: SpeciesChoice,
 ): Promise<void> {
   await builder.choose(species.name);
-  if (species.size) await builder.choose(species.size);
   await chooseFrom(builder, 'Langues', LANGUAGES);
   await builder.openStep('Classe');
   await builder.choose('Clerc');

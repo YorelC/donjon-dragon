@@ -21,7 +21,7 @@ describe('16 historiques du niveau 1', () => {
 function validInput(backgroundKey: BackgroundKey) {
   const choices = choicesFor(backgroundKey);
   return {
-    speciesKey: 'dwarf' as const, lineageKey: null, size: 'Medium' as const,
+    speciesKey: 'dwarf' as const, lineageKey: null,
     standardLanguages: ['elvish', 'dwarvish'] as const,
     classKey: 'fighter' as const, backgroundKey,
     choices: CharacterChoices.create(choices),

@@ -220,7 +220,6 @@ const CharacterCompositionSchema = z.object({
   description: z.string().nullable().optional(),
   speciesKey: SpeciesKeySchema,
   lineageKey: z.string().nullable(),
-  size: CreatureSizeSchema.optional(),
   standardLanguages: z.array(LanguageSchema).optional(),
   classKey: ClassKeySchema,
   backgroundKey: BackgroundKeySchema,
@@ -275,7 +274,6 @@ type IdentityCandidate = {
   age?: unknown;
   heightCm?: unknown;
   weightKg?: unknown;
-  size?: unknown;
   standardLanguages?: unknown;
 };
 
@@ -308,7 +306,6 @@ function requireRollMatchesMethod(value: RollCandidate, context: z.RefinementCtx
 }
 
 function requireCompleteOrigin(value: IdentityCandidate, context: z.RefinementCtx): void {
-  addRequiredIssue(value.size, 'size', context);
   addRequiredIssue(value.standardLanguages, 'standardLanguages', context);
 }
 

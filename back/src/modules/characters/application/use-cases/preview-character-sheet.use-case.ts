@@ -14,12 +14,13 @@ import { toCharacterSheetDto } from '../character-sheet.mapper';
 import { AbilityAssignment } from '../../domain/ability-assignment';
 import { CharacterChoices } from '../../domain/character-choices';
 import { CharacterEquipment } from '../../domain/character-equipment';
+import { previewSizeOf } from '../../domain/character-physique';
 import { InvalidCharacterIdentityError } from '../../domain/character-identity';
 import { NotActiveCampaignMemberError } from '../../domain/character.errors';
 import { LEVEL_ONE, type CharacterBuild } from '../../domain/resolution/character-build';
 import { resolveSheet } from '../../domain/resolution/resolve-sheet';
-import { resolveStartingEquipment } from '../../domain/resolution/resolve-starting-equipment';
-import { validateChoices } from '../../domain/resolution/validate-choices';
+import { previewStartingEquipment } from '../../domain/resolution/resolve-starting-equipment';
+import { validateChoiceKeys } from '../../domain/resolution/validate-choice-keys';
 
 export type PreviewCharacterSheetDto = PreviewBody & {
   campaignId: string;
@@ -32,7 +33,8 @@ export type PreviewCharacterSheetDto = PreviewBody & {
  *
  * C'est ce qui rend le wizard réactif sans dupliquer les règles côté front. Le
  * tirage n'est pas vérifié ici — il n'y a rien à protéger tant que rien n'est
- * enregistré, et l'aperçu doit répondre même à mi-parcours.
+ * enregistré, et l'aperçu doit répondre même à mi-parcours. Pour la même raison,
+ * les choix n'y sont contrôlés que sur leurs clés, pas sur leurs quotas.
  */
 @Injectable()
 export class PreviewCharacterSheetUseCase {
@@ -63,12 +65,12 @@ export class PreviewCharacterSheetUseCase {
 function buildFrom(dto: PreviewCharacterSheetDto): CharacterBuild {
   const input = toBuildInput(dto);
   const choices = CharacterChoices.create(input.choices);
-  validateChoices({ ...input, choices });
+  validateChoiceKeys({ ...input, choices });
 
   return {
     speciesKey: input.speciesKey,
     lineageKey: input.lineageKey,
-    size: required(input.size),
+    size: previewSizeOf(input.speciesKey, dto.heightCm),
     standardLanguages: required(input.standardLanguages),
     classKey: input.classKey,
     backgroundKey: input.backgroundKey,
@@ -89,10 +91,10 @@ function abilitiesOf(input: BuildInput): AbilityAssignment {
   });
 }
 
-/** L'apercu part des memes options de depart que la creation, sans rien persister. */
+/** L'apercu part des memes options de depart que la creation, tant qu'elles sont choisies. */
 function equipmentOf(input: BuildInput): CharacterEquipment {
   return CharacterEquipment.create(
-    resolveStartingEquipment(input.classKey, input.backgroundKey, input.equipment),
+    previewStartingEquipment(input.classKey, input.backgroundKey, input.equipment),
   );
 }
 

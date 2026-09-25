@@ -90,11 +90,24 @@ export const CatalogLineageChoiceSchema = z.object({
   options: z.array(CatalogLineageSchema),
 });
 
+export const CatalogMeasurementRangeSchema = z.object({
+  min: z.number().positive(),
+  max: z.number().positive(),
+});
+
+export const CatalogPhysicalBoundsSchema = z.object({
+  heightCm: CatalogMeasurementRangeSchema,
+  weightKg: CatalogMeasurementRangeSchema,
+  /** Seuil M pour les espèces P/M ; `null` quand la catégorie est fixe. */
+  mediumFromHeightCm: z.number().positive().nullable(),
+});
+
 export const CatalogSpeciesSchema = z.object({
   key: SpeciesKeySchema,
   name: z.string(),
   size: CreatureSizeSchema,
   sizeOptions: z.array(CreatureSizeSchema),
+  physicalBounds: CatalogPhysicalBoundsSchema,
   speed: z.number(),
   darkvision: z.number(),
   traits: z.array(CatalogFeatureSchema),
@@ -285,6 +298,8 @@ export type CatalogEquipmentOption = z.infer<typeof CatalogEquipmentOptionSchema
 export type CatalogStartingEquipment = z.infer<typeof CatalogStartingEquipmentSchema>;
 export type CatalogLineage = z.infer<typeof CatalogLineageSchema>;
 export type CatalogLineageChoice = z.infer<typeof CatalogLineageChoiceSchema>;
+export type CatalogMeasurementRange = z.infer<typeof CatalogMeasurementRangeSchema>;
+export type CatalogPhysicalBounds = z.infer<typeof CatalogPhysicalBoundsSchema>;
 export type CatalogSpecies = z.infer<typeof CatalogSpeciesSchema>;
 export type CatalogClassChoice = z.infer<typeof CatalogClassChoiceSchema>;
 export type CatalogClass = z.infer<typeof CatalogClassSchema>;

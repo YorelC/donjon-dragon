@@ -5,12 +5,12 @@ import { ABILITIES, POINT_BUY_FLOOR, type CharacterComposition } from "./charact
 /** Le build déjà éclaté du personnage → la composition dont le wizard part pour l'édition. */
 export function toComposition(
   dto: CharacterBuildDetailDto,
-  catalog: DndCatalog,
+  _catalog: DndCatalog,
 ): CharacterComposition {
   return {
     ...coreFieldsOf(dto),
     ...identityFieldsOf(dto),
-    ...originFieldsOf(dto, catalog),
+    ...originFieldsOf(dto),
     ...choiceFieldsOf(dto),
     ...abilityFieldsOf(dto),
   };
@@ -27,17 +27,9 @@ function identityFieldsOf(dto: CharacterBuildDetailDto) {
   };
 }
 
-/**
- * La taille persistée ne devient un choix explicite que si l'espèce en offre
- * un. Sinon elle reste dérivée : la reprendre ferait ressurgir, par la porte de
- * derrière, la rémanence que `resolvedSizeOf` sert justement à empêcher.
- */
-function originFieldsOf(dto: CharacterBuildDetailDto, catalog: DndCatalog) {
-  const species = catalog.species.find((entry) => entry.key === dto.speciesKey);
-  const isChosen = (species?.sizeOptions.length ?? 0) > 1;
-
+/** La catégorie de taille persistée n'est pas reprise : le serveur la recalcule (DEC-008). */
+function originFieldsOf(dto: CharacterBuildDetailDto) {
   return {
-    selectedSize: isChosen ? dto.size : null,
     standardLanguages: [...dto.standardLanguages],
   };
 }

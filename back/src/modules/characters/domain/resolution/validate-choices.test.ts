@@ -22,7 +22,7 @@ describe('validation autoritaire des choix B01', () => {
     choices.push({ source: { type: 'lineage', key: 'high-elf' } });
 
     expect(() => validateChoices({
-      ...A_CHARACTER_BUILD, speciesKey: 'elf', lineageKey: 'high-elf', size: 'Medium',
+      ...A_CHARACTER_BUILD, speciesKey: 'elf', lineageKey: 'high-elf',
       choices: CharacterChoices.create(choices),
     })).toThrow(InvalidCharacterChoiceError);
   });
@@ -61,7 +61,7 @@ describe('validation autoritaire des choix B01', () => {
     const choices = humanAcolyteChoices(true);
 
     expect(() => validateChoices({
-      ...A_CHARACTER_BUILD, speciesKey: 'human', size: 'Small', backgroundKey: 'acolyte',
+      ...A_CHARACTER_BUILD, speciesKey: 'human', backgroundKey: 'acolyte',
       choices: CharacterChoices.create(choices),
     })).not.toThrow();
   });
@@ -70,7 +70,7 @@ describe('validation autoritaire des choix B01', () => {
     const choices = humanAcolyteChoices(false);
 
     expect(() => validateChoices({
-      ...A_CHARACTER_BUILD, speciesKey: 'human', size: 'Small', backgroundKey: 'acolyte',
+      ...A_CHARACTER_BUILD, speciesKey: 'human', backgroundKey: 'acolyte',
       choices: CharacterChoices.create(choices),
     })).toThrow(InvalidCharacterChoiceError);
   });
@@ -79,7 +79,7 @@ describe('validation autoritaire des choix B01', () => {
     const choices = humanAcolyteChoices(true);
 
     expect(() => validateChoices({
-      ...A_CHARACTER_BUILD, speciesKey: 'human', size: 'Small', classKey: 'rogue',
+      ...A_CHARACTER_BUILD, speciesKey: 'human', classKey: 'rogue',
       backgroundKey: 'acolyte', standardLanguages: ['gnomish', 'elvish'],
       choices: CharacterChoices.create(choices),
     })).toThrow(InvalidCharacterChoiceError);
@@ -126,7 +126,7 @@ function validate(choices: readonly CharacterChoice[]): void {
 
 function spellInput(classKey: 'wizard', choices: readonly CharacterChoice[]) {
   return {
-    speciesKey: 'halfling' as const, lineageKey: null, size: 'Small' as const,
+    speciesKey: 'halfling' as const, lineageKey: null,
     standardLanguages: ['elvish', 'dwarvish'] as const, classKey,
     backgroundKey: 'farmer' as const, choices: CharacterChoices.create(choices),
   };

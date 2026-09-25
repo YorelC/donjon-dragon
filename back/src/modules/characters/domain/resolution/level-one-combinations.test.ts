@@ -30,7 +30,6 @@ function validInput(speciesKey: SpeciesKey, classKey: ClassKey) {
   const choices = [...speciesChoices, classChoice(classKey, speciesChoices)];
   return {
     speciesKey, lineageKey: lineage?.key ?? null,
-    size: species.sizeOptions?.[0] ?? species.size,
     standardLanguages: ['elvish', 'dwarvish'] as const,
     classKey, backgroundKey: 'farmer' as const,
     choices: CharacterChoices.create(choices),

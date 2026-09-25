@@ -52,7 +52,6 @@ function characterWith(build: CharacterBuildInput): Character {
 const FULL_BUILD: CharacterBuildInput = {
   speciesKey: 'human',
   lineageKey: null,
-  size: 'Medium',
   standardLanguages: ['elvish', 'dwarvish'],
   classKey: 'rogue',
   backgroundKey: 'charlatan',

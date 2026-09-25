@@ -5,9 +5,10 @@ import { Textarea } from "@/shared/components/atoms/textarea";
 import type { CharacterComposition } from "../types/character-composition";
 import {
   positiveIntegerFieldValue,
-  positiveNumberFieldValue,
 } from "../types/identity-fields";
 import { ChoiceStepView } from "./choice-step.view";
+import { MeasurementScaleView } from "./measurement-scale.view";
+import { NumberFieldView } from "./number-field.view";
 
 interface IdentityStepViewProps {
   catalog: DndCatalog;
@@ -87,10 +88,14 @@ function ReadOnlyAlignment({ catalog, composition }: Pick<
   );
 }
 
-function MeasurementFields({ composition, onChange, isFrozen }: IdentityStepViewProps) {
+function MeasurementFields({ catalog, composition, onChange, isFrozen }: IdentityStepViewProps) {
+  const species = catalog.species.find(
+    (entry) => entry.key === composition.speciesKey,
+  );
+
   return (
-    <div className="grid gap-4 sm:grid-cols-3">
-      <NumberField
+    <div className="grid gap-4">
+      <NumberFieldView
         id="character-age"
         label="Âge (années)"
         value={composition.age}
@@ -98,52 +103,32 @@ function MeasurementFields({ composition, onChange, isFrozen }: IdentityStepView
         onValue={(age) => onChange({ age })}
         parse={positiveIntegerFieldValue}
       />
-      <NumberField
-        id="character-height"
-        label="Taille (cm)"
-        value={composition.heightCm}
-        disabled={isFrozen}
-        onValue={(heightCm) => onChange({ heightCm })}
-        parse={positiveNumberFieldValue}
-      />
-      <NumberField
-        id="character-weight"
-        label="Poids (kg)"
-        value={composition.weightKg}
-        disabled={isFrozen}
-        onValue={(weightKg) => onChange({ weightKg })}
-        parse={positiveNumberFieldValue}
-      />
-    </div>
-  );
-}
-
-interface NumberFieldProps {
-  id: string;
-  label: string;
-  value: number | null;
-  disabled: boolean;
-  onValue: (value: number | null) => void;
-  parse: (raw: string) => number | null;
-}
-
-/**
- * Un champ numérique rend toujours une chaîne, y compris vide. La conversion
- * passe par `parse` : rien d'invalide n'entre dans la composition, et c'est
- * `null` qui dit « pas encore saisi ».
- */
-function NumberField(props: NumberFieldProps) {
-  return (
-    <div className="grid gap-2">
-      <Label htmlFor={props.id}>{props.label}</Label>
-      <Input
-        id={props.id}
-        type="number"
-        inputMode="numeric"
-        value={props.value ?? ""}
-        disabled={props.disabled}
-        onChange={(event) => props.onValue(props.parse(event.target.value))}
-      />
+      {species ? (
+        <div className="grid gap-5 sm:grid-cols-2">
+          <MeasurementScaleView
+            disabled={isFrozen}
+            measurement={{
+              id: "character-height",
+              label: "Taille",
+              unit: "cm",
+              range: species.physicalBounds.heightCm,
+              value: composition.heightCm,
+              onValue: (heightCm) => onChange({ heightCm }),
+            }}
+          />
+          <MeasurementScaleView
+            disabled={isFrozen}
+            measurement={{
+              id: "character-weight",
+              label: "Poids",
+              unit: "kg",
+              range: species.physicalBounds.weightKg,
+              value: composition.weightKg,
+              onValue: (weightKg) => onChange({ weightKg }),
+            }}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

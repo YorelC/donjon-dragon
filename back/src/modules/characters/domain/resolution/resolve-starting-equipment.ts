@@ -73,6 +73,57 @@ export function resolveStartingEquipment(
   return snapshotFrom(chosen, entries, selection);
 }
 
+/**
+ * L'aperçu à mi-parcours (spec 009) : tant qu'un paquet ou l'objet qu'il fait
+ * choisir manque, la fiche se calcule sans équipement de départ. Une option ou
+ * un objet inconnus restent un refus, comme à la création.
+ */
+export function previewStartingEquipment(
+  classKey: ClassKey,
+  backgroundKey: BackgroundKey,
+  selection: EquipmentSelection,
+): CharacterEquipmentSnapshot {
+  if (awaitsSelection(classKey, backgroundKey, selection)) return withoutStartingEquipment(selection);
+  return resolveStartingEquipment(classKey, backgroundKey, selection);
+}
+
+function awaitsSelection(
+  classKey: ClassKey,
+  backgroundKey: BackgroundKey,
+  selection: EquipmentSelection,
+): boolean {
+  if (selection.classOptionId === null || selection.backgroundOptionId === null) return true;
+  const chosen = chosenOptions(classKey, backgroundKey, selection);
+  return awaitsItem(chosen.classOption, classEquipmentChoiceOptions(classKey), selection.classChoiceItemKey)
+    || awaitsItem(
+      chosen.backgroundOption,
+      backgroundEquipmentChoiceOptions(backgroundKey),
+      selection.backgroundChoiceItemKey,
+    );
+}
+
+function awaitsItem(
+  option: EquipmentOption,
+  catalog: readonly string[],
+  chosen: string | null | undefined,
+): boolean {
+  return catalog.length > 0 && option.entries.length > 0 && !chosen;
+}
+
+function withoutStartingEquipment(selection: EquipmentSelection): CharacterEquipmentSnapshot {
+  return {
+    armorKey: null,
+    shield: false,
+    items: [],
+    gold: 0,
+    classOptionId: selection.classOptionId,
+    backgroundOptionId: selection.backgroundOptionId,
+    classChoiceItemKey: null,
+    backgroundChoiceItemKey: null,
+    trinketId: null,
+  };
+}
+
 interface ChosenOptions {
   classOption: EquipmentOption;
   backgroundOption: EquipmentOption;

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { aBackground, aCatalog, aClass, aSpecies, aSpeciesWithSizeChoice } from "./catalog.fixture";
 import { EMPTY_COMPOSITION, type CharacterComposition } from "./character-composition";
-import { cantripQuotaOf, resolvedSizeOf, type StepContext } from "./builder-lookups";
+import { cantripQuotaOf, type StepContext } from "./builder-lookups";
 import { isStepValid, visibleSteps } from "./builder-steps";
 
 function aContext(composition: Partial<CharacterComposition>): StepContext {
@@ -38,8 +38,9 @@ describe("étape d’identité", () => {
     name: "Frodo Sacquet",
     alignment: "neutralGood",
     age: 33,
-    heightCm: 96,
-    weightKg: 30,
+    heightCm: 140,
+    weightKg: 70,
+    speciesKey: "dwarf",
   } as const;
 
   it("est valide quand l’état civil est complet", () => {
@@ -60,56 +61,31 @@ describe("étape d’identité", () => {
   it("refuse un nom vide ou fait d’espaces", () => {
     expect(isStepValid("identity", aContext({ ...COMPLETE, name: "   " }))).toBe(false);
   });
+
+  it.each([
+    ["heightCm", 121],
+    ["heightCm", 153],
+    ["weightKg", 52],
+    ["weightKg", 104],
+  ] as const)("refuse %s = %i hors des bornes du nain", (field, value) => {
+    expect(isStepValid("identity", aContext({ ...COMPLETE, [field]: value }))).toBe(false);
+  });
 });
 
-describe("gabarit — la taille effective", () => {
-  function contextFor(
-    species: ReturnType<typeof aSpecies>,
-    composition: Partial<CharacterComposition>,
-  ): StepContext {
+describe("étape espèce sans gabarit à choisir", () => {
+  function contextFor(species: ReturnType<typeof aSpecies>): StepContext {
     return {
       catalog: aCatalog({ species: [species] }),
-      composition: { ...EMPTY_COMPOSITION, speciesKey: species.key, ...composition },
+      composition: { ...EMPTY_COMPOSITION, speciesKey: species.key },
     };
   }
 
-  it("dérive la taille d’une espèce qui n’en offre qu’une", () => {
-    const context = contextFor(aSpecies({ key: "dwarf" }), {});
-
-    expect(resolvedSizeOf(context)).toBe("Medium");
-    expect(isStepValid("species", context)).toBe(true);
+  it("est valide pour une espèce à catégorie fixe", () => {
+    expect(isStepValid("species", contextFor(aSpecies({ key: "dwarf" })))).toBe(true);
   });
 
-  it("reste sans taille tant qu’une espèce à choix n’a pas tranché", () => {
-    const context = contextFor(aSpeciesWithSizeChoice("human"), {});
-
-    expect(resolvedSizeOf(context)).toBeNull();
-    expect(isStepValid("species", context)).toBe(false);
-  });
-
-  it("retient le gabarit choisi quand l’espèce l’autorise", () => {
-    const context = contextFor(aSpeciesWithSizeChoice("human"), { selectedSize: "Small" });
-
-    expect(resolvedSizeOf(context)).toBe("Small");
-    expect(isStepValid("species", context)).toBe(true);
-  });
-
-  /**
-   * Le filet sous le reset : même si un choix périmé survivait au changement
-   * d'espèce, la taille imposée l'emporte. C'est ce qui empêche un Humain passé
-   * en Small, puis changé pour un Nain, de rester Small.
-   */
-  it("ignore un choix que la nouvelle espèce n’autorise pas", () => {
-    const context = contextFor(aSpecies({ key: "dwarf" }), { selectedSize: "Small" });
-
-    expect(resolvedSizeOf(context)).toBe("Medium");
-  });
-
-  it("ignore un choix absent des options de l’espèce", () => {
-    const species = aSpeciesWithSizeChoice("human", ["Medium"]);
-    const context = contextFor(species, { selectedSize: "Small" });
-
-    expect(resolvedSizeOf(context)).toBe("Medium");
+  it("est valide pour une espèce P/M avant toute taille physique", () => {
+    expect(isStepValid("species", contextFor(aSpeciesWithSizeChoice("human")))).toBe(true);
   });
 });
 

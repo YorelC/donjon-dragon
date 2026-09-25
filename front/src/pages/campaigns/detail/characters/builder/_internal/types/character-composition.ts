@@ -6,7 +6,6 @@ import type {
   BackgroundAbilityBonuses,
   BackgroundKey,
   ClassKey,
-  CreatureSize,
   Language,
   OriginFeatKey,
   SkillName,
@@ -61,12 +60,6 @@ export interface CharacterComposition {
 
   speciesKey: SpeciesKey | null;
   lineageKey: string | null;
-  /**
-   * Le choix EXPLICITE de catégorie de taille, `null` quand l'espèce n'en offre
-   * qu'une. Ce n'est pas la taille effective : celle-ci se lit par
-   * `resolvedSizeOf`, qui ignore un choix devenu impossible.
-   */
-  selectedSize: CreatureSize | null;
   /** Exactement deux langues standards, le Commun étant accordé d'office. */
   standardLanguages: Language[];
   /**
@@ -150,7 +143,6 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   description: null,
   speciesKey: null,
   lineageKey: null,
-  selectedSize: null,
   standardLanguages: [],
   lineageSpellcastingAbility: null,
   speciesSkills: [],

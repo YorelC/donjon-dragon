@@ -48,12 +48,53 @@ export interface Species {
   lineage: LineageChoice | null;
 }
 
+export interface MeasurementRange {
+  min: number;
+  max: number;
+}
+
+export interface SpeciesPhysicalBounds {
+  heightCm: MeasurementRange;
+  weightKg: MeasurementRange;
+  mediumFromHeightCm: number | null;
+}
+
 const WALKING_SPEED = 9;
 const FAST_WALKING_SPEED = 10.5;
 const DARKVISION_SHORT = 18;
 const DARKVISION_LONG = 36;
 const DWARVEN_HP_PER_LEVEL = 1;
 const HEALING_HANDS_DIE = 'd4';
+const MEDIUM_HEIGHT_CM = 122;
+
+/**
+ * Tailles : PHB 2024, pieds convertis au centimètre arrondi.
+ * Poids : extrêmes des dernières tables officielles 2014/Volo, en kilogrammes.
+ */
+export const SPECIES_PHYSICAL_BOUNDS: Readonly<Record<SpeciesKey, SpeciesPhysicalBounds>> = {
+  aasimar: physicalBounds([61, 213], [17, 123], MEDIUM_HEIGHT_CM),
+  dragonborn: physicalBounds([152, 213], [81, 166]),
+  dwarf: physicalBounds([122, 152], [53, 103]),
+  elf: physicalBounds([152, 183], [35, 82]),
+  gnome: physicalBounds([91, 122], [17, 20]),
+  goliath: physicalBounds([213, 244], [93, 200]),
+  halfling: physicalBounds([61, 91], [17, 20]),
+  human: physicalBounds([61, 213], [17, 123], MEDIUM_HEIGHT_CM),
+  orc: physicalBounds([183, 213], [81, 166]),
+  tiefling: physicalBounds([91, 213], [17, 108], MEDIUM_HEIGHT_CM),
+};
+
+function physicalBounds(
+  height: readonly [number, number],
+  weight: readonly [number, number],
+  mediumFromHeightCm: number | null = null,
+): SpeciesPhysicalBounds {
+  return {
+    heightCm: { min: height[0], max: height[1] },
+    weightKg: { min: weight[0], max: weight[1] },
+    mediumFromHeightCm,
+  };
+}
 
 const darkvisionTrait = (range: number): Feature => ({
   key: 'darkvision',

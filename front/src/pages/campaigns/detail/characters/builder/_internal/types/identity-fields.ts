@@ -1,4 +1,4 @@
-import type { Alignment } from "@donjon-dragon/shared";
+import type { Alignment, CatalogPhysicalBounds, CatalogMeasurementRange } from "@donjon-dragon/shared";
 import type { CharacterComposition } from "./character-composition";
 
 /**
@@ -29,12 +29,33 @@ export interface CompleteIdentity {
  */
 export function completeIdentityOf(
   composition: CharacterComposition,
+  bounds: CatalogPhysicalBounds | undefined,
 ): CompleteIdentity | null {
   const { name, alignment, age, heightCm, weightKg, description } = composition;
   if (!name.trim() || !alignment) return null;
   if (age === null || heightCm === null || weightKg === null) return null;
+  if (!bounds || !inRange(heightCm, bounds.heightCm)) return null;
+  if (!inRange(weightKg, bounds.weightKg)) return null;
 
   return { name, alignment, age, heightCm, weightKg, description };
+}
+
+function inRange(value: number, range: CatalogMeasurementRange): boolean {
+  return value >= range.min && value <= range.max;
+}
+
+/** DEC-008 : le milieu de la plage de l'espèce, arrondi à l'entier inférieur. */
+export function defaultMeasurementOf(range: CatalogMeasurementRange): number {
+  return Math.floor((range.min + range.max) / 2);
+}
+
+export function defaultMeasurementsOf(
+  bounds: CatalogPhysicalBounds,
+): Pick<CharacterComposition, "heightCm" | "weightKg"> {
+  return {
+    heightCm: defaultMeasurementOf(bounds.heightCm),
+    weightKg: defaultMeasurementOf(bounds.weightKg),
+  };
 }
 
 /**
@@ -44,7 +65,9 @@ export function completeIdentityOf(
  * pour des valeurs. Rien d'invalide n'entre donc dans la composition — c'est
  * `null` qui dit « pas encore saisi », et l'étape reste invalide.
  *
- * Aucune borne haute : le contrat n'en pose pas, le front n'en invente pas.
+ * Aucune borne d'espèce ici : la frappe passe par des valeurs intermédiaires
+ * hors bornes (« 1 » avant « 175 »), et les refuser viderait le champ. Les
+ * bornes se vérifient sur la valeur complète, dans `completeIdentityOf`.
  */
 export function positiveNumberFieldValue(raw: string): number | null {
   if (!raw.trim()) return null;

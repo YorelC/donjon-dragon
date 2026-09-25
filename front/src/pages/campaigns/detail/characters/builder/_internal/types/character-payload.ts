@@ -11,7 +11,7 @@ import {
   isFullyAssigned,
   type CharacterComposition,
 } from "./character-composition";
-import { resolvedSizeOf } from "./builder-lookups";
+import { speciesOf } from "./builder-lookups";
 import { completeIdentityOf } from "./identity-fields";
 import { choicesOf } from "./payload-choices";
 import { equipmentPayloadOf } from "./starting-equipment";
@@ -38,18 +38,20 @@ function baseScoresOf(composition: CharacterComposition): Record<Ability, number
 
 /**
  * L'aperçu, dont le contrat est plus permissif que celui de la création : il
- * exige l'origine — espèce, gabarit, langues, classe, historique — mais pas
- * l'état civil. Un joueur voit donc sa fiche bien avant de choisir son âge.
+ * exige l'origine — espèce, langues, classe, historique — mais pas l'état
+ * civil. Un joueur voit donc sa fiche bien avant de choisir son âge. La taille
+ * physique, dès qu'elle est connue, permet au serveur d'en déduire le gabarit.
  */
 export function toPreviewPayload(
   catalog: DndCatalog,
   composition: CharacterComposition,
 ): PreviewCharacterSheetDto | null {
-  const origin = originOf(catalog, composition);
+  const origin = originOf(composition);
   if (!origin) return null;
 
   return {
     ...origin,
+    ...knownHeightOf(composition),
     abilityMethod: composition.abilityMethod,
     base: baseScoresOf(composition),
     backgroundBonuses: composition.backgroundBonuses,
@@ -60,23 +62,23 @@ export function toPreviewPayload(
 
 type PayloadOrigin = Pick<
   CreateCharacterDto,
-  "speciesKey" | "lineageKey" | "size" | "standardLanguages" | "classKey" | "backgroundKey"
+  "speciesKey" | "lineageKey" | "standardLanguages" | "classKey" | "backgroundKey"
 >;
 
-/** Ce que l'espèce, le gabarit, les langues, la classe et l'historique fixent. */
-function originOf(
-  catalog: DndCatalog,
-  composition: CharacterComposition,
-): PayloadOrigin | null {
+/** Ce que l'espèce, les langues, la classe et l'historique fixent. */
+function originOf(composition: CharacterComposition): PayloadOrigin | null {
   const { speciesKey, classKey, backgroundKey, standardLanguages } = composition;
-  const size = resolvedSizeOf({ catalog, composition });
-  if (!speciesKey || !classKey || !backgroundKey || !size) return null;
+  if (!speciesKey || !classKey || !backgroundKey) return null;
   if (standardLanguages.length !== STANDARD_LANGUAGE_QUOTA) return null;
 
   return {
-    speciesKey, lineageKey: composition.lineageKey, size,
+    speciesKey, lineageKey: composition.lineageKey,
     standardLanguages: [...standardLanguages], classKey, backgroundKey,
   };
+}
+
+function knownHeightOf({ heightCm }: CharacterComposition): { heightCm?: number } {
+  return heightCm === null ? {} : { heightCm };
 }
 
 /** Le corps du `POST` : la création est le seul moment où un tirage se désigne. */
@@ -118,7 +120,8 @@ function toNamedComposition(
   composition: CharacterComposition,
 ): Omit<CreateCharacterDto, "abilityRollId"> | null {
   const preview = toPreviewPayload(catalog, composition);
-  const identity = completeIdentityOf(composition);
+  const bounds = speciesOf({ catalog, composition })?.physicalBounds;
+  const identity = completeIdentityOf(composition, bounds);
   if (!preview || !identity || !isFullyAssigned(composition)) return null;
 
   return { ...preview, ...identity };

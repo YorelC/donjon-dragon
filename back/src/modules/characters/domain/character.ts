@@ -25,6 +25,7 @@ import {
   type CharacterIdentitySnapshot,
 } from './character-identity';
 import { CharacterName } from './character-name';
+import { assertSpeciesPhysique, sizeFromHeight } from './character-physique';
 import {
   CharacterReview,
   type CharacterReviewAuthority,
@@ -89,7 +90,6 @@ export interface CharacterSnapshot {
 export interface CharacterBuildInput {
   speciesKey: SpeciesKey;
   lineageKey: LineageKey | null;
-  size?: CreatureSize;
   standardLanguages?: readonly Language[];
   classKey: ClassKey;
   backgroundKey: BackgroundKey;
@@ -187,17 +187,7 @@ export class Character {
     return new Character(
       CharacterId.create(randomUUID()),
       { campaignId: input.campaignId, createdBy: input.createdBy, createdAt },
-      {
-        name: input.name,
-        identity: CharacterIdentity.create(input.identity),
-        status: 'waiting_adventure',
-        roll: input.roll,
-        build: buildFrom(input.build, input.roll),
-        assignedTo: null,
-        revision: INITIAL_REVISION,
-        review: CharacterReview.create(),
-        updatedAt: createdAt,
-      },
+      initialStateFrom(input, createdAt),
     );
   }
 
@@ -296,8 +286,9 @@ export class Character {
    */
   revise(input: CharacterCorrectionInput, context: CharacterAccessContext, now: Date): void {
     this.assertEditableBy(context);
-    const build = buildFrom(input.build, this.state.roll);
     const identity = CharacterIdentity.create(input.identity);
+    const build = buildFrom(input.build, this.state.roll, identity.snapshot().heightCm);
+    assertSpeciesPhysique(input.build.speciesKey, identity.snapshot());
     this.state.name = input.name;
     this.state.identity = identity;
     this.state.build = build;
@@ -389,6 +380,18 @@ export class Character {
   }
 }
 
+function initialStateFrom(input: CharacterCreationInput, createdAt: string): CharacterState {
+  const identity = CharacterIdentity.create(input.identity);
+  const build = buildFrom(input.build, input.roll, identity.snapshot().heightCm);
+  assertSpeciesPhysique(input.build.speciesKey, identity.snapshot());
+
+  return {
+    name: input.name, identity, status: 'waiting_adventure', roll: input.roll, build,
+    assignedTo: null, revision: INITIAL_REVISION, review: CharacterReview.create(),
+    updatedAt: createdAt,
+  };
+}
+
 function reviewAuthorityOf(context: CharacterAccessContext): CharacterReviewAuthority {
   return context.actorIsGameMaster ? 'gameMaster' : 'player';
 }
@@ -396,9 +399,14 @@ function reviewAuthorityOf(context: CharacterAccessContext): CharacterReviewAuth
 /**
  * Les trois vérifications qui rendent un personnage valide : la répartition sort
  * bien du tirage, les bonus de caractéristique appartiennent à l'historique, et
- * les choix couvrent ce que l'espèce et la classe demandaient.
+ * les choix couvrent ce que l'espèce et la classe demandaient. La catégorie de
+ * taille n'est jamais reçue : elle se déduit de la taille physique (DEC-008).
  */
-function buildFrom(input: CharacterBuildInput, roll: AbilityRoll | null): CharacterBuildState {
+function buildFrom(
+  input: CharacterBuildInput,
+  roll: AbilityRoll | null,
+  heightCm: number,
+): CharacterBuildState {
   const abilities = assignmentFrom(input, roll);
   const choices = CharacterChoices.create(input.choices);
   validateChoices({ ...input, choices });
@@ -406,16 +414,20 @@ function buildFrom(input: CharacterBuildInput, roll: AbilityRoll | null): Charac
   return {
     speciesKey: input.speciesKey,
     lineageKey: input.lineageKey,
-    size: requiredSize(input.size),
+    size: sizeFromHeight(input.speciesKey, heightCm),
     standardLanguages: requiredLanguages(input.standardLanguages),
     classKey: input.classKey,
     backgroundKey: input.backgroundKey,
     abilities,
     choices,
-    equipment: CharacterEquipment.create(
-      resolveStartingEquipment(input.classKey, input.backgroundKey, input.equipment),
-    ),
+    equipment: startingEquipmentOf(input),
   };
+}
+
+function startingEquipmentOf(input: CharacterBuildInput): CharacterEquipment {
+  return CharacterEquipment.create(
+    resolveStartingEquipment(input.classKey, input.backgroundKey, input.equipment),
+  );
 }
 
 function assignmentFrom(input: CharacterBuildInput, roll: AbilityRoll | null): AbilityAssignment {
@@ -473,11 +485,6 @@ function buildSnapshotOf(build: CharacterBuildState): CharacterBuildSnapshot {
     choices: build.choices.snapshot(),
     equipment: build.equipment.snapshot(),
   };
-}
-
-function requiredSize(size: CreatureSize | undefined): CreatureSize {
-  if (!size) throw new InvalidCharacterIdentityError();
-  return size;
 }
 
 function requiredLanguages(languages: readonly Language[] | undefined): Language[] {

@@ -4,9 +4,10 @@ import {
   FinalizeCharacterSchema,
   PreviewCharacterSheetSchema,
 } from "@donjon-dragon/shared";
-import { aCatalog } from "./catalog.fixture";
+import { aCatalog, aSpeciesWithSizeChoice } from "./catalog.fixture";
 import { EMPTY_COMPOSITION, type CharacterComposition } from "./character-composition";
 import {
+  defaultMeasurementsOf,
   positiveIntegerFieldValue,
   positiveNumberFieldValue,
 } from "./identity-fields";
@@ -27,8 +28,8 @@ function aCompleteComposition(): CharacterComposition {
     name: "Frodo Sacquet",
     alignment: "neutralGood",
     age: 33,
-    heightCm: 96,
-    weightKg: 30,
+    heightCm: 140,
+    weightKg: 70,
     speciesKey: "dwarf",
     standardLanguages: ["elvish", "dwarvish"],
     classKey: "cleric",
@@ -62,13 +63,11 @@ describe("le wizard produit un corps que le serveur accepte", () => {
     expect(PreviewCharacterSheetSchema.safeParse(payload).success).toBe(true);
   });
 
-  it("transporte le gabarit et les deux langues", () => {
+  it("transporte les deux langues, jamais le gabarit que le serveur calcule", () => {
     const payload = toCreatePayload(CATALOG, aCompleteComposition());
 
-    expect(payload).toMatchObject({
-      size: "Medium",
-      standardLanguages: ["elvish", "dwarvish"],
-    });
+    expect(payload).toMatchObject({ standardLanguages: ["elvish", "dwarvish"] });
+    expect(payload).not.toHaveProperty("size");
   });
 
   // L'édition ne redésigne jamais de tirage : le personnage garde le sien.
@@ -109,11 +108,45 @@ describe("les deux frontières, et pourquoi elles diffèrent", () => {
     expect(toCreatePayload(CATALOG, composition)).toBeNull();
   });
 
-  it("sans gabarit résoluble, ni création ni aperçu", () => {
+  it("sans bornes d’espèce connues, pas de création", () => {
     const catalog = aCatalog({ species: [] });
 
-    expect(toPreviewPayload(catalog, aCompleteComposition())).toBeNull();
     expect(toCreatePayload(catalog, aCompleteComposition())).toBeNull();
+  });
+
+  it("hors des bornes de l’espèce, pas de création, mais l’aperçu répond", () => {
+    const composition = { ...aCompleteComposition(), heightCm: 200 };
+
+    expect(toCreatePayload(CATALOG, composition)).toBeNull();
+    expect(toPreviewPayload(CATALOG, composition)).not.toBeNull();
+  });
+});
+
+describe("l’aperçu d’une espèce P/M", () => {
+  const catalog = aCatalog({ species: [aSpeciesWithSizeChoice("human")] });
+  const human = { ...aCompleteComposition(), speciesKey: "human" as const };
+
+  it("répond avant que la taille physique soit saisie", () => {
+    const payload = toPreviewPayload(catalog, { ...human, heightCm: null });
+
+    expect(payload).not.toBeNull();
+    expect(payload).not.toHaveProperty("heightCm");
+  });
+
+  it("transmet la taille physique dès qu’elle existe, pour que le serveur en déduise le gabarit", () => {
+    expect(toPreviewPayload(catalog, { ...human, heightCm: 100 })).toMatchObject({ heightCm: 100 });
+  });
+});
+
+describe("mesures par défaut d’une espèce", () => {
+  it("prend le milieu de chaque plage, arrondi à l’inférieur", () => {
+    const bounds = {
+      heightCm: { min: 213, max: 244 },
+      weightKg: { min: 93, max: 200 },
+      mediumFromHeightCm: null,
+    };
+
+    expect(defaultMeasurementsOf(bounds)).toEqual({ heightCm: 228, weightKg: 146 });
   });
 });
 

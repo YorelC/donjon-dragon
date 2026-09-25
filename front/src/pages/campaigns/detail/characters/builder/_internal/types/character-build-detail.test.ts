@@ -1,19 +1,28 @@
 import { describe, it, expect } from "vitest";
 import type { CharacterBuildDetailDto } from "@donjon-dragon/shared";
 import { FinalizeCharacterSchema } from "@donjon-dragon/shared";
-import { aCatalog, aSpecies, aSpeciesWithSizeChoice } from "./catalog.fixture";
+import { aCatalog, aSpecies } from "./catalog.fixture";
 import { toEditPayload } from "./character-payload";
 import { toComposition } from "./character-build-detail";
 
 /** Le halfelin du DTO : taille imposée, comme huit espèces sur dix. */
-const CATALOG = aCatalog({ species: [aSpecies({ key: "halfling", sizeOptions: ["Small"], size: "Small" })] });
+const CATALOG = aCatalog({ species: [aSpecies({
+  key: "halfling",
+  sizeOptions: ["Small"],
+  size: "Small",
+  physicalBounds: {
+    heightCm: { min: 61, max: 91 },
+    weightKg: { min: 17, max: 20 },
+    mediumFromHeightCm: null,
+  },
+})] });
 
 const BASE_DTO: CharacterBuildDetailDto = {
   name: "Frodo Sacquet",
   alignment: "chaoticGood",
   age: 33,
-  heightCm: 96,
-  weightKg: 30,
+  heightCm: 90,
+  weightKg: 18,
   description: null,
   speciesKey: "halfling",
   lineageKey: null,
@@ -141,23 +150,13 @@ describe("toComposition — reste des champs", () => {
 
     expect(composition.alignment).toBe("chaoticGood");
     expect(composition.age).toBe(33);
-    expect(composition.heightCm).toBe(96);
-    expect(composition.weightKg).toBe(30);
+    expect(composition.heightCm).toBe(90);
+    expect(composition.weightKg).toBe(18);
     expect(composition.standardLanguages).toEqual(["common", "halfling"]);
   });
 
-  /**
-   * Une taille imposee n'est pas une decision : la reprendre comme choix
-   * explicite ferait ressurgir la remanence que `resolvedSizeOf` empeche.
-   */
-  it("ne fait de la taille un choix explicite que si l espece en offre un", () => {
-    expect(toComposition(BASE_DTO, CATALOG).selectedSize).toBeNull();
-
-    const withChoice = aCatalog({
-      species: [aSpeciesWithSizeChoice("halfling")],
-    });
-
-    expect(toComposition(BASE_DTO, withChoice).selectedSize).toBe("Small");
+  it("ne réintroduit aucun choix explicite de catégorie", () => {
+    expect(toComposition(BASE_DTO, CATALOG)).not.toHaveProperty("selectedSize");
   });
 });
 
@@ -176,10 +175,10 @@ describe("aller-retour edition", () => {
       age: BASE_DTO.age,
       heightCm: BASE_DTO.heightCm,
       weightKg: BASE_DTO.weightKg,
-      size: BASE_DTO.size,
       standardLanguages: BASE_DTO.standardLanguages,
       abilityRollId: null,
     });
+    expect(payload).not.toHaveProperty("size");
   });
 
   it("produit un corps que le contrat d edition accepte", () => {

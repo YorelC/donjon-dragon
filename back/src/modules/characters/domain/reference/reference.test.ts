@@ -14,7 +14,7 @@ import { BACKGROUND_KEYS, CLASS_KEYS, ORIGIN_FEAT_KEYS, SPECIES_KEYS } from './k
 import { ORIGIN_FEATS } from './origin-feats';
 import { ARMOR_TRAININGS, WEAPON_PROFICIENCIES } from './proficiencies';
 import { SKILLS, SKILL_ABILITY } from './skills';
-import { SPECIES } from './species';
+import { SPECIES, SPECIES_PHYSICAL_BOUNDS } from './species';
 import { SPELLS, spellsAvailableTo } from './spells';
 import { WEAPONS } from './weapons';
 
@@ -155,6 +155,13 @@ describe('espèces', () => {
     Object.values(SPECIES).forEach((species) => {
       if (!species.sizeOptions) return;
       expect(species.sizeOptions).toContain(species.size);
+    });
+  });
+
+  it('ne déduisent P/M de la taille physique que pour les espèces à deux catégories', () => {
+    Object.values(SPECIES).forEach((species) => {
+      const hasThreshold = SPECIES_PHYSICAL_BOUNDS[species.key].mediumFromHeightCm !== null;
+      expect(hasThreshold).toBe((species.sizeOptions?.length ?? 1) > 1);
     });
   });
 });

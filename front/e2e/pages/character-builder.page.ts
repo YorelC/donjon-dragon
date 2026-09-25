@@ -10,6 +10,10 @@ export const STANDARD_ARRAY_ORDER = [
   'Charisme',
 ] as const;
 
+/** Le champ numérique de l'échelle, distinct du curseur qui porte le libellé court. */
+export const HEIGHT_FIELD = 'Taille en cm';
+export const WEIGHT_FIELD = 'Poids en kg';
+
 export interface CharacterIdentity {
   name: string;
   alignment: string;
@@ -95,14 +99,9 @@ export class CharacterBuilderPage {
     await this.nameInput.fill(identity.name);
     await this.choose(identity.alignment);
     await this.page.getByLabel('Âge (années)').fill(identity.age);
-    await this.page.getByLabel('Taille (cm)').fill(identity.heightCm);
-    await this.page.getByLabel('Poids (kg)').fill(identity.weightKg);
+    await this.page.getByLabel(HEIGHT_FIELD).fill(identity.heightCm);
+    await this.page.getByLabel(WEIGHT_FIELD).fill(identity.weightKg);
     await this.page.getByLabel('Description (facultative)').fill(identity.description);
-  }
-
-  /** Le gabarit retenu, tel que la carte sélectionnée l'expose. */
-  selectedSize(): Locator {
-    return this.page.getByRole('radio', { checked: true }).filter({ hasText: /Petite|Moyenne/ });
   }
 
   /** Une langue retenue : le bouton porte son état, pas seulement sa couleur. */
@@ -110,9 +109,14 @@ export class CharacterBuilderPage {
     return this.page.getByRole('button', { name, exact: true });
   }
 
-  /** Ce que l'édition n'a pas le droit de rendre modifiable. */
-  frozenField(label: string): Locator {
+  /** Un champ d'état civil, modifiable tant que la fiche n'est pas acceptée. */
+  identityField(label: string): Locator {
     return this.page.getByLabel(label);
+  }
+
+  /** L'alignement retenu : une carte cochée tant que la fiche reste corrigeable. */
+  selectedAlignment(name: string): Locator {
+    return this.page.getByRole('radio', { name, checked: true });
   }
 
   /**

@@ -53,7 +53,6 @@ const A_CREATION_BODY = {
   description: null,
   speciesKey: 'halfling',
   lineageKey: null,
-  size: 'Small',
   standardLanguages: ['common', 'halfling'],
   classKey: 'rogue',
   backgroundKey: 'charlatan',
@@ -184,7 +183,7 @@ describe('composition partagée par le POST et le PUT', () => {
     expect(result.success).toBe(false);
   });
 
-  it.each(['alignment', 'age', 'heightCm', 'weightKg', 'size', 'standardLanguages']) (
+  it.each(['alignment', 'age', 'heightCm', 'weightKg', 'standardLanguages']) (
     'refuse le champ de création obligatoire absent : %s',
     (field) => {
       const incomplete = { ...A_CREATION_BODY } as Record<string, unknown>;
@@ -193,6 +192,14 @@ describe('composition partagée par le POST et le PUT', () => {
       expect(FinalizeCharacterSchema.safeParse(incomplete).success).toBe(false);
     },
   );
+
+  it('ne transporte jamais la catégorie de taille, calculée par le serveur', () => {
+    const result = FinalizeCharacterSchema.parse({
+      ...AN_EDIT_BODY, size: 'Medium',
+    });
+
+    expect(result).not.toHaveProperty('size');
+  });
 
   it('refuse une identité hors contrat', () => {
     expect(FinalizeCharacterSchema.safeParse({

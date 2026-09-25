@@ -180,8 +180,9 @@ modifié.
 
 L'âge est un entier positif. Le système n'impose pas automatiquement de longévité
 maximale par espèce ; le MJ contrôle la cohérence. La taille physique est exprimée en
-centimètres et le poids en kilogrammes. La catégorie de taille D&D est une donnée
-distincte, limitée aux options autorisées par l'espèce.
+centimètres et le poids en kilogrammes. Ces deux mesures sont choisies dans les bornes
+du référentiel d'espèce. La catégorie de taille D&D n'est pas choisie séparément : le
+système la déduit de la taille physique, puis la valide contre l'espèce.
 
 Le joueur peut sélectionner une babiole facultative et gratuite parmi les cent entrées
 du *Player's Handbook 2024*. Sa sélection ajoute la babiole au personnage sans modifier

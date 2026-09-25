@@ -28,26 +28,16 @@ function renderStep(composition: Partial<CharacterComposition>) {
   return onChange;
 }
 
-describe("choix du gabarit", () => {
-  it("n’apparaît que pour une espèce qui en offre un", () => {
-    renderStep({ speciesKey: "dwarf" });
-
-    expect(screen.queryByText("Gabarit")).not.toBeInTheDocument();
-  });
-
-  it("apparaît quand l’espèce admet deux tailles", () => {
+describe("catégorie de taille", () => {
+  it("ne propose plus Petite ou Moyenne dans l’étape espèce", () => {
     renderStep({ speciesKey: "human" });
 
-    expect(screen.getByText("Gabarit")).toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: /petite/i })).toBeInTheDocument();
+    expect(screen.queryByText("Gabarit")).not.toBeInTheDocument();
+    expect(screen.queryByRole("radio", { name: /petite/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("radio", { name: /moyenne/i })).not.toBeInTheDocument();
   });
 });
 
-/**
- * Le reset, prouvé pour lui-même et non à travers `resolvedSizeOf` : les deux
- * mécanismes se doublent volontairement, et un test qui les mélange laisserait
- * passer la disparition de l'un.
- */
 /**
  * Le reset est destructeur par nature : il faut donc qu'il ne se déclenche QUE
  * sur un vrai changement. `OptionListView` appelait `onSelect` même sur la carte
@@ -58,7 +48,7 @@ describe("resélectionner la même espèce ne change rien", () => {
   it("ne mute rien quand on reclique sur l’espèce courante", async () => {
     const onChange = renderStep({
       speciesKey: "human",
-      selectedSize: "Small",
+      heightCm: 100,
       speciesFeat: "skilled",
       speciesSkills: ["arcana"],
       featSkills: ["history"],
@@ -70,7 +60,7 @@ describe("resélectionner la même espèce ne change rien", () => {
   });
 
   it("ne mute rien non plus à la touche Entrée", async () => {
-    const onChange = renderStep({ speciesKey: "human", selectedSize: "Small" });
+    const onChange = renderStep({ speciesKey: "human", heightCm: 100 });
 
     screen.getByRole("radio", { name: "human" }).focus();
     await userEvent.keyboard("{Enter}");
@@ -80,27 +70,15 @@ describe("resélectionner la même espèce ne change rien", () => {
 });
 
 describe("changer d’espèce périme ses choix", () => {
-  it.each(["goliath", "dwarf"])(
-    "remet le gabarit à zéro en passant à %s",
-    async (target) => {
-      const onChange = renderStep({ speciesKey: "human", selectedSize: "Small" });
+  // Nain : 122–152 cm, 53–103 kg. Milieu arrondi à l'inférieur : 137 cm, 78 kg.
+  it("remet taille et poids au milieu des plages de la nouvelle espèce", async () => {
+    const onChange = renderStep({ speciesKey: "human", heightCm: 100, weightKg: 30 });
 
-      await userEvent.click(screen.getByRole("radio", { name: target }));
+    await userEvent.click(screen.getByRole("radio", { name: "dwarf" }));
 
-      expect(onChange).toHaveBeenCalledWith(
-        expect.objectContaining({ speciesKey: target, selectedSize: null }),
-      );
-    },
-  );
-
-  // Small reste légal pour le goliath : c'est la DÉCISION qui est périmée, pas
-  // la valeur. Un choix hérité d'une autre espèce n'en est pas un.
-  it("remet à zéro même quand la taille resterait autorisée", async () => {
-    const onChange = renderStep({ speciesKey: "human", selectedSize: "Small" });
-
-    await userEvent.click(screen.getByRole("radio", { name: "goliath" }));
-
-    expect(onChange.mock.calls[0]?.[0]).toMatchObject({ selectedSize: null });
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ speciesKey: "dwarf", heightCm: 137, weightKg: 78 }),
+    );
   });
 
   it("périme aussi le lignage et les compétences d’espèce", async () => {

@@ -136,6 +136,17 @@ describe('Character.create', () => {
       }),
     ).toThrow(LineageRequiredError);
   });
+
+  it('déduit la catégorie de taille de la taille physique', () => {
+    const aasimar = { ...A_CHARACTER_BUILD, speciesKey: 'aasimar' as const };
+    const create = (heightCm: number) => Character.create({
+      campaignId, name: NAME, identity: { ...A_CHARACTER_IDENTITY, heightCm },
+      createdBy: gandalf, build: aasimar, roll: STANDARD_ARRAY_ROLL, now: NOW,
+    });
+
+    expect(create(121).build.size).toBe('Small');
+    expect(create(122).build.size).toBe('Medium');
+  });
 });
 
 describe('Character.revise', () => {

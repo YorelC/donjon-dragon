@@ -7,7 +7,7 @@ import type {
   LineageKey,
   SpeciesKey,
 } from '../reference/keys';
-import type { CreatureSize, Language } from '../reference/proficiencies';
+import type { Language } from '../reference/proficiencies';
 
 /**
  * Vocabulaire commun aux deux validateurs de choix.
@@ -40,7 +40,6 @@ export class InvalidSkillChoiceError extends InvalidCharacterChoiceError {}
 export interface ChoicesToValidate {
   speciesKey: SpeciesKey;
   lineageKey: LineageKey | null;
-  size?: CreatureSize;
   standardLanguages?: readonly Language[];
   classKey: ClassKey;
   backgroundKey: BackgroundKey;

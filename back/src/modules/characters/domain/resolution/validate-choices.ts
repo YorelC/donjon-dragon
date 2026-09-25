@@ -39,7 +39,6 @@ import { validateSpellChoices } from './validate-spell-choices';
 export function validateChoices(input: ChoicesToValidate): void {
   assertChoiceSources(input);
   assertLineage(input);
-  assertSize(input);
   assertLanguages(input);
   assertLineageSpellcastingAbility(input);
   assertSkills(input);
@@ -49,7 +48,7 @@ export function validateChoices(input: ChoicesToValidate): void {
   validateSpellChoices(input);
 }
 
-function assertChoiceSources(input: ChoicesToValidate): void {
+export function assertChoiceSources(input: ChoicesToValidate): void {
   const allowed = allowedSources(input);
   input.choices.all.forEach((choice) => {
     const source = `${choice.source.type}:${choice.source.key}`;
@@ -135,12 +134,6 @@ function assertLineage(input: ChoicesToValidate): void {
   if (input.lineageKey === null) throw new LineageRequiredError();
   const known = lineage?.options.some((option) => option.key === input.lineageKey);
   if (!known) throw new UnknownLineageError();
-}
-
-function assertSize(input: ChoicesToValidate): void {
-  const species = SPECIES[input.speciesKey];
-  const allowed = species.sizeOptions ?? [species.size];
-  if (!input.size || !allowed.includes(input.size)) fail('size');
 }
 
 function assertLineageSpellcastingAbility(input: ChoicesToValidate): void {

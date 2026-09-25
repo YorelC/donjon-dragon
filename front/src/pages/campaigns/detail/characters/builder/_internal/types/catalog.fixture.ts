@@ -61,6 +61,11 @@ export function aSpecies(overrides: Partial<CatalogSpecies> = {}): CatalogSpecie
     name: "Nain",
     size: "Medium",
     sizeOptions: ["Medium"],
+    physicalBounds: {
+      heightCm: { min: 122, max: 152 },
+      weightKg: { min: 53, max: 103 },
+      mediumFromHeightCm: null,
+    },
     speed: 9,
     darkvision: 18,
     traits: [],
@@ -86,12 +91,22 @@ export function aSpeciesWithMagicalLineage(
   });
 }
 
-/** Une espèce qui fait choisir son gabarit — l'humain, le goliath, le tieffelin. */
+/** Une espèce dont la catégorie P/M est déduite de la taille physique. */
 export function aSpeciesWithSizeChoice(
   key: CatalogSpecies["key"],
   options: readonly CreatureSize[] = ["Small", "Medium"],
 ): CatalogSpecies {
-  return aSpecies({ key, name: key, size: "Medium", sizeOptions: [...options] });
+  return aSpecies({
+    key,
+    name: key,
+    size: "Medium",
+    sizeOptions: [...options],
+    physicalBounds: {
+      heightCm: { min: 61, max: 213 },
+      weightKg: { min: 17, max: 123 },
+      mediumFromHeightCm: 122,
+    },
+  });
 }
 
 /** Par défaut, une classe ne fait choisir ni maîtrise, ni outil, ni langue. */

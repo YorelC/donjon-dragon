@@ -16,7 +16,7 @@ export const A_ABILITY_ROLL_ID = 'b1e3a0f4-7c2d-4a51-9f60-2d8c4b7e1a03';
 export const A_CHARACTER_IDENTITY = {
   alignment: 'neutralGood' as const,
   age: 33,
-  heightCm: 105,
+  heightCm: 90,
   weightKg: 18,
   description: 'Un voyageur prudent aux yeux vifs.',
 };
@@ -39,7 +39,6 @@ export const A_VALID_ASSIGNMENT = {
 export const A_CHARACTER_BUILD: CharacterBuildInput = {
   speciesKey: 'halfling',
   lineageKey: null,
-  size: 'Small',
   standardLanguages: ['elvish', 'dwarvish'],
   classKey: 'rogue',
   backgroundKey: 'charlatan',
@@ -83,7 +82,6 @@ const A_CHARACTER_BODY: CreateCharacterDto = {
   ...A_CHARACTER_IDENTITY,
   speciesKey: 'halfling',
   lineageKey: null,
-  size: 'Small',
   standardLanguages: ['elvish', 'dwarvish'],
   classKey: 'rogue',
   backgroundKey: 'charlatan',

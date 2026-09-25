@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import type { CharacterEquipmentSnapshot } from '../character-equipment';
-import { InvalidStartingEquipmentError, resolveStartingEquipment } from './resolve-starting-equipment';
+import {
+  InvalidStartingEquipmentError,
+  previewStartingEquipment,
+  resolveStartingEquipment,
+} from './resolve-starting-equipment';
 
 describe('équipement de départ autoritaire B01', () => {
   it('ignore les objets et l or forgés puis recalcule les paquetages', () => {
@@ -36,6 +40,35 @@ describe('équipement de départ autoritaire B01', () => {
 
     expect(result.items).toContainEqual({ itemKey: 'dice-set', quantity: 1 });
     expect(result.items.some((item) => item.itemKey === 'gaming-set')).toBe(false);
+  });
+});
+
+describe('équipement de l’aperçu à mi-parcours', () => {
+  it('calcule sans équipement tant qu’un paquet manque', () => {
+    const result = previewStartingEquipment('rogue', 'charlatan', selection({
+      backgroundOptionId: null,
+    }));
+
+    expect(result).toMatchObject({ items: [], gold: 0, armorKey: null });
+  });
+
+  it('calcule sans équipement tant que l’objet à choisir manque', () => {
+    const result = previewStartingEquipment('rogue', 'wayfarer', selection());
+
+    expect(result.items).toEqual([]);
+  });
+
+  it('refuse toujours une option inconnue', () => {
+    expect(() => previewStartingEquipment('rogue', 'charlatan', selection({
+      classOptionId: 'C',
+    }))).toThrow(InvalidStartingEquipmentError);
+  });
+
+  it('rend le même équipement que la création une fois tout choisi', () => {
+    const complete = selection({ backgroundChoiceItemKey: 'dice-set' });
+
+    expect(previewStartingEquipment('rogue', 'wayfarer', complete))
+      .toEqual(resolveStartingEquipment('rogue', 'wayfarer', complete));
   });
 });
 

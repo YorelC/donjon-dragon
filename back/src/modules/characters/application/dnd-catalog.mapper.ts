@@ -40,7 +40,11 @@ import {
 } from '../domain/resolution/class-options';
 import { LANGUAGE_LABELS, type Language } from '../domain/reference/proficiencies';
 import { SKILL_LABELS } from '../domain/reference/skills';
-import { SPECIES, type Species } from '../domain/reference/species';
+import {
+  SPECIES,
+  SPECIES_PHYSICAL_BOUNDS,
+  type Species,
+} from '../domain/reference/species';
 import {
   backgroundEquipmentChoiceOptions,
   classEquipmentChoiceOptions,
@@ -134,6 +138,7 @@ function toCatalogSpecies(species: Species): CatalogSpecies {
     name: species.name,
     size: species.size,
     sizeOptions: [...(species.sizeOptions ?? [species.size])],
+    physicalBounds: SPECIES_PHYSICAL_BOUNDS[species.key],
     speed: species.speed,
     darkvision: species.darkvision,
     traits: species.traits.map(toCatalogFeature),
