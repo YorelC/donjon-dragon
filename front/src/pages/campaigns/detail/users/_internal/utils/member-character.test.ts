@@ -30,6 +30,7 @@ function aCharacter(
     level: 1,
     assignmentStatus: "assigned",
     build: BUILD,
+    personalDetails: { age: 120, weightKg: 62, description: null },
     assignedTo: { displayName: "Legolas" },
     revision: 0,
     createdByMe: true,

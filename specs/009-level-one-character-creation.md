@@ -35,7 +35,7 @@ partie du chemin ; `ABSENTE`, non représentable ou sans contrôle utile.
 |---|---|---|---|
 | B01-ID-001 | PARTIELLE | CONFORME | Création transactionnelle : reçu, personnage, audit et outbox dans une session ; `mongo-character-creation.repository.test.ts`. |
 | B01-ID-002 | PARTIELLE | CONFORME | `progressionOf` rend niveau, PX initiaux, bonus de maîtrise et dé de vie ; `resolve-sheet.test.ts`. |
-| B01-ID-003 | PARTIELLE | PARTIELLE | Nom Zod 2-50 ; le verrou de revue existe dans le domaine, son parcours transactionnel reste à prouver. |
+| B01-ID-003 | PARTIELLE | PARTIELLE | Nom Zod 2-50 ; le verrou de revue existe dans le domaine et le parcours transactionnel possède une preuve Mongo dédiée, à rejouer sur une réplica-set disponible. |
 | B01-ID-004 | ABSENTE | CONFORME | `AlignmentSchema` au contrat, exigé par `requireCompleteIdentity`, persisté requis. |
 | B01-ID-005 | ABSENTE | CONFORME | `age` entier positif, exigé par `requireCompleteIdentity`, persisté requis. |
 | B01-ID-006 | ABSENTE | CONFORME | `heightCm` et `weightKg` positifs, exigés par `requireCompleteIdentity`, persistés requis. |
@@ -113,10 +113,10 @@ partie du chemin ; `ABSENTE`, non représentable ou sans contrôle utile.
 | B01-FIC-003 | PARTIELLE | PARTIELLE | Sources portées par PV, PV courants, CA, initiative et vitesse ; pas encore par compétence ni attaque. |
 | B01-FIC-004 | CONFORME | CONFORME | Inchangé : aperçu et lecture appellent le même `resolveSheet`. |
 | B01-VAL-001 | PARTIELLE | PARTIELLE | Création en un geste, avec reçu et audit ; aucun état soumis versionné. |
-| B01-VAL-002 | ABSENTE | PARTIELLE | États et transitions représentés dans le domaine ; commande transactionnelle à prouver. |
-| B01-VAL-003 | ABSENTE | PARTIELLE | Acceptation et refus représentés ; autorisation MJ et routes à prouver. |
-| B01-VAL-004 | ABSENTE | PARTIELLE | Motif obligatoire et conservé dans le domaine ; projection privée et audit à prouver. |
-| B01-VAL-005 | ABSENTE | PARTIELLE | Retour en correction représenté ; version immuable et resoumission à prouver. |
+| B01-VAL-002 | ABSENTE | PARTIELLE | États, transitions et commandes transactionnelles sont implémentés ; le test Mongo dédié reste à exécuter sur une réplica-set disponible. |
+| B01-VAL-003 | ABSENTE | PARTIELLE | Acceptation, refus, autorisation MJ et routes sont couverts ; la preuve Mongo réelle reste à rejouer. |
+| B01-VAL-004 | ABSENTE | PARTIELLE | Motif obligatoire, projection privée et audit sont implémentés ; la preuve Mongo réelle reste à rejouer. |
+| B01-VAL-005 | ABSENTE | PARTIELLE | Retour en correction, version immuable, correction réelle et resoumission sont couverts ; la preuve Playwright reste à exécuter. |
 | B01-VAL-006 | CONFORME | CONFORME | Inchangé : Spec 007, projections privées joueur/MJ. |
 
 **Bilan initial : 5 conformes, 65 partielles, 15 absentes.**
@@ -137,8 +137,8 @@ révélations de l'Aasimar restent descriptives (`B01-ESP-002`), le corpus compl
 des 391 sorts appartient à B06
 (`B01-SOR-001`), le magasin et l'achat sont hors périmètre (`B01-EQP-005`), et
 les sources par compétence restent incomplètes (`B01-FIC-003`), et le workflow de
-validation attend encore ses preuves transactionnelles et HTTP (`B01-ID-003`,
-`B01-VAL-001` à `B01-VAL-005`). La seule ligne absente est le téléversement du
+validation attend encore l'exécution de ses preuves Mongo et Playwright
+(`B01-ID-003`, `B01-VAL-001` à `B01-VAL-005`). La seule ligne absente est le téléversement du
 portrait, dont le stockage objet est décidé mais pas encore spécifié techniquement.
 
 Une règle validée dont la conséquence n'atteint pas la fiche ne serait pas
@@ -338,10 +338,11 @@ donc le bouton final ne s'activait jamais.
   valeur par défaut pour la nouvelle espèce, milieu de plage arrondi à l'inférieur
   (DEC-008) : des mesures prises dans les bornes d'une autre espèce n'en sont pas.
   L'espèce proposée à l'ouverture du wizard reçoit les mêmes valeurs par défaut.
-- **L'état civil est exigé à la création, et figé à l'acceptation par le MJ**
-  (B01-ID-004). Tant que la fiche est un brouillon ou a été refusée, le wizard la
-  rouvre entièrement modifiable, état civil compris ; une fiche acceptée ne se
-  rouvre plus.
+- **L'état civil est exigé à la création.** Tant que la fiche est un brouillon ou
+  a été refusée, le wizard la rouvre entièrement modifiable, état civil compris ;
+  une fiche acceptée ne se rouvre plus. Après acceptation, une commande dédiée ne
+  modifie que la description, l'âge et le poids. L'alignement et la taille physique
+  restent figés avec les autres choix engagés par la validation.
 
 ### Deux frontières, et pourquoi elles diffèrent
 
@@ -364,21 +365,22 @@ front, `toPreviewPayload` s'arrête à l'origine et aux langues, plus la taille
 physique dès qu'elle est connue ; `toCreatePayload`
 ajoute la garde d'identité, un rétrécissement de type et non un `as`.
 
-### Création et édition — cinq champs figés
+### Création, correction et données personnelles
 
-`CharacterIdentity` n'est construite qu'au `create`, et l'agrégat n'expose
-aucune mutation d'identité. Le `PUT` accepte donc ces champs par contrat, mais ne
-les applique pas.
+Le `PUT` de correction remplace la composition complète tant que la fiche est en
+`draft` ou `refused`. Il est inaccessible pendant la revue et après acceptation.
+Une seconde commande étroite prend alors le relais pour les seules données que
+DEC-003 laisse modifiables, sans accepter les champs immuables dans son contrat.
 
 | Champ | Édition | Chemin serveur |
 |---|---|---|
-| `name` | modifiable | `rename()` |
-| `size`, `standardLanguages` | modifiables | `toBuildInput` puis `finalize()` |
-| `alignment`, `age`, `heightCm`, `weightKg`, `description` | **figés** | aucun |
+| composition complète | `draft` ou `refused` | `PUT .../characters/:id` |
+| `age`, `weightKg`, `description` | `accepted` | `PUT .../characters/:id/personal-details` |
+| `name`, `alignment`, espèce/lignée, historique, `heightCm`, catégorie de taille | **figés après acceptation** | absents du contrat dédié |
 
-L'interface rend les cinq champs figés `disabled` en édition. Offrir un champ
-dont la modification répondrait `200` sans rien changer serait mentir à l'écran.
-Les rendre modifiables appartient au lot du `PUT` transactionnel.
+Le joueur assigné et les MJ autorisés par la politique d'édition de la campagne
+peuvent employer la commande dédiée. Elle exige la révision courante, est
+idempotente et persiste personnage, reçu, audit et outbox dans une transaction.
 
 ### Exigence → front → HTTP → validation
 

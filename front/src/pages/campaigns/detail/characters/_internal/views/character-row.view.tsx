@@ -8,12 +8,14 @@ import { CharacterReviewContainer } from "../containers/character-review.contain
 import { AssignmentActions } from "./character-assignment-actions.view";
 import { DeleteCharacterButton } from "./delete-character-button.view";
 import { CharacterReviewStatusView } from "./character-review-status.view";
+import { CharacterPersonalDetailsContainer } from "../containers/character-personal-details.container";
+import type { CharacterAssignmentTarget } from "../queries/use-character-mutations";
 
 interface CharacterRowProps {
   character: CampaignCharacterListItem;
   campaignId: string;
   onDelete: (characterId: string) => void;
-  onUnassign: (characterId: string) => void;
+  onUnassign: (target: CharacterAssignmentTarget) => void;
 }
 
 const UNASSIGNED_LABEL = "Non attribué";
@@ -68,6 +70,9 @@ function RowActions({
       {isCorrectable(character) ? (
         <BuilderLink campaignId={campaignId} characterId={character.id} />
       ) : null}
+      {canEditPersonalDetails(character) ? (
+        <CharacterPersonalDetailsContainer campaignId={campaignId} character={character} />
+      ) : null}
       <CharacterReviewContainer campaignId={campaignId} character={character} />
       {character.projection === "gameMaster" ? (
         <GameMasterActions
@@ -81,7 +86,11 @@ function RowActions({
   );
 }
 
-function GameMasterActions(props: CharacterRowProps) {
+interface GameMasterActionsProps extends Omit<CharacterRowProps, "character"> {
+  character: Extract<CampaignCharacterListItem, { projection: "gameMaster" }>;
+}
+
+function GameMasterActions(props: GameMasterActionsProps) {
   return (
     <>
       <DeleteCharacterButton
@@ -139,4 +148,10 @@ function isCorrectable(
   character: Exclude<CampaignCharacterListItem, { projection: "pool" }>,
 ): boolean {
   return character.review.status === "draft" || character.review.status === "refused";
+}
+
+function canEditPersonalDetails(
+  character: Exclude<CampaignCharacterListItem, { projection: "pool" }>,
+): boolean {
+  return character.review.status === "accepted" && character.personalDetails !== undefined;
 }

@@ -1,11 +1,12 @@
 import type { CampaignCharacterListItem } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { CharacterAssignContainer } from "../containers/character-assign.container";
+import type { CharacterAssignmentTarget } from "../queries/use-character-mutations";
 
 interface AssignmentActionsProps {
-  character: CampaignCharacterListItem;
+  character: Extract<CampaignCharacterListItem, { projection: "gameMaster" }>;
   campaignId: string;
-  onUnassign: (characterId: string) => void;
+  onUnassign: (target: CharacterAssignmentTarget) => void;
 }
 
 /** Attribuer un personnage libre, ou libérer celui qui est déjà pris. */
@@ -19,12 +20,18 @@ export function AssignmentActions({
       <CharacterAssignContainer
         campaignId={campaignId}
         characterId={character.id}
+        expectedRevision={character.revision}
       />
     );
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={() => onUnassign(character.id)}>
+    <Button
+      variant="outline" size="sm"
+      onClick={() => onUnassign({
+        characterId: character.id, expectedRevision: character.revision,
+      })}
+    >
       Libérer
     </Button>
   );

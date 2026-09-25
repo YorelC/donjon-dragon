@@ -1,6 +1,9 @@
 import { createHash } from 'crypto';
 
-import type { FinalizeCharacterDto } from '@donjon-dragon/shared/character-schema';
+import type {
+  FinalizeCharacterDto,
+  UpdateCharacterPersonalDetailsDto,
+} from '@donjon-dragon/shared/character-schema';
 
 import type { CharacterSnapshot } from '../domain/character';
 import type { CharacterCommandAction } from './ports/character-command.repository.port';
@@ -27,6 +30,16 @@ export interface CharacterCorrectionIntent {
 
 export function hashCharacterCorrection(intent: CharacterCorrectionIntent): string {
   return hash({ action: 'character.corrected', ...intent });
+}
+
+export interface CharacterPersonalDetailsIntent {
+  campaignId: string;
+  characterId: string;
+  body: UpdateCharacterPersonalDetailsDto;
+}
+
+export function hashCharacterPersonalDetails(intent: CharacterPersonalDetailsIntent): string {
+  return hash({ action: 'character.personal-details-updated', ...intent });
 }
 
 export function hashBuildVersion(snapshot: CharacterSnapshot): string {

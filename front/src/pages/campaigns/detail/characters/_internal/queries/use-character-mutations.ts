@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { api } from "@/shared/api/api";
+import { commandHeaders } from "@/shared/api/idempotency";
 import { API_ROUTES } from "@/shared/constants/api-routes";
 import { campaignCharactersKey } from "@/shared/queries/use-campaign-characters";
 
@@ -26,8 +27,12 @@ export function useDeleteCharacter(campaignId: string) {
   });
 }
 
-export interface AssignCharacterVariables {
+export interface CharacterAssignmentTarget {
   characterId: string;
+  expectedRevision: number;
+}
+
+export interface AssignCharacterVariables extends CharacterAssignmentTarget {
   playerDisplayName: string;
 }
 
@@ -35,10 +40,10 @@ export function useAssignCharacter(campaignId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ characterId, playerDisplayName }: AssignCharacterVariables) =>
+    mutationFn: ({ characterId, ...body }: AssignCharacterVariables) =>
       api.post(API_ROUTES.characters.assign(campaignId, characterId), {
-        playerDisplayName,
-      }),
+        ...body,
+      }, commandHeaders()),
     onSuccess: () => {
       refreshCharacters(queryClient, campaignId);
       toast.success("Personnage attribué");
@@ -51,8 +56,11 @@ export function useUnassignCharacter(campaignId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (characterId: string) =>
-      api.post(API_ROUTES.characters.unassign(campaignId, characterId)),
+    mutationFn: ({ characterId, expectedRevision }: CharacterAssignmentTarget) =>
+      api.post(
+        API_ROUTES.characters.unassign(campaignId, characterId),
+        { expectedRevision }, commandHeaders(),
+      ),
     onSuccess: () => {
       refreshCharacters(queryClient, campaignId);
       toast.success("Personnage libéré");

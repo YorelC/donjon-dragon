@@ -7,6 +7,7 @@ import { ROUTES, toCharacterNew } from "@/shared/constants/routes";
 import type { CharacterViewer } from "../hooks/use-character-viewer";
 import { CharacterRowView } from "./character-row.view";
 import { OwnerRoleToggleView } from "./owner-role-toggle.view";
+import type { CharacterAssignmentTarget } from "../queries/use-character-mutations";
 
 export interface OwnerToggle {
   isOwner: boolean;
@@ -21,7 +22,7 @@ interface CampaignCharactersViewProps {
   campaign: { id: string; name: string };
   ownerToggle: OwnerToggle;
   onDelete: (characterId: string) => void;
-  onUnassign: (characterId: string) => void;
+  onUnassign: (target: CharacterAssignmentTarget) => void;
 }
 
 const BACK_TO_CAMPAIGNS = {

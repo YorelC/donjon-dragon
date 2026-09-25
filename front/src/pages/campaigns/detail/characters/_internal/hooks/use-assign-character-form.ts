@@ -13,21 +13,21 @@ export interface AssignCharacterFormState {
 }
 
 export function useAssignCharacterForm(
-  campaignId: string,
-  characterId: string,
+  campaignId: string, characterId: string, expectedRevision: number,
 ): AssignCharacterFormState {
   const [open, setOpen] = useState(false);
   const [playerDisplayName, setPlayerDisplayName] = useState("");
   const { data: campaign } = useCampaignDetail(campaignId);
   const assign = useAssignCharacter(campaignId);
   const onSubmit = () =>
-    assign.mutate({ characterId, playerDisplayName }, { onSuccess: () => setOpen(false) });
+    assign.mutate(
+      { characterId, playerDisplayName, expectedRevision },
+      { onSuccess: () => setOpen(false) },
+    );
 
   return {
-    open,
-    onOpenChange: setOpen,
-    playerDisplayName,
-    onChangeDisplayName: setPlayerDisplayName,
+    open, onOpenChange: setOpen,
+    playerDisplayName, onChangeDisplayName: setPlayerDisplayName,
     playerOptions: campaign?.players.map((player) => player.displayName) ?? [],
     onSubmit,
     isSubmitting: assign.isPending,

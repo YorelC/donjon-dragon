@@ -1,4 +1,5 @@
 import {
+  type CharacterAssignmentTarget,
   useDeleteCharacter,
   useUnassignCharacter,
 } from "../queries/use-character-mutations";
@@ -9,6 +10,6 @@ export function useCharacterActions(campaignId: string) {
 
   return {
     onDelete: (characterId: string) => deleteCharacter.mutate(characterId),
-    onUnassign: (characterId: string) => unassignCharacter.mutate(characterId),
+    onUnassign: (target: CharacterAssignmentTarget) => unassignCharacter.mutate(target),
   };
 }

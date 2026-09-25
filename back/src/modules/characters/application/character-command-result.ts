@@ -1,8 +1,10 @@
 import {
   CharacterReviewCommandResultSchema,
+  CharacterPersonalDetailsCommandResultSchema,
   CharacterSchema,
   type Character,
   type CharacterReviewCommandResult,
+  type CharacterPersonalDetailsCommandResult,
 } from '@donjon-dragon/shared/character-schema';
 
 import {
@@ -26,6 +28,16 @@ export function acceptedCharacterResult(
 ): Character {
   assertMatchingIntent(receipt, intentHash);
   const parsed = CharacterSchema.safeParse(receipt.result);
+  if (!parsed.success) throw new CharacterReviewCommandConflictError();
+  return parsed.data;
+}
+
+export function acceptedPersonalDetailsResult(
+  receipt: CharacterCommandReceipt,
+  intentHash: string,
+): CharacterPersonalDetailsCommandResult {
+  assertMatchingIntent(receipt, intentHash);
+  const parsed = CharacterPersonalDetailsCommandResultSchema.safeParse(receipt.result);
   if (!parsed.success) throw new CharacterReviewCommandConflictError();
   return parsed.data;
 }

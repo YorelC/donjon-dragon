@@ -16,6 +16,7 @@ import {
   type CharacterCorrectionInput,
 } from './character';
 import { CharacterName } from './character-name';
+import { InvalidCharacterIdentityError } from './character-identity';
 import {
   AbilitiesNotRolledError,
   AlreadyAssignedToThisPlayerError,
@@ -347,6 +348,56 @@ describe('Character review', () => {
     );
   });
 });
+
+describe('Character.updatePersonalDetails', () => {
+  it('modifie les seuls détails personnels d une fiche acceptée', () => {
+    const character = acceptedCharacter();
+
+    character.updatePersonalDetails(
+      { age: 34, weightKg: 19, description: 'Une nouvelle cicatrice.' },
+      contextFor({ actorId: frodo }), NOW,
+    );
+
+    expect(character.identity).toEqual({
+      ...A_CHARACTER_IDENTITY, age: 34, weightKg: 19, description: 'Une nouvelle cicatrice.',
+    });
+    expect(character.name.value).toBe(A_CHARACTER_NAME);
+  });
+
+  it('refuse cette commande avant acceptation ou pour un tiers', () => {
+    const draft = aCharacter(frodo);
+    draft.assignTo(true, frodo, NOW);
+    expect(() => draft.updatePersonalDetails(
+      { age: 34, weightKg: 19, description: null }, contextFor({ actorId: frodo }), NOW,
+    )).toThrow(CharacterReviewStateError);
+
+    expect(() => acceptedCharacter().updatePersonalDetails(
+      { age: 34, weightKg: 19, description: null }, contextFor({ actorId: sam }), NOW,
+    )).toThrow(NotEditableByActorError);
+  });
+
+  it('laisse le MJ arbitrer la longévité mais conserve les bornes de poids', () => {
+    const character = acceptedCharacter();
+    character.updatePersonalDetails(
+      { age: 10_000, weightKg: 19, description: null },
+      contextFor({ actorId: frodo }), NOW,
+    );
+    expect(character.identity.age).toBe(10_000);
+
+    expect(() => character.updatePersonalDetails(
+      { age: 34, weightKg: 1_000, description: null },
+      contextFor({ actorId: frodo }), NOW,
+    )).toThrow(InvalidCharacterIdentityError);
+  });
+});
+
+function acceptedCharacter(): Character {
+  const character = aCharacter(frodo);
+  character.assignTo(true, frodo, NOW);
+  character.submitForReview(contextFor({ actorId: frodo }), NOW);
+  character.acceptReview(asCreator, NOW);
+  return character;
+}
 
 describe('Character.assertDeletableBy', () => {
   it('autorise le MJ même après acceptation', () => {

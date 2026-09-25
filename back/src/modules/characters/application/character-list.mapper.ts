@@ -23,22 +23,28 @@ export function toCharacterListItem(
   assignedPlayer: CharacterDirectoryUser | null,
 ): CampaignCharacterListItem {
   const dto = toCharacterDto(character, viewer.id, assignedPlayer);
-  if (viewer.isGameMaster) return gameMasterProjection(dto);
-  if (character.assignedTo?.equals(viewer.id)) return controlledProjection(dto);
+  if (viewer.isGameMaster) return gameMasterProjection(dto, character);
+  if (character.assignedTo?.equals(viewer.id)) return controlledProjection(dto, character);
   return poolProjection(dto);
 }
 
-function gameMasterProjection(dto: CharacterDto): CampaignCharacterListItem {
-  return { projection: 'gameMaster', ...controlledFields(dto), createdByMe: dto.createdByMe };
+function gameMasterProjection(dto: CharacterDto, character: Character): CampaignCharacterListItem {
+  return {
+    projection: 'gameMaster', ...controlledFields(dto, character), createdByMe: dto.createdByMe,
+  };
 }
 
-function controlledProjection(dto: CharacterDto): CampaignCharacterListItem {
-  return { projection: 'controlled', ...controlledFields(dto) };
+function controlledProjection(dto: CharacterDto, character: Character): CampaignCharacterListItem {
+  return { projection: 'controlled', ...controlledFields(dto, character) };
 }
 
-function controlledFields(dto: CharacterDto) {
+function controlledFields(dto: CharacterDto, character: Character) {
+  const identity = character.identity;
   return {
     ...poolFields(dto), review: dto.review, build: dto.build,
+    personalDetails: {
+      age: identity.age, weightKg: identity.weightKg, description: identity.description,
+    },
     assignedTo: dto.assignedTo, revision: dto.revision,
   };
 }

@@ -38,6 +38,10 @@ export class CharacterReview {
     }
   }
 
+  assertAccepted(): void {
+    if (this.state.status !== 'accepted') throw new CharacterReviewStateError();
+  }
+
   submit(): number {
     this.assertEditable();
     this.state.lastSubmissionVersion += 1;

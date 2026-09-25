@@ -8,6 +8,7 @@ import {
   CreateCharacterSchema,
   FinalizeCharacterSchema,
   IssuedAbilityRollSchema,
+  UpdateCharacterPersonalDetailsSchema,
 } from './character-schema.js';
 
 describe('contrats d attribution et de projection', () => {
@@ -29,6 +30,22 @@ describe('contrats d attribution et de projection', () => {
     });
     expect('abilityRoll' in projection).toBe(false);
     expect('lastRejectionReason' in projection.review).toBe(false);
+  });
+});
+
+describe('édition des données personnelles après acceptation', () => {
+  const valid = { age: 34, weightKg: 31, description: 'Une cicatrice.', expectedRevision: 3 };
+
+  it('accepte uniquement l âge, le poids et la description', () => {
+    expect(UpdateCharacterPersonalDetailsSchema.safeParse(valid).success).toBe(true);
+    expect(UpdateCharacterPersonalDetailsSchema.safeParse({ ...valid, name: 'Autre nom' }).success)
+      .toBe(false);
+  });
+
+  it('refuse un âge ou un poids invalide', () => {
+    expect(UpdateCharacterPersonalDetailsSchema.safeParse({ ...valid, age: 0 }).success).toBe(false);
+    expect(UpdateCharacterPersonalDetailsSchema.safeParse({ ...valid, weightKg: -1 }).success)
+      .toBe(false);
   });
 });
 

@@ -106,6 +106,12 @@ export interface CharacterCorrectionInput {
   build: CharacterBuildInput;
 }
 
+export interface CharacterPersonalDetailsInput {
+  age: number;
+  weightKg: number;
+  description: string | null;
+}
+
 interface CharacterBuildState {
   speciesKey: SpeciesKey;
   lineageKey: LineageKey | null;
@@ -295,6 +301,20 @@ export class Character {
     this.touch(now);
   }
 
+  updatePersonalDetails(
+    input: CharacterPersonalDetailsInput,
+    context: CharacterAccessContext,
+    now: Date,
+  ): void {
+    this.state.review.assertAccepted();
+    this.assertActorCanEdit(context);
+    const current = this.state.identity.snapshot();
+    const identity = CharacterIdentity.create({ ...current, ...input });
+    assertSpeciesPhysique(this.state.build.speciesKey, identity.snapshot());
+    this.state.identity = identity;
+    this.touch(now);
+  }
+
   /**
    * Un joueur qui crée sa propre fiche se l'attribue dans le même geste : pas
    * de passage par `assignTo`, réservé à l'attribution PAR un maître du jeu.
@@ -336,6 +356,10 @@ export class Character {
    */
   assertEditableBy(context: CharacterAccessContext): void {
     this.state.review.assertEditable();
+    this.assertActorCanEdit(context);
+  }
+
+  private assertActorCanEdit(context: CharacterAccessContext): void {
     if (!context.actorIsGameMaster) {
       if (!this.state.assignedTo?.equals(context.actorId)) {
         throw new NotEditableByActorError();

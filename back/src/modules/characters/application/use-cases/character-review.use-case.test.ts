@@ -23,6 +23,7 @@ import { AcceptCharacterReviewUseCase } from './accept-character-review.use-case
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { RefuseCharacterReviewUseCase } from './refuse-character-review.use-case';
 import { SubmitCharacterForReviewUseCase } from './submit-character-for-review.use-case';
+import { UpdateCharacterPersonalDetailsUseCase } from './update-character-personal-details.use-case';
 
 describe('Character review use cases', () => {
   const gameMasterId = randomUUID();
@@ -33,6 +34,7 @@ describe('Character review use cases', () => {
   let accept: AcceptCharacterReviewUseCase;
   let refuse: RefuseCharacterReviewUseCase;
   let commands: InMemoryCharacterCommandRepository;
+  let updateDetails: UpdateCharacterPersonalDetailsUseCase;
 
   beforeEach(async () => {
     const campaignRepo = new InMemoryCampaignRepository();
@@ -40,7 +42,7 @@ describe('Character review use cases', () => {
     await campaignRepo.save(campaign);
     campaignId = campaign.id.value;
     const repositories = reviewRepositories(campaignRepo);
-    ({ create, submit, accept, refuse, commands } = repositories);
+    ({ create, submit, accept, refuse, commands, updateDetails } = repositories);
   });
 
   it('soumet une version immuable et rejoue la même commande', async () => {
@@ -85,6 +87,25 @@ describe('Character review use cases', () => {
     expect(commands.actions).toEqual(['character.submitted', 'character.refused']);
   });
 
+  it('édite les détails personnels après acceptation et rejoue la commande', async () => {
+    const characterId = await createForPlayer();
+    await submit.execute(reviewCommand(characterId, playerId, 1));
+    await accept.execute(reviewCommand(characterId, gameMasterId, 2));
+    const command = {
+      campaignId, characterId, actorId: anActor(playerId), idempotencyKey: randomUUID(),
+      expectedRevision: 3, age: 34, weightKg: 19, description: 'Une nouvelle cicatrice.',
+    };
+
+    const first = await updateDetails.execute(command);
+    const replay = await updateDetails.execute(command);
+
+    expect(replay).toEqual(first);
+    expect(first.personalDetails).toEqual({
+      age: 34, weightKg: 19, description: 'Une nouvelle cicatrice.',
+    });
+    expect(commands.actions.at(-1)).toBe('character.personal-details-updated');
+  });
+
   async function createForPlayer(): Promise<string> {
     const character = await create.execute({
       ...aCharacterBody(), campaignId, actorId: anActor(playerId), idempotencyKey: randomUUID(),
@@ -107,10 +128,11 @@ describe('Character review use cases', () => {
     const clock = new FixedClock();
     const rolls = new InMemoryAbilityRollRepository();
     seedAbilityRoll(rolls, UserId.create(playerId), campaignId);
+    const directory = new InMemoryCharacterDirectory();
     return {
       commands: commandRepository,
       create: new CreateCharacterUseCase(
-        characters, new InMemoryCharacterDirectory(), new InMemoryItemCatalog(), membership,
+        characters, directory, new InMemoryItemCatalog(), membership,
         clock, new InMemoryCharacterCreationRepository(characters), rolls,
       ),
       submit: new SubmitCharacterForReviewUseCase(characters, commandRepository, memberships, clock),
@@ -119,6 +141,9 @@ describe('Character review use cases', () => {
       ),
       refuse: new RefuseCharacterReviewUseCase(
         characters, commandRepository, membership, memberships, clock,
+      ),
+      updateDetails: new UpdateCharacterPersonalDetailsUseCase(
+        characters, commandRepository, memberships, clock,
       ),
     };
   }

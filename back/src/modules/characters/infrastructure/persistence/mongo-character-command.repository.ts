@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 import {
   CharacterReviewCommandResultSchema,
+  CharacterPersonalDetailsCommandResultSchema,
   CharacterSchema as CharacterDtoSchema,
 } from '@donjon-dragon/shared/character-schema';
 import type { ClientSession, Connection, Model } from 'mongoose';
@@ -171,6 +172,8 @@ function outboxDocument(command: CharacterCommand, receiptId: string): OutboxMes
 function parseResult(value: unknown): CharacterCommandResult | null {
   const review = CharacterReviewCommandResultSchema.safeParse(value);
   if (review.success) return review.data;
+  const details = CharacterPersonalDetailsCommandResultSchema.safeParse(value);
+  if (details.success) return details.data;
   const character = CharacterDtoSchema.safeParse(value);
   return character.success ? character.data : null;
 }

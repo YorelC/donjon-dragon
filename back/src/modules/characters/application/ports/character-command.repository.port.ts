@@ -1,5 +1,6 @@
 import type {
   Character as CharacterDto,
+  CharacterPersonalDetailsCommandResult,
   CharacterReviewCommandResult,
 } from '@donjon-dragon/shared/character-schema';
 import type { UserId } from '@kernel/domain/user-id';
@@ -10,11 +11,15 @@ export const CHARACTER_COMMAND_REPOSITORY = Symbol('CHARACTER_COMMAND_REPOSITORY
 
 export type CharacterCommandAction =
   | 'character.corrected'
+  | 'character.personal-details-updated'
   | 'character.submitted'
   | 'character.accepted'
   | 'character.refused';
 
-export type CharacterCommandResult = CharacterDto | CharacterReviewCommandResult;
+export type CharacterCommandResult =
+  | CharacterDto
+  | CharacterReviewCommandResult
+  | CharacterPersonalDetailsCommandResult;
 
 export interface CharacterBuildVersionWrite {
   ordinal: number;

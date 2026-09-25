@@ -69,6 +69,8 @@ export const API_ROUTES = {
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/ability-roll`,
     finalize: (campaignId: string, characterId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}`,
+    personalDetails: (campaignId: string, characterId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/personal-details`,
     reviewSubmit: (campaignId: string, characterId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/review/submit`,
     reviewAccept: (campaignId: string, characterId: string) =>

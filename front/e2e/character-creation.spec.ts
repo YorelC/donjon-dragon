@@ -22,6 +22,8 @@ test.use({ storageState: STORAGE_STATE.gandalf });
 const CAMPAIGN_NAME = 'E2E creation de personnage';
 const CHARACTER_NAME = 'Thorin E2E';
 const REJECTION_REASON = 'Les langues ne collent pas au personnage.';
+const CORRECTED_AGE = '85';
+const ACCEPTED_AGE = '86';
 
 const IDENTITY: Omit<CharacterIdentity, 'heightCm' | 'weightKg'> = {
   name: CHARACTER_NAME,
@@ -156,11 +158,25 @@ test.describe('Soumettre une fiche au MJ et la faire valider', () => {
     await expect(editLink).toBeVisible();
     const builderUrl = await editLink.getAttribute('href');
 
+    await editLink.click();
+    await builder.openStep('Identité');
+    await builder.identityField('Âge (années)').fill(CORRECTED_AGE);
+    await builder.identityField('Description (facultative)').fill('Description corrigée.');
+    await builder.finishButton.click();
+    await page.goto(`/campaigns/${campaignId}/characters`);
+
     await row.getByRole('button', { name: 'Soumettre' }).click();
     await row.getByRole('button', { name: 'Accepter' }).click();
 
     await expect(row.getByText('Acceptée')).toBeVisible();
     await expect(row.getByRole('link', { name: 'Éditer' })).toHaveCount(0);
+
+    await row.getByRole('button', { name: 'Détails' }).click();
+    const details = page.getByRole('dialog');
+    await details.getByLabel('Âge').fill(ACCEPTED_AGE);
+    await details.getByLabel('Description physique').fill('Description après validation.');
+    await details.getByRole('button', { name: 'Enregistrer' }).click();
+    await expect(page.getByText('Données personnelles mises à jour')).toBeVisible();
 
     // Acceptée, elle est figée : même l'URL directe du wizard ne l'ouvre plus.
     await page.goto(builderUrl as string);

@@ -43,6 +43,7 @@ import { PreviewCharacterSheetUseCase } from './application/use-cases/preview-ch
 import { RefuseCharacterReviewUseCase } from './application/use-cases/refuse-character-review.use-case';
 import { SubmitCharacterForReviewUseCase } from './application/use-cases/submit-character-for-review.use-case';
 import { UnassignCharacterUseCase } from './application/use-cases/unassign-character.use-case';
+import { UpdateCharacterPersonalDetailsUseCase } from './application/use-cases/update-character-personal-details.use-case';
 import { ItemsItemCatalog } from './infrastructure/acl/items-item-catalog';
 import { UserCharacterDirectory } from './infrastructure/acl/user-character-directory';
 import {
@@ -62,6 +63,7 @@ import { CharacterController } from './presentation/character.controller';
 import { CampaignCharacterLifecycleController } from './presentation/campaign-character-lifecycle.controller';
 import { DndCatalogController } from './presentation/dnd-catalog.controller';
 import { CharacterReviewController } from './presentation/character-review.controller';
+import { CharacterPersonalDetailsController } from './presentation/character-personal-details.controller';
 
 @Module({
   imports: [
@@ -83,6 +85,7 @@ import { CharacterReviewController } from './presentation/character-review.contr
     CampaignCharacterLifecycleController,
     DndCatalogController,
     CharacterReviewController,
+    CharacterPersonalDetailsController,
   ],
   providers: [
     { provide: CHARACTER_REPOSITORY, useClass: MongoCharacterRepository },
@@ -116,6 +119,7 @@ import { CharacterReviewController } from './presentation/character-review.contr
     SubmitCharacterForReviewUseCase,
     AcceptCharacterReviewUseCase,
     RefuseCharacterReviewUseCase,
+    UpdateCharacterPersonalDetailsUseCase,
   ],
 })
 export class CharactersModule {}

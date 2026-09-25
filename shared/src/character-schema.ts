@@ -331,6 +331,16 @@ export const UnassignCharacterSchema = z.object({
   expectedRevision: z.number().int().nonnegative(),
 });
 
+export const CharacterPersonalDetailsSchema = z.object({
+  age: z.number().int().positive(),
+  weightKg: z.number().positive(),
+  description: z.string().nullable(),
+});
+
+export const UpdateCharacterPersonalDetailsSchema = CharacterPersonalDetailsSchema.extend({
+  expectedRevision: CharacterRevisionSchema,
+}).strict();
+
 export const CharacterIdSchema = z.string().uuid();
 
 // ---------------------------------------------------------------------------
@@ -484,6 +494,7 @@ export const CharacterPoolProjectionSchema = z.object({
 export const ControlledCharacterProjectionSchema = CharacterPoolProjectionSchema.extend({
   review: CharacterReviewSummarySchema,
   build: CharacterBuildSummarySchema,
+  personalDetails: CharacterPersonalDetailsSchema,
   assignedTo: UserSummarySchema.nullable(),
   revision: CharacterRevisionSchema,
 });
@@ -525,6 +536,12 @@ export const CharacterReviewCommandResultSchema = z.object({
   review: CharacterReviewSummarySchema,
 });
 
+export const CharacterPersonalDetailsCommandResultSchema = z.object({
+  id: CharacterIdSchema,
+  revision: CharacterRevisionSchema,
+  personalDetails: CharacterPersonalDetailsSchema,
+});
+
 export type AbilityScores = z.infer<typeof AbilityScoresSchema>;
 export type BackgroundAbilityBonuses = z.infer<typeof BackgroundAbilityBonusesSchema>;
 export type AbilityMethod = z.infer<typeof AbilityMethodSchema>;
@@ -543,6 +560,10 @@ export type FinalizeCharacterDto = z.infer<typeof FinalizeCharacterSchema>;
 export type PreviewCharacterSheetDto = z.infer<typeof PreviewCharacterSheetSchema>;
 export type AssignCharacterDto = z.infer<typeof AssignCharacterSchema>;
 export type UnassignCharacterDto = z.infer<typeof UnassignCharacterSchema>;
+export type CharacterPersonalDetails = z.infer<typeof CharacterPersonalDetailsSchema>;
+export type UpdateCharacterPersonalDetailsDto = z.infer<
+  typeof UpdateCharacterPersonalDetailsSchema
+>;
 export type CharacterBuildSummary = z.infer<typeof CharacterBuildSummarySchema>;
 export type CharacterBuildDetailDto = z.infer<typeof CharacterBuildDetailSchema>;
 export type Character = z.infer<typeof CharacterSchema>;
@@ -554,3 +575,6 @@ export type CharacterAssignmentCommandResult = z.infer<
 export type CharacterReviewCommand = z.infer<typeof CharacterReviewCommandSchema>;
 export type RejectCharacterDto = z.infer<typeof RejectCharacterSchema>;
 export type CharacterReviewCommandResult = z.infer<typeof CharacterReviewCommandResultSchema>;
+export type CharacterPersonalDetailsCommandResult = z.infer<
+  typeof CharacterPersonalDetailsCommandResultSchema
+>;

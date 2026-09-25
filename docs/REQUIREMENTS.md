@@ -233,6 +233,11 @@ Restent modifiables :
 - âge ;
 - poids.
 
+Le joueur assigné modifie ces données sur son personnage. Les MJ conservent les
+droits d'édition définis pour les fiches de la campagne. Cette édition est une
+commande dédiée : elle ne rouvre pas le wizard et ne permet pas de transmettre un
+champ immuable.
+
 ### Respécialisation
 
 La classe et les caractéristiques peuvent changer uniquement par une
