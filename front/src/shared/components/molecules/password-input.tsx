@@ -8,19 +8,29 @@ const REVEAL_LABEL = {
 } as const;
 
 /** Champ de mot de passe et son œil de dévoilement, collé au bord droit. */
-function PasswordInput(props: React.ComponentProps<"input">) {
+const PasswordInput = React.forwardRef<
+  HTMLInputElement,
+  React.ComponentProps<"input">
+>(function PasswordInput(props, ref) {
   const [revealed, setRevealed] = React.useState(false);
 
   return (
     <div className="relative">
-      <Input {...props} type={revealed ? "text" : "password"} className="pr-11" />
+      <Input
+        {...props}
+        ref={ref}
+        type={revealed ? "text" : "password"}
+        className="pr-11"
+      />
       <RevealButton
         revealed={revealed}
         onToggle={() => setRevealed((shown) => !shown)}
       />
     </div>
   );
-}
+});
+
+PasswordInput.displayName = "PasswordInput";
 
 interface RevealButtonProps {
   revealed: boolean;
