@@ -11,6 +11,7 @@ const DIAMOND_SIZES = {
   box: "size-3",
   count: "size-[17px]",
   badge: "size-[34px]",
+  crest: "size-16",
 } as const;
 
 const DIAMOND_CONTENT_SIZES = {
@@ -18,6 +19,7 @@ const DIAMOND_CONTENT_SIZES = {
   box: "text-meta",
   count: "text-[10.5px] font-semibold",
   badge: "text-[13px]",
+  crest: "text-[19px] tracking-meta",
 } as const;
 
 const DIAMOND_TONES = {

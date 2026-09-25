@@ -62,6 +62,9 @@
   --color-success: #c9a961;
   --color-success-foreground: #0a0f17;
 
+  /* Magie — les emplacements de sorts, seul bleu de la charte (maquette de fiche). */
+  --color-arcane: #7c84d6;
+
   --color-border: rgba(201, 169, 97, 0.22);
   --color-input: rgba(201, 169, 97, 0.24);
   --color-ring: rgba(201, 169, 97, 0.6);
@@ -357,6 +360,43 @@
 
   .alert-error {
     @apply border-destructive/60 bg-destructive/10;
+  }
+
+  /* --- Fiche de personnage --------------------------------------------- */
+
+  /* Legende de donnee chiffree : PV, vitesse, colonnes des tableaux d'onglet. */
+  .sheet-caption {
+    @apply text-meta tracking-title text-ink-faint uppercase;
+  }
+
+  /* Jeton PV / Maitrise / CA du panneau d'identite. */
+  .sheet-chip {
+    @apply flex items-center gap-2 border border-gold/24 bg-surface px-3.5 py-[7px];
+  }
+
+  /* Paire libelle / valeur alignee aux deux bords : signalement, competences. */
+  .sheet-pair {
+    @apply flex items-baseline justify-between gap-2.5 text-sm;
+  }
+
+  /* Ligne d'une liste d'onglet : attaque, aptitude, sort, objet. */
+  .sheet-row {
+    @apply border border-gold/14 bg-surface px-3 py-2.5;
+  }
+
+  /* Liste a gauche, panneau de detail a droite ; une seule colonne sous xl. */
+  .sheet-tab-split {
+    @apply grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_300px];
+  }
+
+  /* Panneau de detail d'un onglet : il suit le defilement de la liste. */
+  .sheet-aside {
+    @apply flex min-w-0 flex-col gap-3 xl:sticky xl:top-5 xl:border-l xl:border-gold/14 xl:pl-6;
+  }
+
+  /* Tag de ligne : source d'une aptitude, statut d'un sort, type d'objet. */
+  .sheet-tag {
+    @apply text-[9.5px] tracking-value whitespace-nowrap text-ink-disabled uppercase;
   }
 
   /* --- En-tete d'application ---------------------------------------------- */

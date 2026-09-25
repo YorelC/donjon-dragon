@@ -10,11 +10,12 @@ interface FullWidthPageProps {
 }
 
 /**
- * Les pages qui ont besoin de toute la largeur : le builder et la fiche.
+ * Les pages qui ont besoin de toute la largeur : le builder. La fiche, elle, vit
+ * dans le layout de campagne, comme la maquette.
  *
- * Elles sortent du layout de campagne et de son `max-w-4xl`, qui ne laissait que
- * 700 px à trois colonnes. Elles portent donc leur propre en-tête et leur propre
- * retour — sans quoi on perdrait le contexte de la campagne.
+ * Elles sortent du layout de campagne, qui ne laissait pas assez de place à trois
+ * colonnes. Elles portent donc leur propre en-tête et leur propre retour — sans
+ * quoi on perdrait le contexte de la campagne.
  *
  * La largeur est bornée à 100 rem : au-delà, les colonnes s'éloignent trop pour
  * se lire d'un coup d'œil. `w-full` est indispensable : dans un parent flex,

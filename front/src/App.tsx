@@ -92,13 +92,12 @@ function AuthRedirectRoutes() {
   );
 }
 
-/** Hors du layout de campagne : ces pages prennent toute la largeur. */
+/** Hors du layout de campagne : le builder prend toute la largeur. */
 function CharacterRoutes() {
   return (
     <>
       <Route path={ROUTES.campaignCharacterNew} element={<CharacterBuilderPage />} />
       <Route path={ROUTES.campaignCharacterBuilder} element={<CharacterBuilderPage />} />
-      <Route path={ROUTES.campaignCharacterSheet} element={<CharacterSheetPage />} />
     </>
   );
 }
@@ -112,6 +111,7 @@ function CampaignDetailRoutes() {
         path={ROUTES.campaignDetailCharacters}
         element={<CampaignCharactersPage />}
       />
+      <Route path={ROUTES.campaignCharacterSheet} element={<CharacterSheetPage />} />
     </Route>
   );
 }
