@@ -25,6 +25,8 @@ sont classés dans [`HISTORY/`](./HISTORY/) et ne font pas partie de la lecture 
 
 Les documents techniques existants restent applicables dans leur périmètre :
 
+- [`SUITE-DEVELOPPEMENT.md`](./SUITE-DEVELOPPEMENT.md) ordonne la reprise des
+  travaux après la création niveau 1, sans remplacer les exigences normatives ;
 - [`architecture-back.md`](./architecture-back.md) décrit l'architecture backend actuelle ;
 - [`TECHNICAL-ARCHITECTURE-5A.md`](./TECHNICAL-ARCHITECTURE-5A.md) décrit la cible
   logique validée ;
