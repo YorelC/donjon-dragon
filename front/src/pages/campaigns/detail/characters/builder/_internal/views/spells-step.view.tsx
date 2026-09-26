@@ -7,6 +7,8 @@ export interface SpellsStep {
   classSpells: CatalogSpellList | null;
   classCantripsKnown: number;
   classSpellsPrepared: number;
+  /** Nul hors Magicien, qui remplit son grimoire au lieu de préparer ses sorts. */
+  spellbookSize: number;
   /** La liste d'Initié à la magie, quand un don en accorde une. */
   featSpells: CatalogSpellList | null;
   featCantripsKnown: number;
@@ -53,18 +55,13 @@ export function SpellsStepView({ step, composition, onChange }: SpellsStepViewPr
         selected={composition.classSpells}
         onChange={(classSpells) => onChange({ classSpells })}
       />
-      {composition.classKey === "wizard" ? (
-        <SpellGroup
-          title="Grimoire"
-          spells={step.classSpells?.level1 ?? []}
-          limit={6}
-          selected={composition.spellbook}
-          onChange={(spellbook) => onChange({
-            spellbook,
-            classSpells: composition.classSpells.filter((key) => spellbook.includes(key)),
-          })}
-        />
-      ) : null}
+      <SpellGroup
+        title="Grimoire — sorts préparés plus tard, sur la fiche"
+        spells={step.classSpells?.level1 ?? []}
+        limit={step.spellbookSize}
+        selected={composition.spellbook}
+        onChange={(spellbook) => onChange({ spellbook })}
+      />
       <MagicInitiateGroups kind="spells" {...{ step, composition, onChange }} />
     </div>
   );

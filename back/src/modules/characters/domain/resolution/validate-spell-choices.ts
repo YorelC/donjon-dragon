@@ -2,7 +2,7 @@ import type { CharacterChoice } from '../character-choices';
 import type { Ability } from '../reference/abilities';
 import { BACKGROUNDS } from '../reference/backgrounds';
 import { CLASS_ORDERS } from '../reference/class-orders';
-import { CLASSES } from '../reference/classes';
+import { CLASSES, type ClassSpellcasting } from '../reference/classes';
 import type { ClassKey, SpellKey } from '../reference/keys';
 import { SPELLS, type Spell } from '../reference/spells';
 import { fail, type ChoicesToValidate } from './choice-validation';
@@ -13,7 +13,7 @@ const MAGIC_INITIATE_ABILITIES: readonly Ability[] = ['intelligence', 'wisdom', 
 export function validateSpellChoices(input: ChoicesToValidate): void {
   assertClassSpells(input);
   assertMagicInitiate(input);
-  assertWizardSpellbook(input);
+  assertSpellbook(input);
   assertPactTome(input);
 }
 
@@ -27,8 +27,13 @@ function assertClassSpells(input: ChoicesToValidate): void {
     chosen,
     input.classKey,
     spellcasting.cantripsKnown + extra,
-    spellcasting.spellsPrepared,
+    levelOneChosenAtCreation(spellcasting),
   );
+}
+
+/** Un lanceur à grimoire prépare ses sorts sur sa fiche, pas à la création. */
+function levelOneChosenAtCreation(spellcasting: ClassSpellcasting): number {
+  return spellcasting.spellbookSize ? 0 : spellcasting.spellsPrepared;
 }
 
 function assertMagicInitiate(input: ChoicesToValidate): void {
@@ -79,18 +84,11 @@ function choiceGrantedByBackground(
   );
 }
 
-function assertWizardSpellbook(input: ChoicesToValidate): void {
-  if (input.classKey !== 'wizard') return assertNoSpellbook(input);
+function assertSpellbook(input: ChoicesToValidate): void {
+  const size = CLASSES[input.classKey].spellcasting?.spellbookSize ?? 0;
   const spellbook = classChoices(input).flatMap((choice) => choice.spellbook ?? []);
-  assertKnownUnique(spellbook, 6, 'wizard', 1, 'spellbook');
-  const prepared = classChoices(input).flatMap(spellsOf)
-    .filter((key) => SPELLS[key]?.level === 1);
-  if (!prepared.every((key) => spellbook.includes(key))) fail('wizard prepared spells');
-}
-
-function assertNoSpellbook(input: ChoicesToValidate): void {
-  const spellbook = classChoices(input).flatMap((choice) => choice.spellbook ?? []);
-  assertEmpty(spellbook, 'spellbook');
+  if (size === 0) return assertEmpty(spellbook, 'spellbook');
+  assertKnownUnique(spellbook, size, input.classKey, 1, 'spellbook');
 }
 
 function assertPactTome(input: ChoicesToValidate): void {

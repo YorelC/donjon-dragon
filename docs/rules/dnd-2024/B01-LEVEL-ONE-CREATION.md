@@ -198,7 +198,7 @@ sont résumées ci-dessous.
 | B01-CLA-ROG | Roublard | 4 compétences autorisées ; maîtrise des outils de voleur ; Expertise sur deux compétences maîtrisées, y compris celles reçues d'une autre source, mais jamais sur un outil ; Attaque sournoise, jargon des voleurs, une langue additionnelle ; 2 maîtrises d'armes choisies. | L'interface limite l'Expertise aux compétences de classe ; outils, langue et armes absents ; backend ne valide pas l'Expertise. **Partiel**. | Toute compétence déjà maîtrisée est éligible quelle que soit sa source ; un outil est refusé pour l'Expertise ; quotas exacts. | PHB24 p. 128–130 ; DATA-CLA ; SF-002. |
 | B01-CLA-SOR | Ensorceleur | 2 compétences autorisées ; Sorcellerie innée ; 4 sorts mineurs, 2 sorts préparés, 2 emplacements. | Présent côté interface/moteur ; validation de liste et quotas au backend incomplète. **Partiel**. | Liste, niveau, unicité et quotas exacts ; deux usages de Sorcellerie innée, DD augmenté et avantage aux attaques magiques justifiés. | PHB24 p. 138–140 ; DATA-CLA ; SF-002. |
 | B01-CLA-WLK | Occultiste | 2 compétences autorisées ; exactement 1 Manifestation occulte parmi Armure d'ombres, Esprit occulte, Pacte de la chaîne, Pacte de la lame et Pacte du grimoire, avec tous ses sous-choix ; 2 sorts mineurs, 2 sorts préparés, 1 emplacement de pacte niveau 1. | Capacité informative seulement ; aucune sélection d'invocation ; les prérequis ne sont pas structurés pour la validation. **Manquant / partiel**. | Une des cinq options exactes ; les options niveau 2+ sont refusées ; choix imbriqués validés ; emplacement récupéré au repos court ou long. | PHB24 p. 152–156 ; DATA-CLA ; SF-002. |
-| B01-CLA-WIZ | Magicien | 2 compétences autorisées ; 3 sorts mineurs ; grimoire initial de 6 sorts niveau 1 ; 4 sorts préparés choisis parmi le grimoire ; 2 emplacements ; Savoir rituel et Restauration magique. | Le grimoire n'existe pas ; 4 sorts sont traités comme préparés directement. **Manquant / partiel**. | Six sorts uniques de Magicien dans le grimoire, quatre préparés inclus dans ces six ; rituels consultent le grimoire ; quotas exacts. | PHB24 p. 164–166 ; DATA-CLA ; SF-002. |
+| B01-CLA-WIZ | Magicien | 2 compétences autorisées ; 3 sorts mineurs ; grimoire initial de 6 sorts niveau 1 ; 2 emplacements ; Savoir rituel et Restauration magique. Le quota de 4 sorts préparés reste celui de la classe, mais la création ne le remplit pas : le joueur prépare ses sorts depuis son grimoire sur sa fiche (`DR-B01-05`). | Grimoire de 6 sorts choisi et validé ; aucun sort de niveau 1 préparé à la création. **Conforme à la création ; préparation sur fiche manquante**. | Six sorts uniques de Magicien dans le grimoire ; aucun sort de niveau 1 de classe n'est accepté hors du grimoire à la création ; rituels consultent le grimoire ; quotas exacts. | PHB24 p. 164–166 ; DATA-CLA ; SF-002 ; `DR-B01-05`. |
 
 | ID | Source | Cible transverse | État actuel / qualification | Acteurs et données | Critères d'acceptation | Décision / trace |
 |---|---|---|---|---|---|---|
@@ -215,7 +215,7 @@ sont résumées ci-dessous.
 | B01-SOR-002 | DATA-SOR, DATA-CLA | Chaque source d'incantation possède ses propres liste, caractéristique, nature de sélection et quotas ; les sorts de classe, de don, d'espèce, d'invocation et du grimoire ne sont jamais agrégés pour satisfaire le quota d'une autre source. | Le front additionne les sorts de classe et de don pour vérifier les quotas ; backend ne valide pas les listes. **Partiel, contraire à la cible**. | Créateur, système ; choix groupés par source. | Chaque source reste valide isolément ; un sort du don ne comble pas une place de classe et inversement. | SF-002. |
 | B01-SOR-003 | DATA-SOR | Les quotas sont exacts, les sorts sont uniques lorsque la règle l'exige, le niveau est autorisé et chaque sort appartient à la bonne liste. | Validité front utilise `>=` ; backend accepte des clés arbitraires et classe une clé inconnue comme sort non mineur. **Partiel, incohérence d'autorité**. | Système ; clés de sorts. | Refus d'un choix en trop, en moins, du mauvais niveau, de la mauvaise liste, dupliqué ou inconnu. | SF-002. |
 | B01-SOR-004 | DATA-CLA | Les sorts toujours préparés et les lancements gratuits sont ajoutés sans consommer les quotas ordinaires ni créer d'emplacement supplémentaire. | Certains octrois existent dans les effets, mais fréquence et quotas ne sont pas tous représentés distinctement. **Partiel**. | Système ; sorts accordés, usages, emplacements. | Marque du chasseur, Initié à la magie et traits d'espèce conservent leur source, fréquence et relation aux emplacements. | SF-002. |
-| B01-SOR-005 | DATA-CLA | Le grimoire du Magicien est un ensemble distinct des sorts préparés et reste la source des rituels. | Aucune donnée de grimoire. **Manquant**. | Créateur, système ; grimoire, préparation. | Les 4 préparés sont inclus dans les 6 du grimoire ; un rituel non préparé mais inscrit reste disponible comme rituel. | SF-002. |
+| B01-SOR-005 | DATA-CLA | Le grimoire du Magicien est un ensemble distinct des sorts préparés et reste la source des rituels. | Aucune donnée de grimoire. **Manquant**. | Créateur, système ; grimoire, préparation. | La création choisit les 6 sorts du grimoire et aucun préparé ; les préparés, choisis plus tard sur la fiche, sont toujours inclus dans le grimoire ; un rituel non préparé mais inscrit reste disponible comme rituel. | SF-002 ; `DR-B01-05`. |
 
 ## Matrice — équipement, or, port et babiole
 
@@ -294,6 +294,20 @@ validation restent auditables.
 **Résolue le 20 août 2026 :** les cent babioles conservent leur gratuité officielle.
 Leur sélection ne modifie jamais l'or de départ. `DEC-008` est mis à jour en
 conséquence.
+
+### DR-B01-05 — Sorts préparés du Magicien à la création
+
+**Résolue le 25 septembre 2026 :** la création du Magicien ne fait choisir que les six
+sorts du grimoire. Le joueur choisit ensuite ses sorts préparés parmi ceux du grimoire,
+sur sa fiche (`B06-PRE-004`). Tant que cette préparation n'existe pas, un Magicien
+nouvellement créé n'a aucun sort de niveau 1 préparé.
+
+**DÉCISION REQUISE — fenêtre de la première préparation.** `REQUIREMENTS.md` n'autorise
+une modification des sorts préparés qu'après un repos long. Options :
+- ouvrir la préparation dès la fin de la création, jusqu'au premier combat : le
+  personnage entre en jeu opérationnel ; exception explicite à la règle du repos long ;
+- l'ouvrir seulement après le premier repos long : aucune exception, mais le Magicien
+  commence sa première aventure sans sort de niveau 1 préparé.
 
 ## Correction factuelle post-validation
 

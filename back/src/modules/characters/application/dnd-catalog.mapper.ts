@@ -267,6 +267,7 @@ function toCatalogSpellcasting(characterClass: CharacterClass) {
     ability: spellcasting.ability,
     cantripsKnown: spellcasting.cantripsKnown,
     spellsPrepared: spellcasting.spellsPrepared,
+    spellbookSize: spellcasting.spellbookSize ?? 0,
     level1Slots: spellcasting.level1Slots,
     focus: spellcasting.focus,
   };

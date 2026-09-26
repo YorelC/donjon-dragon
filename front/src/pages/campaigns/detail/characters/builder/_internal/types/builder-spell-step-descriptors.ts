@@ -1,4 +1,4 @@
-import { cantripQuotaOf, spellQuotaOf, type StepContext } from "./builder-lookups";
+import { cantripQuotaOf, spellbookSizeOf, spellQuotaOf, type StepContext } from "./builder-lookups";
 import { chosenCantrips, chosenSpells } from "./builder-validity";
 import type { StepDescriptor } from "./builder-step-descriptors";
 
@@ -11,17 +11,20 @@ export const cantripsDescriptor: StepDescriptor = {
   progress: (context) => counted(chosenCantrips(context.composition), cantripQuotaOf(context)),
 };
 
+/** Le grimoire du Magicien se remplit sur la même étape que les sorts préparés. */
 export const spellsDescriptor: StepDescriptor = {
   key: "spells", label: "Sorts",
-  isVisible: (context) => spellQuotaOf(context) > 0,
-  isValid: spellsAreComplete,
-  progress: (context) => counted(chosenSpells(context.composition), spellQuotaOf(context)),
+  isVisible: (context) => spellQuotaOf(context) + spellbookSizeOf(context) > 0,
+  isValid: (context) => chosenSpells(context.composition) === spellQuotaOf(context)
+    && spellbookIsComplete(context),
+  progress: (context) => counted(
+    chosenSpells(context.composition) + context.composition.spellbook.length,
+    spellQuotaOf(context) + spellbookSizeOf(context),
+  ),
 };
 
-function spellsAreComplete(context: StepContext): boolean {
-  if (chosenSpells(context.composition) !== spellQuotaOf(context)) return false;
-  if (context.composition.classKey !== "wizard") return true;
-  const { classSpells, spellbook } = context.composition;
-  return spellbook.length === 6 && new Set(spellbook).size === 6
-    && classSpells.every((spell) => spellbook.includes(spell));
+function spellbookIsComplete(context: StepContext): boolean {
+  const { spellbook } = context.composition;
+  const size = spellbookSizeOf(context);
+  return spellbook.length === size && new Set(spellbook).size === size;
 }

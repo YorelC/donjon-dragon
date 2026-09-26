@@ -89,8 +89,11 @@ function addSpells(choice: CharacterChoice, classKey: ClassKey): void {
   const cantrips = available.filter((spell) => spell.level === 0)
     .slice(0, spellcasting.cantripsKnown + extra).map((spell) => spell.key);
   const levelOne = available.filter((spell) => spell.level === 1);
-  if (classKey === 'wizard') choice.spellbook = levelOne.slice(0, 6).map((spell) => spell.key);
-  const prepared = classKey === 'wizard' ? choice.spellbook!.slice(0, 4) : levelOne
+  const spellbookSize = spellcasting.spellbookSize ?? 0;
+  if (spellbookSize > 0) {
+    choice.spellbook = levelOne.slice(0, spellbookSize).map((spell) => spell.key);
+  }
+  const prepared = spellbookSize > 0 ? [] : levelOne
     .slice(0, spellcasting.spellsPrepared).map((spell) => spell.key);
   choice.spells = [...cantrips, ...prepared];
 }

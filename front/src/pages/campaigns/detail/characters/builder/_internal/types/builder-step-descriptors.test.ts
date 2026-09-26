@@ -143,16 +143,18 @@ describe("magie de niveau 1", () => {
     expect(isStepValid("invocation", { catalog, composition: { ...base, invocation: "pact-of-the-tome", invocationSpells: ["a", "b", "c", "d", "e"] } })).toBe(true);
   });
 
-  it("exige six sorts au grimoire et que les préparés y figurent", () => {
+  it("fait remplir le grimoire du Magicien sans lui faire préparer de sort", () => {
     const wizard = aClass({ key: "wizard", spellcasting: {
-      ability: "intelligence", cantripsKnown: 3, spellsPrepared: 4, level1Slots: 2, focus: "spellbook",
+      ability: "intelligence", cantripsKnown: 3, spellsPrepared: 4, spellbookSize: 6,
+      level1Slots: 2, focus: "spellbook",
     } });
     const catalog = aCatalog({ classes: [wizard] });
     const composition = { ...EMPTY_COMPOSITION, classKey: "wizard" as const,
-      classSpells: ["a", "b", "c", "d"], spellbook: ["a", "b", "c", "d", "e", "f"] };
+      spellbook: ["a", "b", "c", "d", "e", "f"] };
 
     expect(isStepValid("spells", { catalog, composition })).toBe(true);
-    expect(isStepValid("spells", { catalog, composition: { ...composition, classSpells: ["a", "b", "c", "x"] } })).toBe(false);
+    expect(isStepValid("spells", { catalog, composition: { ...composition, spellbook: ["a"] } })).toBe(false);
+    expect(isStepValid("spells", { catalog, composition: { ...composition, classSpells: ["a"] } })).toBe(false);
   });
 
   it("additionne deux Initiés à la magie accordés par des sources distinctes", () => {

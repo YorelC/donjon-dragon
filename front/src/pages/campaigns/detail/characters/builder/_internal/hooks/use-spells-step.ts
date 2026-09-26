@@ -1,20 +1,26 @@
 import { useClassSpells } from "@/shared/queries/use-dnd-catalog";
 import type { CatalogSpell } from "@donjon-dragon/shared";
 import type { SpellsStep } from "../views/spells-step.view";
-import { classCantripsOf, classOf, featSpellcastingOf, type StepContext } from "../types/builder-lookups";
+import {
+  classCantripsOf,
+  classPreparedQuotaOf,
+  featSpellcastingOf,
+  spellbookSizeOf,
+  type StepContext,
+} from "../types/builder-lookups";
 
 export function useSpellsStep(context: StepContext | null): SpellsStep {
   const classSpells = useClassSpells(context?.composition.classKey ?? null);
   const featSpells = useClassSpells(context?.composition.spellList ?? null);
   const tomeQueries = useTomeSpellLists();
-  const spellcasting = context ? classOf(context)?.spellcasting : undefined;
   const featChoice = context ? featSpellcastingOf(context) : undefined;
   const lists = tomeQueries.map((query) => query.data);
 
   return {
     classSpells: classSpells.data ?? null,
     classCantripsKnown: context ? classCantripsOf(context) : 0,
-    classSpellsPrepared: spellcasting?.spellsPrepared ?? 0,
+    classSpellsPrepared: context ? classPreparedQuotaOf(context) : 0,
+    spellbookSize: context ? spellbookSizeOf(context) : 0,
     featSpells: featSpells.data ?? null,
     featCantripsKnown: featChoice?.cantripsKnown ?? 0,
     featSpellsPrepared: featChoice?.spellsPrepared ?? 0,

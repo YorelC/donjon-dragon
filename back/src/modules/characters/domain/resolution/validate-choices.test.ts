@@ -44,13 +44,33 @@ describe('validation autoritaire des choix B01', () => {
     })).toThrow(InvalidCharacterChoiceError);
   });
 
-  it('refuse les sorts préparés du Magicien absents de son grimoire', () => {
-    const cantrips = wizardSpells(0, 3);
-    const levelOne = wizardSpells(1, 7);
+  it('accepte un Magicien qui ne choisit que ses sorts mineurs et son grimoire', () => {
     const choice: CharacterChoice = {
       source: { type: 'class', key: 'wizard' },
-      spells: [...cantrips, ...levelOne.slice(0, 4)],
-      spellbook: levelOne.slice(1, 7),
+      spells: wizardSpells(0, 3),
+      spellbook: wizardSpells(1, 6),
+    };
+
+    expect(() => validateSpellChoices(spellInput('wizard', [choice]))).not.toThrow();
+  });
+
+  it('refuse un sort préparé à la création du Magicien, même inscrit au grimoire', () => {
+    const spellbook = wizardSpells(1, 6);
+    const choice: CharacterChoice = {
+      source: { type: 'class', key: 'wizard' },
+      spells: [...wizardSpells(0, 3), spellbook[0]!],
+      spellbook,
+    };
+
+    expect(() => validateSpellChoices(spellInput('wizard', [choice])))
+      .toThrow(InvalidCharacterChoiceError);
+  });
+
+  it('refuse un grimoire de Magicien incomplet', () => {
+    const choice: CharacterChoice = {
+      source: { type: 'class', key: 'wizard' },
+      spells: wizardSpells(0, 3),
+      spellbook: wizardSpells(1, 5),
     };
 
     expect(() => validateSpellChoices(spellInput('wizard', [choice])))

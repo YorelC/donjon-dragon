@@ -80,11 +80,22 @@ export function cantripQuotaOf(context: StepContext): number {
   return classCantripsOf(context) + featCount * 2;
 }
 
+/**
+ * Les sorts de niveau 1 préparés à la création. Le Magicien n'en prépare aucun :
+ * il remplit son grimoire, et prépare ses sorts plus tard sur sa fiche.
+ */
 export function spellQuotaOf(context: StepContext): number {
-  const fromClass = classOf(context)?.spellcasting?.spellsPrepared ?? 0;
+  return classPreparedQuotaOf(context) + magicInitiateCount(context);
+}
 
-  const featCount = magicInitiateCount(context);
-  return fromClass + featCount;
+export function classPreparedQuotaOf(context: StepContext): number {
+  if (spellbookSizeOf(context) > 0) return 0;
+
+  return classOf(context)?.spellcasting?.spellsPrepared ?? 0;
+}
+
+export function spellbookSizeOf(context: StepContext): number {
+  return classOf(context)?.spellcasting?.spellbookSize ?? 0;
 }
 
 function magicInitiateCount(context: StepContext): number {

@@ -121,6 +121,8 @@ export const CatalogSpellcastingSchema = z.object({
   ability: AbilitySchema,
   cantripsKnown: z.number().int().nonnegative(),
   spellsPrepared: z.number().int().nonnegative(),
+  /** Nul hors Magicien : seul le grimoire se remplit à la création, pas les préparés. */
+  spellbookSize: z.number().int().nonnegative(),
   level1Slots: z.number().int().nonnegative(),
   focus: z.string(),
 });

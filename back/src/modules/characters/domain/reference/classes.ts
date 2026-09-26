@@ -27,6 +27,11 @@ export interface ClassSpellcasting {
   ability: Ability;
   cantripsKnown: number;
   spellsPrepared: number;
+  /**
+   * Le Magicien prépare depuis son grimoire : sa création remplit le grimoire, et
+   * le joueur prépare ses sorts plus tard, sur sa fiche (DR-B01-05).
+   */
+  spellbookSize?: number;
   level1Slots: number;
   focus: string;
 }
@@ -885,6 +890,7 @@ const CLASS_LIST: readonly CharacterClass[] = [
       ability: 'intelligence',
       cantripsKnown: 3,
       spellsPrepared: 4,
+      spellbookSize: 6,
       level1Slots: 2,
       focus: 'focaliseur arcanique ou grimoire',
     },
