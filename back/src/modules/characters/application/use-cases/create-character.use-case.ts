@@ -94,9 +94,8 @@ export class CreateCharacterUseCase {
     if (!role.isGameMaster) await this.assertNoExistingCharacter(campaignId, actorId);
     const now = this.clock.now();
     const roll = await this.issuedRoll(dto, actorId);
-    const character = Character.create(
-      this.creationInputFor(dto, { campaignId, createdBy: actorId, roll, now }),
-    );
+    const origin = { campaignId, createdBy: actorId, roll, now };
+    const character = Character.create(this.creationInputFor(dto, origin));
     await this.assertEquipment(character, dto.campaignId);
     if (!role.isGameMaster) character.selfAssignToCreator(now);
     const result = toCharacterDto(character, actorId, await this.assignedPlayer(character));
