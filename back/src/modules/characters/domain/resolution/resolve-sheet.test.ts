@@ -621,6 +621,25 @@ describe('magicien haut-elfe', () => {
   });
 });
 
+// Lumière sortait en Intelligence, première option de repli : le trait nomme
+// pourtant sa caractéristique, et c'est elle que le manuel impose.
+describe('aasimar', () => {
+  it('incante Lumière avec le Charisme que Porteur de lumière impose', () => {
+    const sheet = resolveSheetOf(aBuild({
+      speciesKey: 'aasimar', classKey: 'fighter', backgroundKey: 'soldier',
+      base: {
+        strength: 15, dexterity: 13, constitution: 14,
+        intelligence: 12, wisdom: 10, charisma: 8,
+      },
+      backgroundBonuses: { strength: 2, constitution: 1 },
+    }));
+    const aasimar = sheet.spellcasting.find((entry) => entry.origin === 'Aasimar');
+
+    expect(aasimar?.ability).toBe('charisma');
+    expect(aasimar?.saveDc).toBe(8 + 2 + sheet.abilities.charisma.modifier);
+  });
+});
+
 describe('elfe drow', () => {
   it('applique la portée de vision propre au lignage', () => {
     const sheet = resolveSheetOf(aBuild({

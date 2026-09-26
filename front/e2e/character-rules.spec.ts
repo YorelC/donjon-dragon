@@ -109,6 +109,19 @@ test.describe('Caractéristiques', () => {
   });
 });
 
+test.describe('Fiche', () => {
+  test('Lumière de l Aasimar s incante avec le Charisme', async ({ page }) => {
+    await begin('Aasimar', 'Guerrier', 'Soldat');
+    await autopilot.fillBetween('Historique', 'Identité');
+    await finishWith({ heightCm: '170', weightKg: '70' });
+
+    // Un guerrier n'a pas d'incantation de classe : la seule est celle de l'Aasimar.
+    await page.getByRole('tab', { name: 'Grimoire' }).click();
+    await expect(page.getByText('Caractéristique', { exact: true }).locator('..'))
+      .toContainText('Charisme');
+  });
+});
+
 test.describe('Persistance', () => {
   test('rouvre un Magicien Sage avec son grimoire, ses sorts d Initié et sa liste imposée', async ({
     page,
@@ -118,7 +131,7 @@ test.describe('Persistance', () => {
     await builder.openStep('Dons');
     await builder.toggle('Intelligence');
     await autopilot.fillBetween('Dons', 'Identité');
-    await finishAsDwarf();
+    await finishWith({ heightCm: '132', weightKg: '68' });
 
     await page.goto(`/campaigns/${campaignId}/characters`);
     await page.getByRole('listitem').filter({ hasText: CHARACTER_NAME })
@@ -159,11 +172,11 @@ async function beginSageWizardWithCantrips(): Promise<void> {
   await autopilot.fillBetween('Dons', 'Sorts');
 }
 
-async function finishAsDwarf(): Promise<void> {
+async function finishWith(stature: { heightCm: string; weightKg: string }): Promise<void> {
   await builder.openStep('Identité');
   await builder.fillIdentity({
     name: CHARACTER_NAME, alignment: 'Neutre pur', age: '90',
-    heightCm: '132', weightKg: '68', description: 'Réouvert par le parcours.',
+    ...stature, description: 'Composé par le parcours des règles.',
   });
   await builder.waitForServerPreview();
   await builder.finishCreation();

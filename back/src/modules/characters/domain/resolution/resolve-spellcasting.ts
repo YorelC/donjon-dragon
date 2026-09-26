@@ -122,7 +122,7 @@ const ORIGIN_SOURCE_TYPES: readonly EffectSourceType[] = ['species', 'lineage'];
 
 function originSpellcasting(input: SpellcastingInput): ResolvedSpellcasting[] {
   return [...grantedSpellsBySource(input.effects)].map(([, granted]) => {
-    const ability = originAbility(granted.source, input);
+    const ability = originAbility(granted, input);
     return {
       ...scoresFor(ability, input),
       origin: granted.source.label,
@@ -166,17 +166,19 @@ function isOriginSpellGrant(collected: CollectedEffect): boolean {
 }
 
 /**
- * Le manuel fait choisir la caractéristique à la création — Intelligence,
- * Sagesse ou Charisme. Un personnage créé avant que le wizard ne la demande n'a
- * rien d'enregistré : on retombe alors sur la première option de l'espèce, le
- * temps qu'il soit rejoué.
+ * Un trait qui nomme sa caractéristique l'impose : Porteur de lumière incante
+ * Lumière avec le Charisme. Sinon le manuel la fait choisir à la création —
+ * Intelligence, Sagesse ou Charisme. Un personnage créé avant que le wizard ne
+ * la demande n'a rien d'enregistré : on retombe alors sur la première option de
+ * l'espèce, le temps qu'il soit rejoué.
  */
-function originAbility(source: EffectSource, input: SpellcastingInput): Ability {
+function originAbility(granted: GrantedByOrigin, input: SpellcastingInput): Ability {
+  const fixed = granted.spells.find((spell) => spell.ability)?.ability;
   const chosen = input.build.choices
-    .from({ type: source.type, key: source.key })
+    .from({ type: granted.source.type, key: granted.source.key })
     .find((choice) => choice.spellcastingAbility)?.spellcastingAbility;
 
-  return chosen ?? defaultOriginAbility(input.build);
+  return fixed ?? chosen ?? defaultOriginAbility(input.build);
 }
 
 function defaultOriginAbility(build: CharacterBuild): Ability {

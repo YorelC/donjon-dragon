@@ -73,9 +73,8 @@ Des règles transverses, dont chacune a déjà cassé ou risque de casser en sil
 - ✅ Un sort accordé par l'espèce (Lumière de l'Aasimar) n'est proposé nulle part.
 - ✅ Deux Initiés à la magie (Humain Clerc Acolyte, même liste) : aucun sort mineur commun.
 - ✅ Un mineur pris par le Pacte du grimoire est exclu de la classe et d'Initié (parcours Occultiste).
-- 🚫 La fiche affiche chaque sort accordé avec **sa** caractéristique : Lumière de
-  l'Aasimar sort en Intelligence au lieu du Charisme. Bug connu, tâche séparée ; le test
-  s'écrira avec le correctif.
+- ✅ La fiche calcule chaque sort accordé avec **sa** caractéristique : Lumière de
+  l'Aasimar en Charisme, comme Porteur de lumière l'impose.
 
 ### Transitions (changer d'avis en cours de route)
 
