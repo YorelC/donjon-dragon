@@ -22,8 +22,8 @@ import {
  * - le Voyageur qui l'accompagne n'a AUCUN choix de maîtrise d'outil : il
  *   n'apparaît donc dans aucun lot d'outils, et son paquetage exige pourtant un
  *   objet concret. C'est exactement le trou qu'un découpage par maîtrises rate ;
- * - le Barde porte les outils de classe, leur quota de trois, et leur exclusion
- *   mutuelle avec l'outil d'historique de l'Artisan.
+ * - le Barde porte les outils de classe et leur quota de trois. Leur exclusion
+ *   avec l'instrument de l'Artiste attend B01-ORI-006 (voir le test en fixme).
  */
 test.use({ storageState: STORAGE_STATE.gandalf });
 
@@ -51,10 +51,11 @@ const TRINKET_LABEL = 'Babiole facultative';
 function identityFor(name: string): CharacterIdentity {
   return {
     name,
-    alignment: 'Neutre',
+    alignment: 'Neutre pur',
     age: '27',
-    heightCm: '171',
-    weightKg: '63',
+    // Dans les bornes du Nain (122 à 152 cm, 53 à 103 kg) : B01-ESP, gabarit par espèce.
+    heightCm: '132',
+    weightKg: '68',
     description: 'Composé par le parcours de bout en bout.',
   };
 }
@@ -109,7 +110,8 @@ test.describe('Créer les classes que le wizard ne savait pas composer', () => {
     await builder.choice(classSkills[0] as string).click();
     await expect(builder.boundedCounter()).toHaveText('2 / 2');
 
-    await assignStandardArray(builder, 'Dextérité', 'Constitution');
+    // Le Voyageur porte ses bonus sur Dextérité, Sagesse et Charisme.
+    await assignStandardArray(builder, 'Dextérité', 'Sagesse');
 
     // Le paquetage du Voyageur promet une « boîte de jeux » : une catégorie, pas
     // un objet. Sans ce choix concret, le serveur refuse l'option entière.
@@ -122,7 +124,52 @@ test.describe('Créer les classes que le wizard ne savait pas composer', () => {
     await finish(builder, ROGUE_NAME);
   });
 
-  test('compose un barde artisan dont les outils de classe excluent celui de l historique', async ({
+  test('compose un barde soldat et ses trois instruments de classe', async ({ page }) => {
+    const builder = new CharacterBuilderPage(page);
+    await builder.gotoNew(campaignId);
+
+    await builder.choose(SPECIES);
+    await chooseLanguages(builder);
+    await builder.openStep('Classe');
+    await builder.choose('Barde');
+    await builder.openStep('Historique');
+    await builder.choose('Soldat');
+
+    // Le Soldat fait choisir un jeu ; le Barde, trois instruments.
+    await builder.openStep('Outil d’historique');
+    await builder.chooseAvailable(1);
+
+    await builder.openStep('Compétences');
+    await builder.chooseAvailable(3);
+
+    await builder.openStep('Outils de classe');
+    await builder.chooseAvailable(3);
+    await expect(builder.boundedCounter()).toHaveText('3 / 3');
+
+    // Le Soldat porte ses bonus sur Force, Dextérité et Constitution.
+    await assignStandardArray(builder, 'Dextérité', 'Constitution');
+    await chooseSpells(builder);
+
+    // Option A du Barde : elle promet un instrument, donc un objet concret.
+    // Le Soldat part en or seul, pour n'avoir qu'un menu à l'écran.
+    await builder.openStep('Équipement');
+    await builder.choosePackage('class', 'A');
+    await builder.choosePackage('background', 'B');
+    await builder.selectFirstCatalogOption(CONCRETE_ITEM_LABEL);
+
+    await finish(builder, BARD_NAME);
+  });
+
+  /**
+   * L'Artiste est le seul historique dont l'outil recoupe ceux du Barde : son
+   * instrument doit être désactivé parmi les instruments de classe.
+   *
+   * Bloqué par B01-ORI-006 : l'Artiste accorde le don Musicien, dont les trois
+   * instruments sont exigés par le serveur mais qu'aucune étape du wizard ne
+   * fait choisir. Un Artiste, comme un Artisan (Façonneur), ne peut donc pas
+   * être créé. À réactiver quand le choix des outils de don existera.
+   */
+  test.fixme('désactive l instrument de l Artiste parmi les instruments du barde', async ({
     page,
   }) => {
     const builder = new CharacterBuilderPage(page);
@@ -133,33 +180,13 @@ test.describe('Créer les classes que le wizard ne savait pas composer', () => {
     await builder.openStep('Classe');
     await builder.choose('Barde');
     await builder.openStep('Historique');
-    await builder.choose('Artisan');
+    await builder.choose('Artiste');
 
-    // L'Artisan fait choisir son outil ; le Barde en choisira trois autres.
     await builder.openStep('Outil d’historique');
     const [backgroundTool] = await builder.chooseAvailable(1);
 
-    await builder.openStep('Compétences');
-    await builder.chooseAvailable(3);
-
     await builder.openStep('Outils de classe');
-    // L'outil déjà pris à l'historique est désactivé ici : sans ça le joueur
-    // brûlerait un de ses trois choix sur un doublon que le serveur refuse.
     await expect(builder.choice(backgroundTool as string)).toBeDisabled();
-    await builder.chooseAvailable(3);
-    await expect(builder.boundedCounter()).toHaveText('3 / 3');
-
-    await assignStandardArray(builder, 'Charisme', 'Dextérité');
-    await chooseSpells(builder);
-
-    // Option A du Barde : elle promet un instrument, donc un objet concret.
-    // L'Artisan part en or seul, pour n'avoir qu'un menu à l'écran.
-    await builder.openStep('Équipement');
-    await builder.choosePackage('class', 'A');
-    await builder.choosePackage('background', 'B');
-    await builder.selectFirstCatalogOption(CONCRETE_ITEM_LABEL);
-
-    await finish(builder, BARD_NAME);
   });
 });
 

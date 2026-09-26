@@ -162,7 +162,7 @@ test.describe('Soumettre une fiche au MJ et la faire valider', () => {
     await builder.openStep('Identité');
     await builder.identityField('Âge (années)').fill(CORRECTED_AGE);
     await builder.identityField('Description (facultative)').fill('Description corrigée.');
-    await builder.finishButton.click();
+    await builder.saveButton.click();
     await page.goto(`/campaigns/${campaignId}/characters`);
 
     await row.getByRole('button', { name: 'Soumettre' }).click();

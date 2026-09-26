@@ -32,15 +32,16 @@ ajoutent au parcours.
 | # | Classe | Espèce | Historique | Mécanismes traversés | État |
 |---|---|---|---|---|---|
 | 1 | Barbare | Goliath (lignée) | Soldat | Lignée sans sort, maîtrises d'armes, aucun sort | ⬜ |
-| 2 | Barde | Halfelin | Artiste | Instruments de classe (3), don Musicien, 2 mineurs + 4 sorts | ⚠️ existe, échoue |
-| 3 | Clerc | Nain | Fermier | Ordre divin, 3 mineurs + 4 sorts, cycle MJ complet | ✅ (cycle ⚠️) |
+| 2 | Barde | Nain | Soldat | Instruments de classe (3), 2 mineurs + 4 sorts | ✅ |
+| 2b | Barde | Nain | Artiste | Instrument d'historique exclu des instruments de classe, don Musicien | 🚫 B01-ORI-006 |
+| 3 | Clerc | Nain | Fermier | Ordre divin, 3 mineurs + 4 sorts, cycle MJ complet | ✅ |
 | 4 | Clerc | Nain | Acolyte | Ordre Thaumaturge (+1 mineur), Initié à la liste de Clerc imposée | ⬜ |
 | 5 | Druide | Elfe (lignée drow) | Guide | Sort de lignée + sa caractéristique, Initié à la liste de Druide imposée | ⬜ |
 | 6 | Guerrier | Humain | Soldat | Compétence d'espèce, don Doué, Style de combat | ⬜ |
-| 7 | Moine | Orc | Artisan | Outil d'artisan de classe face à celui d'historique | ⬜ |
+| 7 | Moine | Orc | Artisan | Outil d'artisan de classe face à celui d'historique | 🚫 B01-ORI-006 |
 | 8 | Paladin | Drakéide | Noble | Ascendance draconique, maîtrises d'armes, sorts préparés | ⬜ |
 | 9 | Rôdeur | Gnome (forêt) | Guide | Marque du chasseur accordée d'office, donc jamais proposée | ⬜ |
-| 10 | Roublard | Nain | Voyageur | Expertise sur une compétence d'historique, langue de classe, objet concret | ⚠️ existe, échoue |
+| 10 | Roublard | Nain | Voyageur | Expertise sur une compétence d'historique, langue de classe, objet concret | ✅ |
 | 11 | Ensorceleur | Tieffelin | Charlatan | Sort mineur d'héritage accordé d'office | ⬜ |
 | 12 | Occultiste | Humain + Initié | Sage | Pacte du grimoire : 3 mineurs et 2 rituels, sans doublon avec classe ni Initié | ⬜ |
 | 13 | Magicien | Nain | Sage | Grimoire seul (DR-B01-05), liste imposée cochée d'office | ✅ |
@@ -83,18 +84,17 @@ Des règles transverses, dont chacune a déjà cassé ou risque de casser en sil
 - ✅ Réouverture d'un brouillon : langues et état civil conservés.
 - ⬜ Réouverture d'un Magicien Sage : grimoire, sorts d'Initié et liste imposée conservés.
 - ✅ Taille Petite déduite de la stature, gabarit jamais demandé.
-- ⚠️ Soumission, refus motivé, correction, acceptation : le test existe mais échoue.
+- ✅ Soumission, refus motivé, correction, acceptation.
 
-## Dette constatée avant d'étendre
+## Bloqué : B01-ORI-006
 
-Trois tests existants échouent, sans lien avec les sorts :
+Le serveur exige les trois outils du don Façonneur (Artisan) et les trois instruments
+du don Musicien (Artiste), mais aucune étape du wizard ne les fait choisir. **Aucun
+Artisan ni Artiste ne peut être créé.** Les parcours marqués 🚫 attendent ce choix ; le
+test `désactive l instrument de l Artiste…` est en `test.fixme`.
 
-1. `character-creation.spec.ts`, cycle MJ : en édition, le bouton s'appelle
-   « Enregistrer les modifications » depuis `bf54dc9` (15 août), et le test attend
-   « Créer le personnage ».
-2. `character-proficiencies.spec.ts`, roublard : la case « Constitution +1 » ne
-   devient jamais cliquable à l'étape Caractéristiques.
-3. `character-proficiencies.spec.ts`, barde : l'outil de l'Artisan n'apparaît plus
-   parmi les outils de classe du barde.
+## Dette réglée
 
-Les réparer d'abord : une suite qui échoue déjà n'alerte plus sur rien.
+Les trois tests qui échouaient étaient périmés, sans régression produit :
+bouton « Enregistrer les modifications » en réouverture, bonus du Voyageur hors de ses
+trois caractéristiques, stature hors des bornes du Nain, alignement « Neutre » ambigu.

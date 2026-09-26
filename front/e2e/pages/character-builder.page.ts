@@ -35,11 +35,14 @@ export class CharacterBuilderPage {
   readonly finishButton: Locator;
   readonly preview: Locator;
   readonly nextButton: Locator;
+  /** En réouverture, le même bouton final change de nom : la fiche existe déjà. */
+  readonly saveButton: Locator;
 
   constructor(readonly page: Page) {
     this.nameInput = page.getByLabel('Nom du personnage');
     this.finishButton = page.getByRole('button', { name: 'Créer le personnage' });
     this.nextButton = page.getByRole('button', { name: 'Suivant', exact: true });
+    this.saveButton = page.getByRole('button', { name: 'Enregistrer les modifications' });
     this.preview = page.getByText('Personnage à créer');
   }
 
