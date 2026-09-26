@@ -211,14 +211,24 @@ function assertNoDuplicateProficiencies(input: ChoicesToValidate): void {
     ...BACKGROUNDS[input.backgroundKey].skillProficiencies,
     ...input.choices.all.flatMap((choice) => choice.skills ?? []),
   ];
-  const fixedTool = BACKGROUND_FIXED_TOOLS[input.backgroundKey];
   const tools = [
-    ...CLASSES[input.classKey].toolProficiencies,
-    ...(fixedTool ? [fixedTool] : []),
+    ...fixedTools(input),
     ...input.choices.all.flatMap((choice) => choice.tools ?? []),
   ];
   if (new Set(skills).size !== skills.length) fail('skills');
   if (new Set(tools).size !== tools.length) fail('tools');
+}
+
+/**
+ * Deux octrois fixes du même outil (outils de voleur du Roublard et du Criminel)
+ * ne donnent qu'une maîtrise : ce n'est pas un doublon choisi par le joueur.
+ */
+function fixedTools(input: ChoicesToValidate): string[] {
+  const backgroundTool = BACKGROUND_FIXED_TOOLS[input.backgroundKey];
+  return [...new Set([
+    ...CLASSES[input.classKey].toolProficiencies,
+    ...(backgroundTool ? [backgroundTool] : []),
+  ])];
 }
 
 function assertTools(input: ChoicesToValidate): void {

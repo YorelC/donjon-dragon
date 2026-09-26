@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { CharacterChoices, type CharacterChoice } from '../character-choices';
 import { SPELLS } from '../reference/spells';
 import { A_CHARACTER_BUILD } from '../../testing/character.fixture';
+import { levelOneInput } from '../../testing/level-one-choices.fixture';
 import { InvalidCharacterChoiceError } from './choice-validation';
 import { validateChoices } from './validate-choices';
 import { validateSpellChoices } from './validate-spell-choices';
@@ -102,6 +103,23 @@ describe('validation autoritaire des choix B01', () => {
     const input = { ...spellInput('wizard', [choice]), speciesKey: 'aasimar' as const };
 
     expect(() => validateSpellChoices(input)).toThrow(InvalidCharacterChoiceError);
+  });
+
+  it('accepte un Roublard Criminel : les outils de voleur reçus deux fois d office', () => {
+    const input = levelOneInput({ speciesKey: 'dwarf', classKey: 'rogue', backgroundKey: 'criminal' });
+
+    expect(() => validateChoices(input)).not.toThrow();
+  });
+
+  it('refuse de choisir un outil déjà reçu d office', () => {
+    // Le Moine choisit un outil d'artisan ; le Sage lui donne déjà le matériel de calligraphe.
+    const input = levelOneInput({ speciesKey: 'dwarf', classKey: 'monk', backgroundKey: 'sage' });
+    const choices = input.choices.all.map((choice) => choice.source.type === 'class'
+      ? { ...choice, tools: ['calligraphers-supplies'] }
+      : choice);
+
+    expect(() => validateChoices({ ...input, choices: CharacterChoices.create(choices) }))
+      .toThrow(InvalidCharacterChoiceError);
   });
 
   it('distingue les deux Initiés à la magie d un Humain Acolyte', () => {
