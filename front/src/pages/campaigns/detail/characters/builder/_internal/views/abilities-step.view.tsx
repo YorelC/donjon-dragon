@@ -1,4 +1,4 @@
-import type { AbilityMethod, AbilityRoll, CatalogBackground } from "@donjon-dragon/shared";
+import type { AbilityRoll, CatalogBackground } from "@donjon-dragon/shared";
 import { POINT_BUY_BUDGET } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
@@ -8,26 +8,9 @@ import {
   pointBuySpent,
   type CharacterComposition,
 } from "../types/character-composition";
+import { abilityMethodsFor } from "../types/ability-methods";
 import { AbilityGridView, type BonusPlan } from "./ability-grid.view";
 import { ChoiceButtonView } from "./choice-button.view";
-
-const METHODS: { key: AbilityMethod; label: string; hint: string }[] = [
-  {
-    key: "standardArray",
-    label: "Valeurs standard",
-    hint: "15, 14, 13, 12, 10, 8 — à répartir comme vous voulez.",
-  },
-  {
-    key: "pointBuy",
-    label: "Acquisition par points",
-    hint: "27 points à dépenser, des scores de 8 à 15. Les hauts scores coûtent plus cher.",
-  },
-  {
-    key: "roll",
-    label: "Lancer les dés",
-    hint: "Quatre d6, on garde les trois meilleurs, six fois.",
-  },
-];
 
 function rollLabel(step: AbilitiesStep): string {
   if (step.isRolling) return "Lancer en cours…";
@@ -44,6 +27,7 @@ export interface AbilitiesStep {
   onRoll: () => void;
   isRolling: boolean;
   background: CatalogBackground | null;
+  canSetManually: boolean;
 }
 
 interface AbilitiesStepViewProps {
@@ -79,13 +63,14 @@ export function AbilitiesStepView(props: AbilitiesStepViewProps) {
   );
 }
 
-function MethodPicker({ composition, onChange }: AbilitiesStepViewProps) {
-  const current = METHODS.find((method) => method.key === composition.abilityMethod);
+function MethodPicker({ step, composition, onChange }: AbilitiesStepViewProps) {
+  const methods = abilityMethodsFor(step.canSetManually);
+  const current = methods.find((method) => method.key === composition.abilityMethod);
 
   return (
     <div className="grid gap-2">
       <div className="flex flex-wrap gap-2">
-        {METHODS.map((method) => (
+        {methods.map((method) => (
           <ChoiceButtonView
             key={method.key}
             label={method.label}

@@ -107,15 +107,25 @@ function abilityFieldsOf(dto: CharacterBuildDetailDto) {
     abilityRollId: null,
     assignment: assignmentOf(dto),
     pointBuyScores: pointBuyScoresOf(dto),
+    manualScores: manualScoresOf(dto),
   };
+}
+
+function manualScoresOf(dto: CharacterBuildDetailDto): Record<Ability, number> {
+  if (dto.abilityMethod === "manual") return { ...dto.base };
+  return defaultDirectScores();
+}
+
+function defaultDirectScores(): Record<Ability, number> {
+  return Object.fromEntries(ABILITIES.map((ability) => [ability, POINT_BUY_FLOOR])) as Record<
+    Ability,
+    number
+  >;
 }
 
 function pointBuyScoresOf(dto: CharacterBuildDetailDto): Record<Ability, number> {
   if (dto.abilityMethod !== "pointBuy") {
-    return Object.fromEntries(ABILITIES.map((ability) => [ability, POINT_BUY_FLOOR])) as Record<
-      Ability,
-      number
-    >;
+    return defaultDirectScores();
   }
 
   return { ...dto.base };
@@ -128,7 +138,7 @@ function pointBuyScoresOf(dto: CharacterBuildDetailDto): Record<Ability, number>
  * colle — dans l'ordre fixe de `ABILITIES`.
  */
 function assignmentOf(dto: CharacterBuildDetailDto): Partial<Record<Ability, number>> {
-  if (dto.abilityMethod === "pointBuy") return {};
+  if (dto.abilityMethod === "pointBuy" || dto.abilityMethod === "manual") return {};
   const available = dto.abilityMethod === "roll" ? dto.abilityRoll?.totals ?? [] : STANDARD_ARRAY;
   const used = new Set<number>();
   const assignment: Partial<Record<Ability, number>> = {};

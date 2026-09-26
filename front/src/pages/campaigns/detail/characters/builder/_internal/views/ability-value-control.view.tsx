@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import type { Ability, AbilityMethod } from "@donjon-dragon/shared";
 import { POINT_BUY_BOUNDS, POINT_BUY_BUDGET, POINT_BUY_COSTS } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
@@ -9,6 +10,7 @@ import {
   SelectValue,
 } from "@/shared/components/atoms/select";
 import { ABILITIES, ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
+import { ManualScoreInputView } from "./manual-score-input.view";
 
 /** Radix refuse une valeur vide : il faut une sentinelle pour « aucune ». */
 const NO_SCORE = "none";
@@ -26,12 +28,18 @@ interface AbilityValueControlProps {
   control: ValueControl;
 }
 
-export function AbilityValueControlView({ ability, control }: AbilityValueControlProps) {
-  if (control.method === "pointBuy") {
-    return <PointBuyStepper ability={ability} control={control} />;
-  }
+/** Une méthode, un contrôle : le tirage et le tableau standard se répartissent pareil. */
+const CONTROLS: Record<AbilityMethod, (props: AbilityValueControlProps) => ReactElement> = {
+  pointBuy: PointBuyStepper,
+  manual: ManualScoreInputView,
+  standardArray: ScoreSelect,
+  roll: ScoreSelect,
+};
 
-  return <ScoreSelect ability={ability} control={control} />;
+export function AbilityValueControlView({ ability, control }: AbilityValueControlProps) {
+  const Control = CONTROLS[control.method];
+
+  return <Control ability={ability} control={control} />;
 }
 
 /**

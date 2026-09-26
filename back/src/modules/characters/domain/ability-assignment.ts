@@ -3,6 +3,7 @@ import { InvalidDomainError } from '@kernel/domain/domain.error';
 import {
   POINT_BUY_BUDGET,
   STANDARD_ARRAY,
+  isWithinManualRange,
   isWithinPointBuyRange,
   pointBuyCostOf,
   type AbilityMethod,
@@ -52,6 +53,12 @@ export class PointBuyBudgetExceededError extends InvalidDomainError {
   }
 }
 
+export class ScoreOutsideManualRangeError extends InvalidDomainError {
+  constructor() {
+    super('Manual ability scores must be between 3 and 18');
+  }
+}
+
 export class InvalidBackgroundBonusesError extends InvalidDomainError {
   constructor() {
     super('Background ability bonuses must be +2/+1 or +1/+1/+1 on its three abilities');
@@ -91,6 +98,9 @@ const VALIDATORS: Record<AbilityMethod, MethodValidator> = {
   pointBuy: (base) => {
     if (!base.every(isWithinPointBuyRange)) throw new ScoreOutsidePointBuyRangeError();
     if (pointBuyCostOf(base) > POINT_BUY_BUDGET) throw new PointBuyBudgetExceededError();
+  },
+  manual: (base) => {
+    if (!base.every(isWithinManualRange)) throw new ScoreOutsideManualRangeError();
   },
 };
 

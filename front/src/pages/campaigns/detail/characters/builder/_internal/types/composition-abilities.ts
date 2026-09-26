@@ -20,6 +20,8 @@ export function pointBuySpent(composition: CharacterComposition): number {
 }
 
 export function isFullyAssigned(composition: CharacterComposition): boolean {
-  if (composition.abilityMethod === "pointBuy") return true;
+  if (composition.abilityMethod === "pointBuy" || composition.abilityMethod === "manual") {
+    return true;
+  }
   return ABILITIES.every((ability) => composition.assignment[ability] !== undefined);
 }

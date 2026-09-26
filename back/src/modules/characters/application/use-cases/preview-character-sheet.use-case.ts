@@ -21,6 +21,7 @@ import { LEVEL_ONE, type CharacterBuild } from '../../domain/resolution/characte
 import { resolveSheet } from '../../domain/resolution/resolve-sheet';
 import { previewStartingEquipment } from '../../domain/resolution/resolve-starting-equipment';
 import { validateChoiceKeys } from '../../domain/resolution/validate-choice-keys';
+import { assertAbilityMethodAllowed } from '../ability-method.policy';
 
 export type PreviewCharacterSheetDto = PreviewBody & {
   campaignId: string;
@@ -49,6 +50,7 @@ export class PreviewCharacterSheetUseCase {
       userId: dto.actorId,
     });
     if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
+    assertAbilityMethodAllowed(dto.abilityMethod, role.isGameMaster);
 
     const build = buildFrom(dto);
     await assertEquipmentIsKnown(

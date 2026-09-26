@@ -19,12 +19,7 @@ export {
 } from "./composition-abilities";
 
 export const ABILITIES: Ability[] = [
-  "strength",
-  "dexterity",
-  "constitution",
-  "intelligence",
-  "wisdom",
-  "charisma",
+  "strength", "dexterity", "constitution", "intelligence", "wisdom", "charisma",
 ];
 
 export interface MagicInitiateSelection {
@@ -118,6 +113,8 @@ export interface CharacterComposition {
   assignment: Partial<Record<Ability, number>>;
   /** L'achat de points fixe des scores directement, il n'y a rien à répartir. */
   pointBuyScores: Record<Ability, number>;
+  /** La saisie manuelle réservée au MJ fixe elle aussi les six scores directement. */
+  manualScores: Record<Ability, number>;
 
   /**
    * L'option de paquetage retenue, côté classe et côté historique. C'est ELLE le
@@ -135,6 +132,11 @@ export interface CharacterComposition {
 }
 
 export const POINT_BUY_FLOOR = 8;
+
+/** Achat de points et saisie manuelle partent tous deux du plancher. */
+const FLOOR_SCORES = Object.fromEntries(
+  ABILITIES.map((ability) => [ability, POINT_BUY_FLOOR]),
+) as Record<Ability, number>;
 
 export const EMPTY_COMPOSITION: CharacterComposition = {
   name: "",
@@ -179,9 +181,8 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   abilityRoll: null,
   abilityRollId: null,
   assignment: {},
-  pointBuyScores: Object.fromEntries(
-    ABILITIES.map((ability) => [ability, POINT_BUY_FLOOR]),
-  ) as Record<Ability, number>,
+  pointBuyScores: { ...FLOOR_SCORES },
+  manualScores: { ...FLOOR_SCORES },
   classEquipmentOptionId: null,
   backgroundEquipmentOptionId: null,
   classChoiceItemKey: null,

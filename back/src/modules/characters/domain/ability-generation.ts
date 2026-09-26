@@ -2,7 +2,7 @@
 // distingue chacune. Le PHB 2024 les met sur le même plan : c'est le joueur qui
 // choisit, pas la table.
 
-export const ABILITY_METHODS = ['roll', 'standardArray', 'pointBuy'] as const;
+export const ABILITY_METHODS = ['roll', 'standardArray', 'pointBuy', 'manual'] as const;
 
 export type AbilityMethod = (typeof ABILITY_METHODS)[number];
 
@@ -32,10 +32,16 @@ export const POINT_BUY_BUDGET = 27;
 
 export const POINT_BUY_BOUNDS = { min: 8, max: 15 } as const;
 
+export const MANUAL_ABILITY_BOUNDS = { min: 3, max: 18 } as const;
+
 export function pointBuyCostOf(scores: readonly number[]): number {
   return scores.reduce((total, score) => total + (POINT_BUY_COSTS[score] ?? 0), 0);
 }
 
 export function isWithinPointBuyRange(score: number): boolean {
   return score >= POINT_BUY_BOUNDS.min && score <= POINT_BUY_BOUNDS.max;
+}
+
+export function isWithinManualRange(score: number): boolean {
+  return score >= MANUAL_ABILITY_BOUNDS.min && score <= MANUAL_ABILITY_BOUNDS.max;
 }

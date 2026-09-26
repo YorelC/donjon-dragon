@@ -202,6 +202,13 @@ silhouette de tête grise. Le même portrait est utilisé sur la fiche et en com
 Toutes les combinaisons valides de classes et d'espèces doivent être possibles. Les
 choix invalides sont empêchés et leur indisponibilité est brièvement justifiée.
 
+En création comme lors de la correction d'une fiche encore modifiable, un MJ actif
+dispose en plus des trois méthodes du *Player's Handbook 2024* d'une saisie manuelle
+des six valeurs de base. Cette dérogation d'arbitrage est interdite aux joueurs et
+reste soumise aux bornes de création : chaque base est comprise entre 3 et 18 et les
+bonus d'historique ne peuvent porter une caractéristique au-dessus de 20. Le serveur
+contrôle le rôle du demandeur ; masquer l'option dans l'interface ne suffit pas.
+
 ### Validation
 
 La revue d'une fiche distingue `BROUILLON`, `SOUMISE`, `REFUSÉE` et `ACCEPTÉE`, sans

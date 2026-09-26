@@ -1,4 +1,4 @@
-import type { ComputedCharacter, DndCatalog } from "@donjon-dragon/shared";
+import type { Ability, ComputedCharacter, DndCatalog } from "@donjon-dragon/shared";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Separator } from "@/shared/components/atoms/separator";
 import { ABILITIES, ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
@@ -58,12 +58,18 @@ function Abilities({ preview, composition }: CharacterPreviewViewProps) {
             {ABILITY_LABELS[ability].slice(0, 3)}
           </p>
           <p className="text-lg font-semibold tabular-nums">
-            {preview?.abilities[ability].score ?? composition.pointBuyScores[ability]}
+            {preview?.abilities[ability].score ?? directScoreOf(composition, ability)}
           </p>
         </div>
       ))}
     </div>
   );
+}
+
+function directScoreOf(composition: CharacterComposition, ability: Ability): number {
+  return composition.abilityMethod === "manual"
+    ? composition.manualScores[ability]
+    : composition.pointBuyScores[ability];
 }
 
 function Vitals({ preview }: { preview: ComputedCharacter }) {

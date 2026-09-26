@@ -106,7 +106,7 @@ export const BackgroundAbilityBonusesSchema = z.object({
 /** La seule methode qui s'appuie sur un tirage, et donc sur un tirage emis. */
 export const ROLL_METHOD = 'roll';
 
-export const AbilityMethodSchema = z.enum(['roll', 'standardArray', 'pointBuy']);
+export const AbilityMethodSchema = z.enum(['roll', 'standardArray', 'pointBuy', 'manual']);
 
 export const STANDARD_ARRAY = [15, 14, 13, 12, 10, 8] as const;
 

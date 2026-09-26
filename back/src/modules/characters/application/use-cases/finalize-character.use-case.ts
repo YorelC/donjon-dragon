@@ -29,6 +29,7 @@ import { ITEM_CATALOG, type ItemCatalogPort } from '../ports/item-catalog.port';
 import type { Character, CharacterAccessContext } from '../../domain/character';
 import { CharacterName } from '../../domain/character-name';
 import { AbilityRollNotEditableError } from '../../domain/character.errors';
+import { assertAbilityMethodAllowed } from '../ability-method.policy';
 
 export type FinalizeCharacterDto = FinalizeCharacterBody & {
   characterId: string;
@@ -97,6 +98,7 @@ export class FinalizeCharacterUseCase {
   private applyWizardOutput(character: Character, output: WizardOutput): void {
     const { dto, context, now } = output;
     if (dto.abilityRollId) throw new AbilityRollNotEditableError();
+    assertAbilityMethodAllowed(dto.abilityMethod, context.actorIsGameMaster);
     character.revise({
       name: CharacterName.create(dto.name), identity: identityOf(dto), build: toBuildInput(dto),
     }, context, now);

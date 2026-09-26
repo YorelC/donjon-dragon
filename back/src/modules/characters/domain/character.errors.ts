@@ -141,6 +141,12 @@ export class OnlyGameMasterCanReviewError extends ForbiddenDomainError {
   }
 }
 
+export class OnlyGameMasterCanSetManualAbilitiesError extends ForbiddenDomainError {
+  constructor() {
+    super('Only a game master can set ability scores manually');
+  }
+}
+
 export class CharacterReviewStateError extends ConflictDomainError {
   constructor() {
     super('This character review transition is not allowed in its current state');

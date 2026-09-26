@@ -45,6 +45,7 @@ import {
   CharacterCreationCommandConflictError,
 } from '../../domain/character.errors';
 import { OwningCampaignId } from '../../domain/owning-campaign-id';
+import { assertAbilityMethodAllowed } from '../ability-method.policy';
 
 export type CreateCharacterDto = CreateCharacterBody & {
   campaignId: string;
@@ -91,6 +92,7 @@ export class CreateCharacterUseCase {
     const campaignId = OwningCampaignId.create(dto.campaignId);
     const role = await this.membership.execute(membershipQueryOf(dto));
     if (!role.isActiveMember) throw new NotActiveCampaignMemberError();
+    assertAbilityMethodAllowed(dto.abilityMethod, role.isGameMaster);
     if (!role.isGameMaster) await this.assertNoExistingCharacter(campaignId, actorId);
     const now = this.clock.now();
     const roll = await this.issuedRoll(dto, actorId);

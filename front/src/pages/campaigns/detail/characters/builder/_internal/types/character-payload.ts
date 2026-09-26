@@ -22,6 +22,7 @@ const UNASSIGNED_SCORE = 10;
 
 function baseScoresOf(composition: CharacterComposition): Record<Ability, number> {
   if (composition.abilityMethod === "pointBuy") return { ...composition.pointBuyScores };
+  if (composition.abilityMethod === "manual") return { ...composition.manualScores };
   const available = availableScores(composition);
 
   return Object.fromEntries(

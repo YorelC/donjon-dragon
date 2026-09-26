@@ -7,6 +7,7 @@ import type {
   Item,
 } from "@donjon-dragon/shared";
 import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
+import { useCampaignDetail } from "@/shared/queries/use-campaign-detail";
 import { useDndCatalog } from "@/shared/queries/use-dnd-catalog";
 import { useItemCatalog } from "@/shared/queries/use-item-catalog";
 import type { BuilderScreen } from "../views/character-builder.view";
@@ -98,7 +99,6 @@ function useBuilderContext(target: BuilderTarget): BuilderContext {
   const buildDetail = useCharacterBuild(target.campaignId, target.characterId);
   const initial = useInitialComposition(buildDetail.data, catalog);
   const builder = useCharacterBuilder(catalog, initial);
-  const rollAbilities = useRollAbilities(target.campaignId);
 
   return {
     catalog,
@@ -107,7 +107,7 @@ function useBuilderContext(target: BuilderTarget): BuilderContext {
     buildDetail,
     builder,
     preview: useCharacterPreview(target.campaignId, builder.composition, catalog),
-    abilities: useAbilitiesStep(builder, stepContext(catalog, builder), rollAbilities),
+    abilities: useAbilitiesStep(target.campaignId, builder, stepContext(catalog, builder)),
     spells: useSpellsStep(stepContext(catalog, builder)),
     finish: useFinishAction(withRevision(target, character), builder, catalog),
   };
@@ -149,16 +149,21 @@ function useExistingCharacter(
   return characters?.find((entry) => entry.id === target.characterId);
 }
 
+/** Seul le MJ de la campagne peut saisir les scores à la main. */
 function useAbilitiesStep(
+  campaignId: string,
   builder: BuilderState,
   context: StepContext | null,
-  rollAbilities: ReturnType<typeof useRollAbilities>,
 ): BuilderScreen["abilities"] {
+  const { data: campaign } = useCampaignDetail(campaignId);
+  const rollAbilities = useRollAbilities(campaignId);
+
   return {
     roll: builder.composition.abilityRoll,
     onRoll: () => rollAbilities.mutate(undefined, { onSuccess: (issued) => keep(builder, issued) }),
     isRolling: rollAbilities.isPending,
     background: context ? backgroundOf(context) ?? null : null,
+    canSetManually: campaign?.myRole === "gameMaster",
   };
 }
 

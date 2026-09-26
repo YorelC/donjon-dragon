@@ -160,7 +160,7 @@ export const ComputedCharacterSchema = z.object({
   size: CreatureSizeSchema,
   darkvision: z.number().nonnegative(),
 
-  abilityMethod: z.enum(['roll', 'standardArray', 'pointBuy']),
+  abilityMethod: z.enum(['roll', 'standardArray', 'pointBuy', 'manual']),
   abilities: abilityRecord(ResolvedAbilitySchema),
   maxHitPoints: ResolvedValueSchema,
   currentHitPoints: ResolvedValueSchema,
