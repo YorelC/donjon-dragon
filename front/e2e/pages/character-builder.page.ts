@@ -11,6 +11,8 @@ export const STANDARD_ARRAY_ORDER = [
 ] as const;
 
 const CHARACTER_SHEET_URL = /\/characters\/[^/]+\/sheet$/;
+/** La zone de choix de l'étape ouverte, à gauche de sa fiche détaillée. */
+const STEP_REGION = "Choix de l'étape";
 const CHARACTER_LIST_URL = /\/characters$/;
 
 /** Le champ numérique de l'échelle, distinct du curseur qui porte le libellé court. */
@@ -108,11 +110,12 @@ export class CharacterBuilderPage {
   }
 
   /**
-   * Une carte de choix — espèce, classe, historique, ordre, alignement. Son nom
-   * accessible inclut la description qui suit le titre : on filtre sur le titre.
+   * Une vignette de choix — espèce, classe, historique, ordre, alignement. Son
+   * nom accessible est son seul libellé : les initiales du losange n'en font pas
+   * partie, et la description se lit dans la fiche détaillée.
    */
   async choose(name: string): Promise<void> {
-    await this.page.getByRole('radio').filter({ hasText: new RegExp(`^${name}`) }).click();
+    await this.page.getByRole('radio', { name, exact: true }).click();
   }
 
   /** Un bouton bascule : compétence, langue, sort. */
@@ -172,16 +175,12 @@ export class CharacterBuilderPage {
   }
 
   /**
-   * Le panneau de l'étape ouverte, pour ne pas confondre ses boutons avec ceux
-   * du fil conducteur ni avec « Précédent » / « Suivant ».
-   *
-   * C'est le seul contenu de carte qui porte un titre de niveau 2 : le fil et le
-   * résumé n'en ont pas.
+   * La zone de choix de l'étape ouverte, pour ne pas confondre ses boutons avec
+   * ceux du fil conducteur, de la fiche détaillée ni avec « Précédent » /
+   * « Suivant ». Elle porte son nom de région.
    */
   stepPanel(): Locator {
-    return this.page
-      .locator('[data-slot="card-content"]')
-      .filter({ has: this.page.getByRole('heading', { level: 2 }) });
+    return this.page.getByRole('region', { name: STEP_REGION });
   }
 
   /**
