@@ -15,7 +15,7 @@ export const backgroundToolDescriptor: StepDescriptor = {
 
 export const weaponMasteriesDescriptor: StepDescriptor = {
   key: "weaponMasteries", label: "Maîtrises d’armes",
-  isVisible: (context) => classOf(context)?.weaponMastery !== null,
+  isVisible: (context) => Boolean(classOf(context)?.weaponMastery),
   isValid: (context) => isExactBoundedChoice(
     context.composition.weaponMasteries,
     classOf(context)?.weaponMastery?.count ?? 0,
@@ -29,7 +29,7 @@ export const weaponMasteriesDescriptor: StepDescriptor = {
 
 export const classToolsDescriptor: StepDescriptor = {
   key: "classTools", label: "Outils de classe",
-  isVisible: (context) => classOf(context)?.toolChoice !== null,
+  isVisible: (context) => Boolean(classOf(context)?.toolChoice),
   isValid: (context) => isExactBoundedChoice(
     context.composition.classTools,
     classOf(context)?.toolChoice?.count ?? 0,

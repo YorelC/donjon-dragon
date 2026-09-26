@@ -116,6 +116,25 @@ describe("maîtrises, outils et langue de classe", () => {
     expect(steps.indexOf("feats")).toBeLessThan(steps.indexOf("expertise"));
   });
 
+  // Sans classe, `classOf` rend `undefined` : les deux étapes s'affichaient,
+  // déjà cochées puisque leur quota valait zéro.
+  it("n'affiche ni maîtrises d'armes ni outils de classe avant le choix de classe", () => {
+    const steps = visibleSteps({ catalog: aCatalog({ classes: [fighter] }), composition: EMPTY_COMPOSITION });
+
+    expect(steps).not.toContain("weaponMasteries");
+    expect(steps).not.toContain("classTools");
+  });
+
+  it("affiche les maîtrises d'armes d'une classe qui les fait choisir, pas ses outils", () => {
+    const steps = visibleSteps({
+      catalog: aCatalog({ classes: [fighter] }),
+      composition: { ...EMPTY_COMPOSITION, classKey: "fighter" },
+    });
+
+    expect(steps).toContain("weaponMasteries");
+    expect(steps).not.toContain("classTools");
+  });
+
   it("exige l'outil de l'historique dans sa liste publiée", () => {
     const background = aBackground({ toolOptions: ["dice-set"] });
     const catalog = aCatalog({ backgrounds: [background] });
