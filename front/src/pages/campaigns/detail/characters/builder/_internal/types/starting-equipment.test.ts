@@ -116,7 +116,13 @@ const CATALOG = {
   weaponLabels: {},
   languages: { standard: [], rare: [] },
   alignments: [],
-  trinkets: [{ id: 42, itemKey: "trinket-42", name: "Babiole 42" }],
+  trinkets: [
+    {
+      id: 42,
+      itemKey: "trinket-42",
+      name: "Un insigne de grade provenant d'un légionnaire disparu",
+    },
+  ],
 } as unknown as DndCatalog;
 
 function aComposition(overrides: Partial<CharacterComposition> = {}): CharacterComposition {

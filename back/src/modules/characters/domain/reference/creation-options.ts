@@ -1,5 +1,6 @@
 import type { BackgroundKey } from './keys';
 import type { Language } from './proficiencies';
+import { TRINKET_NAMES } from './trinkets';
 
 export const STANDARD_LANGUAGES: readonly Language[] = [
   'commonSignLanguage',
@@ -179,7 +180,7 @@ const TOOL_LABELS: Readonly<Record<string, string>> = {
 };
 
 const TRINKET_PREFIX = 'trinket-';
-const TRINKET_COUNT = 100;
+const TRINKET_COUNT = TRINKET_NAMES.length;
 
 export function trinketKey(id: number): string {
   return `${TRINKET_PREFIX}${id.toString().padStart(2, '0')}`;
@@ -191,8 +192,18 @@ export function isTrinketId(id: number): boolean {
 
 export function creationItemName(key: string): string | null {
   if (key in TOOL_LABELS) return TOOL_LABELS[key] ?? null;
+  return trinketName(key);
+}
+
+function trinketName(key: string): string | null {
+  const id = trinketIdFromKey(key);
+  return id === null ? null : TRINKET_NAMES[id - 1] ?? null;
+}
+
+function trinketIdFromKey(key: string): number | null {
   if (!key.startsWith(TRINKET_PREFIX)) return null;
-  return `Babiole ${key.slice(TRINKET_PREFIX.length)}`;
+  const id = Number(key.slice(TRINKET_PREFIX.length));
+  return isTrinketId(id) && trinketKey(id) === key ? id : null;
 }
 
 export function creationVirtualItems(): { key: string; name: string }[] {

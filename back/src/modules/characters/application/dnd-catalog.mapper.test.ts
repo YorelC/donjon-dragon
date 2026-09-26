@@ -141,6 +141,17 @@ describe('toDndCatalog', () => {
 
     expect(trinkets).toHaveLength(100);
     expect(new Set(trinkets.map((entry) => entry.id)).size).toBe(100);
+    expect(trinkets[0]).toEqual({
+      id: 1,
+      itemKey: 'trinket-01',
+      name: 'Une main de gobelin momifiée',
+    });
+    expect(trinkets[99]).toEqual({
+      id: 100,
+      itemKey: 'trinket-100',
+      name: "Une urne en métal contenant les cendres d'un héros",
+    });
+    expect(trinkets.every((entry) => !entry.name.startsWith('Babiole '))).toBe(true);
   });
 
   it('publie les invocations et leurs sous-choix fermés', () => {
