@@ -22,7 +22,11 @@ export function RecapDrawerView({ recap }: { recap: CharacterRecap }) {
           Récapitulatif
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[372px] max-w-[92vw] gap-0 sm:max-w-[372px]">
+      <SheetContent
+        side="right"
+        className="w-[372px] max-w-[92vw] gap-0 sm:max-w-[372px]"
+        onOpenAutoFocus={focusDrawer}
+      >
         <SheetTitle className="sr-only">Récapitulatif du personnage</SheetTitle>
         <div className="panel-scroll px-[22px] py-6">
           <CharacterRecapView recap={recap} />
@@ -30,4 +34,14 @@ export function RecapDrawerView({ recap }: { recap: CharacterRecap }) {
       </SheetContent>
     </Sheet>
   );
+}
+
+/**
+ * Le focus automatique tombait sur le premier jeton, dont l'infobulle s'ouvrait
+ * seule à chaque ouverture. Le tiroir reçoit le focus lui-même : il reste piégé
+ * dedans pour le clavier, sans rien déplier.
+ */
+function focusDrawer(event: Event): void {
+  event.preventDefault();
+  if (event.currentTarget instanceof HTMLElement) event.currentTarget.focus();
 }
