@@ -18,11 +18,14 @@ parcours choisis pour les **mécanismes** qu'ils traversent, pas pour leur vari�
 ### Combinatoire (domaine)
 
 - ✅ 120 combinaisons espèce × classe, historique Fermier fixe.
-- ⬜ **192 combinaisons historique × classe**, espèce fixe : couvre les trois Initiés
-  à liste imposée (Acolyte, Guide, Sage), les dons Doué, Musicien et Façonneur, et les
-  outils d'historique face aux outils de classe.
-- ⬜ **Espèce × historique** sur les dons d'origine qui interagissent : Humain et
-  Initié à la magie deux fois, en sources distinctes.
+- ✅ **192 combinaisons historique × classe**, Nain fixe : les trois Initiés à liste
+  imposée (Acolyte, Guide, Sage), les dons Doué, Musicien et Façonneur, et les outils
+  d'historique face aux outils de classe. Elles ont révélé le refus des outils reçus
+  deux fois d'office (Roublard Criminel, Druide Ermite), corrigé.
+- ✅ **Humain + Initié à la magie** face à l'Acolyte, au Guide et au Sage, pour chaque
+  classe : deux occurrences distinctes, aucun sort commun.
+
+La création valide générique vit dans `back/.../testing/level-one-choices.fixture.ts`.
 
 ## Parcours standards — un par classe
 
@@ -31,20 +34,25 @@ ajoutent au parcours.
 
 | # | Classe | Espèce | Historique | Mécanismes traversés | État |
 |---|---|---|---|---|---|
-| 1 | Barbare | Goliath (lignée) | Soldat | Lignée sans sort, maîtrises d'armes, aucun sort | ⬜ |
+| 1 | Barbare | Goliath (ascendance) | Soldat | Ascendance sans sort, 2 maîtrises d'armes, aucune étape de sorts | ✅ |
 | 2 | Barde | Nain | Soldat | Instruments de classe (3), 2 mineurs + 4 sorts | ✅ |
 | 2b | Barde | Nain | Artiste | Instrument d'historique exclu des instruments de classe, don Musicien | 🚫 B01-ORI-006 |
 | 3 | Clerc | Nain | Fermier | Ordre divin, 3 mineurs + 4 sorts, cycle MJ complet | ✅ |
-| 4 | Clerc | Nain | Acolyte | Ordre Thaumaturge (+1 mineur), Initié à la liste de Clerc imposée | ⬜ |
-| 5 | Druide | Elfe (lignée drow) | Guide | Sort de lignée + sa caractéristique, Initié à la liste de Druide imposée | ⬜ |
-| 6 | Guerrier | Humain | Soldat | Compétence d'espèce, don Doué, Style de combat | ⬜ |
-| 7 | Moine | Orc | Artisan | Outil d'artisan de classe face à celui d'historique | 🚫 B01-ORI-006 |
-| 8 | Paladin | Drakéide | Noble | Ascendance draconique, maîtrises d'armes, sorts préparés | ⬜ |
-| 9 | Rôdeur | Gnome (forêt) | Guide | Marque du chasseur accordée d'office, donc jamais proposée | ⬜ |
+| 4 | Clerc | Nain | Acolyte | Ordre Thaumaturge (+1 mineur), Initié à la liste de Clerc cochée d'office | ✅ |
+| 5 | Druide | Elfe des bois | Guide | Compétence d'espèce, Druidisme accordé exclu de la classe et d'Initié | ✅ |
+| 6 | Guerrier | Humain | Soldat | Compétence d'espèce, don Doué, Style de combat, 3 maîtrises d'armes | ✅ |
+| 7 | Moine | Orc | Ermite | Un outil de classe, aucune étape de sorts | ✅ |
+| 7b | Moine | Orc | Artisan | Outil d'artisan de classe face à celui d'historique | 🚫 B01-ORI-006 |
+| 8 | Paladin | Drakéide | Noble | Ascendance draconique, Doué d'historique, sorts préparés sans mineur | ✅ |
+| 9 | Rôdeur | Gnome des forêts | Guide | Marque du chasseur et Communication avec les animaux accordés, donc jamais proposés | ✅ |
 | 10 | Roublard | Nain | Voyageur | Expertise sur une compétence d'historique, langue de classe, objet concret | ✅ |
-| 11 | Ensorceleur | Tieffelin | Charlatan | Sort mineur d'héritage accordé d'office | ⬜ |
-| 12 | Occultiste | Humain + Initié | Sage | Pacte du grimoire : 3 mineurs et 2 rituels, sans doublon avec classe ni Initié | ⬜ |
+| 11 | Ensorceleur | Tieffelin abyssal | Charlatan | Bouffée de poison d'héritage exclue des mineurs de classe | ✅ |
+| 12 | Occultiste | Humain + Initié | Sage | Deux Initiés, Pacte du grimoire : un mineur du grimoire exclu partout ailleurs | ✅ |
 | 13 | Magicien | Nain | Sage | Grimoire seul (DR-B01-05), liste imposée cochée d'office | ✅ |
+
+Les étapes qu'un parcours ne vise pas sont franchies par `pages/builder-autopilot.ts`,
+qui prend les premières options libres. Initié à la magie, le don de l'Humain et la
+Manifestation occulte ne sont jamais laissés au pilote.
 
 Chaque parcours va jusqu'à la fiche persistée. Les PV affichés prouvent que le serveur
 a validé la composition.

@@ -224,6 +224,13 @@ export class CharacterBuilderPage {
       .locator('..');
   }
 
+  /** La carte d'un don d'Origine, par sa provenance : l'Humain Initié en a deux pareilles. */
+  featCard(origin: 'Historique' | 'Espèce'): Locator {
+    return this.stepPanel()
+      .locator('[data-slot="card"]')
+      .filter({ has: this.page.getByText(origin, { exact: true }) });
+  }
+
   spellIn(groupTitle: string, name: string): Locator {
     return this.spellGroup(groupTitle).getByRole('button', { name, exact: true });
   }

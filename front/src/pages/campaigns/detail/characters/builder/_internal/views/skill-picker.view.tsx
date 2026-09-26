@@ -61,6 +61,7 @@ function SkillToggle({ skill, picker }: SkillToggleProps) {
       size="sm"
       className="justify-between"
       variant={chosen ? "default" : "outline"}
+      aria-pressed={chosen}
       disabled={Boolean(known) || (full && !chosen)}
       onClick={() => picker.onChange(toggle(picker.selected, skill))}
     >

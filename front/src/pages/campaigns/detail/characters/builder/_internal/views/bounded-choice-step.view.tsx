@@ -36,6 +36,7 @@ function BoundedChoiceButton({ option, choice }: { option: string; choice: Bound
       type="button"
       size="sm"
       variant={selected ? "default" : "outline"}
+      aria-pressed={selected}
       disabled={disabled}
       onClick={() => choice.onChange(toggle(choice.selected, option))}
     >
