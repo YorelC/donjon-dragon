@@ -1,9 +1,9 @@
 import type { ComputedCharacter } from "@donjon-dragon/shared";
 import {
-  ABILITY_LABELS,
   ARMOR_TRAINING_LABELS,
   WEAPON_PROFICIENCY_LABELS,
-} from "../constants/sheet-labels";
+} from "@/shared/constants/character-labels";
+import { ABILITY_LABELS } from "../constants/sheet-labels";
 import type { SheetLabels } from "../types/character-sheet-model";
 import { formatMeters, toLabelList } from "./sheet-format";
 

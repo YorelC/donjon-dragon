@@ -1,7 +1,7 @@
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { DiamondRule } from "@/shared/components/molecules/gold-rule";
 import { toInitials } from "@/shared/utils/display-meta";
-import { SIZE_LABELS } from "../constants/sheet-labels";
+import { SIZE_LABELS } from "@/shared/constants/character-labels";
 import type { CharacterSheetModel } from "../types/character-sheet-model";
 import { formatMeters, formatSigned, toLabelList } from "../utils/sheet-format";
 import { SheetAbilitiesView } from "./sheet-abilities.view";
