@@ -244,6 +244,14 @@ export interface Feature {
   effects: readonly Effect[];
 }
 
+/**
+ * Les sorts que des effets accordent sans choix. Le catalogue les grise, la
+ * validation les refuse en choix (B01-SOR-006) : une seule lecture pour les deux.
+ */
+export function grantedSpellKeys(effects: readonly Effect[]): SpellKey[] {
+  return effects.flatMap((effect) => effect.grants?.spells ?? []).map((spell) => spell.spellKey);
+}
+
 export const EFFECT_SOURCE_TYPES = [
   'species',
   'lineage',

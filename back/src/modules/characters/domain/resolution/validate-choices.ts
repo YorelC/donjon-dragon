@@ -321,7 +321,7 @@ function assertSkillChoice(
   assertExactUnique(chosen, expected.count, allowed, origin, InvalidSkillChoiceError);
 }
 
-function speciesSkillChoice(speciesKey: SpeciesKey): SkillChoice {
+export function speciesSkillChoice(speciesKey: SpeciesKey): SkillChoice {
   const choices = SPECIES[speciesKey].traits.flatMap((trait) => trait.effects)
     .flatMap((effect) => effect.grants?.skillChoice ? [effect.grants.skillChoice] : []);
   return choices[0] ?? { count: 0, options: [] };

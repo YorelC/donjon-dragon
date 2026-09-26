@@ -131,6 +131,25 @@ describe('toCharacterBuildDetailDto', () => {
     expect(dto.featSpells).toEqual(['bless']);
   });
 
+  it('ne rend aucun sort préparé à un Magicien créé avant DR-B01-05', () => {
+    const legacyWizard: CharacterBuildInput = {
+      ...FULL_BUILD,
+      speciesKey: 'dwarf',
+      classKey: 'wizard',
+      choices: [{
+        source: { type: 'class', key: 'wizard' },
+        spells: ['fire-bolt', 'shield'],
+        spellbook: ['shield', 'sleep', 'alarm', 'identify', 'magic-missile', 'mage-armor'],
+      }],
+    };
+
+    const dto = toCharacterBuildDetailDto(characterWith(legacyWizard));
+
+    expect(dto.classCantrips).toEqual(['fire-bolt']);
+    expect(dto.classSpells).toEqual([]);
+    expect(dto.spellbook).toHaveLength(6);
+  });
+
   it('renvoie des valeurs par défaut quand une source de choix est absente', () => {
     const withoutFeats: CharacterBuildInput = {
       ...FULL_BUILD,

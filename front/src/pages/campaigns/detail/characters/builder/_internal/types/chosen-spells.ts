@@ -14,8 +14,35 @@ export interface SpellSource {
  * déjà coché reste à lui ; le reste lui est indisponible.
  */
 export function spellsTakenElsewhere(source: SpellSource, own: readonly string[]): string[] {
-  const chosenElsewhere = allChosenSpells(source.composition).filter((key) => !own.includes(key));
-  return [...source.grantedSpells, ...chosenElsewhere];
+  return [...source.grantedSpells, ...withoutOwn(allChosenSpells(source.composition), own)];
+}
+
+/**
+ * Un sort coché dans `keys` et connu ailleurs : doublon entre deux sources, ou
+ * sort déjà accordé. Le serveur le refuse ; l'étape ne doit pas paraître finie.
+ */
+export function hasSpellConflict(context: StepContext, keys: readonly string[]): boolean {
+  const source = { composition: context.composition, grantedSpells: grantedSpellsOf(context) };
+  const taken = spellsTakenElsewhere(source, keys);
+  const repeated = new Set(keys).size !== keys.length;
+  return repeated || keys.some((key) => taken.includes(key));
+}
+
+export function cantripKeysOf(composition: CharacterComposition): string[] {
+  return [
+    ...composition.classCantrips,
+    ...composition.featCantrips,
+    ...composition.magicInitiateChoices.flatMap((choice) => choice.cantrips),
+  ];
+}
+
+export function levelOneKeysOf(composition: CharacterComposition): string[] {
+  return [
+    ...composition.classSpells,
+    ...composition.spellbook,
+    ...composition.featSpells,
+    ...composition.magicInitiateChoices.flatMap((choice) => choice.spells),
+  ];
 }
 
 /** Les sorts accordés sans choix par l'espèce, sa lignée, la classe et son ordre. */
@@ -39,12 +66,19 @@ function grantingFeatures(context: StepContext): CatalogFeature[] {
 
 function allChosenSpells(composition: CharacterComposition): string[] {
   return [
-    ...composition.classCantrips,
-    ...composition.classSpells,
-    ...composition.spellbook,
+    ...cantripKeysOf(composition),
+    ...levelOneKeysOf(composition),
     ...composition.invocationSpells,
-    ...composition.featCantrips,
-    ...composition.featSpells,
-    ...composition.magicInitiateChoices.flatMap((choice) => [...choice.cantrips, ...choice.spells]),
   ];
+}
+
+/**
+ * Retire UNE occurrence de chaque sort du groupe : pris deux fois, par ce groupe
+ * et par un autre, il reste connu ailleurs.
+ */
+function withoutOwn(chosen: readonly string[], own: readonly string[]): string[] {
+  return own.reduce((rest, key) => {
+    const index = rest.indexOf(key);
+    return index < 0 ? rest : [...rest.slice(0, index), ...rest.slice(index + 1)];
+  }, [...chosen]);
 }

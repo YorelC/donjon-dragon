@@ -7,7 +7,8 @@ import type {
 import type { Character } from '../domain/character';
 import type { CharacterChoice } from '../domain/character-choices';
 import { IncompleteMagicInitiateChoiceError } from '../domain/character.errors';
-import type { SpellKey } from '../domain/reference/keys';
+import { CLASSES } from '../domain/reference/classes';
+import type { ClassKey, SpellKey } from '../domain/reference/keys';
 import { SPELLS } from '../domain/reference/spells';
 
 const CANTRIP_LEVEL = 0;
@@ -25,7 +26,7 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
     ...identityFieldsOf(character),
     ...originFieldsOf(build, choices),
     classKey: build.classKey,
-    ...classFieldsOf(choices),
+    ...classFieldsOf(build.classKey, choices),
     backgroundKey: build.backgroundKey,
     backgroundTool: backgroundToolOf(choices),
     ...magicInitiateFieldsOf(choices),
@@ -101,7 +102,7 @@ function speciesFieldsOf(choices: readonly CharacterChoice[]) {
   };
 }
 
-function classFieldsOf(choices: readonly CharacterChoice[]) {
+function classFieldsOf(classKey: ClassKey, choices: readonly CharacterChoice[]) {
   const choice = choices.find((entry) => entry.source.type === 'class');
   const spells = choice?.spells ?? [];
 
@@ -109,7 +110,7 @@ function classFieldsOf(choices: readonly CharacterChoice[]) {
     classSkills: [...(choice?.skills ?? [])],
     expertise: [...(choice?.expertise ?? [])],
     classCantrips: cantripsOf(spells),
-    classSpells: levelOneOf(spells),
+    classSpells: preparedAtCreationOf(classKey, spells),
     fightingStyle: choice?.fightingStyle ?? null,
     classOrder: choice?.classOrder ?? null,
     weaponMasteries: [...(choice?.weaponMasteries ?? [])],
@@ -121,6 +122,16 @@ function classFieldsOf(choices: readonly CharacterChoice[]) {
     pactWeaponKey: choice?.pactWeaponKey ?? null,
     spellbook: [...(choice?.spellbook ?? [])],
   };
+}
+
+/**
+ * Un lanceur à grimoire ne prépare rien à la création (DR-B01-05). Un brouillon
+ * de Magicien plus ancien porte encore quatre sorts préparés : le wizard ne les
+ * montre plus et la validation les refuse, ils ne sont donc pas rendus.
+ */
+function preparedAtCreationOf(classKey: ClassKey, spells: readonly SpellKey[]): string[] {
+  if (CLASSES[classKey].spellcasting?.spellbookSize) return [];
+  return levelOneOf(spells);
 }
 
 /**

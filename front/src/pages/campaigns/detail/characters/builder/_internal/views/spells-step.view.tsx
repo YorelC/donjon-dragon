@@ -52,7 +52,7 @@ export function SpellsStepView({ step, composition, onChange }: SpellsStepViewPr
     <div className="grid gap-6">
       <SpellGroup
         title="Sorts préparés"
-        spells={withoutInvocationSpells(step.classSpells?.level1 ?? [], composition)}
+        spells={step.classSpells?.level1 ?? []}
         limit={step.classSpellsPrepared}
         selection={selectionOf(sourceOf(step, composition), composition.classSpells,
           (classSpells) => onChange({ classSpells }))}
@@ -74,7 +74,7 @@ function MagicInitiateGroups(props: SpellsStepViewProps & { kind: "cantrips" | "
     const list = choice.spellList ? props.step.featSpellLists[choice.spellList] : undefined;
     const spells = props.kind === "cantrips"
       ? list?.cantrips ?? []
-      : withoutInvocationSpells(list?.level1 ?? [], props.composition);
+      : list?.level1 ?? [];
     const selected = props.kind === "cantrips" ? choice.cantrips : choice.spells;
     const limit = props.kind === "cantrips" ? 2 : 1;
     const source = choice.grantedBy.type === "background" ? "Historique" : "Espèce";
@@ -84,10 +84,6 @@ function MagicInitiateGroups(props: SpellsStepViewProps & { kind: "cantrips" | "
       selection={selectionOf(sourceOf(props.step, props.composition), selected,
         (keys) => updateMagicSpells(props, choice, keys))} />;
   })}</>;
-}
-
-function withoutInvocationSpells(spells: readonly CatalogSpell[], composition: CharacterComposition) {
-  return spells.filter((spell) => !composition.invocationSpells.includes(spell.key));
 }
 
 function updateMagicSpells(

@@ -3,8 +3,6 @@ import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
 import { spellsTakenElsewhere, type SpellSource } from "../types/chosen-spells";
 
-const TAKEN_HINT = "Déjà connu : choisi ailleurs ou accordé par l’espèce ou la classe.";
-
 interface SpellGroupProps {
   title: string;
   spells: readonly CatalogSpell[];
@@ -39,11 +37,43 @@ export function SpellGroup({ title, spells, limit, selection }: SpellGroupProps)
           />
         ))}
       </div>
+      <TakenSpellsNote spells={spells} selection={selection} />
     </div>
   );
 }
 
-type SpellLock = "free" | "full" | "taken";
+/**
+ * Un bouton désactivé ne reçoit pas le survol : la raison d'un sort grisé ne
+ * peut pas vivre dans une infobulle. Elle s'écrit sous le groupe.
+ */
+function TakenSpellsNote({ spells, selection }: Omit<SpellGroupProps, "title" | "limit">) {
+  const taken = spells.filter((spell) => selection.unavailable.includes(spell.key));
+  const conflicts = taken.filter((spell) => selection.selected.includes(spell.key));
+  const greyed = taken.filter((spell) => !selection.selected.includes(spell.key));
+
+  return (
+    <>
+      {conflicts.length > 0 ? (
+        <p className="text-xs text-destructive">
+          À retirer, déjà connu par ailleurs : {namesOf(conflicts)}.
+        </p>
+      ) : null}
+      {greyed.length > 0 ? (
+        <p className="text-xs text-muted-foreground">
+          Déjà connus, choisis ailleurs ou accordés par l’espèce ou la classe : {namesOf(greyed)}.
+        </p>
+      ) : null}
+    </>
+  );
+}
+
+/**
+ * `conflict` : coché ici ET connu ailleurs — un brouillon antérieur à la règle.
+ * Il reste cliquable, pour que le joueur puisse le retirer.
+ */
+type SpellLock = "free" | "full" | "taken" | "conflict";
+
+const LOCKED: readonly SpellLock[] = ["full", "taken"];
 
 interface SpellToggleProps {
   spell: CatalogSpell;
@@ -58,10 +88,10 @@ function SpellToggle({ spell, lock, selection }: SpellToggleProps) {
     <Button
       type="button"
       size="sm"
-      variant={chosen ? "default" : "outline"}
+      variant={lock === "conflict" ? "destructive" : chosen ? "default" : "outline"}
       aria-pressed={chosen}
-      disabled={lock !== "free"}
-      title={lock === "taken" ? `${TAKEN_HINT} ${spell.description}` : spell.description}
+      disabled={LOCKED.includes(lock)}
+      title={spell.description}
       onClick={() => selection.onChange(toggle(selection.selected, spell.key))}
     >
       {spell.name}
@@ -69,10 +99,22 @@ function SpellToggle({ spell, lock, selection }: SpellToggleProps) {
   );
 }
 
+/** La première règle qui s'applique gagne ; aucune ne s'applique, le sort est libre. */
 function lockOf(key: string, selection: SpellSelection, full: boolean): SpellLock {
-  if (selection.selected.includes(key)) return "free";
-  if (selection.unavailable.includes(key)) return "taken";
-  return full ? "full" : "free";
+  const chosen = selection.selected.includes(key);
+  const taken = selection.unavailable.includes(key);
+  const rules: readonly [boolean, SpellLock][] = [
+    [chosen && taken, "conflict"],
+    [chosen, "free"],
+    [taken, "taken"],
+    [full, "full"],
+  ];
+
+  return rules.find(([applies]) => applies)?.[1] ?? "free";
+}
+
+function namesOf(spells: readonly CatalogSpell[]): string {
+  return spells.map((spell) => spell.name).join(", ");
 }
 
 function toggle(selected: readonly string[], key: string): string[] {

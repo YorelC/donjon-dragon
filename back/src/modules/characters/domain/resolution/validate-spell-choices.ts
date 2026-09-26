@@ -3,6 +3,7 @@ import type { Ability } from '../reference/abilities';
 import { BACKGROUNDS } from '../reference/backgrounds';
 import { CLASS_ORDERS } from '../reference/class-orders';
 import { CLASSES, type ClassSpellcasting } from '../reference/classes';
+import { grantedSpellKeys } from '../reference/effect';
 import type { ClassKey, SpellKey } from '../reference/keys';
 import { SPELLS, type Spell } from '../reference/spells';
 import { fail, type ChoicesToValidate } from './choice-validation';
@@ -35,9 +36,7 @@ function assertNoSpellChosenTwice(input: ChoicesToValidate): void {
 }
 
 function grantedSpells(input: ChoicesToValidate): SpellKey[] {
-  return collectEffects(input)
-    .flatMap((collected) => collected.effect.grants?.spells ?? [])
-    .map((spell) => spell.spellKey);
+  return grantedSpellKeys(collectEffects(input).map((collected) => collected.effect));
 }
 
 function assertClassSpells(input: ChoicesToValidate): void {

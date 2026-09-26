@@ -68,7 +68,7 @@ function classChoiceFieldsOf(dto: CharacterBuildDetailDto) {
     classSkills: dto.classSkills,
     expertise: dto.expertise,
     classCantrips: dto.classCantrips,
-    classSpells: preparedAtCreationOf(dto),
+    classSpells: dto.classSpells,
     fightingStyle: dto.fightingStyle,
     classOrder: dto.classOrder,
     weaponMasteries: dto.weaponMasteries,
@@ -80,14 +80,6 @@ function classChoiceFieldsOf(dto: CharacterBuildDetailDto) {
     pactWeaponKey: dto.pactWeaponKey,
     spellbook: dto.spellbook,
   };
-}
-
-/**
- * Un brouillon de Magicien antérieur à DR-B01-05 porte encore des sorts préparés :
- * l'écran ne les montre plus et le back les refuse, on les abandonne au chargement.
- */
-function preparedAtCreationOf(dto: CharacterBuildDetailDto): string[] {
-  return dto.spellbook.length > 0 ? [] : dto.classSpells;
 }
 
 function featChoiceFieldsOf(dto: CharacterBuildDetailDto) {

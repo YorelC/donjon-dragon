@@ -21,7 +21,12 @@ import { BACKGROUNDS, type Background } from '../domain/reference/backgrounds';
 import { CLASSES, type CharacterClass } from '../domain/reference/classes';
 import { CLASS_ORDERS } from '../domain/reference/class-orders';
 import { FIGHTING_STYLES } from '../domain/reference/fighting-styles';
-import type { Feature, GrantPayload, SkillChoice } from '../domain/reference/effect';
+import {
+  grantedSpellKeys,
+  type Feature,
+  type GrantPayload,
+  type SkillChoice,
+} from '../domain/reference/effect';
 import { ORIGIN_FEATS, type OriginFeat } from '../domain/reference/origin-feats';
 import {
   ALL_CONCRETE_TOOLS,
@@ -379,9 +384,7 @@ function toCatalogFeature(feature: Feature): CatalogFeature {
     key: feature.key,
     name: feature.name,
     description: feature.description,
-    grantedSpells: feature.effects
-      .flatMap((effect) => effect.grants?.spells ?? [])
-      .map((spell) => spell.spellKey),
+    grantedSpells: grantedSpellKeys(feature.effects),
   };
 }
 

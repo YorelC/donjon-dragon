@@ -157,6 +157,19 @@ describe("magie de niveau 1", () => {
     expect(isStepValid("spells", { catalog, composition: { ...composition, classSpells: ["a"] } })).toBe(false);
   });
 
+  it("refuse l'étape des sorts mineurs quand un sort est pris deux fois", () => {
+    const wizard = aClass({ key: "wizard", spellcasting: {
+      ability: "intelligence", cantripsKnown: 1, spellsPrepared: 4, spellbookSize: 6,
+      level1Slots: 2, focus: "spellbook",
+    } });
+    const catalog = aCatalog({ classes: [wizard] });
+    const composition = { ...EMPTY_COMPOSITION, classKey: "wizard" as const, classCantrips: ["light"] };
+
+    expect(isStepValid("cantrips", { catalog, composition })).toBe(true);
+    expect(isStepValid("cantrips", { catalog, composition: { ...composition, featCantrips: ["light"] } }))
+      .toBe(false);
+  });
+
   it("additionne deux Initiés à la magie accordés par des sources distinctes", () => {
     const magicInitiate = {
       key: "magic-initiate" as const, name: "Initié", description: "", repeatable: true,

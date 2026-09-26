@@ -26,6 +26,8 @@ import {
   weaponMasteryOptions,
 } from '../domain/resolution/class-options';
 import { collectEffects } from '../domain/resolution/collect-effects';
+import { speciesSkillChoice } from '../domain/resolution/validate-choices';
+import { grantedSpellKeys } from '../domain/reference/effect';
 
 /**
  * Une création niveau 1 VALIDE pour n'importe quelle espèce, classe et historique.
@@ -84,7 +86,7 @@ class LevelOneDraft {
 
   chooseSpecies(): void {
     const skillChoice = speciesSkillChoice(this.origin.speciesKey);
-    const skills = skillChoice ? this.takeSkills(skillChoice.options, skillChoice.count) : [];
+    const skills = this.takeSkills(skillChoice.options, skillChoice.count);
     const feat = this.speciesFeat();
     if (skills.length > 0 || feat) this.add('species', this.origin.speciesKey, {
       skills, ...(feat ? { originFeat: feat } : {}),
@@ -209,11 +211,6 @@ function fixedToolsOf(origin: LevelOneOrigin): string[] {
   return [...CLASSES[origin.classKey].toolProficiencies, ...(backgroundTool ? [backgroundTool] : [])];
 }
 
-function speciesSkillChoice(speciesKey: SpeciesKey) {
-  return SPECIES[speciesKey].traits.flatMap((trait) => trait.effects)
-    .find((effect) => effect.grants?.skillChoice)?.grants?.skillChoice;
-}
-
 function classOptionsOf(classKey: ClassKey): Omit<CharacterChoice, 'source'> {
   const order = CLASS_ORDERS[classKey]?.options[0];
   const masteries = weaponMasteryOptions(classKey).slice(0, weaponMasteryCount(classKey));
@@ -237,7 +234,6 @@ function grantedSpells(origin: LevelOneOrigin, lineageKey: LineageKey | null): S
     source: { type: 'class', key: origin.classKey },
     ...classOptionsOf(origin.classKey),
   };
-  return collectEffects({ ...origin, lineageKey, choices: CharacterChoices.create([classChoice]) })
-    .flatMap((collected) => collected.effect.grants?.spells ?? [])
-    .map((spell) => spell.spellKey);
+  const effects = collectEffects({ ...origin, lineageKey, choices: CharacterChoices.create([classChoice]) });
+  return grantedSpellKeys(effects.map((collected) => collected.effect));
 }

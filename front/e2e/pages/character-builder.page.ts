@@ -71,6 +71,9 @@ export class CharacterBuilderPage {
     await expect(this.saveButton).toBeEnabled();
     await this.saveButton.click();
     await expect(this.page).toHaveURL(CHARACTER_LIST_URL);
+    // Plusieurs requêtes rafraîchissent la liste après l'enregistrement : attendre
+    // la première ne suffit pas (409 intermittent). Le temps réel passe par
+    // websocket, qui ne compte pas dans `networkidle`.
     await this.page.waitForLoadState('networkidle');
   }
 
