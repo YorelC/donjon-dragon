@@ -3,7 +3,8 @@ import type { ReactNode } from "react";
 interface RecordHeader {
   overline: string;
   title: string;
-  lede: string;
+  /** `null` quand la source n'a pas de description : pas de chapeau vide. */
+  lede: string | null;
 }
 
 interface RecordBlockProps {
@@ -28,7 +29,7 @@ function RecordHeading({ header }: { header: RecordHeader }) {
       <h2 className="mt-[5px] font-display text-title-record tracking-meta text-gold-title">
         {header.title}
       </h2>
-      <p className="lede mt-3.5">{header.lede}</p>
+      {header.lede ? <p className="lede mt-3.5">{header.lede}</p> : null}
     </header>
   );
 }

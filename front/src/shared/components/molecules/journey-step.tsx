@@ -1,27 +1,26 @@
+import { useId } from "react";
 import { cn } from "@/shared/utils/utils";
 
 const CHECK_MARK = "✓";
 
 /**
- * Le pastilleur d'étape est le seul cercle du système. Trois états, trois jeux
- * de valeurs : franchi, en cours, à venir (charte § 4).
+ * Le pastilleur d'étape est le seul cercle du système (charte § 4). Deux axes
+ * indépendants : la pastille dit si l'étape est franchie, le liseré dit si
+ * c'est l'étape ouverte. Une étape franchie peut être l'étape ouverte.
  */
-const STEP_STATES = {
-  done: {
-    row: "border-l-2 border-gold/85 bg-gold/9",
-    marker: "border-gold/70 text-gold-value",
-    label: "text-gold-selected",
-    value: "text-gold-dim",
-  },
+const PROGRESS_TONES = {
+  done: "border-gold/70 text-gold-value",
+  todo: "border-gold/25 text-ink-faint",
+} as const;
+
+const POSITION_TONES = {
   current: {
-    row: "border-l-2 border-gold/85 bg-gold/9",
-    marker: "border-gold/70 text-gold-value",
+    row: "border-gold/85 bg-gold/9",
     label: "text-gold-selected",
     value: "text-gold-dim",
   },
-  upcoming: {
-    row: "border-l-2 border-transparent hover:bg-gold/7",
-    marker: "border-gold/25 text-ink-faint",
+  other: {
+    row: "border-transparent hover:bg-gold/7",
     label: "text-ink-lede",
     value: "text-ink-faint",
   },
@@ -33,69 +32,76 @@ interface JourneyStepData {
   value: string;
 }
 
+interface JourneyStepState {
+  progress: keyof typeof PROGRESS_TONES;
+  position: keyof typeof POSITION_TONES;
+  /** Une étape verrouillée attend que les précédentes soient franchies. */
+  access: "open" | "locked";
+}
+
 interface JourneyStepProps {
   step: JourneyStepData;
-  state?: keyof typeof STEP_STATES;
+  state: JourneyStepState;
   onSelect?: () => void;
 }
 
-function JourneyStep({ step, state = "upcoming", onSelect }: JourneyStepProps) {
-  const tone = STEP_STATES[state];
+/** Le nom accessible est le libellé seul : la valeur le décrit, sans le renommer. */
+function JourneyStep({ step, state, onSelect }: JourneyStepProps) {
+  const ids = { label: useId(), value: useId() };
 
   return (
     <button
       type="button"
       onClick={onSelect}
-      aria-current={state === "current" ? "step" : undefined}
+      disabled={state.access === "locked"}
+      aria-current={state.position === "current" ? "step" : undefined}
+      aria-labelledby={ids.label}
+      aria-describedby={ids.value}
       className={cn(
-        "grid w-full grid-cols-[30px_1fr] items-start gap-[11px] px-2 py-[9px] text-left transition-[background-color] duration-[.18s]",
-        tone.row
+        "grid w-full grid-cols-[30px_1fr] items-start gap-[11px] border-l-2 px-2 py-[9px] text-left transition-[background-color] duration-[.18s] disabled:cursor-not-allowed disabled:opacity-50",
+        POSITION_TONES[state.position].row
       )}
     >
       <StepMarker index={step.index} state={state} />
-      <StepIdentity step={step} state={state} />
+      <StepIdentity step={step} state={state} ids={ids} />
     </button>
   );
 }
 
-function StepMarker({
-  index,
-  state,
-}: {
-  index: number;
-  state: keyof typeof STEP_STATES;
-}) {
+function StepMarker({ index, state }: { index: number; state: JourneyStepState }) {
   return (
     <span
       aria-hidden
       className={cn(
-        "flex size-[26px] items-center justify-center rounded-full border text-xs",
-        STEP_STATES[state].marker
+        "mt-px flex size-[26px] items-center justify-center rounded-full border text-xs",
+        PROGRESS_TONES[state.progress]
       )}
     >
-      {state === "done" ? CHECK_MARK : index}
+      {state.progress === "done" ? CHECK_MARK : index}
     </span>
   );
 }
 
-function StepIdentity({
-  step,
-  state,
-}: {
+interface StepIdentityProps {
   step: JourneyStepData;
-  state: keyof typeof STEP_STATES;
-}) {
-  const tone = STEP_STATES[state];
+  state: JourneyStepState;
+  ids: { label: string; value: string };
+}
+
+function StepIdentity({ step, state, ids }: StepIdentityProps) {
+  const tone = POSITION_TONES[state.position];
 
   return (
-    <span className="flex flex-col gap-0.5">
-      <span className={cn("font-display text-[13px] tracking-meta", tone.label)}>
+    <span className="flex min-w-0 flex-col gap-0.5">
+      <span id={ids.label} className={cn("font-display text-[13px] tracking-meta", tone.label)}>
         {step.label}
       </span>
-      <span className={cn("text-note", tone.value)}>{step.value}</span>
+      <span id={ids.value} className={cn("truncate text-note", tone.value)}>
+        {step.value}
+      </span>
     </span>
   );
 }
 
 export { JourneyStep };
-export type { JourneyStepData };
+export type { JourneyStepData, JourneyStepState };

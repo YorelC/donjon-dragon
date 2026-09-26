@@ -193,9 +193,9 @@ sur place, jamais emballées.
 | `ornate-corners.tsx` | Les quatre équerres d'un panneau de premier plan |
 | `section-heading.tsx` | Intitulé Cinzel + filet, variante encadrée |
 | `panel.tsx` | Panneau principal et encart interne |
-| `choice-tile.tsx` | Vignette de choix |
-| `selectable-row.tsx` | Ligne sélectionnable à trois colonnes |
-| `journey-step.tsx` | Étape de parcours (franchie, en cours, à venir) |
+| `choice-tile.tsx` | Vignette de choix unique (`radio`), losange facultatif, aperçu au survol |
+| `selectable-row.tsx` | Ligne sélectionnable à trois colonnes (libre, retenue, verrouillée, en conflit), aperçu au survol |
+| `journey-step.tsx` | Étape de parcours : pastille franchie ou à faire, liseré de l'étape ouverte, verrou |
 | `stat-token.tsx` | Jeton de récapitulatif + infobulle |
 | `name-value-row.tsx` | Paire nom / valeur |
 | `record-block.tsx` | Bloc de fiche |
