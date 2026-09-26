@@ -1,12 +1,13 @@
-import type { CharacterChoice, ClassKey } from "@donjon-dragon/shared";
+import type { CharacterChoice, ClassKey, DndCatalog } from "@donjon-dragon/shared";
 import type { CharacterComposition } from "./character-composition";
+import { grantedFeatKeysOf } from "./builder-lookups";
 
 /**
  * Les choix, regroupés par provenance. Le back en a besoin pour savoir quoi
  * retirer si la source disparaît, et pour vérifier que chaque source a bien fait
  * choisir ce qu'elle devait.
  */
-export function choicesOf(composition: CharacterComposition): CharacterChoice[] {
+export function choicesOf(catalog: DndCatalog, composition: CharacterComposition): CharacterChoice[] {
   return [
     ...speciesChoices(composition),
     ...lineageChoices(composition),
@@ -14,7 +15,7 @@ export function choicesOf(composition: CharacterComposition): CharacterChoice[] 
     ...backgroundChoices(composition),
     ...magicInitiateChoices(composition),
     ...skilledChoice(composition),
-    ...featToolChoices(composition),
+    ...featToolChoices(catalog, composition),
   ];
 }
 
@@ -117,10 +118,14 @@ function legacyMagicChoice(composition: CharacterComposition): CharacterChoice[]
   ];
 }
 
-/** Façonneur et Musicien : chaque don porte ses propres outils, sous sa clé. */
-function featToolChoices(composition: CharacterComposition): CharacterChoice[] {
+/**
+ * Façonneur et Musicien : chaque don porte ses propres outils, sous sa clé. Un
+ * don qui n'est plus accordé n'émet rien : le serveur refuserait sa source.
+ */
+function featToolChoices(catalog: DndCatalog, composition: CharacterComposition): CharacterChoice[] {
+  const granted: string[] = grantedFeatKeysOf({ catalog, composition });
   return Object.entries(composition.featToolChoices)
-    .filter(([, tools]) => (tools ?? []).length > 0)
+    .filter(([feat, tools]) => granted.includes(feat) && (tools ?? []).length > 0)
     .map(([feat, tools]) => ({
       source: { type: "feat", key: feat },
       tools: tools ?? [],

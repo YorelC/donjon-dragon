@@ -17,13 +17,22 @@ export function BoundedChoiceStepView({ choice }: { choice: BoundedChoice }) {
         Choisissez {choice.count} option{choice.count > 1 ? "s" : ""}.{" "}
         <Badge variant="outline">{choice.selected.length} / {choice.count}</Badge>
       </p>
+      <BoundedChoiceOptionsView choice={choice} />
+    </div>
+  );
+}
+
+/** Les options et la raison de celles qui sont grisées, sans consigne ni compteur. */
+export function BoundedChoiceOptionsView({ choice }: { choice: BoundedChoice }) {
+  return (
+    <>
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {choice.options.map((option) => (
           <BoundedChoiceButton key={option} option={option} choice={choice} />
         ))}
       </div>
       <BlockedNote choice={choice} />
-    </div>
+    </>
   );
 }
 

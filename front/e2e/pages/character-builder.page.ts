@@ -184,6 +184,22 @@ export class CharacterBuilderPage {
       .filter({ has: this.page.getByRole('heading', { level: 2 }) });
   }
 
+  /**
+   * Coche un à un les premiers boutons libres d'une zone, et rend leurs libellés.
+   *
+   * Un à la fois, en relisant la zone : cocher un bouton en grise d'autres.
+   * `aria-pressed="false"` exclut ce qui est déjà coché, donc jamais de retrait.
+   */
+  async pressFirstFree(scope: Locator, count: number): Promise<string[]> {
+    const labels: string[] = [];
+    for (let pressed = 0; pressed < count; pressed += 1) {
+      const free = scope.locator('button[aria-pressed="false"]:enabled').first();
+      labels.push(((await free.textContent()) ?? '').trim());
+      await free.click();
+    }
+    return labels;
+  }
+
   /** Les options que le compteur laisse encore prendre dans l'étape ouverte. */
   availableChoices(): Locator {
     return this.stepPanel().getByRole('button').and(this.page.locator(':enabled'));

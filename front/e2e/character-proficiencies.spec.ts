@@ -1,4 +1,3 @@
-import type { Locator } from '@playwright/test';
 import { test, expect, STORAGE_STATE } from './fixtures/test';
 import { deleteCharactersNamed, ensureCampaign } from './fixtures/api';
 import {
@@ -194,7 +193,7 @@ test.describe('Créer les classes que le wizard ne savait pas composer', () => {
     for (const tool of [backgroundTool as string, ...classTools]) {
       await expect(musician.getByRole('button', { name: tool, exact: true })).toBeDisabled();
     }
-    await pressFirstFree(musician, 3);
+    await builder.pressFirstFree(musician, 3);
     await expect(musician.getByText('3 / 3')).toBeVisible();
 
     // L'Artiste porte ses bonus sur Force, Dextérité et Charisme.
@@ -209,17 +208,6 @@ test.describe('Créer les classes que le wizard ne savait pas composer', () => {
     await finish(builder, BARD_NAME);
   });
 });
-
-/** Coche un à un les premiers boutons libres d'une zone, et rend leurs libellés. */
-async function pressFirstFree(scope: Locator, count: number): Promise<string[]> {
-  const labels: string[] = [];
-  for (let pressed = 0; pressed < count; pressed += 1) {
-    const free = scope.locator('button[aria-pressed="false"]:enabled').first();
-    labels.push(((await free.textContent()) ?? '').trim());
-    await free.click();
-  }
-  return labels;
-}
 
 async function chooseLanguages(builder: CharacterBuilderPage): Promise<void> {
   await builder.openStep('Langues');

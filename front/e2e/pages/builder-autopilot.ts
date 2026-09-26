@@ -77,7 +77,7 @@ export class BuilderAutopilot {
   private async completeCounter(step: StepLabel): Promise<void> {
     const panel = this.builder.stepPanel();
     const remaining = await remainingOf(this.builder.step(step));
-    await this.pressFirstFree(panel, remaining ?? await this.singleChoiceLeft(panel));
+    await this.builder.pressFirstFree(panel, remaining ?? await this.singleChoiceLeft(panel));
   }
 
   private async chooseLineage(): Promise<void> {
@@ -120,7 +120,7 @@ export class BuilderAutopilot {
    */
   async completeSpecies(): Promise<void> {
     const panel = this.builder.stepPanel();
-    await this.pressFirstFree(panel, await this.singleChoiceLeft(panel));
+    await this.builder.pressFirstFree(panel, await this.singleChoiceLeft(panel));
   }
 
   /** Un choix unique reste à faire s'il y a des bascules et qu'aucune n'est cochée. */
@@ -139,7 +139,7 @@ export class BuilderAutopilot {
     const card = this.builder.featCard('Historique').filter({ hasText: SKILLED_FEAT });
     if ((await card.count()) === 0) return this.completeFeatTools();
     const pressed = await card.locator('button[aria-pressed="true"]').count();
-    await this.pressFirstFree(card, SKILLED_COUNT - pressed);
+    await this.builder.pressFirstFree(card, SKILLED_COUNT - pressed);
   }
 
   /** Façonneur et Musicien, venus de l'historique : leurs outils, selon leur compteur. */
@@ -147,7 +147,7 @@ export class BuilderAutopilot {
     const card = this.builder.featCard('Historique');
     const counter = card.getByText(COUNTER);
     if ((await counter.count()) === 0) return;
-    await this.pressFirstFree(card, (await remainingOf(counter.first())) ?? 0);
+    await this.builder.pressFirstFree(card, (await remainingOf(counter.first())) ?? 0);
   }
 
   /** Complète chaque groupe de sorts de l'étape ouverte, selon son compteur. */
@@ -155,7 +155,7 @@ export class BuilderAutopilot {
     const headings = this.builder.stepPanel().getByRole('heading', { level: 3, name: COUNTER });
     for (const heading of await headings.all()) {
       const remaining = await remainingOf(heading);
-      await this.pressFirstFree(heading.locator('..'), remaining ?? 0);
+      await this.builder.pressFirstFree(heading.locator('..'), remaining ?? 0);
     }
   }
 
@@ -166,14 +166,6 @@ export class BuilderAutopilot {
     for (const select of await concrete.all()) {
       await select.click();
       await this.builder.page.getByRole('option').first().click();
-    }
-  }
-
-  /** Coche les `count` premiers boutons libres, un à la fois : la liste se réordonne. */
-  private async pressFirstFree(scope: Locator, count: number): Promise<void> {
-    const free = scope.locator('button[aria-pressed="false"]:enabled');
-    for (let pressed = 0; pressed < count; pressed += 1) {
-      await free.first().click();
     }
   }
 

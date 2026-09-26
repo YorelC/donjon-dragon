@@ -55,7 +55,7 @@ export function toPreviewPayload(
     abilityMethod: composition.abilityMethod,
     base: baseScoresOf(composition),
     backgroundBonuses: composition.backgroundBonuses,
-    choices: choicesOf(composition),
+    choices: choicesOf(catalog, composition),
     equipment: equipmentPayloadOf(catalog, composition),
   };
 }

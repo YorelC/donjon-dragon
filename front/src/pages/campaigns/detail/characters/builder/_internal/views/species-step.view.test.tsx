@@ -132,6 +132,20 @@ describe("changer d’espèce périme ses choix", () => {
     );
   });
 
+  it("emporte les outils du don d’espèce, garde ceux du don d’historique", async () => {
+    const onChange = renderStep({
+      speciesKey: "human",
+      speciesFeat: "musician",
+      featToolChoices: { musician: ["lute", "lyre", "flute"], crafter: ["smiths-tools"] },
+    });
+
+    await userEvent.click(screen.getByRole("radio", { name: "dwarf" }));
+
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ featToolChoices: { crafter: ["smiths-tools"] } }),
+    );
+  });
+
   // Sans don d'espèce, rien n'est orphelin : ce que l'HISTORIQUE a fait choisir
   // reste valide, et le joueur ne doit pas le ressaisir pour avoir comparé deux
   // espèces.

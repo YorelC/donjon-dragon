@@ -57,18 +57,31 @@ function SpeciesFeatChoice({ catalog, composition, onChange }: FeatsStepViewProp
             key={feat.key}
             label={feat.name}
             selected={composition.speciesFeat === feat.key}
-            onSelect={() => onChange({
-              speciesFeat: feat.key as OriginFeatKey,
-              magicInitiateChoices: composition.magicInitiateChoices.filter(
-                (choice) => choice.grantedBy.type !== "species",
-              ),
-              featToolChoices: withoutFeatTools(composition, composition.speciesFeat),
-            })}
+            onSelect={() => selectSpeciesFeat(feat.key, composition, onChange)}
           />
         ))}
       </div>
     </div>
   );
+}
+
+/**
+ * Retenir le don déjà retenu ne change rien : sans cette garde, le re-clic
+ * effaçait ses outils et son Initié à la magie.
+ */
+function selectSpeciesFeat(
+  feat: OriginFeatKey,
+  composition: CharacterComposition,
+  onChange: FeatsStepViewProps["onChange"],
+): void {
+  if (feat === composition.speciesFeat) return;
+  onChange({
+    speciesFeat: feat,
+    magicInitiateChoices: composition.magicInitiateChoices.filter(
+      (choice) => choice.grantedBy.type !== "species",
+    ),
+    featToolChoices: withoutFeatTools(composition, composition.speciesFeat),
+  });
 }
 
 interface FeatCardProps extends FeatsStepViewProps {

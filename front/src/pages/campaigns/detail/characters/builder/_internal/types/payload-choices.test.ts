@@ -1,10 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { EMPTY_COMPOSITION } from "./character-composition";
+import { aBackground, aCatalog } from "./catalog.fixture";
 import { choicesOf } from "./payload-choices";
+
+const CATALOG = aCatalog({
+  backgrounds: [aBackground(), aBackground({ key: "artisan", originFeat: "crafter" })],
+});
 
 describe("choix granulaires émis par le wizard", () => {
   it("porte maîtrises, outils et langue sur la source de classe", () => {
-    const choices = choicesOf({
+    const choices = choicesOf(CATALOG, {
       ...EMPTY_COMPOSITION,
       classKey: "rogue",
       weaponMasteries: ["dagger", "shortbow"],
@@ -21,8 +26,9 @@ describe("choix granulaires émis par le wizard", () => {
   });
 
   it("porte les outils de Façonneur et de Musicien chacun sur la source de son don", () => {
-    const choices = choicesOf({
+    const choices = choicesOf(CATALOG, {
       ...EMPTY_COMPOSITION,
+      backgroundKey: "artisan",
       featToolChoices: { crafter: ["smiths-tools", "woodcarvers-tools", "potters-tools"], musician: [] },
     });
 
@@ -33,8 +39,18 @@ describe("choix granulaires émis par le wizard", () => {
     expect(choices.some((choice) => choice.source.key === "musician")).toBe(false);
   });
 
+  it("n'émet pas les outils d'un don qui n'est plus accordé", () => {
+    const choices = choicesOf(CATALOG, {
+      ...EMPTY_COMPOSITION,
+      backgroundKey: "acolyte",
+      featToolChoices: { crafter: ["smiths-tools", "woodcarvers-tools", "potters-tools"] },
+    });
+
+    expect(choices.some((choice) => choice.source.key === "crafter")).toBe(false);
+  });
+
   it("porte l'outil choisi sur une source d'historique distincte", () => {
-    const choices = choicesOf({
+    const choices = choicesOf(CATALOG, {
       ...EMPTY_COMPOSITION,
       backgroundKey: "artisan",
       backgroundTool: "smiths-tools",
@@ -47,7 +63,7 @@ describe("choix granulaires émis par le wizard", () => {
   });
 
   it("conserve deux Initiés à la magie avec leurs provenances", () => {
-    const choices = choicesOf({
+    const choices = choicesOf(CATALOG, {
       ...EMPTY_COMPOSITION,
       magicInitiateChoices: [
         { grantedBy: { type: "background", key: "acolyte" }, spellList: "cleric",

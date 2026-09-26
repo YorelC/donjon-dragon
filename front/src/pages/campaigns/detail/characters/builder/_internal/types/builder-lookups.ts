@@ -2,6 +2,7 @@ import type {
   CatalogClass,
   CatalogOriginFeat,
   DndCatalog,
+  OriginFeatKey,
   SkillName,
 } from "@donjon-dragon/shared";
 import type { KnownSkill } from "../views/skill-picker.view";
@@ -37,11 +38,15 @@ export function orderChoiceOf(context: StepContext) {
 
 /** Les dons du personnage : celui de l'historique, et celui que l'espèce accorde. */
 export function featsOf(context: StepContext): CatalogOriginFeat[] {
-  const keys = [backgroundOf(context)?.originFeat, context.composition.speciesFeat].filter(
-    Boolean,
-  );
+  const keys = grantedFeatKeysOf(context);
 
   return context.catalog.originFeats.filter((feat) => keys.includes(feat.key));
+}
+
+/** Les dons réellement accordés : celui de l'historique et celui de l'espèce. */
+export function grantedFeatKeysOf(context: StepContext): OriginFeatKey[] {
+  const keys = [backgroundOf(context)?.originFeat, context.composition.speciesFeat];
+  return keys.filter((key): key is OriginFeatKey => Boolean(key));
 }
 
 export function featSpellcastingOf(context: StepContext) {

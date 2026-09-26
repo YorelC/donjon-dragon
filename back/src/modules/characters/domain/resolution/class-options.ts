@@ -9,7 +9,8 @@ import type { BackgroundKey, ClassKey, OriginFeatKey } from '../reference/keys';
 import { WEAPONS, type Weapon } from '../reference/weapons';
 
 /**
- * Ce qu'une classe et un historique laissent choisir, et rien d'autre.
+ * Ce qu'une classe, un historique ou un don d'Origine laissent choisir, et rien
+ * d'autre.
  *
  * Ces bornes servent DEUX lecteurs : la validation, qui refuse ce qui en sort,
  * et le catalogue, qui dit au wizard quoi proposer. Les laisser diverger, c'est
