@@ -15,6 +15,8 @@ const STEP_ORDER = [
 type StepLabel = (typeof STEP_ORDER)[number];
 
 const STANDARD_ARRAY = ['15', '14', '13', '12', '10', '8'];
+/** Ce qu'affiche le menu d'une caractéristique encore sans valeur. */
+const UNASSIGNED = '—';
 const SPELLCASTING_ABILITIES = /^(Intelligence|Sagesse|Charisme)$/;
 const COUNTER = /(\d+) ?\/ ?(\d+)/;
 const CONCRETE_ITEM_LABEL = 'Objet concret du paquetage';
@@ -42,6 +44,11 @@ export class BuilderAutopilot {
     Sorts: () => this.fillSpellGroups(),
     Équipement: () => this.chooseEquipment(),
     Dons: () => this.completeSkilled(),
+    // Les choix d'identité du parcours : c'est le test qui les fixe.
+    Espèce: async () => {},
+    Classe: async () => {},
+    Historique: async () => {},
+    Identité: async () => {},
     // Son choix est l'objet même des parcours qui la traversent : jamais au hasard.
     'Manifestation occulte': async () => {},
   };
@@ -70,8 +77,7 @@ export class BuilderAutopilot {
   private async completeCounter(step: StepLabel): Promise<void> {
     const panel = this.builder.stepPanel();
     const remaining = await remainingOf(this.builder.step(step));
-    const nothingPressed = (await panel.locator('button[aria-pressed="true"]').count()) === 0;
-    await this.pressFirstFree(panel, remaining ?? (nothingPressed ? 1 : 0));
+    await this.pressFirstFree(panel, remaining ?? await this.singleChoiceLeft(panel));
   }
 
   private async chooseLineage(): Promise<void> {
@@ -86,10 +92,15 @@ export class BuilderAutopilot {
     await this.cards().first().click();
   }
 
+  /** Rejouée après un changement d'avis, elle ne touche pas ce qui est déjà posé. */
   private async assignAbilities(): Promise<void> {
     for (const [index, ability] of STANDARD_ARRAY_ORDER.entries()) {
-      await this.builder.assignScore(ability, STANDARD_ARRAY[index] as string);
+      const unassigned = await this.builder.page.getByRole('combobox', { name: ability })
+        .textContent() === UNASSIGNED;
+      if (unassigned) await this.builder.assignScore(ability, STANDARD_ARRAY[index] as string);
     }
+    const bonuses = this.builder.page.getByRole('checkbox', { name: /\+[12]$/, checked: true });
+    if ((await bonuses.count()) > 0) return;
     const [major, minor] = await this.eligibleBonusAbilities();
     await this.builder.setBackgroundBonus(major as string, 2);
     await this.builder.setBackgroundBonus(minor as string, 1);
@@ -109,8 +120,14 @@ export class BuilderAutopilot {
    */
   async completeSpecies(): Promise<void> {
     const panel = this.builder.stepPanel();
-    const nothingPressed = (await panel.locator('button[aria-pressed="true"]').count()) === 0;
-    if (nothingPressed) await this.pressFirstFree(panel, (await panel.locator('button[aria-pressed]').count()) > 0 ? 1 : 0);
+    await this.pressFirstFree(panel, await this.singleChoiceLeft(panel));
+  }
+
+  /** Un choix unique reste à faire s'il y a des bascules et qu'aucune n'est cochée. */
+  private async singleChoiceLeft(panel: Locator): Promise<number> {
+    const toggles = await panel.locator('button[aria-pressed]').count();
+    const pressed = await panel.locator('button[aria-pressed="true"]').count();
+    return toggles > 0 && pressed === 0 ? 1 : 0;
   }
 
   /**

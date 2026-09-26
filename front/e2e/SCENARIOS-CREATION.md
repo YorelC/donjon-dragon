@@ -1,7 +1,11 @@
 # Scénarios de création de personnage
 
 Catalogue des parcours qui protègent la création niveau 1 contre les régressions.
-**Proposition à valider** : rien n'est écrit au-delà de ce qui est marqué ✅.
+✅ écrit et vert · 🚫 bloqué par un manque produit · ⏸️ en attente d'un autre chantier ·
+⬜ à écrire.
+
+Fichiers : `character-creation`, `character-proficiencies`, `character-spells`,
+`character-classes` et `character-rules.spec.ts`.
 
 ## Deux étages, pas un
 
@@ -67,30 +71,30 @@ Des règles transverses, dont chacune a déjà cassé ou risque de casser en sil
 - ✅ Un sort mineur pris par la classe devient indisponible pour Initié à la magie, et inversement.
 - ✅ Un sort inscrit au grimoire devient indisponible pour le sort de niveau 1 d'Initié.
 - ✅ Un sort accordé par l'espèce (Lumière de l'Aasimar) n'est proposé nulle part.
-- ⬜ Deux Initiés à la magie (Humain Acolyte) : deux listes, deux caractéristiques,
-  aucun sort commun.
-- ⬜ Le Pacte du grimoire refuse un rituel déjà préparé et un mineur déjà connu.
-- ⬜ La fiche affiche chaque sort accordé avec **sa** caractéristique (Lumière de
-  l'Aasimar en Charisme : bug connu, tâche ouverte).
+- ✅ Deux Initiés à la magie (Humain Clerc Acolyte, même liste) : aucun sort mineur commun.
+- ✅ Un mineur pris par le Pacte du grimoire est exclu de la classe et d'Initié (parcours Occultiste).
+- 🚫 La fiche affiche chaque sort accordé avec **sa** caractéristique : Lumière de
+  l'Aasimar sort en Intelligence au lieu du Charisme. Bug connu, tâche séparée ; le test
+  s'écrira avec le correctif.
 
 ### Transitions (changer d'avis en cours de route)
 
-- ⬜ Changer de classe efface les sorts de classe et garde ceux d'Initié à la magie.
-- ⬜ Passer de Sage à Guide remplace la liste imposée et vide les sorts d'Initié.
-- ⬜ Passer d'Aasimar à Nain rend Lumière de nouveau disponible.
+- ✅ Changer de classe efface les sorts de classe et garde ceux d'Initié à la magie.
+- ✅ Passer de Sage à Guide remplace la liste imposée et vide les sorts d'Initié.
+- ✅ Passer d'Aasimar à Nain rend Lumière de nouveau disponible.
 - ✅ Une compétence d'historique ne se reprend pas en compétence de classe.
 
 ### Caractéristiques
 
-- ⬜ Achat de points : 27 points, bornes 8 à 15, Suivant bloqué hors budget.
-- ⬜ Tirage 4d6 : les six totaux sont exactement ceux affectés.
-- ⬜ Bonus d'historique limités à ses trois caractéristiques, plafond final de 20.
-- ⬜ Saisie manuelle : proposée au MJ, absente pour un joueur (chantier en cours, B01-CAR-005).
+- ✅ Bonus d'historique limités à ses trois caractéristiques.
+- ⏸️ Achat de points (27 points, bornes 8 à 15), tirage 4d6, plafond final de 20 et
+  saisie manuelle MJ (B01-CAR-005) : en attente du commit du chantier « saisie
+  manuelle », qui modifie justement cette étape.
 
 ### Persistance et cycle de vie
 
 - ✅ Réouverture d'un brouillon : langues et état civil conservés.
-- ⬜ Réouverture d'un Magicien Sage : grimoire, sorts d'Initié et liste imposée conservés.
+- ✅ Réouverture d'un Magicien Sage : grimoire, sorts d'Initié et liste imposée conservés.
 - ✅ Taille Petite déduite de la stature, gabarit jamais demandé.
 - ✅ Soumission, refus motivé, correction, acceptation.
 
