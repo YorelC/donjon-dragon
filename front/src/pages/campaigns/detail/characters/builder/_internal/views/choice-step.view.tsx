@@ -1,30 +1,20 @@
-import { OptionListView, type SelectableOption } from "./option-list.view";
+import { SectionHeading } from "@/shared/components/molecules/section-heading";
+import { OptionListView, type OptionList } from "./option-list.view";
 
-interface ChoiceStepViewProps {
+export interface SingleChoice extends OptionList {
   title: string;
-  description: string;
-  options: readonly SelectableOption[];
-  selectedKey: string | null;
-  onSelect: (key: string) => void;
 }
 
 /**
  * L'écran d'un choix unique parmi une liste décrite : lignage, Style de combat,
- * Ordre divin, Ordre primitif. Ils ne diffèrent que par leur titre et leur
- * source ; leur donner un écran chacun n'apporterait rien.
+ * Ordre divin, Ordre primitif, alignement. Leur description se lit dans la
+ * fiche détaillée, au survol.
  */
-export function ChoiceStepView(props: ChoiceStepViewProps) {
+export function ChoiceStepView({ choice }: { choice: SingleChoice }) {
   return (
-    <div className="grid gap-4">
-      <div className="grid gap-1">
-        <h3 className="section-title text-base">{props.title}</h3>
-        <p className="text-sm text-muted-foreground">{props.description}</p>
-      </div>
-      <OptionListView
-        options={props.options}
-        selectedKey={props.selectedKey}
-        onSelect={props.onSelect}
-      />
+    <div className="flex flex-col gap-3">
+      <SectionHeading label={choice.title} />
+      <OptionListView list={choice} />
     </div>
   );
 }

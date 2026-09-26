@@ -1,40 +1,35 @@
-import type {
-  CatalogSpecies,
-  DndCatalog,
-  SkillName,
-} from "@donjon-dragon/shared";
-import { Separator } from "@/shared/components/atoms/separator";
+import type { CatalogSpecies, SkillName } from "@donjon-dragon/shared";
 import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
 import { knownSkillsExcept } from "../types/builder-lookups";
 import { defaultMeasurementsOf } from "../types/identity-fields";
 import { withoutFeatTools } from "../types/builder-transitions";
+import type { StepBinding } from "../types/step-binding";
 import { OptionListView } from "./option-list.view";
 import { SkillPickerView } from "./skill-picker.view";
 
-interface SpeciesStepViewProps {
-  catalog: DndCatalog;
-  composition: CharacterComposition;
-  onChange: (patch: Partial<CharacterComposition>) => void;
-}
-
-/** Le lignage a son propre écran : il n'apparaît que pour cinq espèces sur neuf. */
-export function SpeciesStepView(props: SpeciesStepViewProps) {
-  const { catalog, composition } = props;
-  const species = catalog.species.find((entry) => entry.key === composition.speciesKey);
+/**
+ * Les espèces en vignettes ; leurs traits se lisent dans la fiche détaillée. Le
+ * lignage a son propre écran : il n'apparaît que pour cinq espèces sur neuf.
+ */
+export function SpeciesStepView({ binding }: { binding: StepBinding }) {
+  const species = binding.catalog.species.find((entry) => entry.key === binding.composition.speciesKey);
 
   return (
-    <div className="grid gap-4">
+    <div className="flex flex-col gap-5">
       <OptionListView
-        options={catalog.species}
-        selectedKey={composition.speciesKey}
-        onSelect={(key) => selectSpecies(props, key)}
+        list={{
+          options: binding.catalog.species,
+          selectedKey: binding.composition.speciesKey,
+          onSelect: (key) => selectSpecies(binding, key),
+          onPreview: binding.preview,
+        }}
       />
-      {species ? <SpeciesDetails {...props} species={species} /> : null}
+      {species ? <SpeciesSkillChoice binding={binding} species={species} /> : null}
     </div>
   );
 }
 
-function selectSpecies({ catalog, composition, onChange }: SpeciesStepViewProps, key: string) {
+function selectSpecies({ catalog, composition, onChange }: StepBinding, key: string) {
   const species = catalog.species.find((entry) => entry.key === key);
   if (species) onChange(speciesChangePatch(species, composition));
 }
@@ -89,37 +84,15 @@ function orphanedFeatChoices(
   };
 }
 
-interface SpeciesDetailsProps extends SpeciesStepViewProps {
+interface SpeciesSkillChoiceProps {
+  binding: StepBinding;
   species: CatalogSpecies;
 }
 
-function SpeciesDetails(props: SpeciesDetailsProps) {
-  return (
-    <div className="grid gap-4">
-      <Separator />
-      <TraitList species={props.species} />
-      <SpeciesSkillChoice {...props} />
-    </div>
-  );
-}
-
-function TraitList({ species }: { species: CatalogSpecies }) {
-  return (
-    <div className="grid gap-1">
-      <h3 className="section-title text-sm">Traits</h3>
-      {species.traits.map((trait) => (
-        <p key={trait.key} className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">{trait.name}</span> —{" "}
-          {trait.description}
-        </p>
-      ))}
-    </div>
-  );
-}
-
-function SpeciesSkillChoice({ catalog, species, composition, onChange }: SpeciesDetailsProps) {
+function SpeciesSkillChoice({ binding, species }: SpeciesSkillChoiceProps) {
   if (!species.skillChoice) return null;
   const { count, options } = species.skillChoice;
+  const { catalog, composition, onChange } = binding;
 
   return (
     <SkillPickerView
@@ -128,8 +101,9 @@ function SpeciesSkillChoice({ catalog, species, composition, onChange }: Species
         options: options === "any" ? allSkillsOf(catalog) : options,
         selected: composition.speciesSkills,
         labels: catalog.skillLabels,
-        alreadyKnown: knownSkillsExcept({ catalog, composition }, "species"),
+        alreadyKnown: knownSkillsExcept(binding, "species"),
         onChange: (speciesSkills: SkillName[]) => onChange({ speciesSkills }),
+        onPreview: binding.preview,
       }}
     />
   );

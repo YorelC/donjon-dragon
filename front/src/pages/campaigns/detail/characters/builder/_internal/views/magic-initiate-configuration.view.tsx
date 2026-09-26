@@ -21,12 +21,12 @@ export function MagicInitiateConfiguration(props: MagicInitiateConfigurationProp
     <ChoiceRow label="Liste de sorts">{lists.map((classKey) => (
       <ChoiceButtonView key={classKey} label={className(props.catalog, classKey)}
         selected={selection?.spellList === classKey}
-        onSelect={() => updateSelection(props, { spellList: classKey, cantrips: [], spells: [] })} />
+        actions={{ select: () => updateSelection(props, { spellList: classKey, cantrips: [], spells: [] }) }} />
     ))}</ChoiceRow>
     <ChoiceRow label="Caractéristique d'incantation">{choice.abilityOptions.map((ability) => (
       <ChoiceButtonView key={ability} label={ABILITY_LABELS[ability as Ability]}
         selected={selection?.spellcastingAbility === ability}
-        onSelect={() => updateSelection(props, { spellcastingAbility: ability })} />
+        actions={{ select: () => updateSelection(props, { spellcastingAbility: ability }) }} />
     ))}</ChoiceRow>
   </div>;
 }
@@ -65,7 +65,7 @@ function emptySelection(props: MagicInitiateConfigurationProps) {
 
 function ChoiceRow({ label, children }: { label: string; children: React.ReactNode }) {
   return <div className="grid gap-1.5">
-    <p className="text-sm font-medium">{label}</p>
+    <p className="field-label">{label}</p>
     <div className="flex flex-wrap gap-2">{children}</div>
   </div>;
 }

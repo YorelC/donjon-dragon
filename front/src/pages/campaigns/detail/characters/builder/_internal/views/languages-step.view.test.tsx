@@ -11,9 +11,12 @@ function renderStep(standardLanguages = EMPTY_COMPOSITION.standardLanguages) {
   const onChange = vi.fn();
   render(
     <LanguagesStepView
-      catalog={CATALOG}
-      composition={{ ...EMPTY_COMPOSITION, standardLanguages }}
-      onChange={onChange}
+      binding={{
+        catalog: CATALOG,
+        composition: { ...EMPTY_COMPOSITION, standardLanguages },
+        onChange,
+        preview: vi.fn(),
+      }}
     />,
   );
 

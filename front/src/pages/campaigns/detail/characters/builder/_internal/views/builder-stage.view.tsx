@@ -1,5 +1,7 @@
 import { DiamondRule } from "@/shared/components/molecules/gold-rule";
 import { OrnateCorners } from "@/shared/components/molecules/ornate-corners";
+import { stepDetailOf } from "../types/step-detail";
+import type { DetailSource } from "../types/step-detail-parts";
 import { STEP_HINTS } from "../types/builder-step-texts";
 import { stepLabel, type BuilderStep } from "../types/builder-steps";
 import type { CharacterRecap } from "../types/character-recap";
@@ -8,6 +10,7 @@ import type { BuilderScreen } from "./character-builder.view";
 import { LeaveBuilderDialogView } from "./leave-builder-dialog.view";
 import { RecapDrawerView } from "./recap-drawer.view";
 import { StepContentView } from "./step-content.view";
+import { StepDetailView } from "./step-detail.view";
 
 /** Le nom de la zone de choix : le parcours e2e la cible par lui. */
 export const STEP_REGION_LABEL = "Choix de l'étape";
@@ -18,7 +21,7 @@ interface BuilderStageViewProps {
   recap: CharacterRecap;
 }
 
-/** La scène : l'étape ouverte, ses choix, et de quoi avancer ou reculer. */
+/** La scène : l'étape ouverte, ses choix à gauche, sa fiche détaillée à droite. */
 export function BuilderStageView({ screen, backTo, recap }: BuilderStageViewProps) {
   return (
     <main className="panel-surface builder-stage">
@@ -29,10 +32,7 @@ export function BuilderStageView({ screen, backTo, recap }: BuilderStageViewProp
           <RecapDrawerView recap={recap} />
         </div>
         <StepHeading step={screen.builder.step} />
-        <section aria-label={STEP_REGION_LABEL} className="builder-selection lg:flex-1">
-          <StepContentView screen={screen} />
-        </section>
-        <BuilderFooterView screen={screen} />
+        <StepSplit screen={screen} />
       </div>
     </main>
   );
@@ -50,4 +50,33 @@ function StepHeading({ step }: { step: BuilderStep }) {
       </p>
     </header>
   );
+}
+
+/** Quitter la liste rend la fiche à ce qui est retenu : le survol ne fait que prêter. */
+function StepSplit({ screen }: { screen: BuilderScreen }) {
+  return (
+    <div className="builder-split">
+      <section
+        aria-label={STEP_REGION_LABEL}
+        className="builder-selection"
+        onMouseLeave={screen.focus.clear}
+      >
+        <StepContentView screen={screen} />
+      </section>
+      <div className="flex flex-col lg:min-h-0">
+        <StepDetailView detail={stepDetailOf(screen.builder.step, detailSourceOf(screen))} />
+        <BuilderFooterView screen={screen} />
+      </div>
+    </div>
+  );
+}
+
+function detailSourceOf(screen: BuilderScreen): DetailSource {
+  return {
+    context: screen.context,
+    focusKey: screen.focus.key,
+    spells: screen.spells,
+    preview: screen.preview,
+    items: screen.items,
+  };
 }

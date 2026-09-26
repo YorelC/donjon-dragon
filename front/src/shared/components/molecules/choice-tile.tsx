@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { cn } from "@/shared/utils/utils";
 import { Diamond } from "@/shared/components/molecules/diamond";
 
@@ -21,16 +22,19 @@ interface ChoiceTileProps {
 
 /**
  * Vignette de choix : un losange de deux lettres, un libellé, une sélection
- * dorée. C'est un choix unique parmi d'autres, d'où le rôle `radio`.
+ * dorée. C'est un choix unique parmi d'autres, d'où le rôle `radio`, nommé par
+ * son seul libellé.
  */
 function ChoiceTile({ option, state = "idle", actions }: ChoiceTileProps) {
   const selected = state === "selected";
+  const labelId = useId();
 
   return (
     <button
       type="button"
       role="radio"
       aria-checked={selected}
+      aria-labelledby={labelId}
       {...choiceHandlers(actions)}
       className={cn(
         "selectable flex flex-col items-center justify-center gap-[9px] px-2 pt-[15px] pb-[13px]",
@@ -38,7 +42,7 @@ function ChoiceTile({ option, state = "idle", actions }: ChoiceTileProps) {
       )}
     >
       <TileBadge abbr={option.abbr} selected={selected} />
-      <TileLabel label={option.label} state={state} />
+      <TileLabel id={labelId} label={option.label} state={state} />
     </button>
   );
 }
@@ -58,9 +62,11 @@ function TileBadge({ abbr, selected }: { abbr?: string; selected: boolean }) {
   );
 }
 
-function TileLabel({ label, state }: { label: string; state: string }) {
+/** Le libellé seul nomme la vignette : les initiales du losange ne sont qu'un ornement. */
+function TileLabel({ id, label, state }: { id: string; label: string; state: string }) {
   return (
     <span
+      id={id}
       className={cn(
         "font-display text-note/[1.35] tracking-name text-center",
         state === "selected" ? "text-gold-selected" : "text-ink-idle"

@@ -58,7 +58,7 @@ export interface CharacterRecap {
 export function toCharacterRecap(source: RecapSource): CharacterRecap {
   return {
     ...identityOf(source.context),
-    abilities: abilitiesOf(source),
+    abilities: recapAbilitiesOf(source),
     stats: statsOf(source.preview),
     tokenGroups: recapTokenGroupsOf(source),
     proficiencies: recapProficienciesOf(source),
@@ -95,7 +95,8 @@ function originOf(context: StepContext): string {
   return lineage?.name ?? species?.name ?? "";
 }
 
-function abilitiesOf({ context, preview }: RecapSource): RecapAbility[] {
+/** Les six scores : ceux du serveur dès qu'il répond, les scores saisis avant. */
+export function recapAbilitiesOf({ context, preview }: Pick<RecapSource, "context" | "preview">): RecapAbility[] {
   const primary = classOf(context)?.primaryAbilities ?? [];
 
   return ABILITIES.map((ability) => {

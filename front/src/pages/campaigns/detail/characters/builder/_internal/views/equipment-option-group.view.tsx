@@ -1,134 +1,82 @@
-import type { CatalogEquipmentOption, Item } from "@donjon-dragon/shared";
-import { Badge } from "@/shared/components/atoms/badge";
-import { Label } from "@/shared/components/atoms/label";
-import { RadioGroup, RadioGroupItem } from "@/shared/components/atoms/radio-group";
+import type { CatalogEquipmentOption } from "@donjon-dragon/shared";
+import { SelectableRow } from "@/shared/components/molecules/selectable-row";
+import { SectionHeading } from "@/shared/components/molecules/section-heading";
+import {
+  EQUIPMENT_GROUP_TITLES,
+  equipmentFocusKey,
+  type EquipmentGroup,
+} from "../types/equipment-detail";
 import { EquipmentItemChoiceView } from "./equipment-item-choice.view";
 
-interface EquipmentOptionGroupProps {
-  /** Distingue les deux groupes dans le DOM : leurs options portent les mêmes id. */
-  groupKey: string;
-  title: string;
-  options: CatalogEquipmentOption[];
+export interface EquipmentSelection {
   selectedId: string | null;
-  selection: {
-    items: Item[];
-    selectedItemKey: string | null;
-    onSelect: (optionId: string) => void;
-    onItemSelect: (itemKey: string) => void;
-  };
+  selectedItemKey: string | null;
+  onSelect: (optionId: string) => void;
+  onItemSelect: (itemKey: string) => void;
+  /** Montre l'option et son contenu dans la fiche détaillée. */
+  onPreview: (focusKey: string) => void;
+}
+
+interface EquipmentOptionGroupProps {
+  group: EquipmentGroup;
+  options: CatalogEquipmentOption[];
+  selection: EquipmentSelection;
 }
 
 /**
  * Un choix de paquetage : les options du manuel, dont la dernière est toujours
  * « tout en or ». C'est le seul choix que le joueur fait ici — l'inventaire en
- * découle.
+ * découle, et se lit dans la fiche détaillée.
  */
-export function EquipmentOptionGroupView({
-  groupKey,
-  title,
-  options,
-  selectedId,
-  selection,
-}: EquipmentOptionGroupProps) {
+export function EquipmentOptionGroupView({ group, options, selection }: EquipmentOptionGroupProps) {
   if (options.length === 0) return null;
 
   return (
-    <div className="grid gap-2">
-      <h3 className="section-title text-sm">{title}</h3>
-      <RadioGroup value={selectedId ?? ""} onValueChange={selection.onSelect} className="grid gap-2">
-        {options.map((option) => (
-          <EquipmentOptionCard
-            key={option.id}
-            card={{ groupKey, option, items: selection.items, selected: option.id === selectedId }}
-            choice={{ selectedKey: selection.selectedItemKey, onSelect: selection.onItemSelect }}
-          />
-        ))}
-      </RadioGroup>
+    <div className="flex flex-col gap-2">
+      <SectionHeading label={EQUIPMENT_GROUP_TITLES[group]} />
+      {options.map((option) => (
+        <EquipmentOptionRow key={option.id} group={group} option={option} selection={selection} />
+      ))}
     </div>
   );
 }
 
-interface EquipmentOptionCardState {
-  groupKey: string;
+interface EquipmentOptionRowProps {
+  group: EquipmentGroup;
   option: CatalogEquipmentOption;
-  items: Item[];
-  selected: boolean;
-}
-
-interface EquipmentOptionCardProps {
-  card: EquipmentOptionCardState;
-  choice: { selectedKey: string | null; onSelect: (key: string) => void };
+  selection: EquipmentSelection;
 }
 
 /**
  * Les deux paquetages nomment leurs options « A » et « B ». Sans le groupe dans
- * l'identifiant, les deux « A » partagent un id DOM : le libellé de l'historique
- * pointe alors la radio de la classe, et le paquetage d'historique devient
- * impossible à choisir.
+ * l'identifiant, les deux « A » partagent un id DOM, et le parcours e2e ne sait
+ * plus lequel choisir.
  */
-function EquipmentOptionCard({ card, choice }: EquipmentOptionCardProps) {
-  const { groupKey, option, items, selected } = card;
-  const inputId = `equipment-option-${groupKey}-${option.id}`;
+function EquipmentOptionRow({ group, option, selection }: EquipmentOptionRowProps) {
+  const selected = option.id === selection.selectedId;
 
   return (
-    <div
-      className={`grid gap-2 rounded-lg border p-3 ${
-        selected ? "border-primary bg-accent/40" : "border-border"
-      }`}
-    >
-      <div className="flex items-start gap-3">
-        <RadioGroupItem value={option.id} id={inputId} className="mt-1" />
-        <Label htmlFor={inputId} className="grid gap-1 font-normal">
-          <span className="font-medium">Option {option.id}</span>
-          <span className="text-sm text-muted-foreground">{option.label}</span>
-        </Label>
-      </div>
-      <GrantedItemList entries={option.entries} items={items} gold={option.gold} />
+    <>
+      <SelectableRow
+        entry={{
+          id: `equipment-option-${group}-${option.id}`,
+          name: `Option ${option.id}`,
+          meta: option.label,
+          tag: option.gold > 0 ? `${option.gold} po` : "",
+        }}
+        state={selected ? "selected" : "idle"}
+        actions={{
+          select: () => selection.onSelect(option.id),
+          preview: () => selection.onPreview(equipmentFocusKey(group, option.id)),
+        }}
+      />
       {selected && option.itemChoice ? (
         <EquipmentItemChoiceView
           choice={option.itemChoice}
-          selectedKey={choice.selectedKey}
-          onSelect={choice.onSelect}
+          selectedKey={selection.selectedItemKey}
+          onSelect={selection.onItemSelect}
         />
       ) : null}
-    </div>
+    </>
   );
-}
-
-interface GrantedItemListProps {
-  entries: CatalogEquipmentOption["entries"];
-  items: Item[];
-  gold: number;
-}
-
-/**
- * Ce que l'option dépose vraiment dans l'inventaire. Ce n'est pas toujours le
- * libellé mot pour mot : quand le manuel dit « outils d'artisan », il désigne
- * une catégorie que l'étape des maîtrises tranchera, pas un objet à recevoir.
- */
-function GrantedItemList({ entries, items, gold }: GrantedItemListProps) {
-  if (entries.length === 0) return <GoldBadge gold={gold} />;
-
-  return (
-    <div className="flex flex-wrap gap-1">
-      {entries.map((entry) => (
-        <Badge key={entry.itemKey} variant="secondary">
-          {nameOf(entry.itemKey, items)}
-          {entry.quantity > 1 ? ` ×${entry.quantity}` : ""}
-        </Badge>
-      ))}
-      <GoldBadge gold={gold} />
-    </div>
-  );
-}
-
-function GoldBadge({ gold }: { gold: number }) {
-  if (gold === 0) return null;
-
-  return <Badge variant="outline">{gold} po</Badge>;
-}
-
-/** La clé nue si le catalogue n'est pas encore là : jamais une ligne vide. */
-function nameOf(itemKey: string, items: Item[]): string {
-  return items.find((item) => item.key === itemKey)?.name ?? itemKey;
 }

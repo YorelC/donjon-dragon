@@ -1,21 +1,12 @@
-import type { DndCatalog, SkillName } from "@donjon-dragon/shared";
-import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
+import type { SkillName } from "@donjon-dragon/shared";
+import { allSkillsOf } from "../types/character-composition";
 import { classOf, knownSkillNames, knownSkillsExcept } from "../types/builder-lookups";
+import type { StepBinding } from "../types/step-binding";
 import { SkillPickerView } from "./skill-picker.view";
 
-interface SkillChoiceStepViewProps {
-  catalog: DndCatalog;
-  composition: CharacterComposition;
-  onChange: (patch: Partial<CharacterComposition>) => void;
-}
-
 /** Les compétences que la classe fait choisir. */
-export function ClassSkillsStepView({
-  catalog,
-  composition,
-  onChange,
-}: SkillChoiceStepViewProps) {
-  const characterClass = classOf({ catalog, composition });
+export function ClassSkillsStepView({ binding }: { binding: StepBinding }) {
+  const characterClass = classOf(binding);
   if (!characterClass) return null;
   const { count, options } = characterClass.skillChoice;
 
@@ -23,11 +14,12 @@ export function ClassSkillsStepView({
     <SkillPickerView
       picker={{
         count,
-        options: options === "any" ? allSkillsOf(catalog) : options,
-        selected: composition.classSkills,
-        labels: catalog.skillLabels,
-        alreadyKnown: knownSkillsExcept({ catalog, composition }, "class"),
-        onChange: (classSkills: SkillName[]) => onChange({ classSkills, expertise: [] }),
+        options: options === "any" ? allSkillsOf(binding.catalog) : options,
+        selected: binding.composition.classSkills,
+        labels: binding.catalog.skillLabels,
+        alreadyKnown: knownSkillsExcept(binding, "class"),
+        onChange: (classSkills: SkillName[]) => binding.onChange({ classSkills, expertise: [] }),
+        onPreview: binding.preview,
       }}
     />
   );
@@ -37,25 +29,21 @@ export function ClassSkillsStepView({
  * L'expertise ne s'applique qu'à une compétence déjà maîtrisée, quelle que soit
  * sa source : classe, historique, espèce ou don.
  */
-export function ExpertiseStepView({ catalog, composition, onChange }: SkillChoiceStepViewProps) {
-  const characterClass = classOf({ catalog, composition });
+export function ExpertiseStepView({ binding }: { binding: StepBinding }) {
+  const characterClass = classOf(binding);
   if (!characterClass) return null;
 
   return (
-    <div className="grid gap-2">
-      <p className="text-sm text-muted-foreground">
-        Votre bonus de maîtrise est doublé pour les compétences choisies ici.
-      </p>
-      <SkillPickerView
-        picker={{
-          count: characterClass.expertiseCount,
-          options: knownSkillNames({ catalog, composition }),
-          selected: composition.expertise,
-          labels: catalog.skillLabels,
-          alreadyKnown: [],
-          onChange: (expertise: SkillName[]) => onChange({ expertise }),
-        }}
-      />
-    </div>
+    <SkillPickerView
+      picker={{
+        count: characterClass.expertiseCount,
+        options: knownSkillNames(binding),
+        selected: binding.composition.expertise,
+        labels: binding.catalog.skillLabels,
+        alreadyKnown: [],
+        onChange: (expertise: SkillName[]) => binding.onChange({ expertise }),
+        onPreview: binding.preview,
+      }}
+    />
   );
 }

@@ -24,13 +24,16 @@ function renderStep(overrides: Partial<CharacterComposition>) {
   const onChange = vi.fn();
   render(
     <FeatsStepView
-      catalog={CATALOG}
-      composition={{
-        ...EMPTY_COMPOSITION, speciesKey: "human", backgroundKey: "farmer",
-        speciesFeat: "musician", featToolChoices: { musician: ["lute", "lyre", "flute"] },
-        ...overrides,
+      binding={{
+        catalog: CATALOG,
+        composition: {
+          ...EMPTY_COMPOSITION, speciesKey: "human", backgroundKey: "farmer",
+          speciesFeat: "musician", featToolChoices: { musician: ["lute", "lyre", "flute"] },
+          ...overrides,
+        },
+        onChange,
+        preview: vi.fn(),
       }}
-      onChange={onChange}
     />,
   );
   return onChange;

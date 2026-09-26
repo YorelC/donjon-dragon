@@ -4,9 +4,8 @@ import type {
   OriginFeatKey,
   SkillName,
 } from "@donjon-dragon/shared";
-import { Badge } from "@/shared/components/atoms/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
-import { Separator } from "@/shared/components/atoms/separator";
+import { SectionHeading } from "@/shared/components/molecules/section-heading";
 import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
 import { retainedExpertise } from "../types/builder-transitions";
 import { knownSkillsExcept } from "../types/builder-lookups";
@@ -15,6 +14,7 @@ import { SkillPickerView } from "./skill-picker.view";
 import { MagicInitiateConfiguration } from "./magic-initiate-configuration.view";
 import { FeatToolChoice } from "./feat-tool-choice.view";
 import { withoutFeatTools } from "../types/builder-transitions";
+import type { StepBinding } from "../types/step-binding";
 
 interface FeatsStepViewProps {
   catalog: DndCatalog;
@@ -26,17 +26,18 @@ interface FeatsStepViewProps {
  * laisse choisir, et leurs paramétrages. Un don qui ne demande rien s'affiche
  * quand même — le joueur doit savoir ce qu'il a.
  */
-export function FeatsStepView(props: FeatsStepViewProps) {
-  const { catalog, composition } = props;
+export function FeatsStepView({ binding }: { binding: StepBinding }) {
+  const { catalog, composition, onChange } = binding;
+  const props = { catalog, composition, onChange };
   const background = catalog.backgrounds.find((entry) => entry.key === composition.backgroundKey);
   const granted = catalog.originFeats.find((feat) => feat.key === background?.originFeat);
   const chosen = catalog.originFeats.find((feat) => feat.key === composition.speciesFeat);
 
   return (
-    <div className="grid gap-4">
+    <div className="flex flex-col gap-4">
       {granted ? <FeatCard feat={granted} origin="Historique"
         grantedBy={{ type: "background", key: background?.key ?? "" }} {...props} /> : null}
-      <SpeciesFeatChoice {...props} />
+      <SpeciesFeatChoice binding={binding} />
       {chosen ? <FeatCard feat={chosen} origin="Espèce"
         grantedBy={{ type: "species", key: composition.speciesKey ?? "" }} {...props} /> : null}
     </div>
@@ -44,24 +45,33 @@ export function FeatsStepView(props: FeatsStepViewProps) {
 }
 
 /** Seul l'humain accorde un don au choix au niveau 1, par son trait Polyvalent. */
-function SpeciesFeatChoice({ catalog, composition, onChange }: FeatsStepViewProps) {
+function SpeciesFeatChoice({ binding }: { binding: StepBinding }) {
+  const { catalog, composition } = binding;
   const species = catalog.species.find((entry) => entry.key === composition.speciesKey);
   if (!species?.grantsOriginFeatChoice) return null;
 
   return (
-    <div className="grid gap-2">
-      <h3 className="section-title text-sm">Don d'Origines au choix ({species.name})</h3>
+    <div className="flex flex-col gap-3">
+      <SectionHeading label={`Don d'Origines au choix (${species.name})`} />
       <div className="flex flex-wrap gap-2">
         {catalog.originFeats.map((feat) => (
-          <ChoiceButtonView
-            key={feat.key}
-            label={feat.name}
-            selected={composition.speciesFeat === feat.key}
-            onSelect={() => selectSpeciesFeat(feat.key, composition, onChange)}
-          />
+          <SpeciesFeatButton key={feat.key} feat={feat} binding={binding} />
         ))}
       </div>
     </div>
+  );
+}
+
+function SpeciesFeatButton({ feat, binding }: { feat: CatalogOriginFeat; binding: StepBinding }) {
+  return (
+    <ChoiceButtonView
+      label={feat.name}
+      selected={binding.composition.speciesFeat === feat.key}
+      actions={{
+        select: () => selectSpeciesFeat(feat.key, binding.composition, binding.onChange),
+        preview: () => binding.preview(feat.key),
+      }}
+    />
   );
 }
 
@@ -94,13 +104,12 @@ function FeatCard(props: FeatCardProps) {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-base">
+        <CardTitle className="flex items-baseline justify-between gap-2">
           {props.feat.name}
-          <Badge variant="secondary">{props.origin}</Badge>
+          <span className="eyebrow">{props.origin}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-4">
-        <p className="text-sm text-muted-foreground">{props.feat.description}</p>
+      <CardContent className="flex flex-col gap-4">
         <FeatConfiguration {...props} />
       </CardContent>
     </Card>
@@ -114,8 +123,7 @@ function FeatConfiguration(props: FeatCardProps) {
   if (!needsSpells && !needsProficiencies && !needsTools) return null;
 
   return (
-    <div className="grid gap-4">
-      <Separator />
+    <div className="flex flex-col gap-4">
       {needsSpells ? <MagicInitiateConfiguration {...props} /> : null}
       {needsProficiencies ? <ProficiencyChoice {...props} /> : null}
       <FeatToolChoice {...props} />

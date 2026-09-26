@@ -3,12 +3,20 @@ import { aCatalog, aClass } from "./catalog.fixture";
 import { EMPTY_COMPOSITION, type CharacterComposition } from "./character-composition";
 import { PENDING_SUMMARY, stepSummaryOf } from "./builder-step-summaries";
 import type { StepContext } from "./builder-lookups";
+import { distinctAbbreviationsOf } from "./builder-step-texts";
 
 function aContext(composition: Partial<CharacterComposition>): StepContext {
   const classes = [aClass({ key: "ranger", name: "Rôdeur", skillChoice: { count: 3, options: [] } })];
 
   return { catalog: aCatalog({ classes }), composition: { ...EMPTY_COMPOSITION, ...composition } };
 }
+
+describe("médaillons d'une liste de choix", () => {
+  it("prennent les deux premières lettres, puis la suivante libre en cas de doublon", () => {
+    expect(distinctAbbreviationsOf(["Barbare", "Barde", "Clerc", "Rôdeur"]))
+      .toEqual(["BA", "BR", "CL", "RÔ"]);
+  });
+});
 
 describe("valeur d'une étape dans le rail", () => {
   it("nomme ce qui est retenu", () => {

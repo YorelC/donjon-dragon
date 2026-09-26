@@ -1,8 +1,8 @@
-import type { Alignment, DndCatalog } from "@donjon-dragon/shared";
+import type { Alignment } from "@donjon-dragon/shared";
 import { Input } from "@/shared/components/atoms/input";
 import { Label } from "@/shared/components/atoms/label";
 import { Textarea } from "@/shared/components/atoms/textarea";
-import type { CharacterComposition } from "../types/character-composition";
+import type { StepBinding } from "../types/step-binding";
 import {
   positiveIntegerFieldValue,
 } from "../types/identity-fields";
@@ -11,9 +11,7 @@ import { MeasurementScaleView } from "./measurement-scale.view";
 import { NumberFieldView } from "./number-field.view";
 
 interface IdentityStepViewProps {
-  catalog: DndCatalog;
-  composition: CharacterComposition;
-  onChange: (patch: Partial<CharacterComposition>) => void;
+  binding: StepBinding;
   /** L'état civil se fixe à la création : le serveur ne le mute jamais ensuite. */
   isFrozen: boolean;
 }
@@ -26,7 +24,7 @@ interface IdentityStepViewProps {
  */
 export function IdentityStepView(props: IdentityStepViewProps) {
   return (
-    <div className="grid gap-6">
+    <div className="flex flex-col gap-6">
       <NameField {...props} />
       <FrozenNotice isFrozen={props.isFrozen} />
       <AlignmentField {...props} />
@@ -36,7 +34,7 @@ export function IdentityStepView(props: IdentityStepViewProps) {
   );
 }
 
-function NameField({ composition, onChange }: IdentityStepViewProps) {
+function NameField({ binding: { composition, onChange } }: IdentityStepViewProps) {
   return (
     <div className="grid gap-2">
       <Label htmlFor="character-name">Nom du personnage</Label>
@@ -54,30 +52,30 @@ function FrozenNotice({ isFrozen }: { isFrozen: boolean }) {
   if (!isFrozen) return null;
 
   return (
-    <p className="text-sm text-muted-foreground">
+    <p className="fine-print">
       L’état civil se fixe à la création : il ne se modifie plus ensuite.
     </p>
   );
 }
 
-function AlignmentField({ catalog, composition, onChange, isFrozen }: IdentityStepViewProps) {
-  if (isFrozen) return <ReadOnlyAlignment catalog={catalog} composition={composition} />;
+function AlignmentField({ binding, isFrozen }: IdentityStepViewProps) {
+  if (isFrozen) return <ReadOnlyAlignment binding={binding} />;
 
   return (
     <ChoiceStepView
-      title="Alignement"
-      description="La boussole morale de votre personnage. Elle guide son jeu, elle ne le contraint pas."
-      options={catalog.alignments.map((entry) => ({ key: entry.key, name: entry.name }))}
-      selectedKey={composition.alignment}
-      onSelect={(key) => onChange({ alignment: key as Alignment })}
+      choice={{
+        title: "Alignement",
+        options: binding.catalog.alignments,
+        selectedKey: binding.composition.alignment,
+        onSelect: (key) => binding.onChange({ alignment: key as Alignment }),
+        onPreview: binding.preview,
+        look: "plain",
+      }}
     />
   );
 }
 
-function ReadOnlyAlignment({ catalog, composition }: Pick<
-  IdentityStepViewProps,
-  "catalog" | "composition"
->) {
+function ReadOnlyAlignment({ binding: { catalog, composition } }: { binding: StepBinding }) {
   const label = catalog.alignments.find((entry) => entry.key === composition.alignment)?.name;
 
   return (
@@ -88,7 +86,8 @@ function ReadOnlyAlignment({ catalog, composition }: Pick<
   );
 }
 
-function MeasurementFields({ catalog, composition, onChange, isFrozen }: IdentityStepViewProps) {
+function MeasurementFields({ binding, isFrozen }: IdentityStepViewProps) {
+  const { catalog, composition, onChange } = binding;
   const species = catalog.species.find(
     (entry) => entry.key === composition.speciesKey,
   );
@@ -133,7 +132,7 @@ function MeasurementFields({ catalog, composition, onChange, isFrozen }: Identit
   );
 }
 
-function DescriptionField({ composition, onChange, isFrozen }: IdentityStepViewProps) {
+function DescriptionField({ binding: { composition, onChange }, isFrozen }: IdentityStepViewProps) {
   return (
     <div className="grid gap-2">
       <Label htmlFor="character-description">Description (facultative)</Label>

@@ -21,6 +21,7 @@ import { isFullyAssigned, type CharacterComposition } from "../types/character-c
 import { toComposition } from "../types/character-build-detail";
 import { backgroundOf, type StepContext } from "../types/builder-lookups";
 import { useSpellsStep } from "./use-spells-step";
+import { useOptionFocus } from "./use-option-focus";
 
 export interface BuilderTarget {
   campaignId: string;
@@ -35,24 +36,35 @@ export interface BuilderTarget {
  */
 export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
   const context = useBuilderContext(target);
+  const focus = useOptionFocus(context.builder.step);
   const { catalog, builder, preview } = context;
-  if (!catalog) return null;
-  if (isExistingBuilderLoading(target, context)) return null;
-  if (context.character && !isCorrectable(context.character)) return null;
+  if (!catalog || isBlocked(target, context)) return null;
 
   return {
     catalog,
     context: { catalog, composition: builder.composition },
+    focus,
     items: context.items,
     builder,
     preview,
     abilities: context.abilities,
     spells: context.spells,
     isEditing: false,
-    canFinish:
-      isFullyAssigned(builder.composition) && preview !== null && builder.isValid("identity"),
+    canFinish: canFinish(builder, preview),
     ...context.finish,
   };
+}
+
+/** L'aperçu serveur prouve que la composition franchit le contrat de création. */
+function canFinish(builder: BuilderState, preview: ComputedCharacter | null): boolean {
+  return isFullyAssigned(builder.composition) && preview !== null && builder.isValid("identity");
+}
+
+/** Une fiche en chargement, ou qui n'est plus corrigeable, n'ouvre pas le créateur. */
+function isBlocked(target: BuilderTarget, context: BuilderContext): boolean {
+  if (isExistingBuilderLoading(target, context)) return true;
+
+  return Boolean(context.character && !isCorrectable(context.character));
 }
 
 function isExistingBuilderLoading(target: BuilderTarget, context: BuilderContext): boolean {

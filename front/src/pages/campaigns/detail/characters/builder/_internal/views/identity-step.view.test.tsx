@@ -17,9 +17,12 @@ function StatefulIdentity() {
 
   return (
     <IdentityStepView
-      catalog={CATALOG}
-      composition={composition}
-      onChange={(patch) => setComposition((current) => ({ ...current, ...patch }))}
+      binding={{
+        catalog: CATALOG,
+        composition,
+        onChange: (patch) => setComposition((current) => ({ ...current, ...patch })),
+        preview: () => undefined,
+      }}
       isFrozen={false}
     />
   );

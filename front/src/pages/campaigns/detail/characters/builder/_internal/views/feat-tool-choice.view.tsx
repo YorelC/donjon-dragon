@@ -1,5 +1,4 @@
 import type { CatalogOriginFeat, DndCatalog } from "@donjon-dragon/shared";
-import { Badge } from "@/shared/components/atoms/badge";
 import type { CharacterComposition } from "../types/character-composition";
 import { toolsKnownBesides } from "../types/known-tools";
 import {
@@ -26,7 +25,7 @@ export function FeatToolChoice(props: FeatToolChoiceProps) {
 
   return (
     <div className="grid gap-1.5">
-      <p className="text-sm font-medium">Outils</p>
+      <p className="field-label">Outils</p>
       <BoundedChoiceStepView choice={ownQuotaTools(props)} />
     </div>
   );
@@ -42,10 +41,10 @@ function SharedQuotaTools(props: FeatToolChoiceProps) {
 
   return (
     <div className="grid gap-1.5">
-      <p className="text-sm font-medium">
+      <p className="field-label">
         Outils — {feat.skillOrToolChoiceCount} maîtrises au total, compétences et outils
         confondus{" "}
-        <Badge variant="outline">{chosen} / {feat.skillOrToolChoiceCount}</Badge>
+        <span className="text-gold-link">{chosen} / {feat.skillOrToolChoiceCount}</span>
       </p>
       <BoundedChoiceOptionsView choice={sharedQuotaTools(props)} />
     </div>

@@ -1,23 +1,26 @@
 import type { Ability, CatalogLineageChoice } from "@donjon-dragon/shared";
+import { fightingStyleChoiceOf, orderChoiceOf } from "../types/builder-lookups";
 import { ABILITY_LABELS } from "../types/character-composition";
 import { ChoiceStepView } from "./choice-step.view";
 import type { BuilderScreen } from "./character-builder.view";
 
 export function LineageStep({ screen }: { screen: BuilderScreen }) {
-  const { catalog, builder } = screen;
+  const { catalog, builder, focus } = screen;
   const lineage = catalog.species.find(
     (entry) => entry.key === builder.composition.speciesKey,
   )?.lineage;
   if (!lineage) return null;
 
   return (
-    <div className="grid gap-6">
+    <div className="flex flex-col gap-6">
       <ChoiceStepView
-        title={lineage.label}
-        description="Ce choix vous confère des pouvoirs surnaturels propres à votre lignée."
-        options={lineage.options}
-        selectedKey={builder.composition.lineageKey}
-        onSelect={(lineageKey) => builder.update({ lineageKey })}
+        choice={{
+          title: lineage.label,
+          options: lineage.options,
+          selectedKey: builder.composition.lineageKey,
+          onSelect: (lineageKey) => builder.update({ lineageKey }),
+          onPreview: focus.show,
+        }}
       />
       <LineageSpellcastingAbilityChoice lineage={lineage} screen={screen} />
     </div>
@@ -40,19 +43,19 @@ function LineageSpellcastingAbilityChoice({ lineage, screen }: LineageAbilityPro
 
   return (
     <ChoiceStepView
-      title="Caractéristique d’incantation"
-      description="Elle détermine le degré de difficulté et le bonus d’attaque du sort mineur de votre lignée."
-      options={options.map(toAbilityOption)}
-      selectedKey={screen.builder.composition.lineageSpellcastingAbility}
-      onSelect={(key) =>
-        screen.builder.update({ lineageSpellcastingAbility: key as Ability })
-      }
+      choice={{
+        title: "Caractéristique d’incantation",
+        options: options.map(toAbilityOption),
+        selectedKey: screen.builder.composition.lineageSpellcastingAbility,
+        onSelect: (key) => screen.builder.update({ lineageSpellcastingAbility: key as Ability }),
+        look: "plain",
+      }}
     />
   );
 }
 
 function toAbilityOption(ability: Ability) {
-  return { key: ability, name: ABILITY_LABELS[ability], description: "" };
+  return { key: ability, name: ABILITY_LABELS[ability] };
 }
 
 interface ClassChoiceStepProps {
@@ -62,32 +65,22 @@ interface ClassChoiceStepProps {
 
 /** Style de combat et Ordre partagent la même forme : un choix parmi une liste. */
 export function ClassChoiceStep({ screen, choiceKey }: ClassChoiceStepProps) {
-  const { catalog, builder } = screen;
-  const choices = catalog.classes.find((entry) => entry.key === builder.composition.classKey)
-    ?.level1Choices;
-  const choice = choices?.find((entry) =>
-    choiceKey === "fightingStyle"
-      ? entry.key === "fightingStyle"
-      : entry.key !== "fightingStyle",
-  );
+  const { builder, focus } = screen;
+  const choice = choiceKey === "fightingStyle"
+    ? fightingStyleChoiceOf(screen.context)
+    : orderChoiceOf(screen.context);
   if (!choice) return null;
-
-  const selected =
-    choiceKey === "fightingStyle"
-      ? builder.composition.fightingStyle
-      : builder.composition.classOrder;
 
   return (
     <ChoiceStepView
-      title={choice.name}
-      description={choice.description}
-      options={choice.options}
-      selectedKey={selected}
-      onSelect={(key) =>
-        builder.update(
-          choiceKey === "fightingStyle" ? { fightingStyle: key } : { classOrder: key },
-        )
-      }
+      choice={{
+        title: choice.name,
+        options: choice.options,
+        selectedKey: choiceKey === "fightingStyle" ? builder.composition.fightingStyle : builder.composition.classOrder,
+        onSelect: (key) =>
+          builder.update(choiceKey === "fightingStyle" ? { fightingStyle: key } : { classOrder: key }),
+        onPreview: focus.show,
+      }}
     />
   );
 }

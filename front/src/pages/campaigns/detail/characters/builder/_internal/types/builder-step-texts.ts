@@ -29,7 +29,25 @@ export const STEP_HINTS: Record<BuilderStep, string> = {
 
 const ABBREVIATION_LENGTH = 2;
 
+const LETTER = /\p{L}/u;
+
 /** Le médaillon d'une option : ses deux premières lettres, en capitales. */
 export function abbreviationOf(name: string): string {
   return name.slice(0, ABBREVIATION_LENGTH).toUpperCase();
+}
+
+/**
+ * Les médaillons d'une liste, deux à deux distincts : Barbare garde « BA », et
+ * Barde, qui le suit, prend la lettre suivante de son nom — « BR ».
+ */
+export function distinctAbbreviationsOf(names: readonly string[]): string[] {
+  return names.reduce<string[]>((taken, name) => [...taken, freeAbbreviationOf(name, taken)], []);
+}
+
+function freeAbbreviationOf(name: string, taken: readonly string[]): string {
+  const [initial = "", ...rest] = [...name];
+  const letters = rest.filter((letter) => LETTER.test(letter));
+  const free = letters.find((letter) => !taken.includes(`${initial}${letter}`.toUpperCase()));
+
+  return `${initial}${free ?? letters[0] ?? ""}`.toUpperCase();
 }

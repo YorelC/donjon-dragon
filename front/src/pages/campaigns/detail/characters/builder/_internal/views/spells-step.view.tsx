@@ -1,7 +1,8 @@
 import type { CatalogSpell, CatalogSpellList, ClassKey } from "@donjon-dragon/shared";
 import type { CharacterComposition } from "../types/character-composition";
 import type { SpellSource } from "../types/chosen-spells";
-import { SpellGroup, selectionOf } from "./spell-group.view";
+import type { StepBinding } from "../types/step-binding";
+import { SpellGroup, previewing, selectionOf } from "./spell-group.view";
 
 export interface SpellsStep {
   classSpells: CatalogSpellList | null;
@@ -21,87 +22,118 @@ export interface SpellsStep {
 }
 
 interface SpellsStepViewProps {
-  step: SpellsStep;
-  composition: CharacterComposition;
-  onChange: (patch: Partial<CharacterComposition>) => void;
+  spells: SpellsStep;
+  binding: StepBinding;
 }
 
+type SpellKind = "cantrips" | "spells";
+
+const MAGIC_INITIATE_QUOTAS: Record<SpellKind, number> = { cantrips: 2, spells: 1 };
+const MAGIC_INITIATE_TITLES: Record<SpellKind, string> = {
+  cantrips: "Sorts mineurs",
+  spells: "Sort de niveau 1",
+};
+
 /** Les sorts mineurs, de la classe et du don, sur le même écran. */
-export function CantripsStepView({ step, composition, onChange }: SpellsStepViewProps) {
-  if (step.isLoading) return <Loading />;
+export function CantripsStepView({ spells, binding }: SpellsStepViewProps) {
+  if (spells.isLoading) return <Loading />;
 
   return (
-    <div className="grid gap-6">
+    <div className="flex flex-col gap-6">
       <SpellGroup
         title="Sorts mineurs de classe"
-        spells={step.classSpells?.cantrips ?? []}
-        limit={step.classCantripsKnown}
-        selection={selectionOf(sourceOf(step, composition), composition.classCantrips,
-          (classCantrips) => onChange({ classCantrips }))}
+        spells={spells.classSpells?.cantrips ?? []}
+        limit={spells.classCantripsKnown}
+        selection={selectionFor({ spells, binding }, binding.composition.classCantrips,
+          (classCantrips) => binding.onChange({ classCantrips }))}
       />
-      <MagicInitiateGroups kind="cantrips" {...{ step, composition, onChange }} />
+      <MagicInitiateGroups kind="cantrips" spells={spells} binding={binding} />
     </div>
   );
 }
 
 /** Les sorts de niveau 1, de la classe et du don. */
-export function SpellsStepView({ step, composition, onChange }: SpellsStepViewProps) {
-  if (step.isLoading) return <Loading />;
+export function SpellsStepView({ spells, binding }: SpellsStepViewProps) {
+  if (spells.isLoading) return <Loading />;
+  const levelOne = spells.classSpells?.level1 ?? [];
 
   return (
-    <div className="grid gap-6">
+    <div className="flex flex-col gap-6">
       <SpellGroup
         title="Sorts préparés"
-        spells={step.classSpells?.level1 ?? []}
-        limit={step.classSpellsPrepared}
-        selection={selectionOf(sourceOf(step, composition), composition.classSpells,
-          (classSpells) => onChange({ classSpells }))}
+        spells={levelOne}
+        limit={spells.classSpellsPrepared}
+        selection={selectionFor({ spells, binding }, binding.composition.classSpells,
+          (classSpells) => binding.onChange({ classSpells }))}
       />
       <SpellGroup
         title="Grimoire — sorts préparés plus tard, sur la fiche"
-        spells={step.classSpells?.level1 ?? []}
-        limit={step.spellbookSize}
-        selection={selectionOf(sourceOf(step, composition), composition.spellbook,
-          (spellbook) => onChange({ spellbook }))}
+        spells={levelOne}
+        limit={spells.spellbookSize}
+        selection={selectionFor({ spells, binding }, binding.composition.spellbook,
+          (spellbook) => binding.onChange({ spellbook }))}
       />
-      <MagicInitiateGroups kind="spells" {...{ step, composition, onChange }} />
+      <MagicInitiateGroups kind="spells" spells={spells} binding={binding} />
     </div>
   );
 }
 
-function MagicInitiateGroups(props: SpellsStepViewProps & { kind: "cantrips" | "spells" }) {
-  return <>{props.composition.magicInitiateChoices.map((choice) => {
-    const list = choice.spellList ? props.step.featSpellLists[choice.spellList] : undefined;
-    const spells = props.kind === "cantrips"
-      ? list?.cantrips ?? []
-      : list?.level1 ?? [];
-    const selected = props.kind === "cantrips" ? choice.cantrips : choice.spells;
-    const limit = props.kind === "cantrips" ? 2 : 1;
-    const source = choice.grantedBy.type === "background" ? "Historique" : "Espèce";
-    return <SpellGroup key={`${choice.grantedBy.type}:${choice.grantedBy.key}`}
-      title={`${props.kind === "cantrips" ? "Sorts mineurs" : "Sort de niveau 1"} — ${source}`}
-      spells={spells} limit={limit}
-      selection={selectionOf(sourceOf(props.step, props.composition), selected,
-        (keys) => updateMagicSpells(props, choice, keys))} />;
-  })}</>;
+type MagicInitiateChoice = CharacterComposition["magicInitiateChoices"][number];
+
+interface MagicInitiateGroupsProps extends SpellsStepViewProps {
+  kind: SpellKind;
 }
 
-function updateMagicSpells(
-  props: SpellsStepViewProps & { kind: "cantrips" | "spells" },
-  selected: CharacterComposition["magicInitiateChoices"][number],
-  keys: string[],
-) {
-  props.onChange({ magicInitiateChoices: props.composition.magicInitiateChoices.map((choice) =>
-    choice.grantedBy.type === selected.grantedBy.type && choice.grantedBy.key === selected.grantedBy.key
-      ? { ...choice, [props.kind]: keys }
-      : choice),
+function MagicInitiateGroups(props: MagicInitiateGroupsProps) {
+  return (
+    <>
+      {props.binding.composition.magicInitiateChoices.map((choice) => (
+        <MagicInitiateGroup
+          key={`${choice.grantedBy.type}:${choice.grantedBy.key}`}
+          group={props}
+          choice={choice}
+        />
+      ))}
+    </>
+  );
+}
+
+function MagicInitiateGroup({ group, choice }: { group: MagicInitiateGroupsProps; choice: MagicInitiateChoice }) {
+  const list = choice.spellList ? group.spells.featSpellLists[choice.spellList] : undefined;
+  const spells = group.kind === "cantrips" ? list?.cantrips ?? [] : list?.level1 ?? [];
+  const selected = group.kind === "cantrips" ? choice.cantrips : choice.spells;
+  const source = choice.grantedBy.type === "background" ? "Historique" : "Espèce";
+
+  return (
+    <SpellGroup
+      title={`${MAGIC_INITIATE_TITLES[group.kind]} — ${source}`}
+      spells={spells}
+      limit={MAGIC_INITIATE_QUOTAS[group.kind]}
+      selection={selectionFor(group, selected, (keys) => updateMagicSpells(group, choice, keys))}
+    />
+  );
+}
+
+function updateMagicSpells(group: MagicInitiateGroupsProps, selected: MagicInitiateChoice, keys: string[]) {
+  const { composition, onChange } = group.binding;
+  onChange({
+    magicInitiateChoices: composition.magicInitiateChoices.map((choice) =>
+      choice.grantedBy.type === selected.grantedBy.type && choice.grantedBy.key === selected.grantedBy.key
+        ? { ...choice, [group.kind]: keys }
+        : choice),
   });
 }
 
-function sourceOf(step: SpellsStep, composition: CharacterComposition): SpellSource {
-  return { composition, grantedSpells: step.grantedSpells };
+function selectionFor(
+  { spells, binding }: SpellsStepViewProps,
+  selected: readonly string[],
+  onChange: (keys: string[]) => void,
+) {
+  const source: SpellSource = { composition: binding.composition, grantedSpells: spells.grantedSpells };
+
+  return previewing(selectionOf(source, selected, onChange), binding.preview);
 }
 
 function Loading() {
-  return <p className="text-sm text-muted-foreground">Chargement des sorts...</p>;
+  return <p className="empty-state-text">Chargement des sorts...</p>;
 }

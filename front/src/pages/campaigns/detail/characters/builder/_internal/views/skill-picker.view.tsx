@@ -1,6 +1,9 @@
 import type { SkillName } from "@donjon-dragon/shared";
-import { Badge } from "@/shared/components/atoms/badge";
-import { Button } from "@/shared/components/atoms/button";
+import {
+  SelectableRow,
+  type SelectableRowState,
+} from "@/shared/components/molecules/selectable-row";
+import { ChoiceListHeaderView } from "./choice-list-header.view";
 
 /**
  * Une compétence déjà acquise, et par quoi. Une maîtrise ne s'obtient pas deux
@@ -19,58 +22,45 @@ export interface SkillPicker {
   labels: Partial<Record<SkillName, string>>;
   alreadyKnown: readonly KnownSkill[];
   onChange: (skills: SkillName[]) => void;
+  /** Montre la compétence dans la fiche détaillée, au survol ou au focus. */
+  onPreview?: (skill: SkillName) => void;
 }
 
-interface SkillPickerViewProps {
-  picker: SkillPicker;
-}
-
-export function SkillPickerView({ picker }: SkillPickerViewProps) {
+export function SkillPickerView({ picker }: { picker: SkillPicker }) {
   if (picker.count === 0) return null;
 
   return (
-    <div className="grid gap-2">
-      <p className="text-sm text-muted-foreground">
-        Choisissez {picker.count} compétence{picker.count > 1 ? "s" : ""}.{" "}
-        <Badge variant="outline">
-          {picker.selected.length} / {picker.count}
-        </Badge>
-      </p>
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {picker.options.map((skill) => (
-          <SkillToggle key={skill} skill={skill} picker={picker} />
-        ))}
-      </div>
+    <div className="flex flex-col gap-1.5">
+      <ChoiceListHeaderView
+        header={{ label: "Compétences disponibles", chosen: picker.selected.length, total: picker.count }}
+      />
+      {picker.options.map((skill) => (
+        <SkillRow key={skill} skill={skill} picker={picker} />
+      ))}
     </div>
   );
 }
 
-interface SkillToggleProps {
-  skill: SkillName;
-  picker: SkillPicker;
-}
-
-function SkillToggle({ skill, picker }: SkillToggleProps) {
-  const chosen = picker.selected.includes(skill);
+function SkillRow({ skill, picker }: { skill: SkillName; picker: SkillPicker }) {
   const known = picker.alreadyKnown.find((entry) => entry.skill === skill);
-  const full = picker.selected.length >= picker.count;
 
   return (
-    <Button
-      type="button"
-      size="sm"
-      className="justify-between"
-      variant={chosen ? "default" : "outline"}
-      aria-pressed={chosen}
-      disabled={Boolean(known) || (full && !chosen)}
-      onClick={() => picker.onChange(toggle(picker.selected, skill))}
-    >
-      <span>{picker.labels[skill] ?? skill}</span>
-      {known ? (
-        <span className="ml-2 text-xs font-normal opacity-70">{known.source}</span>
-      ) : null}
-    </Button>
+    <SelectableRow
+      entry={{ name: picker.labels[skill] ?? skill, meta: known ? `Déjà acquise · ${known.source}` : "", tag: "" }}
+      state={skillStateOf(skill, picker)}
+      actions={{
+        select: () => picker.onChange(toggle(picker.selected, skill)),
+        preview: () => picker.onPreview?.(skill),
+      }}
+    />
   );
+}
+
+function skillStateOf(skill: SkillName, picker: SkillPicker): SelectableRowState {
+  if (picker.alreadyKnown.some((entry) => entry.skill === skill)) return "locked";
+  if (picker.selected.includes(skill)) return "selected";
+
+  return picker.selected.length >= picker.count ? "locked" : "idle";
 }
 
 function toggle(selected: readonly SkillName[], skill: SkillName): SkillName[] {

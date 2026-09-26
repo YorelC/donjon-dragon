@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import type { BuilderStep } from "../types/builder-steps";
+import type { StepBinding } from "../types/step-binding";
 import { AbilitiesStepView } from "./abilities-step.view";
 import { BackgroundStepView } from "./background-step.view";
 import { ClassChoiceStep, LineageStep } from "./builder-choice-steps.view";
@@ -25,33 +26,32 @@ import { CantripsStepView, SpellsStepView } from "./spells-step.view";
  * oblige à traiter chaque étape, et une étape ajoutée sans son écran casse `tsc`.
  */
 export function StepContentView({ screen }: { screen: BuilderScreen }) {
-  const { catalog, builder } = screen;
-  const shared = { catalog, composition: builder.composition, onChange: builder.update };
-  const spells = { step: screen.spells, composition: builder.composition, onChange: builder.update };
+  const { builder } = screen;
+  const binding: StepBinding = { ...screen.context, onChange: builder.update, preview: screen.focus.show };
 
   const screens: Record<BuilderStep, () => ReactElement | null> = {
-    species: () => <SpeciesStepView {...shared} />,
+    species: () => <SpeciesStepView binding={binding} />,
     lineage: () => <LineageStep screen={screen} />,
-    languages: () => <LanguagesStepView {...shared} />,
-    class: () => <ClassStepView {...shared} />,
-    background: () => <BackgroundStepView {...shared} />,
+    languages: () => <LanguagesStepView binding={binding} />,
+    class: () => <ClassStepView binding={binding} />,
+    background: () => <BackgroundStepView binding={binding} />,
     backgroundTool: () => <BackgroundToolStep screen={screen} />,
-    classSkills: () => <ClassSkillsStepView {...shared} />,
+    classSkills: () => <ClassSkillsStepView binding={binding} />,
     fightingStyle: () => <ClassChoiceStep screen={screen} choiceKey="fightingStyle" />,
     classOrder: () => <ClassChoiceStep screen={screen} choiceKey="order" />,
     weaponMasteries: () => <WeaponMasteriesStep screen={screen} />,
     classTools: () => <ClassToolsStep screen={screen} />,
     classLanguage: () => <ClassLanguageStep screen={screen} />,
-    feats: () => <FeatsStepView {...shared} />,
-    expertise: () => <ExpertiseStepView {...shared} />,
-    invocation: () => <InvocationStepView {...shared} tomeSpells={screen.spells.tomeSpells} />,
+    feats: () => <FeatsStepView binding={binding} />,
+    expertise: () => <ExpertiseStepView binding={binding} />,
+    invocation: () => <InvocationStepView binding={binding} tomeSpells={screen.spells.tomeSpells} />,
     abilities: () => (
-      <AbilitiesStepView step={screen.abilities} composition={shared.composition} onChange={shared.onChange} />
+      <AbilitiesStepView step={screen.abilities} composition={binding.composition} onChange={binding.onChange} />
     ),
-    cantrips: () => <CantripsStepView {...spells} />,
-    spells: () => <SpellsStepView {...spells} />,
-    equipment: () => <EquipmentStepView {...shared} items={screen.items} />,
-    identity: () => <IdentityStepView {...shared} isFrozen={screen.isEditing} />,
+    cantrips: () => <CantripsStepView spells={screen.spells} binding={binding} />,
+    spells: () => <SpellsStepView spells={screen.spells} binding={binding} />,
+    equipment: () => <EquipmentStepView binding={binding} items={screen.items} />,
+    identity: () => <IdentityStepView binding={binding} isFrozen={screen.isEditing} />,
   };
 
   return screens[builder.step]();

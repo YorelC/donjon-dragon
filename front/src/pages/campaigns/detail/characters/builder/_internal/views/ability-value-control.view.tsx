@@ -91,21 +91,25 @@ function PointBuyStepper({ ability, control }: AbilityValueControlProps) {
   const score = composition.pointBuyScores[ability];
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1">
       <Button
         type="button"
-        size="sm"
+        size="icon-xs"
         variant="outline"
+        className="rounded-full"
+        aria-label={`Diminuer ${ABILITY_LABELS[ability]}`}
         disabled={score <= POINT_BUY_BOUNDS.min}
         onClick={() => control.onChange({ pointBuyScores: shift(composition, ability, -1) })}
       >
         −
       </Button>
-      <span className="w-8 text-center tabular-nums">{score}</span>
+      <span className="w-7 text-center font-display text-lg text-gold-title">{score}</span>
       <Button
         type="button"
-        size="sm"
+        size="icon-xs"
         variant="outline"
+        className="rounded-full"
+        aria-label={`Augmenter ${ABILITY_LABELS[ability]}`}
         disabled={!canIncrease(score, control.spent)}
         onClick={() => control.onChange({ pointBuyScores: shift(composition, ability, 1) })}
       >

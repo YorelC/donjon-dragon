@@ -1,19 +1,15 @@
-import type { DndCatalog, Item } from "@donjon-dragon/shared";
-import { Badge } from "@/shared/components/atoms/badge";
-import { Button } from "@/shared/components/atoms/button";
-import { Switch } from "@/shared/components/atoms/switch";
-import { Label } from "@/shared/components/atoms/label";
+import type { Item } from "@donjon-dragon/shared";
 import type { CharacterComposition } from "../types/character-composition";
+import type { StepBinding } from "../types/step-binding";
 import { backgroundEquipmentOptions, classEquipmentOptions, grantedItems,
   ownedArmors, ownedShield } from "../types/starting-equipment";
 import { EquipmentOptionGroupView } from "./equipment-option-group.view";
 import { TrinketChoiceView } from "./trinket-choice.view";
+import { WornEquipmentView } from "./worn-equipment.view";
 
 interface EquipmentStepViewProps {
-  catalog: DndCatalog;
+  binding: StepBinding;
   items: Item[];
-  composition: CharacterComposition;
-  onChange: (patch: Partial<CharacterComposition>) => void;
 }
 
 /**
@@ -21,44 +17,37 @@ interface EquipmentStepViewProps {
  * classe et celle de son historique, ou bien l'or. On ne choisit pas son armure
  * dans une vitrine — on porte ce que le paquetage a donné.
  */
-export function EquipmentStepView({
-  catalog,
-  items,
-  composition,
-  onChange,
-}: EquipmentStepViewProps) {
+export function EquipmentStepView({ binding, items }: EquipmentStepViewProps) {
+  const { catalog, composition, onChange } = binding;
   const granted = grantedItems(catalog, composition);
 
   return (
-    <div className="grid gap-6">
+    <div className="flex flex-col gap-6">
       <EquipmentOptionGroupView
-        groupKey="class"
-        title="Paquetage de classe"
+        group="class"
         options={classEquipmentOptions(catalog, composition)}
-        selectedId={composition.classEquipmentOptionId}
         selection={{
-          items,
+          selectedId: composition.classEquipmentOptionId,
           selectedItemKey: composition.classChoiceItemKey,
           onSelect: (optionId) => onChange(resetClassPackage(optionId)),
           onItemSelect: (classChoiceItemKey) => onChange({ classChoiceItemKey }),
+          onPreview: binding.preview,
         }}
       />
       <EquipmentOptionGroupView
-        groupKey="background"
-        title="Paquetage d'historique"
+        group="background"
         options={backgroundEquipmentOptions(catalog, composition)}
-        selectedId={composition.backgroundEquipmentOptionId}
         selection={{
-          items,
+          selectedId: composition.backgroundEquipmentOptionId,
           selectedItemKey: composition.backgroundChoiceItemKey,
           onSelect: (optionId) => onChange(resetBackgroundPackage(optionId)),
           onItemSelect: (backgroundChoiceItemKey) => onChange({ backgroundChoiceItemKey }),
+          onPreview: binding.preview,
         }}
       />
-      <WornEquipment
+      <WornEquipmentView
         worn={{ armors: ownedArmors(items, granted), shield: ownedShield(items, granted) }}
-        composition={composition}
-        onChange={onChange}
+        binding={binding}
       />
       <TrinketChoiceView
         trinkets={catalog.trinkets}
@@ -83,88 +72,4 @@ function resetClassPackage(optionId: string): Partial<CharacterComposition> {
 
 function resetBackgroundPackage(optionId: string): Partial<CharacterComposition> {
   return resetWorn({ backgroundEquipmentOptionId: optionId, backgroundChoiceItemKey: null });
-}
-
-interface WornEquipmentProps {
-  worn: { armors: Item[]; shield: Item | null };
-  composition: CharacterComposition;
-  onChange: (patch: Partial<CharacterComposition>) => void;
-}
-
-function WornEquipment({ worn, composition, onChange }: WornEquipmentProps) {
-  return (
-    <div className="grid gap-3">
-      <h3 className="section-title text-sm">Ce que vous portez</h3>
-      <ArmorChoice worn={worn} composition={composition} onChange={onChange} />
-      {worn.armors.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          Votre paquetage ne contient aucune armure.
-        </p>
-      ) : null}
-      <ShieldToggle worn={worn} composition={composition} onChange={onChange} />
-    </div>
-  );
-}
-
-function ArmorChoice({ worn, composition, onChange }: WornEquipmentProps) {
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Button
-        type="button"
-        size="sm"
-        variant={composition.armorKey === null ? "default" : "outline"}
-        onClick={() => onChange({ armorKey: null })}
-      >
-        Sans armure
-      </Button>
-      {worn.armors.map((armor) => (
-        <ArmorButton
-          key={armor.key}
-          armor={armor}
-          selected={composition.armorKey === armor.key}
-          onSelect={() => onChange({ armorKey: armor.key })}
-        />
-      ))}
-    </div>
-  );
-}
-
-interface ArmorButtonProps {
-  armor: Item;
-  selected: boolean;
-  onSelect: () => void;
-}
-
-function ArmorButton({ armor, selected, onSelect }: ArmorButtonProps) {
-  return (
-    <Button type="button" size="sm" variant={selected ? "default" : "outline"} onClick={onSelect}>
-      {armor.name}
-      <Badge variant="secondary" className="ml-2">
-        CA {armor.armor?.baseArmorClass ?? 0}
-      </Badge>
-      {armor.armor?.stealthDisadvantage ? (
-        <Badge variant="outline" className="ml-2">
-          Discrétion désavantagée
-        </Badge>
-      ) : null}
-    </Button>
-  );
-}
-
-/** Le bouclier ne se porte que si le paquetage en contient un. */
-function ShieldToggle({ worn, composition, onChange }: WornEquipmentProps) {
-  if (!worn.shield) return null;
-
-  return (
-    <div className="flex items-center gap-3">
-      <Switch
-        id="shield"
-        checked={composition.shield}
-        onCheckedChange={(shield) => onChange({ shield })}
-      />
-      <Label htmlFor="shield">
-        {worn.shield.name} (+{worn.shield.armor?.baseArmorClass ?? 0} CA)
-      </Label>
-    </div>
-  );
 }

@@ -1,62 +1,22 @@
-import type { BackgroundKey, CatalogBackground, DndCatalog } from "@donjon-dragon/shared";
-import { Badge } from "@/shared/components/atoms/badge";
-import { Separator } from "@/shared/components/atoms/separator";
+import type { BackgroundKey } from "@donjon-dragon/shared";
 import { backgroundChangePatch } from "../types/builder-transitions";
-import { ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
+import type { StepBinding } from "../types/step-binding";
 import { OptionListView } from "./option-list.view";
-
-interface BackgroundStepViewProps {
-  catalog: DndCatalog;
-  composition: CharacterComposition;
-  onChange: (patch: Partial<CharacterComposition>) => void;
-}
 
 /**
  * Le choix de l'historique seul. Ses bonus de caractéristique se posent à
- * l'étape des Caractéristiques, là où l'on voit leur effet sur les scores.
+ * l'étape des Caractéristiques, là où l'on voit leur effet sur les scores ; son
+ * don, ses compétences et son outil se lisent dans la fiche détaillée.
  */
-export function BackgroundStepView(props: BackgroundStepViewProps) {
-  const { catalog, composition, onChange } = props;
-  const background = catalog.backgrounds.find((entry) => entry.key === composition.backgroundKey);
-
+export function BackgroundStepView({ binding }: { binding: StepBinding }) {
   return (
-    <div className="grid gap-4">
-      <OptionListView
-        options={catalog.backgrounds}
-        selectedKey={composition.backgroundKey}
-        onSelect={(key) =>
-          onChange(backgroundChangePatch(key as BackgroundKey, { catalog, composition }))
-        }
-      />
-      {background ? <BackgroundDetails {...props} background={background} /> : null}
-    </div>
-  );
-}
-
-interface BackgroundDetailsProps extends BackgroundStepViewProps {
-  background: CatalogBackground;
-}
-
-function BackgroundDetails({ catalog, background }: BackgroundDetailsProps) {
-  const feat = catalog.originFeats.find((entry) => entry.key === background.originFeat);
-
-  return (
-    <div className="grid gap-3">
-      <Separator />
-      <div className="flex flex-wrap gap-2">
-        <Badge variant="outline">
-          Compétences : {background.skillProficiencies.join(", ")}
-        </Badge>
-        <Badge variant="outline">Outil : {background.toolProficiency}</Badge>
-        {feat ? <Badge>Don : {feat.name}</Badge> : null}
-      </div>
-      <p className="text-sm text-muted-foreground">
-        Bonus à répartir plus tard :{" "}
-        {background.abilityBonuses
-          .map((ability) => ABILITY_LABELS[ability as keyof typeof ABILITY_LABELS])
-          .join(", ")}
-      </p>
-      {feat ? <p className="text-sm text-muted-foreground">{feat.description}</p> : null}
-    </div>
+    <OptionListView
+      list={{
+        options: binding.catalog.backgrounds,
+        selectedKey: binding.composition.backgroundKey,
+        onSelect: (key) => binding.onChange(backgroundChangePatch(key as BackgroundKey, binding)),
+        onPreview: binding.preview,
+      }}
+    />
   );
 }

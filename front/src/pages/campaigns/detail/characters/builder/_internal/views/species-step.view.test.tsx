@@ -19,9 +19,12 @@ function renderStep(composition: Partial<CharacterComposition>) {
   const onChange = vi.fn();
   render(
     <SpeciesStepView
-      catalog={aCatalog({ species: [HUMAN, GOLIATH, DWARF, ELF] })}
-      composition={{ ...EMPTY_COMPOSITION, ...composition }}
-      onChange={onChange}
+      binding={{
+        catalog: aCatalog({ species: [HUMAN, GOLIATH, DWARF, ELF] }),
+        composition: { ...EMPTY_COMPOSITION, ...composition },
+        onChange,
+        preview: vi.fn(),
+      }}
     />,
   );
 

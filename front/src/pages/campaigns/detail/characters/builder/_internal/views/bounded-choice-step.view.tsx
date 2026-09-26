@@ -1,22 +1,30 @@
-import { Badge } from "@/shared/components/atoms/badge";
-import { Button } from "@/shared/components/atoms/button";
+import {
+  SelectableRow,
+  type SelectableRowState,
+} from "@/shared/components/molecules/selectable-row";
+import { ChoiceListHeaderView } from "./choice-list-header.view";
 
 export interface BoundedChoice {
+  /** L'intitulé de la liste : « Langues disponibles », « Armes disponibles »… */
+  heading?: string;
   count: number;
   options: readonly string[];
-  labels: Record<string, string>;
+  labels: Partial<Record<string, string>>;
   selected: readonly string[];
   blocked: readonly string[];
   onChange: (selected: string[]) => void;
+  /** Montre l'option dans la fiche détaillée, au survol ou au focus. */
+  onPreview?: (option: string) => void;
 }
+
+const DEFAULT_HEADING = "Options disponibles";
 
 export function BoundedChoiceStepView({ choice }: { choice: BoundedChoice }) {
   return (
-    <div className="grid gap-2">
-      <p className="muted-text">
-        Choisissez {choice.count} option{choice.count > 1 ? "s" : ""}.{" "}
-        <Badge variant="outline">{choice.selected.length} / {choice.count}</Badge>
-      </p>
+    <div className="flex flex-col gap-1.5">
+      <ChoiceListHeaderView
+        header={{ label: choice.heading ?? DEFAULT_HEADING, chosen: choice.selected.length, total: choice.count }}
+      />
       <BoundedChoiceOptionsView choice={choice} />
     </div>
   );
@@ -26,45 +34,44 @@ export function BoundedChoiceStepView({ choice }: { choice: BoundedChoice }) {
 export function BoundedChoiceOptionsView({ choice }: { choice: BoundedChoice }) {
   return (
     <>
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {choice.options.map((option) => (
-          <BoundedChoiceButton key={option} option={option} choice={choice} />
-        ))}
-      </div>
+      {choice.options.map((option) => (
+        <BoundedChoiceRow key={option} option={option} choice={choice} />
+      ))}
       <BlockedNote choice={choice} />
     </>
   );
 }
 
-/** Un bouton désactivé ne reçoit pas le survol : la raison s'écrit sous la liste. */
+/** Une ligne désactivée ne reçoit pas le survol : la raison s'écrit sous la liste. */
 function BlockedNote({ choice }: { choice: BoundedChoice }) {
   const blocked = choice.options.filter((option) => choice.blocked.includes(option));
   if (blocked.length === 0) return null;
 
   return (
-    <p className="text-xs text-muted-foreground">
+    <p className="fine-print px-1 pt-1">
       Déjà acquis par ailleurs : {blocked.map((option) => choice.labels[option] ?? option).join(", ")}.
     </p>
   );
 }
 
-function BoundedChoiceButton({ option, choice }: { option: string; choice: BoundedChoice }) {
-  const selected = choice.selected.includes(option);
-  const full = choice.selected.length >= choice.count;
-  const disabled = choice.blocked.includes(option) || (full && !selected);
-
+function BoundedChoiceRow({ option, choice }: { option: string; choice: BoundedChoice }) {
   return (
-    <Button
-      type="button"
-      size="sm"
-      variant={selected ? "default" : "outline"}
-      aria-pressed={selected}
-      disabled={disabled}
-      onClick={() => choice.onChange(toggle(choice.selected, option))}
-    >
-      {choice.labels[option] ?? option}
-    </Button>
+    <SelectableRow
+      entry={{ name: choice.labels[option] ?? option, meta: "", tag: "" }}
+      state={optionStateOf(option, choice)}
+      actions={{
+        select: () => choice.onChange(toggle(choice.selected, option)),
+        preview: () => choice.onPreview?.(option),
+      }}
+    />
   );
+}
+
+function optionStateOf(option: string, choice: BoundedChoice): SelectableRowState {
+  if (choice.selected.includes(option)) return "selected";
+  if (choice.blocked.includes(option)) return "locked";
+
+  return choice.selected.length >= choice.count ? "locked" : "idle";
 }
 
 function toggle(selected: readonly string[], option: string): string[] {

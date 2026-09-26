@@ -26,7 +26,7 @@ interface AbilityGridViewProps {
  */
 export function AbilityGridView({ grid }: AbilityGridViewProps) {
   return (
-    <div className="grid gap-2">
+    <div className="flex flex-col gap-1.5">
       <GridHeader grid={grid} />
       {ABILITIES.map((ability) => (
         <AbilityRow key={ability} ability={ability} grid={grid} />
@@ -35,11 +35,11 @@ export function AbilityGridView({ grid }: AbilityGridViewProps) {
   );
 }
 
-const ROW_COLUMNS = "grid grid-cols-[8rem_1fr_3rem_3rem] items-center gap-3";
+const ROW_COLUMNS = "grid grid-cols-[minmax(4.5rem,1fr)_auto_1.5rem_1.5rem] items-center gap-1.5";
 
 function GridHeader({ grid }: AbilityGridViewProps) {
   return (
-    <div className={`${ROW_COLUMNS} text-xs uppercase text-muted-foreground`}>
+    <div className={`${ROW_COLUMNS} sheet-caption px-2.5`}>
       <span />
       <span>Valeur</span>
       <span className="text-center">{grid.plan === "spread" ? "+1" : "+2"}</span>
@@ -56,8 +56,10 @@ function AbilityRow({ ability, grid }: AbilityRowProps) {
   const primaryBonus = grid.plan === "spread" ? 1 : 2;
 
   return (
-    <div className={ROW_COLUMNS}>
-      <Label>{ABILITY_LABELS[ability]}</Label>
+    <div className={`${ROW_COLUMNS} panel-flat px-2 py-2`}>
+      <Label className="truncate font-display text-note tracking-name text-foreground">
+        {ABILITY_LABELS[ability]}
+      </Label>
       <AbilityValueControlView ability={ability} control={grid.control} />
       <BonusCell ability={ability} grid={grid} bonus={primaryBonus} />
       {grid.plan === "spread" ? <span /> : <BonusCell ability={ability} grid={grid} bonus={1} />}
@@ -78,7 +80,7 @@ function BonusCell({ ability, grid, bonus }: BonusCellProps) {
           laquelle porte quel bonus, ni sur quelle caractéristique. */}
       <Checkbox
         aria-label={`${ABILITY_LABELS[ability]} +${bonus}`}
-        className={allowed ? "border-primary" : "opacity-30"}
+        className={allowed ? "border-gold/60" : "opacity-30"}
         checked={(grid.control.composition.backgroundBonuses[ability] ?? 0) === bonus}
         disabled={!allowed || grid.plan === "spread"}
         onCheckedChange={() =>

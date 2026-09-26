@@ -12,9 +12,12 @@ function renderStep(composition: Partial<CharacterComposition>) {
   const onChange = vi.fn();
   render(
     <ClassStepView
-      catalog={aCatalog({ classes: [CLERIC, DRUID] })}
-      composition={{ ...EMPTY_COMPOSITION, ...composition }}
-      onChange={onChange}
+      binding={{
+        catalog: aCatalog({ classes: [CLERIC, DRUID] }),
+        composition: { ...EMPTY_COMPOSITION, ...composition },
+        onChange,
+        preview: vi.fn(),
+      }}
     />,
   );
 

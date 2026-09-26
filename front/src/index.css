@@ -433,6 +433,20 @@
     @apply flex flex-col gap-3.5 lg:min-h-0 lg:overflow-y-auto lg:pr-4;
   }
 
+  /* La fiche occupe toute la hauteur de sa colonne et y defile seule. */
+  .builder-detail {
+    @apply flex flex-col lg:min-h-0 lg:flex-1 lg:overflow-y-auto;
+  }
+
+  .builder-detail > .panel-inset {
+    @apply flex-1 px-[22px] py-5;
+  }
+
+  /* Une liste de choix : l'intitule et son compteur, puis les lignes. */
+  .choice-list-header {
+    @apply flex items-baseline justify-between px-1 pb-1.5;
+  }
+
   /* --- En-tete d'application ---------------------------------------------- */
 
   /* Coquille de l'application : bornee a la hauteur de l'ecran, comme la charte.

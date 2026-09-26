@@ -1,6 +1,7 @@
 import type { ComputedCharacter, DndCatalog, Item } from "@donjon-dragon/shared";
 import { OrnateCorners } from "@/shared/components/molecules/ornate-corners";
 import type { BuilderState } from "../hooks/use-character-builder";
+import type { OptionFocus } from "../hooks/use-option-focus";
 import type { StepContext } from "../types/builder-lookups";
 import { toCharacterRecap, type CharacterRecap } from "../types/character-recap";
 import type { AbilitiesStep } from "./abilities-step.view";
@@ -13,6 +14,8 @@ export interface BuilderScreen {
   catalog: DndCatalog;
   /** Le catalogue et la composition courante, prêts pour les fonctions de lecture. */
   context: StepContext;
+  /** L'option que la fiche détaillée montre au survol. */
+  focus: OptionFocus;
   /** Le catalogue d'objets, pour nommer les lignes d'un paquetage. */
   items: Item[];
   builder: BuilderState;

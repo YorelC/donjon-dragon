@@ -2,6 +2,7 @@ import type { CatalogSpell, ComputedCharacter } from "@donjon-dragon/shared";
 import type { StatTokenData } from "@/shared/components/molecules/stat-token";
 import type { SpellsStep } from "../views/spells-step.view";
 import { classOf, speciesOf, type StepContext } from "./builder-lookups";
+import { spellIndexOf } from "./spell-index";
 
 export interface RecapTokenGroup {
   heading: string;
@@ -58,14 +59,6 @@ function featureTokens({ context, preview }: TokenSource): StatTokenData[] {
   const features = [...(speciesOf(context)?.traits ?? []), ...(classOf(context)?.level1Features ?? [])];
 
   return uniqueByName(features.map((feature) => ({ name: feature.name, effect: feature.description })));
-}
-
-function spellIndexOf(spells: SpellsStep): Map<string, CatalogSpell> {
-  const lists = [spells.classSpells, spells.featSpells, ...Object.values(spells.featSpellLists)];
-  const listed = lists.flatMap((list) => (list ? [...list.cantrips, ...list.level1] : []));
-  const all = [...listed, ...spells.tomeSpells.cantrips, ...spells.tomeSpells.rituals];
-
-  return new Map(all.map((spell) => [spell.key, spell]));
 }
 
 function uniqueByName(tokens: StatTokenData[]): StatTokenData[] {
