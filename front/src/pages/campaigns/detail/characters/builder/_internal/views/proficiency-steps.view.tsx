@@ -1,16 +1,17 @@
 import type { Language } from "@donjon-dragon/shared";
 import { backgroundOf, classOf } from "../types/builder-lookups";
+import { toolsKnownBesides } from "../types/known-tools";
 import type { BuilderScreen } from "./character-builder.view";
 import { BoundedChoiceStepView, type BoundedChoice } from "./bounded-choice-step.view";
 
 export function BackgroundToolStep({ screen }: { screen: BuilderScreen }) {
   const { catalog, composition } = contextOf(screen);
   const options = backgroundOf({ catalog, composition })?.toolOptions ?? [];
+  const selected = composition.backgroundTool ? [composition.backgroundTool] : [];
 
   return <BoundedChoiceStepView choice={{
-    count: 1, options, labels: catalog.toolLabels,
-    selected: composition.backgroundTool ? [composition.backgroundTool] : [],
-    blocked: composition.classTools,
+    count: 1, options, labels: catalog.toolLabels, selected,
+    blocked: toolsKnownBesides({ catalog, composition }, selected),
     onChange: ([backgroundTool]) => screen.builder.update({ backgroundTool: backgroundTool ?? null }),
   }} />;
 }
@@ -33,7 +34,7 @@ export function ClassToolsStep({ screen }: { screen: BuilderScreen }) {
 
   return <BoundedChoiceStepView choice={{
     ...choice, labels: catalog.toolLabels, selected: composition.classTools,
-    blocked: composition.backgroundTool ? [composition.backgroundTool] : [],
+    blocked: toolsKnownBesides({ catalog, composition }, composition.classTools),
     onChange: (classTools) => screen.builder.update({ classTools }),
   }} />;
 }

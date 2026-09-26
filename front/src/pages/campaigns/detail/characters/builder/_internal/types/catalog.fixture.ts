@@ -152,6 +152,7 @@ export function aBackground(overrides: Partial<CatalogBackground> = {}): Catalog
     skillProficiencies: [],
     toolProficiency: "",
     toolOptions: [],
+    fixedTool: null,
     equipment: {
       options: [{ id: "A", label: "A", entries: [], gold: 0, itemChoice: null }],
     },

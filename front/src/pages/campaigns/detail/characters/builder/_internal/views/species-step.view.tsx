@@ -7,6 +7,7 @@ import { Separator } from "@/shared/components/atoms/separator";
 import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
 import { knownSkillsExcept } from "../types/builder-lookups";
 import { defaultMeasurementsOf } from "../types/identity-fields";
+import { withoutFeatTools } from "../types/builder-transitions";
 import { OptionListView } from "./option-list.view";
 import { SkillPickerView } from "./skill-picker.view";
 
@@ -84,6 +85,7 @@ function orphanedFeatChoices(
     magicInitiateChoices: composition.magicInitiateChoices.filter(
       (choice) => choice.grantedBy.type !== "species",
     ),
+    featToolChoices: withoutFeatTools(composition, composition.speciesFeat),
   };
 }
 

@@ -51,6 +51,7 @@ const BASE_DTO: CharacterBuildDetailDto = {
   backgroundBonuses: { dexterity: 2, charisma: 1 },
   featSkills: [],
   featTools: [],
+  featToolChoices: {},
   spellcastingAbility: null,
   spellList: null,
   featCantrips: [],

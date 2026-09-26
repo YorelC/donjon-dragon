@@ -97,6 +97,7 @@ const SOLDIER: CatalogBackground = {
   skillProficiencies: ["athletics", "intimidation"],
   toolProficiency: "",
   toolOptions: [],
+  fixedTool: null,
   equipment: {
     options: [
       anOption("A", [{ itemKey: "javelin", quantity: 2 }, { itemKey: "tente", quantity: 1 }], 14),

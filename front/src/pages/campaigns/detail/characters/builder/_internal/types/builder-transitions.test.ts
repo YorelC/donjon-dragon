@@ -17,6 +17,7 @@ const MAGIC_INITIATE: CatalogOriginFeat = {
   },
   skillOrToolChoiceCount: 0,
   toolChoiceCount: 0,
+  toolOptions: [],
 };
 
 function configured(overrides: Partial<CharacterComposition> = {}): CharacterComposition {
@@ -148,5 +149,21 @@ describe("transition d'historique", () => {
       grantedBy: { type: "background", key: "sage" },
       spellList: "wizard", spellcastingAbility: null, cantrips: [], spells: [],
     }]);
+  });
+
+  it("retire les outils du don d'historique quittés, garde ceux du don de l'espèce", () => {
+    const artisan = aBackground({ key: "artisan", originFeat: "crafter" });
+    const farmer = aBackground({ key: "farmer", originFeat: "tough" });
+    const composition = configured({
+      backgroundKey: "artisan", speciesKey: "human", speciesFeat: "musician",
+      featToolChoices: { crafter: ["smiths-tools"], musician: ["lute"] },
+    });
+
+    const patch = backgroundChangePatch("farmer", {
+      catalog: aCatalog({ backgrounds: [artisan, farmer], originFeats: [MAGIC_INITIATE] }),
+      composition,
+    });
+
+    expect(patch.featToolChoices).toEqual({ musician: ["lute"] });
   });
 });

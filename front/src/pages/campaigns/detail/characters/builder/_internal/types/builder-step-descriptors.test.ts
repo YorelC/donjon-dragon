@@ -170,12 +170,29 @@ describe("magie de niveau 1", () => {
       .toBe(false);
   });
 
+  it("n'achève les dons qu'une fois les outils du Façonneur choisis", () => {
+    const crafter = {
+      key: "crafter" as const, name: "Façonneur", description: "", repeatable: false,
+      spellcastingChoice: null, skillOrToolChoiceCount: 0, toolChoiceCount: 3,
+      toolOptions: ["smiths-tools", "woodcarvers-tools", "potters-tools", "masons-tools"],
+    };
+    const catalog = aCatalog({
+      backgrounds: [aBackground({ key: "artisan", originFeat: "crafter" })], originFeats: [crafter],
+    });
+    const composition = { ...EMPTY_COMPOSITION, backgroundKey: "artisan" as const };
+
+    expect(isStepValid("feats", { catalog, composition })).toBe(false);
+    expect(isStepValid("feats", { catalog, composition: {
+      ...composition, featToolChoices: { crafter: ["smiths-tools", "woodcarvers-tools", "potters-tools"] },
+    } })).toBe(true);
+  });
+
   it("additionne deux Initiés à la magie accordés par des sources distinctes", () => {
     const magicInitiate = {
       key: "magic-initiate" as const, name: "Initié", description: "", repeatable: true,
       spellcastingChoice: { abilityOptions: ["wisdom" as const],
         spellListOptions: ["cleric" as const], cantripsKnown: 2, spellsPrepared: 1 },
-      skillOrToolChoiceCount: 0, toolChoiceCount: 0,
+      skillOrToolChoiceCount: 0, toolChoiceCount: 0, toolOptions: [],
     };
     const context = aContext({ speciesKey: "human", speciesFeat: "magic-initiate",
       backgroundKey: "acolyte" });

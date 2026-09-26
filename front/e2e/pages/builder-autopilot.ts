@@ -131,15 +131,23 @@ export class BuilderAutopilot {
   }
 
   /**
-   * Seul Doué, venu de l'historique, est complété d'office : trois compétences
-   * libres. Initié à la magie et le don de l'Humain restent aux parcours qui
-   * les éprouvent.
+   * Le don de l'historique est complété d'office : trois compétences libres pour
+   * Doué, ses outils pour Façonneur et Musicien. Initié à la magie et le don de
+   * l'Humain restent aux parcours qui les éprouvent.
    */
   private async completeSkilled(): Promise<void> {
     const card = this.builder.featCard('Historique').filter({ hasText: SKILLED_FEAT });
-    if ((await card.count()) === 0) return;
+    if ((await card.count()) === 0) return this.completeFeatTools();
     const pressed = await card.locator('button[aria-pressed="true"]').count();
     await this.pressFirstFree(card, SKILLED_COUNT - pressed);
+  }
+
+  /** Façonneur et Musicien, venus de l'historique : leurs outils, selon leur compteur. */
+  private async completeFeatTools(): Promise<void> {
+    const card = this.builder.featCard('Historique');
+    const counter = card.getByText(COUNTER);
+    if ((await counter.count()) === 0) return;
+    await this.pressFirstFree(card, (await remainingOf(counter.first())) ?? 0);
   }
 
   /** Complète chaque groupe de sorts de l'étape ouverte, selon son compteur. */

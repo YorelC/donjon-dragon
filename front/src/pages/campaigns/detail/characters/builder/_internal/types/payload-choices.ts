@@ -14,6 +14,7 @@ export function choicesOf(composition: CharacterComposition): CharacterChoice[] 
     ...backgroundChoices(composition),
     ...magicInitiateChoices(composition),
     ...skilledChoice(composition),
+    ...featToolChoices(composition),
   ];
 }
 
@@ -114,6 +115,16 @@ function legacyMagicChoice(composition: CharacterComposition): CharacterChoice[]
       spells: [...composition.featCantrips, ...composition.featSpells],
     },
   ];
+}
+
+/** Façonneur et Musicien : chaque don porte ses propres outils, sous sa clé. */
+function featToolChoices(composition: CharacterComposition): CharacterChoice[] {
+  return Object.entries(composition.featToolChoices)
+    .filter(([, tools]) => (tools ?? []).length > 0)
+    .map(([feat, tools]) => ({
+      source: { type: "feat", key: feat },
+      tools: tools ?? [],
+    }));
 }
 
 function skilledChoice(composition: CharacterComposition): CharacterChoice[] {

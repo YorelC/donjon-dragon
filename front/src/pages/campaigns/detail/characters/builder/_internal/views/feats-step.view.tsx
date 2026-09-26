@@ -13,6 +13,8 @@ import { knownSkillsExcept } from "../types/builder-lookups";
 import { ChoiceButtonView } from "./choice-button.view";
 import { SkillPickerView } from "./skill-picker.view";
 import { MagicInitiateConfiguration } from "./magic-initiate-configuration.view";
+import { FeatToolChoice } from "./feat-tool-choice.view";
+import { withoutFeatTools } from "../types/builder-transitions";
 
 interface FeatsStepViewProps {
   catalog: DndCatalog;
@@ -60,6 +62,7 @@ function SpeciesFeatChoice({ catalog, composition, onChange }: FeatsStepViewProp
               magicInitiateChoices: composition.magicInitiateChoices.filter(
                 (choice) => choice.grantedBy.type !== "species",
               ),
+              featToolChoices: withoutFeatTools(composition, composition.speciesFeat),
             })}
           />
         ))}
@@ -94,24 +97,26 @@ function FeatCard(props: FeatCardProps) {
 function FeatConfiguration(props: FeatCardProps) {
   const needsSpells = props.feat.spellcastingChoice !== null;
   const needsProficiencies = props.feat.skillOrToolChoiceCount > 0;
-  if (!needsSpells && !needsProficiencies) return null;
+  const needsTools = props.feat.toolOptions.length > 0;
+  if (!needsSpells && !needsProficiencies && !needsTools) return null;
 
   return (
     <div className="grid gap-4">
       <Separator />
       {needsSpells ? <MagicInitiateConfiguration {...props} /> : null}
       {needsProficiencies ? <ProficiencyChoice {...props} /> : null}
+      <FeatToolChoice {...props} />
     </div>
   );
 }
 
 
-/** Doué accorde trois maîtrises ; on ne propose ici que les compétences. */
+/** Doué accorde trois maîtrises : les compétences prennent ce que les outils laissent. */
 function ProficiencyChoice({ catalog, feat, composition, onChange }: FeatCardProps) {
   return (
     <SkillPickerView
       picker={{
-        count: feat.skillOrToolChoiceCount,
+        count: feat.skillOrToolChoiceCount - composition.featTools.length,
         options: allSkillsOf(catalog),
         selected: composition.featSkills,
         labels: catalog.skillLabels,

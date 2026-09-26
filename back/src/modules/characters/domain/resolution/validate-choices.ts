@@ -3,11 +3,8 @@ import { BACKGROUNDS } from '../reference/backgrounds';
 import { CLASS_ORDERS } from '../reference/class-orders';
 import { CLASSES } from '../reference/classes';
 import {
-  ALL_CONCRETE_TOOLS,
-  ARTISAN_TOOLS,
   BACKGROUND_FIXED_TOOLS,
   LEVEL_ONE_INVOCATIONS,
-  MUSICAL_INSTRUMENTS,
   RARE_LANGUAGES,
   LEVEL_ONE_FAMILIAR_FORMS,
   STANDARD_LANGUAGES,
@@ -31,6 +28,7 @@ import {
 import {
   backgroundToolOptions,
   classToolOptions,
+  featToolOptions,
   weaponMasteryCount,
   weaponMasteryOptions,
 } from './class-options';
@@ -178,10 +176,10 @@ function assertSpeciesSkills(input: ChoicesToValidate): void {
 
 function assertFeatProficiencies(input: ChoicesToValidate): void {
   const counts = featCounts(input);
-  const skilledOptions = [...SKILLS, ...ALL_CONCRETE_TOOLS];
+  const skilledOptions = [...SKILLS, ...featToolOptions('skilled')];
   assertFeatChoice(input, 'skilled', counts.get('skilled') ?? 0, skilledOptions);
-  assertFeatChoice(input, 'crafter', counts.get('crafter') ?? 0, ARTISAN_TOOLS);
-  assertFeatChoice(input, 'musician', counts.get('musician') ?? 0, MUSICAL_INSTRUMENTS);
+  assertFeatChoice(input, 'crafter', counts.get('crafter') ?? 0, featToolOptions('crafter'));
+  assertFeatChoice(input, 'musician', counts.get('musician') ?? 0, featToolOptions('musician'));
 }
 
 function assertFeatChoice(

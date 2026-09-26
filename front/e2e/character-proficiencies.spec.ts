@@ -1,3 +1,4 @@
+import type { Locator } from '@playwright/test';
 import { test, expect, STORAGE_STATE } from './fixtures/test';
 import { deleteCharactersNamed, ensureCampaign } from './fixtures/api';
 import {
@@ -22,8 +23,8 @@ import {
  * - le Voyageur qui l'accompagne n'a AUCUN choix de maîtrise d'outil : il
  *   n'apparaît donc dans aucun lot d'outils, et son paquetage exige pourtant un
  *   objet concret. C'est exactement le trou qu'un découpage par maîtrises rate ;
- * - le Barde porte les outils de classe et leur quota de trois. Leur exclusion
- *   avec l'instrument de l'Artiste attend B01-ORI-006 (voir le test en fixme).
+ * - le Barde porte les outils de classe et leur quota de trois, et, Artiste, leur
+ *   exclusion avec l'instrument d'historique et ceux du don Musicien.
  */
 test.use({ storageState: STORAGE_STATE.gandalf });
 
@@ -161,17 +162,11 @@ test.describe('Créer les classes que le wizard ne savait pas composer', () => {
   });
 
   /**
-   * L'Artiste est le seul historique dont l'outil recoupe ceux du Barde : son
-   * instrument doit être désactivé parmi les instruments de classe.
-   *
-   * Bloqué par B01-ORI-006 : l'Artiste accorde le don Musicien, dont les trois
-   * instruments sont exigés par le serveur mais qu'aucune étape du wizard ne
-   * fait choisir. Un Artiste, comme un Artisan (Façonneur), ne peut donc pas
-   * être créé. À réactiver quand le choix des outils de don existera.
+   * L'Artiste est le seul historique dont l'outil recoupe ceux du Barde, et son
+   * don Musicien fait choisir trois instruments de plus : les sept instruments
+   * doivent être distincts, et chaque étape griser ceux déjà pris (B01-ORI-006).
    */
-  test.fixme('désactive l instrument de l Artiste parmi les instruments du barde', async ({
-    page,
-  }) => {
+  test('compose un barde artiste sans instrument en double', async ({ page }) => {
     const builder = new CharacterBuilderPage(page);
     await builder.gotoNew(campaignId);
 
@@ -185,10 +180,46 @@ test.describe('Créer les classes que le wizard ne savait pas composer', () => {
     await builder.openStep('Outil d’historique');
     const [backgroundTool] = await builder.chooseAvailable(1);
 
+    await builder.openStep('Compétences');
+    await builder.chooseAvailable(3);
+
+    // Le fil fait choisir les instruments de classe avant ceux du don.
     await builder.openStep('Outils de classe');
     await expect(builder.choice(backgroundTool as string)).toBeDisabled();
+    const classTools = await builder.chooseAvailable(3);
+    await expect(builder.boundedCounter()).toHaveText('3 / 3');
+
+    const musician = builder.featCard('Historique');
+    await builder.openStep('Dons');
+    for (const tool of [backgroundTool as string, ...classTools]) {
+      await expect(musician.getByRole('button', { name: tool, exact: true })).toBeDisabled();
+    }
+    await pressFirstFree(musician, 3);
+    await expect(musician.getByText('3 / 3')).toBeVisible();
+
+    // L'Artiste porte ses bonus sur Force, Dextérité et Charisme.
+    await assignStandardArray(builder, 'Charisme', 'Dextérité');
+    await chooseSpells(builder);
+
+    await builder.openStep('Équipement');
+    await builder.choosePackage('class', 'A');
+    await builder.choosePackage('background', 'B');
+    await builder.selectFirstCatalogOption(CONCRETE_ITEM_LABEL);
+
+    await finish(builder, BARD_NAME);
   });
 });
+
+/** Coche un à un les premiers boutons libres d'une zone, et rend leurs libellés. */
+async function pressFirstFree(scope: Locator, count: number): Promise<string[]> {
+  const labels: string[] = [];
+  for (let pressed = 0; pressed < count; pressed += 1) {
+    const free = scope.locator('button[aria-pressed="false"]:enabled').first();
+    labels.push(((await free.textContent()) ?? '').trim());
+    await free.click();
+  }
+  return labels;
+}
 
 async function chooseLanguages(builder: CharacterBuilderPage): Promise<void> {
   await builder.openStep('Langues');

@@ -1,4 +1,6 @@
-import type { BackgroundKey, ClassKey, DndCatalog, SkillName } from "@donjon-dragon/shared";
+import type {
+  BackgroundKey, ClassKey, DndCatalog, OriginFeatKey, SkillName,
+} from "@donjon-dragon/shared";
 import type { CharacterComposition } from "./character-composition";
 import { grantedItems, SHIELD_ITEM_KEY } from "./starting-equipment";
 
@@ -69,6 +71,7 @@ function resetFeatFields(
     ...(removeSpecies ? { speciesFeat: null } : {}),
     featSkills: [], featTools: [], spellcastingAbility: null, spellList: null,
     featCantrips: [], featSpells: [],
+    featToolChoices: speciesFeatToolsKept(context.composition, removeSpecies),
     magicInitiateChoices: [
       ...context.composition.magicInitiateChoices.filter((choice) =>
         choice.grantedBy.type !== "background"
@@ -76,6 +79,26 @@ function resetFeatFields(
       ...fixedListChoice(backgroundKey, context.catalog),
     ],
   };
+}
+
+/** Les outils d'un don qui n'est plus accordé partent avec lui. */
+export function withoutFeatTools(
+  composition: CharacterComposition,
+  feat: OriginFeatKey | null,
+): CharacterComposition["featToolChoices"] {
+  if (!feat) return composition.featToolChoices;
+  return Object.fromEntries(Object.entries(composition.featToolChoices)
+    .filter(([key]) => key !== feat));
+}
+
+/** L'historique change de don : seuls restent les outils du don de l'espèce. */
+function speciesFeatToolsKept(
+  composition: CharacterComposition,
+  removeSpecies: boolean,
+): CharacterComposition["featToolChoices"] {
+  const speciesFeat = removeSpecies ? null : composition.speciesFeat;
+  const tools = speciesFeat ? composition.featToolChoices[speciesFeat] : undefined;
+  return speciesFeat && tools ? { [speciesFeat]: tools } : {};
 }
 
 /**

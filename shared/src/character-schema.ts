@@ -411,6 +411,8 @@ export const CharacterBuildDetailSchema = z.object({
 
   featSkills: z.array(SkillNameSchema),
   featTools: z.array(z.string()),
+  /** Les outils choisis par Façonneur et Musicien, par don (B01-ORI-006). */
+  featToolChoices: z.record(OriginFeatKeySchema, z.array(z.string())),
   spellcastingAbility: AbilitySchema.nullable(),
   spellList: ClassKeySchema.nullable(),
   featCantrips: z.array(z.string()),

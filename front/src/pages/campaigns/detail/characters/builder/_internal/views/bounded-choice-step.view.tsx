@@ -22,7 +22,20 @@ export function BoundedChoiceStepView({ choice }: { choice: BoundedChoice }) {
           <BoundedChoiceButton key={option} option={option} choice={choice} />
         ))}
       </div>
+      <BlockedNote choice={choice} />
     </div>
+  );
+}
+
+/** Un bouton désactivé ne reçoit pas le survol : la raison s'écrit sous la liste. */
+function BlockedNote({ choice }: { choice: BoundedChoice }) {
+  const blocked = choice.options.filter((option) => choice.blocked.includes(option));
+  if (blocked.length === 0) return null;
+
+  return (
+    <p className="text-xs text-muted-foreground">
+      Déjà acquis par ailleurs : {blocked.map((option) => choice.labels[option] ?? option).join(", ")}.
+    </p>
   );
 }
 

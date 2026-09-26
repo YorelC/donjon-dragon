@@ -5,7 +5,7 @@ import {
   MUSICAL_INSTRUMENTS,
 } from '../reference/creation-options';
 import { CLASSES } from '../reference/classes';
-import type { BackgroundKey, ClassKey } from '../reference/keys';
+import type { BackgroundKey, ClassKey, OriginFeatKey } from '../reference/keys';
 import { WEAPONS, type Weapon } from '../reference/weapons';
 
 /**
@@ -57,6 +57,20 @@ export function classToolOptions(classKey: ClassKey): readonly string[] {
   if (classKey === 'monk') return [...ARTISAN_TOOLS, ...MUSICAL_INSTRUMENTS];
 
   return ALL_CONCRETE_TOOLS;
+}
+
+/**
+ * Les outils qu'un don d'Origine fait choisir (B01-ORI-006). Doué les mêle aux
+ * compétences : ce ne sont que ses options d'outils.
+ */
+const FEAT_TOOL_OPTIONS: Partial<Record<OriginFeatKey, readonly string[]>> = {
+  crafter: ARTISAN_TOOLS,
+  musician: MUSICAL_INSTRUMENTS,
+  skilled: ALL_CONCRETE_TOOLS,
+};
+
+export function featToolOptions(feat: OriginFeatKey): readonly string[] {
+  return FEAT_TOOL_OPTIONS[feat] ?? [];
 }
 
 /** Cinq historiques laissent choisir leur outil ; les onze autres l'imposent. */

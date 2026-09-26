@@ -40,13 +40,13 @@ ajoutent au parcours.
 |---|---|---|---|---|---|
 | 1 | Barbare | Goliath (ascendance) | Soldat | Ascendance sans sort, 2 maîtrises d'armes, aucune étape de sorts | ✅ |
 | 2 | Barde | Nain | Soldat | Instruments de classe (3), 2 mineurs + 4 sorts | ✅ |
-| 2b | Barde | Nain | Artiste | Instrument d'historique exclu des instruments de classe, don Musicien | 🚫 B01-ORI-006 |
+| 2b | Barde | Nain | Artiste | Instrument d'historique, 3 instruments de classe et 3 du don Musicien, tous distincts | ✅ |
 | 3 | Clerc | Nain | Fermier | Ordre divin, 3 mineurs + 4 sorts, cycle MJ complet | ✅ |
 | 4 | Clerc | Nain | Acolyte | Ordre Thaumaturge (+1 mineur), Initié à la liste de Clerc cochée d'office | ✅ |
 | 5 | Druide | Elfe des bois | Guide | Compétence d'espèce, Druidisme accordé exclu de la classe et d'Initié | ✅ |
 | 6 | Guerrier | Humain | Soldat | Compétence d'espèce, don Doué, Style de combat, 3 maîtrises d'armes | ✅ |
 | 7 | Moine | Orc | Ermite | Un outil de classe, aucune étape de sorts | ✅ |
-| 7b | Moine | Orc | Artisan | Outil d'artisan de classe face à celui d'historique | 🚫 B01-ORI-006 |
+| 7b | Moine | Orc | Artisan | Outil d'historique, outils du Façonneur et outil de classe, tous distincts | ✅ |
 | 8 | Paladin | Drakéide | Noble | Ascendance draconique, Doué d'historique, sorts préparés sans mineur | ✅ |
 | 9 | Rôdeur | Gnome des forêts | Guide | Marque du chasseur et Communication avec les animaux accordés, donc jamais proposés | ✅ |
 | 10 | Roublard | Nain | Voyageur | Expertise sur une compétence d'historique, langue de classe, objet concret | ✅ |
@@ -98,12 +98,11 @@ Des règles transverses, dont chacune a déjà cassé ou risque de casser en sil
 - ✅ Taille Petite déduite de la stature, gabarit jamais demandé.
 - ✅ Soumission, refus motivé, correction, acceptation.
 
-## Bloqué : B01-ORI-006
+## B01-ORI-006, levé
 
-Le serveur exige les trois outils du don Façonneur (Artisan) et les trois instruments
-du don Musicien (Artiste), mais aucune étape du wizard ne les fait choisir. **Aucun
-Artisan ni Artiste ne peut être créé.** Les parcours marqués 🚫 attendent ce choix ; le
-test `désactive l instrument de l Artiste…` est en `test.fixme`.
+Façonneur (Artisan) et Musicien (Artiste) font désormais choisir leurs outils à
+l'étape Dons ; Doué y partage son quota entre compétences et outils. Chaque étape
+d'outils grise, avec sa raison, ce qui est déjà maîtrisé ailleurs.
 
 ## Dette réglée
 

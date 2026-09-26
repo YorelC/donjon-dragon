@@ -8,7 +8,7 @@ import type { Character } from '../domain/character';
 import type { CharacterChoice } from '../domain/character-choices';
 import { IncompleteMagicInitiateChoiceError } from '../domain/character.errors';
 import { CLASSES } from '../domain/reference/classes';
-import type { ClassKey, SpellKey } from '../domain/reference/keys';
+import type { ClassKey, OriginFeatKey, SpellKey } from '../domain/reference/keys';
 import { SPELLS } from '../domain/reference/spells';
 
 const CANTRIP_LEVEL = 0;
@@ -31,6 +31,7 @@ export function toCharacterBuildDetailDto(character: Character): CharacterBuildD
     backgroundTool: backgroundToolOf(choices),
     ...magicInitiateFieldsOf(choices),
     ...skilledFieldsOf(choices),
+    featToolChoices: featToolChoicesOf(choices),
     ...abilityFieldsOf(character),
     ...equipmentFieldsOf(character),
   };
@@ -187,6 +188,16 @@ function skilledFieldsOf(choices: readonly CharacterChoice[]) {
     featSkills: [...(choice?.skills ?? [])],
     featTools: [...(choice?.tools ?? [])],
   };
+}
+
+/** Façonneur et Musicien : les outils de chaque don, rangés sous sa clé. */
+const TOOL_CHOOSING_FEATS: readonly OriginFeatKey[] = ['crafter', 'musician'];
+
+function featToolChoicesOf(choices: readonly CharacterChoice[]) {
+  return Object.fromEntries(choices
+    .filter((choice) => choice.source.type === 'feat')
+    .filter((choice) => TOOL_CHOOSING_FEATS.includes(choice.source.key as OriginFeatKey))
+    .map((choice) => [choice.source.key, [...(choice.tools ?? [])]]));
 }
 
 /** Le détail des dés accompagne les totaux : le joueur doit pouvoir refaire le calcul. */

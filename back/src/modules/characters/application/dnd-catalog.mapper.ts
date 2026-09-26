@@ -30,6 +30,7 @@ import {
 import { ORIGIN_FEATS, type OriginFeat } from '../domain/reference/origin-feats';
 import {
   ALL_CONCRETE_TOOLS,
+  BACKGROUND_FIXED_TOOLS,
   RARE_LANGUAGES,
   STANDARD_LANGUAGES,
   creationItemName,
@@ -40,6 +41,7 @@ import {
 import {
   backgroundToolOptions,
   classToolOptions,
+  featToolOptions,
   weaponMasteryCount,
   weaponMasteryOptions,
 } from '../domain/resolution/class-options';
@@ -289,6 +291,7 @@ function toCatalogBackground(background: Background): CatalogBackground {
     skillProficiencies: [...background.skillProficiencies],
     toolProficiency: background.toolProficiency,
     toolOptions: [...backgroundToolOptions(background.key)],
+    fixedTool: BACKGROUND_FIXED_TOOLS[background.key],
     equipment: toCatalogStartingEquipment(
       background.equipment,
       backgroundEquipmentChoiceOptions(background.key),
@@ -338,6 +341,7 @@ function toCatalogOriginFeat(feat: OriginFeat): CatalogOriginFeat {
     spellcastingChoice: spellcastingChoiceOf(grants),
     skillOrToolChoiceCount: sumOf(grants, (grant) => grant.skillOrToolChoiceCount),
     toolChoiceCount: sumOf(grants, (grant) => grant.toolChoice?.count),
+    toolOptions: [...featToolOptions(feat.key)],
   };
 }
 

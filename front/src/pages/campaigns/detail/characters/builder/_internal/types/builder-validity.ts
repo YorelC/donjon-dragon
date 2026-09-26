@@ -70,8 +70,10 @@ function magicInitiateGrants(context: StepContext) {
 
 function isFeatConfigured(feat: CatalogOriginFeat, composition: CharacterComposition): boolean {
   if (feat.spellcastingChoice) return true;
+  const proficiencies = composition.featSkills.length + composition.featTools.length;
+  const tools = composition.featToolChoices[feat.key]?.length ?? 0;
 
-  return composition.featSkills.length + composition.featTools.length >= feat.skillOrToolChoiceCount;
+  return proficiencies >= feat.skillOrToolChoiceCount && tools >= feat.toolChoiceCount;
 }
 
 /** Les bonus doivent valoir +2/+1 ou +1/+1/+1, comme le back l'exige. */

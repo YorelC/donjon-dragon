@@ -86,6 +86,7 @@ function featChoiceFieldsOf(dto: CharacterBuildDetailDto) {
   return {
     featSkills: dto.featSkills,
     featTools: dto.featTools,
+    featToolChoices: dto.featToolChoices,
     spellcastingAbility: dto.spellcastingAbility,
     spellList: dto.spellList,
     featCantrips: dto.featCantrips,

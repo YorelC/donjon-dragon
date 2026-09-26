@@ -197,6 +197,8 @@ export const CatalogOriginFeatSchema = z.object({
   skillOrToolChoiceCount: z.number().int().nonnegative(),
   /** Façonneur et Musicien font choisir des outils ou des instruments. */
   toolChoiceCount: z.number().int().nonnegative(),
+  /** Les outils que le don laisse choisir ; vide quand il n'en fait choisir aucun. */
+  toolOptions: z.array(z.string()),
 });
 
 export const CatalogBackgroundSchema = z.object({
@@ -210,6 +212,8 @@ export const CatalogBackgroundSchema = z.object({
   toolProficiency: z.string(),
   /** Les cinq historiques qui font choisir leur outil ; vide pour les onze autres. */
   toolOptions: z.array(z.string()),
+  /** L'outil que l'historique impose, par sa clé ; `null` quand il le fait choisir. */
+  fixedTool: z.string().nullable(),
   equipment: CatalogStartingEquipmentSchema,
 });
 

@@ -97,6 +97,8 @@ export interface CharacterComposition {
   speciesFeat: OriginFeatKey | null;
   featSkills: SkillName[];
   featTools: string[];
+  /** Les outils de Façonneur et de Musicien, rangés sous leur don (B01-ORI-006). */
+  featToolChoices: Partial<Record<OriginFeatKey, string[]>>;
   spellcastingAbility: Ability | null;
   spellList: ClassKey | null;
   featCantrips: string[];
@@ -167,6 +169,7 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   speciesFeat: null,
   featSkills: [],
   featTools: [],
+  featToolChoices: {},
   spellcastingAbility: null,
   spellList: null,
   featCantrips: [],

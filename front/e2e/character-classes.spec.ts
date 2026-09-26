@@ -109,6 +109,24 @@ test.describe('Un parcours par classe', () => {
     await finish(origin, 'Outils de classe');
   });
 
+  test('Moine orc artisan : outil d historique, Façonneur et outil de classe tous distincts', async () => {
+    const origin = { species: 'Orc', characterClass: 'Moine', background: 'Artisan' };
+    await begin(origin);
+    await builder.openStep('Outil d’historique');
+    const [backgroundTool] = await builder.chooseAvailable(1);
+    await autopilot.fillBetween('Outil d’historique', 'Dons');
+
+    await builder.openStep('Dons');
+    const crafter = builder.featCard('Historique');
+    await expect(crafter.getByRole('button', { name: backgroundTool, exact: true })).toBeDisabled();
+    await autopilot.fill('Dons');
+    await expect(crafter.getByText('3 / 3')).toBeVisible();
+
+    await builder.openStep('Outils de classe');
+    await expect(builder.choice(backgroundTool as string)).toBeDisabled();
+    await finish(origin, 'Dons');
+  });
+
   test('Paladin drakéide noble : sorts préparés sans sort mineur', async () => {
     const origin = { species: 'Drakéide', characterClass: 'Paladin', background: 'Noble' };
     await begin(origin);

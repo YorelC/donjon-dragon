@@ -20,6 +20,19 @@ describe("choix granulaires émis par le wizard", () => {
     });
   });
 
+  it("porte les outils de Façonneur et de Musicien chacun sur la source de son don", () => {
+    const choices = choicesOf({
+      ...EMPTY_COMPOSITION,
+      featToolChoices: { crafter: ["smiths-tools", "woodcarvers-tools", "potters-tools"], musician: [] },
+    });
+
+    expect(choices).toContainEqual({
+      source: { type: "feat", key: "crafter" },
+      tools: ["smiths-tools", "woodcarvers-tools", "potters-tools"],
+    });
+    expect(choices.some((choice) => choice.source.key === "musician")).toBe(false);
+  });
+
   it("porte l'outil choisi sur une source d'historique distincte", () => {
     const choices = choicesOf({
       ...EMPTY_COMPOSITION,

@@ -150,6 +150,24 @@ describe('toCharacterBuildDetailDto', () => {
     expect(dto.spellbook).toHaveLength(6);
   });
 
+  it('rend les outils de Façonneur et de Musicien rangés sous leur don', () => {
+    const artisan: CharacterBuildInput = {
+      ...FULL_BUILD,
+      backgroundKey: 'artisan',
+      choices: [
+        { source: { type: 'feat', key: 'crafter' }, tools: ['smiths-tools', 'potters-tools', 'masons-tools'] },
+        { source: { type: 'feat', key: 'musician' }, tools: ['lute', 'lyre', 'flute'] },
+      ],
+    };
+
+    const dto = toCharacterBuildDetailDto(characterWith(artisan));
+
+    expect(dto.featToolChoices).toEqual({
+      crafter: ['smiths-tools', 'potters-tools', 'masons-tools'],
+      musician: ['lute', 'lyre', 'flute'],
+    });
+  });
+
   it('renvoie des valeurs par défaut quand une source de choix est absente', () => {
     const withoutFeats: CharacterBuildInput = {
       ...FULL_BUILD,
