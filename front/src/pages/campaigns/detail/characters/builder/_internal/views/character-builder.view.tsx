@@ -1,42 +1,24 @@
-import type { ReactElement } from "react";
 import type { ComputedCharacter, DndCatalog, Item } from "@donjon-dragon/shared";
-import { Button } from "@/shared/components/atoms/button";
-import { Card, CardContent } from "@/shared/components/atoms/card";
+import { OrnateCorners } from "@/shared/components/molecules/ornate-corners";
 import type { BuilderState } from "../hooks/use-character-builder";
-import { stepLabel, type BuilderStep } from "../types/builder-steps";
+import type { StepContext } from "../types/builder-lookups";
+import { toCharacterRecap, type CharacterRecap } from "../types/character-recap";
 import type { AbilitiesStep } from "./abilities-step.view";
-import { AbilitiesStepView } from "./abilities-step.view";
-import { BackgroundStepView } from "./background-step.view";
-import { ClassStepView } from "./class-step.view";
-import { EquipmentStepView } from "./equipment-step.view";
-import { FeatsStepView } from "./feats-step.view";
-import { IdentityStepView } from "./identity-step.view";
-import { LanguagesStepView } from "./languages-step.view";
-import { ClassSkillsStepView, ExpertiseStepView } from "./skill-choice-step.view";
-import { SpeciesStepView } from "./species-step.view";
+import { BuilderRailView } from "./builder-rail.view";
+import { BuilderStageView } from "./builder-stage.view";
+import { CharacterRecapView } from "./character-recap.view";
 import type { SpellsStep } from "./spells-step.view";
-import { CantripsStepView, SpellsStepView } from "./spells-step.view";
-import { CharacterPreviewView } from "./character-preview.view";
-import { BuilderStepsView } from "./builder-steps.view";
-import { ClassChoiceStep, LineageStep } from "./builder-choice-steps.view";
-import {
-  BackgroundToolStep,
-  ClassLanguageStep,
-  ClassToolsStep,
-  WeaponMasteriesStep,
-} from "./proficiency-steps.view";
-import { InvocationStepView } from "./invocation-step.view";
 
 export interface BuilderScreen {
   catalog: DndCatalog;
+  /** Le catalogue et la composition courante, prêts pour les fonctions de lecture. */
+  context: StepContext;
   /** Le catalogue d'objets, pour nommer les lignes d'un paquetage. */
   items: Item[];
   builder: BuilderState;
   abilities: AbilitiesStep;
   spells: SpellsStep;
   preview: ComputedCharacter | null;
-  /** Sert le titre de la page ; la vue elle-même le lit sur la composition. */
-  characterName: string;
   /** Édition d'un personnage existant : son état civil est déjà figé. */
   isEditing: boolean;
   canFinish: boolean;
@@ -45,98 +27,34 @@ export interface BuilderScreen {
   onFinish: () => void;
 }
 
+interface CharacterBuilderViewProps {
+  screen: BuilderScreen;
+  /** La liste des personnages de la campagne, où ramène la sortie du créateur. */
+  backTo: string;
+}
+
 /**
- * Trois colonnes : le fil conducteur, les choix, le résumé. Sous `lg` elles
- * s'empilent — le résumé passe en dernier, il accompagne sans commander.
+ * Trois panneaux : le fil conducteur, la scène de l'étape, le récapitulatif.
+ * Sous `xl` le récapitulatif passe dans un tiroir de la scène ; sous `md`
+ * le fil et la scène s'empilent.
  */
-export function CharacterBuilderView({ screen }: { screen: BuilderScreen }) {
+export function CharacterBuilderView({ screen, backTo }: CharacterBuilderViewProps) {
+  const recap = recapOf(screen);
+
   return (
-    <div className="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)_20rem] lg:items-start">
-      <BuilderStepsView builder={screen.builder} />
-      <div className="grid gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <StepHeading step={screen.builder.step} />
-            <StepContent screen={screen} />
-          </CardContent>
-        </Card>
-        <BuilderFooter screen={screen} />
-      </div>
-      <CharacterPreviewView
-        catalog={screen.catalog}
-        composition={screen.builder.composition}
-        preview={screen.preview}
-      />
+    <div className="builder-frame">
+      <BuilderRailView screen={screen} />
+      <BuilderStageView screen={screen} backTo={backTo} recap={recap} />
+      <aside aria-label="Récapitulatif du personnage" className="panel-surface builder-recap">
+        <OrnateCorners />
+        <div className="panel-scroll px-[22px] py-6">
+          <CharacterRecapView recap={recap} />
+        </div>
+      </aside>
     </div>
   );
 }
 
-function StepHeading({ step }: { step: BuilderStep }) {
-  return <h2 className="section-title mb-4 text-lg">{stepLabel(step)}</h2>;
-}
-
-/**
- * Table de rendu plutôt qu'une cascade de `if` : le `Record<BuilderStep, …>`
- * oblige à traiter chaque étape, et une étape ajoutée sans son écran casse `tsc`.
- */
-function StepContent({ screen }: { screen: BuilderScreen }) {
-  const { catalog, builder } = screen;
-  const shared = { catalog, composition: builder.composition, onChange: builder.update };
-  const spells = { step: screen.spells, composition: builder.composition, onChange: builder.update };
-
-  const screens: Record<BuilderStep, () => ReactElement | null> = {
-    species: () => <SpeciesStepView {...shared} />,
-    lineage: () => <LineageStep screen={screen} />,
-    languages: () => <LanguagesStepView {...shared} />,
-    class: () => <ClassStepView {...shared} />,
-    background: () => <BackgroundStepView {...shared} />,
-    backgroundTool: () => <BackgroundToolStep screen={screen} />,
-    classSkills: () => <ClassSkillsStepView {...shared} />,
-    fightingStyle: () => <ClassChoiceStep screen={screen} choiceKey="fightingStyle" />,
-    classOrder: () => <ClassChoiceStep screen={screen} choiceKey="order" />,
-    weaponMasteries: () => <WeaponMasteriesStep screen={screen} />,
-    classTools: () => <ClassToolsStep screen={screen} />,
-    classLanguage: () => <ClassLanguageStep screen={screen} />,
-    feats: () => <FeatsStepView {...shared} />,
-    expertise: () => <ExpertiseStepView {...shared} />,
-    invocation: () => <InvocationStepView {...shared} tomeSpells={screen.spells.tomeSpells} />,
-    abilities: () => (
-      <AbilitiesStepView
-        step={screen.abilities}
-        composition={shared.composition}
-        onChange={shared.onChange}
-      />
-    ),
-    cantrips: () => <CantripsStepView {...spells} />,
-    spells: () => <SpellsStepView {...spells} />,
-    equipment: () => <EquipmentStepView {...shared} items={screen.items} />,
-    identity: () => <IdentityStepView {...shared} isFrozen={screen.isEditing} />,
-  };
-
-  return screens[builder.step]();
-}
-
-function BuilderFooter({ screen }: { screen: BuilderScreen }) {
-  const { builder } = screen;
-
-  return (
-    <div className="flex items-center justify-between gap-2">
-      <Button type="button" variant="outline" onClick={builder.previous}>
-        Précédent
-      </Button>
-      {builder.isLastStep ? (
-        <Button
-          type="button"
-          disabled={!screen.canFinish || screen.isFinishing}
-          onClick={screen.onFinish}
-        >
-          {screen.isFinishing ? "Enregistrement..." : screen.finishLabel}
-        </Button>
-      ) : (
-        <Button type="button" disabled={!builder.canGoNext} onClick={builder.next}>
-          Suivant
-        </Button>
-      )}
-    </div>
-  );
+function recapOf(screen: BuilderScreen): CharacterRecap {
+  return toCharacterRecap({ context: screen.context, preview: screen.preview, spells: screen.spells });
 }

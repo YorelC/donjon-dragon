@@ -399,6 +399,40 @@
     @apply text-[9.5px] tracking-value whitespace-nowrap text-ink-disabled uppercase;
   }
 
+  /* --- Createur de personnage -------------------------------------------- */
+
+  /* Rail, scene, recapitulatif. Des lg l'ecran est fixe et chaque panneau
+     defile en lui-meme ; sous lg la page defile ; sous md tout s'empile. Le
+     recapitulatif ne tient en colonne que des xl, un tiroir le porte avant. */
+  .builder-frame {
+    @apply flex flex-col gap-4 p-5 md:flex-row md:items-start lg:min-h-0 lg:flex-1 lg:items-stretch;
+  }
+
+  .builder-rail {
+    @apply relative flex flex-col md:w-[268px] md:shrink-0;
+  }
+
+  .builder-stage {
+    @apply relative flex min-w-0 flex-1 flex-col;
+  }
+
+  .builder-stage-body {
+    @apply flex min-h-0 flex-1 flex-col px-[30px] pt-6 pb-[22px];
+  }
+
+  .builder-recap {
+    @apply relative hidden w-[372px] shrink-0 flex-col xl:flex;
+  }
+
+  /* Choix a gauche, fiche a droite : cote a cote des lg. */
+  .builder-split {
+    @apply grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,.76fr)_minmax(0,1.24fr)];
+  }
+
+  .builder-selection {
+    @apply flex flex-col gap-3.5 lg:min-h-0 lg:overflow-y-auto lg:pr-4;
+  }
+
   /* --- En-tete d'application ---------------------------------------------- */
 
   /* Coquille de l'application : bornee a la hauteur de l'ecran, comme la charte.

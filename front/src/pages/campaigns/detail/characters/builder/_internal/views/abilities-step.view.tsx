@@ -8,7 +8,7 @@ import {
   pointBuySpent,
   type CharacterComposition,
 } from "../types/character-composition";
-import { abilityMethodsFor } from "../types/ability-methods";
+import { GAME_MASTER_ABILITY_METHODS, PLAYER_ABILITY_METHODS } from "../types/ability-methods";
 import { AbilityGridView, type BonusPlan } from "./ability-grid.view";
 import { ChoiceButtonView } from "./choice-button.view";
 
@@ -64,7 +64,7 @@ export function AbilitiesStepView(props: AbilitiesStepViewProps) {
 }
 
 function MethodPicker({ step, composition, onChange }: AbilitiesStepViewProps) {
-  const methods = abilityMethodsFor(step.canSetManually);
+  const methods = step.canSetManually ? GAME_MASTER_ABILITY_METHODS : PLAYER_ABILITY_METHODS;
   const current = methods.find((method) => method.key === composition.abilityMethod);
 
   return (

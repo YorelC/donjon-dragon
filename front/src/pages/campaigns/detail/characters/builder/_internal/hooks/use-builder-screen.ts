@@ -42,12 +42,12 @@ export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
 
   return {
     catalog,
+    context: { catalog, composition: builder.composition },
     items: context.items,
     builder,
     preview,
     abilities: context.abilities,
     spells: context.spells,
-    characterName: characterNameOf(target, context.character, builder),
     isEditing: false,
     canFinish:
       isFullyAssigned(builder.composition) && preview !== null && builder.isValid("identity"),
@@ -65,18 +65,6 @@ function isCorrectable(character: CampaignCharacterListItem): boolean {
   if (character.projection === "pool") return false;
 
   return character.review.status === "draft" || character.review.status === "refused";
-}
-
-const NEW_CHARACTER_TITLE = "Nouveau personnage";
-
-function characterNameOf(
-  target: BuilderTarget,
-  character: CampaignCharacterListItem | undefined,
-  builder: BuilderState,
-): string {
-  if (target.characterId) return character?.name ?? "";
-
-  return builder.composition.name || NEW_CHARACTER_TITLE;
 }
 
 interface BuilderContext {

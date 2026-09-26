@@ -6,7 +6,8 @@ export interface AbilityMethodOption {
   hint: string;
 }
 
-const PLAYER_METHODS: readonly AbilityMethodOption[] = [
+/** Les trois méthodes du manuel, ouvertes à tous. */
+export const PLAYER_ABILITY_METHODS: readonly AbilityMethodOption[] = [
   {
     key: "standardArray",
     label: "Valeurs standard",
@@ -30,7 +31,8 @@ const MANUAL_METHOD: AbilityMethodOption = {
   hint: "Réservée au MJ : saisissez chaque valeur de base entre 3 et 18.",
 };
 
-/** La saisie manuelle n'est proposée qu'au MJ de la campagne. */
-export function abilityMethodsFor(canSetManually: boolean): readonly AbilityMethodOption[] {
-  return canSetManually ? [...PLAYER_METHODS, MANUAL_METHOD] : PLAYER_METHODS;
-}
+/** Ce que voit le MJ de la campagne : le manuel, plus sa saisie d'arbitrage. */
+export const GAME_MASTER_ABILITY_METHODS: readonly AbilityMethodOption[] = [
+  ...PLAYER_ABILITY_METHODS,
+  MANUAL_METHOD,
+];
