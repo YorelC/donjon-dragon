@@ -49,9 +49,9 @@ export function stepSummaryOf(step: BuilderStep, context: StepContext): string {
   return SUMMARIES[step](context) ?? PENDING_SUMMARY;
 }
 
-/** Le compteur partagé par le rail et les en-têtes de liste : « 2 / 3 ». */
-export function formatProgress({ chosen, total }: StepProgress): string {
-  return `${chosen} / ${total}`;
+/** Le compteur du rail, compact comme dans la maquette : « 2/3 ». */
+function formatProgress({ chosen, total }: StepProgress): string {
+  return `${chosen}/${total}`;
 }
 
 function counterOf(step: BuilderStep): Summary {

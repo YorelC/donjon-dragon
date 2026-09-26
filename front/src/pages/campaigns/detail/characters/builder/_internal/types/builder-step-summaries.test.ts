@@ -29,8 +29,8 @@ describe("valeur d'une étape dans le rail", () => {
   it("compte ce qui se choisit en nombre", () => {
     const context = aContext({ classKey: "ranger", classSkills: ["stealth"] });
 
-    expect(stepSummaryOf("classSkills", context)).toBe("1 / 3");
-    expect(stepSummaryOf("languages", aContext({ standardLanguages: ["elvish"] }))).toBe("1 / 2");
+    expect(stepSummaryOf("classSkills", context)).toBe("1/3");
+    expect(stepSummaryOf("languages", aContext({ standardLanguages: ["elvish"] }))).toBe("1/2");
   });
 
   it("dit « À choisir » tant que rien n'est retenu", () => {
