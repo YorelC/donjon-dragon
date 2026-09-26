@@ -226,5 +226,9 @@ function identityOf(dto: CreateCharacterDto): CharacterCreationInput['identity']
     heightCm: dto.heightCm,
     weightKg: dto.weightKg,
     description: dto.description,
+    personalityTraits: dto.personalityTraits,
+    ideals: dto.ideals,
+    bonds: dto.bonds,
+    flaws: dto.flaws,
   };
 }

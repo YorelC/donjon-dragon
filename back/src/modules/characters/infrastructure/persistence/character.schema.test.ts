@@ -20,4 +20,13 @@ describe('CharacterSchema', () => {
       partialFilterExpression: { assignedTo: { $type: 'string' } },
     });
   });
+
+  it('borne et initialise les détails narratifs facultatifs', () => {
+    const identity = CharacterSchema.path('identity') as unknown as {
+      schema: { path(field: string): { options: Record<string, unknown> } };
+    };
+    const personalityTraits = identity.schema.path('personalityTraits');
+
+    expect(personalityTraits.options).toMatchObject({ default: null, maxlength: 1_000 });
+  });
 });

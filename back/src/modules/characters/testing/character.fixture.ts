@@ -19,6 +19,10 @@ export const A_CHARACTER_IDENTITY = {
   heightCm: 90,
   weightKg: 18,
   description: 'Un voyageur prudent aux yeux vifs.',
+  personalityTraits: 'Curieux et prudent.',
+  ideals: 'La liberté avant tout.',
+  bonds: 'Protéger ses compagnons.',
+  flaws: null,
 };
 
 /** Les six totaux du tirage figé de `character-build.fixture` : 15/14/13/12/10/8. */

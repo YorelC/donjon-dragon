@@ -159,7 +159,13 @@ function personalDetailsCommand(state: ReviewState): CharacterCommand {
     action: 'character.personal-details-updated',
     result: {
       id: state.character.id.value, revision: state.character.revision,
-      personalDetails: { age: 34, weightKg: 19, description: 'Une cicatrice.' },
+      personalDetails: {
+        age: 34, weightKg: 19, description: 'Une cicatrice.',
+        personalityTraits: A_CHARACTER_IDENTITY.personalityTraits,
+        ideals: A_CHARACTER_IDENTITY.ideals,
+        bonds: A_CHARACTER_IDENTITY.bonds,
+        flaws: A_CHARACTER_IDENTITY.flaws,
+      },
     },
     buildVersion: null,
   });

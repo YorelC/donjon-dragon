@@ -97,6 +97,12 @@ describe('toCharacterBuildDetailDto', () => {
     expect(dto.name).toBe('Frodo Sacquet');
     expect(dto.speciesKey).toBe('human');
     expect(dto.lineageKey).toBeNull();
+    expect(dto).toMatchObject({
+      personalityTraits: A_CHARACTER_IDENTITY.personalityTraits,
+      ideals: A_CHARACTER_IDENTITY.ideals,
+      bonds: A_CHARACTER_IDENTITY.bonds,
+      flaws: A_CHARACTER_IDENTITY.flaws,
+    });
     expect(dto.speciesSkills).toEqual(['athletics']);
     expect(dto.speciesFeat).toBe('tough');
 

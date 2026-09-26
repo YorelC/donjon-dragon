@@ -35,6 +35,32 @@ export const characterNameField = () =>
       message: `Le nom du personnage ne peut pas dépasser ${CHARACTER_NAME_RULES.max} caractères.`,
     });
 
+export const CHARACTER_NARRATIVE_DETAIL_RULES = { max: 1_000 } as const;
+
+const narrativeTextField = () =>
+  z
+    .string()
+    .trim()
+    .max(CHARACTER_NARRATIVE_DETAIL_RULES.max)
+    .transform((value) => value || null)
+    .nullable();
+
+const optionalNarrativeDetailsShape = {
+  personalityTraits: narrativeTextField().optional(),
+  ideals: narrativeTextField().optional(),
+  bonds: narrativeTextField().optional(),
+  flaws: narrativeTextField().optional(),
+};
+
+const narrativeDetailsShape = {
+  personalityTraits: narrativeTextField().default(null),
+  ideals: narrativeTextField().default(null),
+  bonds: narrativeTextField().default(null),
+  flaws: narrativeTextField().default(null),
+};
+
+export const CharacterNarrativeDetailsSchema = z.object(narrativeDetailsShape);
+
 // ---------------------------------------------------------------------------
 // Caractéristiques
 // ---------------------------------------------------------------------------
@@ -218,6 +244,7 @@ const CharacterCompositionSchema = z.object({
   heightCm: z.number().positive().optional(),
   weightKg: z.number().positive().optional(),
   description: z.string().nullable().optional(),
+  ...optionalNarrativeDetailsShape,
   speciesKey: SpeciesKeySchema,
   lineageKey: z.string().nullable(),
   standardLanguages: z.array(LanguageSchema).optional(),
@@ -335,9 +362,14 @@ export const CharacterPersonalDetailsSchema = z.object({
   age: z.number().int().positive(),
   weightKg: z.number().positive(),
   description: z.string().nullable(),
+  ...narrativeDetailsShape,
 });
 
-export const UpdateCharacterPersonalDetailsSchema = CharacterPersonalDetailsSchema.extend({
+export const UpdateCharacterPersonalDetailsSchema = z.object({
+  age: z.number().int().positive(),
+  weightKg: z.number().positive(),
+  description: z.string().nullable(),
+  ...optionalNarrativeDetailsShape,
   expectedRevision: CharacterRevisionSchema,
 }).strict();
 
@@ -377,6 +409,7 @@ export const CharacterBuildDetailSchema = z.object({
   heightCm: z.number().positive(),
   weightKg: z.number().positive(),
   description: z.string().nullable(),
+  ...narrativeDetailsShape,
 
   speciesKey: SpeciesKeySchema,
   lineageKey: z.string().nullable(),
@@ -562,14 +595,20 @@ export type FinalizeCharacterDto = z.infer<typeof FinalizeCharacterSchema>;
 export type PreviewCharacterSheetDto = z.infer<typeof PreviewCharacterSheetSchema>;
 export type AssignCharacterDto = z.infer<typeof AssignCharacterSchema>;
 export type UnassignCharacterDto = z.infer<typeof UnassignCharacterSchema>;
-export type CharacterPersonalDetails = z.infer<typeof CharacterPersonalDetailsSchema>;
+/**
+ * Les sorties du nouveau backend remplissent toujours les quatre champs avec
+ * `null`. Le type d'entrée reste tolérant pendant le déploiement backend-first,
+ * afin que le front actuel et les anciens reçus puissent encore les omettre.
+ */
+export type CharacterPersonalDetails = z.input<typeof CharacterPersonalDetailsSchema>;
+export type CharacterNarrativeDetails = z.infer<typeof CharacterNarrativeDetailsSchema>;
 export type UpdateCharacterPersonalDetailsDto = z.infer<
   typeof UpdateCharacterPersonalDetailsSchema
 >;
 export type CharacterBuildSummary = z.infer<typeof CharacterBuildSummarySchema>;
-export type CharacterBuildDetailDto = z.infer<typeof CharacterBuildDetailSchema>;
+export type CharacterBuildDetailDto = z.input<typeof CharacterBuildDetailSchema>;
 export type Character = z.infer<typeof CharacterSchema>;
-export type CampaignCharacterListItem = z.infer<typeof CampaignCharacterListItemSchema>;
+export type CampaignCharacterListItem = z.input<typeof CampaignCharacterListItemSchema>;
 export type CharacterAssignmentSummary = z.infer<typeof CharacterAssignmentSummarySchema>;
 export type CharacterAssignmentCommandResult = z.infer<
   typeof CharacterAssignmentCommandResultSchema
@@ -577,6 +616,6 @@ export type CharacterAssignmentCommandResult = z.infer<
 export type CharacterReviewCommand = z.infer<typeof CharacterReviewCommandSchema>;
 export type RejectCharacterDto = z.infer<typeof RejectCharacterSchema>;
 export type CharacterReviewCommandResult = z.infer<typeof CharacterReviewCommandResultSchema>;
-export type CharacterPersonalDetailsCommandResult = z.infer<
+export type CharacterPersonalDetailsCommandResult = z.input<
   typeof CharacterPersonalDetailsCommandResultSchema
 >;

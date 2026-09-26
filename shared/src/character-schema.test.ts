@@ -4,7 +4,9 @@ import {
   AbilityRollSchema,
   AbilityScoresSchema,
   AssignCharacterSchema,
+  CHARACTER_NARRATIVE_DETAIL_RULES,
   CampaignCharacterListItemSchema,
+  CharacterPersonalDetailsCommandResultSchema,
   CreateCharacterSchema,
   FinalizeCharacterSchema,
   IssuedAbilityRollSchema,
@@ -47,6 +49,40 @@ describe('édition des données personnelles après acceptation', () => {
     expect(UpdateCharacterPersonalDetailsSchema.safeParse({ ...valid, weightKg: -1 }).success)
       .toBe(false);
   });
+
+  it('normalise les textes narratifs facultatifs', () => {
+    const parsed = UpdateCharacterPersonalDetailsSchema.parse({
+      ...valid, personalityTraits: '  Curieux et prudent.  ', ideals: '   ', bonds: null,
+    });
+
+    expect(parsed).toMatchObject({
+      personalityTraits: 'Curieux et prudent.', ideals: null, bonds: null,
+    });
+    expect(parsed).not.toHaveProperty('flaws');
+  });
+
+  it('borne chaque texte narratif', () => {
+    const atLimit = 'a'.repeat(CHARACTER_NARRATIVE_DETAIL_RULES.max);
+    const tooLong = `${atLimit}a`;
+
+    expect(UpdateCharacterPersonalDetailsSchema.safeParse({
+      ...valid, personalityTraits: atLimit,
+    }).success).toBe(true);
+    expect(UpdateCharacterPersonalDetailsSchema.safeParse({
+      ...valid, personalityTraits: tooLong,
+    }).success).toBe(false);
+  });
+
+  it('relit un ancien reçu sans champs narratifs', () => {
+    const result = CharacterPersonalDetailsCommandResultSchema.parse({
+      id: '550e8400-e29b-41d4-a716-446655440000', revision: 4,
+      personalDetails: { age: 34, weightKg: 31, description: null },
+    });
+
+    expect(result.personalDetails).toMatchObject({
+      personalityTraits: null, ideals: null, bonds: null, flaws: null,
+    });
+  });
 });
 
 const VALID_SCORES = {
@@ -68,6 +104,10 @@ const A_CREATION_BODY = {
   heightCm: 96,
   weightKg: 30,
   description: null,
+  personalityTraits: 'Toujours prêt à aider.',
+  ideals: 'La liberté avant tout.',
+  bonds: 'Protéger la Comté.',
+  flaws: null,
   speciesKey: 'halfling',
   lineageKey: null,
   standardLanguages: ['common', 'halfling'],
@@ -171,6 +211,13 @@ describe('création et édition, deux contrats distincts', () => {
 describe('composition partagée par le POST et le PUT', () => {
   it('accepte une fiche complète', () => {
     expect(CreateCharacterSchema.safeParse(A_CREATION_BODY).success).toBe(true);
+  });
+
+  it('accepte une ancienne création sans champs narratifs', () => {
+    const legacy = { ...A_CREATION_BODY } as Record<string, unknown>;
+    ['personalityTraits', 'ideals', 'bonds', 'flaws'].forEach((field) => delete legacy[field]);
+
+    expect(CreateCharacterSchema.safeParse(legacy).success).toBe(true);
   });
 
   it('refuse une espèce inconnue', () => {

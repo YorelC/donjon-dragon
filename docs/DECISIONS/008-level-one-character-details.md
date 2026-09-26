@@ -18,6 +18,11 @@ catégorie de taille D&D reste une donnée mécanique distincte, mais elle est d
 la taille physique plutôt que demandée au joueur.
 La description physique est facultative.
 
+Les traits de personnalité, idéaux, liens et défauts sont quatre textes libres,
+facultatifs et indépendants, limités à 1 000 caractères chacun. Ils restent
+modifiables après validation par le joueur assigné et les MJ autorisés. Ce modèle
+narratif issu de D&D 5e 2014 n'ajoute aucune règle mécanique au corpus 2024.
+
 Une babiole de départ est facultative et gratuite, conformément au *Player's Handbook
 2024*. Sa sélection ajoute la babiole au personnage sans modifier l'or de départ. Le
 parcours ne propose aucun magasin, catalogue ni autre achat d'équipement pendant la
@@ -26,6 +31,9 @@ création.
 ## Conséquences
 
 - L'alignement rejoint les champs immuables de la fiche validée.
+- Les quatre textes narratifs rejoignent les détails personnels modifiables. Une
+  valeur vide est conservée sous la forme `null` et les anciens personnages qui ne
+  portent pas encore ces champs sont lus de la même manière.
 - Taille physique et catégorie de taille ne partagent pas le même champ ; la seconde
   est calculée par le backend depuis la première et persistée pour le moteur de
   règles. Elle ne figure pas dans les requêtes de création, d'édition ni d'aperçu :

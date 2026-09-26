@@ -44,6 +44,8 @@ function controlledFields(dto: CharacterDto, character: Character) {
     ...poolFields(dto), review: dto.review, build: dto.build,
     personalDetails: {
       age: identity.age, weightKg: identity.weightKg, description: identity.description,
+      personalityTraits: identity.personalityTraits, ideals: identity.ideals,
+      bonds: identity.bonds, flaws: identity.flaws,
     },
     assignedTo: dto.assignedTo, revision: dto.revision,
   };

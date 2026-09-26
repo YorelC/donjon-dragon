@@ -14,6 +14,8 @@ export const ALIGNMENTS = [
 
 export type Alignment = (typeof ALIGNMENTS)[number];
 
+export const CHARACTER_NARRATIVE_DETAIL_MAX_LENGTH = 1_000;
+
 /** Libellés français, arrêtés par Charly le 31/08/2026. */
 export const ALIGNMENT_LABELS: Record<Alignment, string> = {
   lawfulGood: 'Loyal bon',
@@ -33,6 +35,10 @@ export interface CharacterIdentitySnapshot {
   heightCm: number;
   weightKg: number;
   description: string | null;
+  personalityTraits: string | null;
+  ideals: string | null;
+  bonds: string | null;
+  flaws: string | null;
 }
 
 export interface CharacterIdentityInput {
@@ -41,6 +47,10 @@ export interface CharacterIdentityInput {
   heightCm?: number;
   weightKg?: number;
   description?: string | null;
+  personalityTraits?: string | null;
+  ideals?: string | null;
+  bonds?: string | null;
+  flaws?: string | null;
 }
 
 export class InvalidCharacterIdentityError extends InvalidDomainError {
@@ -54,11 +64,11 @@ export class CharacterIdentity {
 
   static create(input: CharacterIdentityInput): CharacterIdentity {
     assertIdentity(input);
-    return new CharacterIdentity({ ...input, description: input.description ?? null });
+    return new CharacterIdentity(identitySnapshotOf(input));
   }
 
   static restore(snapshot: CharacterIdentitySnapshot): CharacterIdentity {
-    return new CharacterIdentity({ ...snapshot });
+    return new CharacterIdentity(identitySnapshotOf(snapshot));
   }
 
   snapshot(): CharacterIdentitySnapshot {
@@ -66,13 +76,59 @@ export class CharacterIdentity {
   }
 }
 
-function assertIdentity(input: CharacterIdentityInput): asserts input is CharacterIdentitySnapshot {
+type CompleteIdentityInput = CharacterIdentityInput & {
+  alignment: Alignment;
+  age: number;
+  heightCm: number;
+  weightKg: number;
+};
+
+function assertIdentity(input: CharacterIdentityInput): asserts input is CompleteIdentityInput {
   const alignmentIsKnown = ALIGNMENTS.includes(input.alignment as Alignment);
   const ageIsValid = Number.isInteger(input.age) && isPositive(input.age);
   const measuresAreValid = isPositive(input.heightCm) && isPositive(input.weightKg);
-  if (!alignmentIsKnown || !ageIsValid || !measuresAreValid) {
-    throw new InvalidCharacterIdentityError();
-  }
+  const identityIsValid = [
+    alignmentIsKnown, ageIsValid, measuresAreValid, narrativesAreValid(input),
+  ].every(Boolean);
+  if (!identityIsValid) throw new InvalidCharacterIdentityError();
+}
+
+function identitySnapshotOf(input: CompleteIdentityInput): CharacterIdentitySnapshot {
+  return {
+    alignment: input.alignment,
+    age: input.age,
+    heightCm: input.heightCm,
+    weightKg: input.weightKg,
+    description: input.description ?? null,
+    ...narrativeDetailsOf(input),
+  };
+}
+
+function narrativesAreValid(input: CharacterIdentityInput): boolean {
+  return narrativeValuesOf(input).every(narrativeIsValid);
+}
+
+function narrativeIsValid(value: string | null | undefined): boolean {
+  if (value === undefined || value === null) return true;
+  return value.trim().length <= CHARACTER_NARRATIVE_DETAIL_MAX_LENGTH;
+}
+
+function narrativeDetailsOf(input: CharacterIdentityInput) {
+  const [personalityTraits, ideals, bonds, flaws] = narrativeValuesOf(input);
+  return {
+    personalityTraits: normalizeNarrative(personalityTraits),
+    ideals: normalizeNarrative(ideals),
+    bonds: normalizeNarrative(bonds),
+    flaws: normalizeNarrative(flaws),
+  };
+}
+
+function narrativeValuesOf(input: CharacterIdentityInput) {
+  return [input.personalityTraits, input.ideals, input.bonds, input.flaws] as const;
+}
+
+function normalizeNarrative(value: string | null | undefined): string | null {
+  return value?.trim() || null;
 }
 
 function isPositive(value: number | undefined): value is number {

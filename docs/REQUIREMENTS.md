@@ -167,6 +167,7 @@ La création couvre au minimum :
 - sorts connus ou préparés ;
 - âge, taille et poids, tous obligatoires ;
 - description physique, facultative ;
+- traits de personnalité, idéaux, liens et défauts, tous facultatifs ;
 - portrait téléversé, facultatif.
 
 Le détail normatif de ces choix, catalogues, quotas et dérivés est inventorié dans
@@ -188,6 +189,12 @@ Le joueur peut sélectionner une babiole facultative et gratuite parmi les cent 
 du *Player's Handbook 2024*. Sa sélection ajoute la babiole au personnage sans modifier
 l'or de départ. Aucun magasin, catalogue ni autre achat d'équipement n'est proposé
 pendant la création.
+
+Les traits de personnalité, idéaux, liens et défauts sont quatre textes narratifs
+libres et indépendants. Chacun est facultatif et limité à 1 000 caractères. Ils
+s'inspirent du modèle de personnalité de D&D 5e 2014, sans devenir une règle
+mécanique de D&D 5e 2024 : ils ne modifient ni le build, ni l'alignement, ni
+l'historique, ni l'inspiration.
 
 Sans portrait téléversé, l'application emploie un portrait générique : fond blanc et
 silhouette de tête grise. Le même portrait est utilisé sur la fiche et en combat.
@@ -230,6 +237,7 @@ Restent modifiables :
 
 - portrait ;
 - description physique ;
+- traits de personnalité, idéaux, liens et défauts ;
 - âge ;
 - poids.
 

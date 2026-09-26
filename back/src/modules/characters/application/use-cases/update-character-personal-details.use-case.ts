@@ -65,7 +65,11 @@ export class UpdateCharacterPersonalDetailsUseCase {
 }
 
 function personalDetailsOf(dto: UpdateCharacterPersonalDetailsDto) {
-  return { age: dto.age, weightKg: dto.weightKg, description: dto.description };
+  return {
+    age: dto.age, weightKg: dto.weightKg, description: dto.description,
+    personalityTraits: dto.personalityTraits, ideals: dto.ideals,
+    bonds: dto.bonds, flaws: dto.flaws,
+  };
 }
 
 function personalDetailsResultOf(character: Character): CharacterPersonalDetailsCommandResult {
@@ -77,7 +81,11 @@ function personalDetailsResultOf(character: Character): CharacterPersonalDetails
 }
 
 function personalDetailsOfIdentity(identity: Character['identity']) {
-  return { age: identity.age, weightKg: identity.weightKg, description: identity.description };
+  return {
+    age: identity.age, weightKg: identity.weightKg, description: identity.description,
+    personalityTraits: identity.personalityTraits, ideals: identity.ideals,
+    bonds: identity.bonds, flaws: identity.flaws,
+  };
 }
 
 function intentHashOf(dto: UpdateCharacterPersonalDetailsDto): string {

@@ -9,6 +9,10 @@ const HUMAN_IDENTITY = {
   heightCm: 121,
   weightKg: 70,
   description: null,
+  personalityTraits: null,
+  ideals: null,
+  bonds: null,
+  flaws: null,
 };
 
 describe('catégorie déduite de la taille physique', () => {

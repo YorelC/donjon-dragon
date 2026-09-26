@@ -110,6 +110,10 @@ export interface CharacterPersonalDetailsInput {
   age: number;
   weightKg: number;
   description: string | null;
+  personalityTraits?: string | null;
+  ideals?: string | null;
+  bonds?: string | null;
+  flaws?: string | null;
 }
 
 interface CharacterBuildState {
@@ -292,7 +296,9 @@ export class Character {
    */
   revise(input: CharacterCorrectionInput, context: CharacterAccessContext, now: Date): void {
     this.assertEditableBy(context);
-    const identity = CharacterIdentity.create(input.identity);
+    const identity = CharacterIdentity.create(
+      mergeNarrativeDetails(this.state.identity.snapshot(), input.identity),
+    );
     const build = buildFrom(input.build, this.state.roll, identity.snapshot().heightCm);
     assertSpeciesPhysique(input.build.speciesKey, identity.snapshot());
     this.state.name = input.name;
@@ -309,7 +315,7 @@ export class Character {
     this.state.review.assertAccepted();
     this.assertActorCanEdit(context);
     const current = this.state.identity.snapshot();
-    const identity = CharacterIdentity.create({ ...current, ...input });
+    const identity = CharacterIdentity.create(mergeNarrativeDetails(current, input));
     assertSpeciesPhysique(this.state.build.speciesKey, identity.snapshot());
     this.state.identity = identity;
     this.touch(now);
@@ -514,4 +520,22 @@ function buildSnapshotOf(build: CharacterBuildState): CharacterBuildSnapshot {
 function requiredLanguages(languages: readonly Language[] | undefined): Language[] {
   if (!languages) throw new InvalidCharacterIdentityError();
   return [...languages];
+}
+
+function mergeNarrativeDetails(
+  current: CharacterIdentitySnapshot,
+  update: CharacterIdentityInput,
+): CharacterIdentityInput {
+  return {
+    ...current,
+    ...update,
+    personalityTraits: updatedValue(update.personalityTraits, current.personalityTraits),
+    ideals: updatedValue(update.ideals, current.ideals),
+    bonds: updatedValue(update.bonds, current.bonds),
+    flaws: updatedValue(update.flaws, current.flaws),
+  };
+}
+
+function updatedValue(value: string | null | undefined, current: string | null) {
+  return value === undefined ? current : value;
 }

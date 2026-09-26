@@ -82,6 +82,15 @@ describe('ListCampaignCharactersUseCase', () => {
     expect(pool).not.toHaveProperty('build');
     expect(pool).not.toHaveProperty('assignedTo');
     expect(pool).not.toHaveProperty('revision');
+    expect(controlled).toMatchObject({
+      personalDetails: {
+        personalityTraits: 'Curieux et prudent.',
+        ideals: 'La liberté avant tout.',
+        bonds: 'Protéger ses compagnons.',
+        flaws: null,
+      },
+    });
+    expect(pool).not.toHaveProperty('personalDetails');
   });
 
   it('rend les personnages de la campagne à un membre actif', async () => {

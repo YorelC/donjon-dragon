@@ -94,6 +94,7 @@ describe('Character review use cases', () => {
     const command = {
       campaignId, characterId, actorId: anActor(playerId), idempotencyKey: randomUUID(),
       expectedRevision: 3, age: 34, weightKg: 19, description: 'Une nouvelle cicatrice.',
+      flaws: '  Trop impatient.  ',
     };
 
     const first = await updateDetails.execute(command);
@@ -102,6 +103,10 @@ describe('Character review use cases', () => {
     expect(replay).toEqual(first);
     expect(first.personalDetails).toEqual({
       age: 34, weightKg: 19, description: 'Une nouvelle cicatrice.',
+      personalityTraits: 'Curieux et prudent.',
+      ideals: 'La liberté avant tout.',
+      bonds: 'Protéger ses compagnons.',
+      flaws: 'Trop impatient.',
     });
     expect(commands.actions.at(-1)).toBe('character.personal-details-updated');
   });

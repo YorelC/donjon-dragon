@@ -72,6 +72,21 @@ function contextFor(overrides: Partial<CharacterAccessContext>): CharacterAccess
 const asCreator = contextFor({ actorId: gandalf, actorIsGameMaster: true });
 
 describe('Character.create', () => {
+  it('initialise à null les textes narratifs omis', () => {
+    const {
+      personalityTraits: _traits, ideals: _ideals, bonds: _bonds, flaws: _flaws,
+      ...legacyIdentity
+    } = A_CHARACTER_IDENTITY;
+    const character = Character.create({
+      campaignId, name: NAME, identity: legacyIdentity, createdBy: gandalf,
+      build: A_CHARACTER_BUILD, roll: STANDARD_ARRAY_ROLL, now: NOW,
+    });
+
+    expect(character.identity).toMatchObject({
+      personalityTraits: null, ideals: null, bonds: null, flaws: null,
+    });
+  });
+
   it('naît complet, non assigné, avec son tirage et sa fiche', () => {
     const character = aCharacter();
 
@@ -158,6 +173,23 @@ describe('Character.revise', () => {
     expect(character.build.classKey).toBe('rogue');
   });
 
+  it('conserve les textes narratifs absents d une ancienne requête', () => {
+    const character = aCharacter();
+    const {
+      personalityTraits: _traits, ideals: _ideals, bonds: _bonds, flaws: _flaws,
+      ...legacyIdentity
+    } = A_CHARACTER_IDENTITY;
+
+    character.revise({ name: NAME, identity: legacyIdentity, build: A_CHARACTER_BUILD }, asCreator, NOW);
+
+    expect(character.identity).toMatchObject({
+      personalityTraits: A_CHARACTER_IDENTITY.personalityTraits,
+      ideals: A_CHARACTER_IDENTITY.ideals,
+      bonds: A_CHARACTER_IDENTITY.bonds,
+      flaws: A_CHARACTER_IDENTITY.flaws,
+    });
+  });
+
   it('refuse un nombre de compétences de classe qui ne colle pas', () => {
     const character = aCharacter();
     const tooFewSkills = {
@@ -186,6 +218,22 @@ describe('Character.restore', () => {
     const snapshot = aCharacter().snapshot();
 
     expect(Character.restore(snapshot).snapshot()).toEqual(snapshot);
+  });
+
+  it('normalise les anciens snapshots sans détails narratifs', () => {
+    const snapshot = aCharacter().snapshot();
+    const legacyIdentity = { ...snapshot.identity } as Record<string, unknown>;
+    ['personalityTraits', 'ideals', 'bonds', 'flaws'].forEach(
+      (field) => delete legacyIdentity[field],
+    );
+
+    const restored = Character.restore({
+      ...snapshot, identity: legacyIdentity as unknown as typeof snapshot.identity,
+    });
+
+    expect(restored.identity).toMatchObject({
+      personalityTraits: null, ideals: null, bonds: null, flaws: null,
+    });
   });
 });
 
@@ -362,6 +410,31 @@ describe('Character.updatePersonalDetails', () => {
       ...A_CHARACTER_IDENTITY, age: 34, weightKg: 19, description: 'Une nouvelle cicatrice.',
     });
     expect(character.name.value).toBe(A_CHARACTER_NAME);
+  });
+
+  it('conserve les textes omis et permet de vider un texte explicitement', () => {
+    const character = acceptedCharacter();
+
+    character.updatePersonalDetails(
+      { age: 34, weightKg: 19, description: null, ideals: '   ' },
+      contextFor({ actorId: frodo }), NOW,
+    );
+
+    expect(character.identity).toMatchObject({
+      personalityTraits: A_CHARACTER_IDENTITY.personalityTraits,
+      ideals: null,
+      bonds: A_CHARACTER_IDENTITY.bonds,
+      flaws: A_CHARACTER_IDENTITY.flaws,
+    });
+  });
+
+  it('refuse un texte narratif trop long même sans passer par HTTP', () => {
+    const character = acceptedCharacter();
+
+    expect(() => character.updatePersonalDetails(
+      { age: 34, weightKg: 19, description: null, flaws: 'a'.repeat(1_001) },
+      contextFor({ actorId: frodo }), NOW,
+    )).toThrow(InvalidCharacterIdentityError);
   });
 
   it('refuse cette commande avant acceptation ou pour un tiers', () => {

@@ -7,7 +7,10 @@ import type {
   CharacterEquipmentSnapshot,
 } from '../../domain/character-equipment';
 import type { CharacterBuildSnapshot, CharacterSnapshot } from '../../domain/character';
-import type { CharacterIdentitySnapshot } from '../../domain/character-identity';
+import {
+  CHARACTER_NARRATIVE_DETAIL_MAX_LENGTH,
+  type CharacterIdentitySnapshot,
+} from '../../domain/character-identity';
 import type { CharacterReviewSnapshot } from '../../domain/character-review';
 
 export const CHARACTER_MODEL = 'Character';
@@ -36,6 +39,12 @@ const CharacterIdentitySubSchema = new Schema<CharacterIdentitySnapshot>(
     heightCm: { type: Number, required: true, min: Number.MIN_VALUE },
     weightKg: { type: Number, required: true, min: Number.MIN_VALUE },
     description: { type: String, default: null },
+    personalityTraits: {
+      type: String, default: null, maxlength: CHARACTER_NARRATIVE_DETAIL_MAX_LENGTH,
+    },
+    ideals: { type: String, default: null, maxlength: CHARACTER_NARRATIVE_DETAIL_MAX_LENGTH },
+    bonds: { type: String, default: null, maxlength: CHARACTER_NARRATIVE_DETAIL_MAX_LENGTH },
+    flaws: { type: String, default: null, maxlength: CHARACTER_NARRATIVE_DETAIL_MAX_LENGTH },
   },
   subSchema,
 );
