@@ -229,7 +229,6 @@ async function finish(builder: CharacterBuilderPage, name: string): Promise<void
   await builder.openStep('Identité');
   await builder.fillIdentity(identityFor(name));
   await expect(builder.page.getByText(/^PV \d+$/)).toBeVisible();
-  await expect(builder.finishButton).toBeEnabled();
-  await builder.finishButton.click();
+  await builder.finishCreation();
   await expect(builder.page.getByRole('heading', { name })).toBeVisible();
 }

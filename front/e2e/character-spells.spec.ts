@@ -161,8 +161,7 @@ async function finishCreation(builder: CharacterBuilderPage): Promise<void> {
   await builder.fillIdentity(IDENTITY);
   // Les PV ne s'affichent que si le SERVEUR a validé la composition.
   await expect(builder.page.getByText(/^PV \d+$/)).toBeVisible();
-  await expect(builder.finishButton).toBeEnabled();
-  await builder.finishButton.click();
+  await builder.finishCreation();
 }
 
 async function chooseFrom(

@@ -98,3 +98,9 @@ test `désactive l instrument de l Artiste…` est en `test.fixme`.
 Les trois tests qui échouaient étaient périmés, sans régression produit :
 bouton « Enregistrer les modifications » en réouverture, bonus du Voyageur hors de ses
 trois caractéristiques, stature hors des bornes du Nain, alignement « Neutre » ambigu.
+
+Plus grave : la fin des parcours attendait un titre au nom du personnage, que l'aperçu
+affiche **avant** tout enregistrement. Un parcours pouvait donc passer alors que le
+serveur refusait la création : c'était le cas du Roublard Voyageur (outils de voleur
+reçus deux fois d'office, corrigé au back). `finishCreation()` attend désormais la
+redirection vers la fiche, et `saveChanges()` le retour à la liste.

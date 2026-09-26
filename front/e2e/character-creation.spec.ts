@@ -159,11 +159,13 @@ test.describe('Soumettre une fiche au MJ et la faire valider', () => {
     const builderUrl = await editLink.getAttribute('href');
 
     await editLink.click();
+    // Réouverte, la fiche se recompose puis se recalcule : corriger avant la
+    // fin de ce calcul laisse le bouton d'enregistrement désactivé.
+    await builder.waitForServerPreview();
     await builder.openStep('Identité');
     await builder.identityField('Âge (années)').fill(CORRECTED_AGE);
     await builder.identityField('Description (facultative)').fill('Description corrigée.');
-    await builder.saveButton.click();
-    await page.goto(`/campaigns/${campaignId}/characters`);
+    await builder.saveChanges();
 
     await row.getByRole('button', { name: 'Soumettre' }).click();
     await row.getByRole('button', { name: 'Accepter' }).click();
@@ -210,8 +212,7 @@ async function createCleric(
   // Les constantes vitales ne s'affichent que si le SERVEUR a répondu : leur
   // présence prouve que le corps émis par le wizard a franchi le contrat.
   await expect(builder.page.getByText(/^PV \d+$/)).toBeVisible();
-  await expect(builder.finishButton).toBeEnabled();
-  await builder.finishButton.click();
+  await builder.finishCreation();
   await expect(builder.page.getByRole('heading', { name: CHARACTER_NAME })).toBeVisible();
 }
 

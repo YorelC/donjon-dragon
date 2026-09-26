@@ -1,4 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 
 /** Les six caractéristiques, dans l'ordre où le tableau standard les distribue. */
 export const STANDARD_ARRAY_ORDER = [
@@ -9,6 +9,9 @@ export const STANDARD_ARRAY_ORDER = [
   'Sagesse',
   'Charisme',
 ] as const;
+
+const CHARACTER_SHEET_URL = /\/characters\/[^/]+\/sheet$/;
+const CHARACTER_LIST_URL = /\/characters$/;
 
 /** Le champ numérique de l'échelle, distinct du curseur qui porte le libellé court. */
 export const HEIGHT_FIELD = 'Taille en cm';
@@ -44,6 +47,36 @@ export class CharacterBuilderPage {
     this.nextButton = page.getByRole('button', { name: 'Suivant', exact: true });
     this.saveButton = page.getByRole('button', { name: 'Enregistrer les modifications' });
     this.preview = page.getByText('Personnage à créer');
+  }
+
+  /**
+   * Crée la fiche et attend d'arriver dessus.
+   *
+   * Pas un titre au nom du personnage : l'aperçu en affiche déjà un avant tout
+   * enregistrement, et des parcours ont passé au vert alors que le serveur
+   * refusait la création. Seule la redirection prouve que la fiche existe.
+   */
+  async finishCreation(): Promise<void> {
+    await expect(this.finishButton).toBeEnabled();
+    await this.finishButton.click();
+    await expect(this.page).toHaveURL(CHARACTER_SHEET_URL);
+  }
+
+  /**
+   * Enregistre une correction : le retour à la liste prouve que le serveur l'a
+   * acceptée. La liste s'affiche d'abord depuis le cache, avec l'ancienne
+   * révision : agir avant son rafraîchissement vaut un 409 légitime.
+   */
+  async saveChanges(): Promise<void> {
+    await expect(this.saveButton).toBeEnabled();
+    await this.saveButton.click();
+    await expect(this.page).toHaveURL(CHARACTER_LIST_URL);
+    await this.page.waitForLoadState('networkidle');
+  }
+
+  /** Les PV n'apparaissent qu'une fois l'aperçu calculé par le serveur. */
+  async waitForServerPreview(): Promise<void> {
+    await expect(this.page.getByText(/^PV \d+$/)).toBeVisible();
   }
 
   async gotoNew(campaignId: string): Promise<void> {
