@@ -17,6 +17,7 @@ export function ChoiceButtonView({ label, selected, onSelect }: ChoiceButtonProp
       type="button"
       size="sm"
       variant={selected ? "default" : "outline"}
+      aria-pressed={selected}
       onClick={onSelect}
     >
       {label}

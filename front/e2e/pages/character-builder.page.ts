@@ -34,10 +34,12 @@ export class CharacterBuilderPage {
   readonly nameInput: Locator;
   readonly finishButton: Locator;
   readonly preview: Locator;
+  readonly nextButton: Locator;
 
   constructor(readonly page: Page) {
     this.nameInput = page.getByLabel('Nom du personnage');
     this.finishButton = page.getByRole('button', { name: 'Créer le personnage' });
+    this.nextButton = page.getByRole('button', { name: 'Suivant', exact: true });
     this.preview = page.getByText('Personnage à créer');
   }
 
@@ -171,6 +173,23 @@ export class CharacterBuilderPage {
     }
 
     return labels;
+  }
+
+  /**
+   * Un groupe de sorts, par le début de son titre — « Sorts mineurs de classe »,
+   * « Grimoire ». Le titre porte aussi le compteur : on ne le fixe pas.
+   *
+   * Scoper par groupe est obligatoire : la classe et Initié à la magie proposent
+   * les mêmes sorts, et un même libellé existe alors deux fois à l'écran.
+   */
+  spellGroup(title: string): Locator {
+    return this.page
+      .getByRole('heading', { level: 3, name: new RegExp(`^${title}`) })
+      .locator('..');
+  }
+
+  spellIn(groupTitle: string, name: string): Locator {
+    return this.spellGroup(groupTitle).getByRole('button', { name, exact: true });
   }
 
   /** Le compteur d'une étape bornée, tel que son badge l'affiche — « 2 / 2 ». */

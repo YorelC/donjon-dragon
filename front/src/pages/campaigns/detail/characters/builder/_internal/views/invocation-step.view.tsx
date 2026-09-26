@@ -3,7 +3,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/shared/components/atoms/select";
 import type { CharacterComposition } from "../types/character-composition";
-import { SpellGroup } from "./spells-step.view";
+import { grantedSpellsOf } from "../types/chosen-spells";
+import { SpellGroup, selectionOf } from "./spell-group.view";
 
 interface InvocationStepViewProps {
   catalog: DndCatalog;
@@ -55,14 +56,17 @@ function NamedSelect({ composition, field, options, onChange }: NamedSelectProps
   </Select>;
 }
 
-function TomeChoice({ composition, tomeSpells, onChange }: InvocationStepViewProps) {
+function TomeChoice({ catalog, composition, tomeSpells, onChange }: InvocationStepViewProps) {
+  const source = { composition, grantedSpells: grantedSpellsOf({ catalog, composition }) };
   const cantrips = selectedFrom(composition.invocationSpells, tomeSpells.cantrips);
   const rituals = selectedFrom(composition.invocationSpells, tomeSpells.rituals);
   return <div className="grid gap-6">
     <SpellGroup title="Sorts mineurs du grimoire" spells={tomeSpells.cantrips} limit={3}
-      selected={cantrips} onChange={(next) => onChange({ invocationSpells: [...next, ...rituals] })} />
+      selection={selectionOf(source, composition.invocationSpells,
+        (next) => onChange({ invocationSpells: [...selectedFrom(next, tomeSpells.cantrips), ...rituals] }))} />
     <SpellGroup title="Rituels de niveau 1" spells={tomeSpells.rituals} limit={2}
-      selected={rituals} onChange={(next) => onChange({ invocationSpells: [...cantrips, ...next] })} />
+      selection={selectionOf(source, composition.invocationSpells,
+        (next) => onChange({ invocationSpells: [...cantrips, ...selectedFrom(next, tomeSpells.rituals)] }))} />
   </div>;
 }
 

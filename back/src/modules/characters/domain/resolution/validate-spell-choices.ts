@@ -6,6 +6,7 @@ import { CLASSES, type ClassSpellcasting } from '../reference/classes';
 import type { ClassKey, SpellKey } from '../reference/keys';
 import { SPELLS, type Spell } from '../reference/spells';
 import { fail, type ChoicesToValidate } from './choice-validation';
+import { collectEffects } from './collect-effects';
 
 const MAGIC_INITIATE_LISTS = ['cleric', 'druid', 'wizard'] as const;
 const MAGIC_INITIATE_ABILITIES: readonly Ability[] = ['intelligence', 'wisdom', 'charisma'];
@@ -15,6 +16,28 @@ export function validateSpellChoices(input: ChoicesToValidate): void {
   assertMagicInitiate(input);
   assertSpellbook(input);
   assertPactTome(input);
+  assertNoSpellChosenTwice(input);
+}
+
+/**
+ * B01-SOR-006 : un sort choisi par une source n'est plus disponible pour une
+ * autre, ni un sort que l'espèce, la lignée ou la classe accorde déjà.
+ */
+function assertNoSpellChosenTwice(input: ChoicesToValidate): void {
+  const chosen = input.choices.all.flatMap((choice) => [
+    ...spellsOf(choice),
+    ...(choice.spellbook ?? []),
+    ...(choice.invocationSpells ?? []),
+  ]);
+  const granted = grantedSpells(input);
+  if (new Set(chosen).size !== chosen.length) fail('spell chosen twice');
+  if (chosen.some((key) => granted.includes(key))) fail('granted spell chosen');
+}
+
+function grantedSpells(input: ChoicesToValidate): SpellKey[] {
+  return collectEffects(input)
+    .flatMap((collected) => collected.effect.grants?.spells ?? [])
+    .map((spell) => spell.spellKey);
 }
 
 function assertClassSpells(input: ChoicesToValidate): void {
@@ -22,7 +45,6 @@ function assertClassSpells(input: ChoicesToValidate): void {
   const chosen = classChoices(input).flatMap(spellsOf);
   const extra = extraCantrips(input);
   if (!spellcasting) return assertSpellSet(chosen, input.classKey, 0, 0);
-  assertGrantedClassSpellsAreNotChosen(input, chosen);
   assertSpellSet(
     chosen,
     input.classKey,
@@ -61,16 +83,6 @@ function assertFixedBackgroundList(
   if (!fixed) return;
   const backgroundChoice = choiceGrantedByBackground(input, choices);
   if (backgroundChoice?.spellList !== fixed) fail('magic-initiate background list');
-}
-
-function assertGrantedClassSpellsAreNotChosen(
-  input: ChoicesToValidate,
-  chosen: readonly SpellKey[],
-): void {
-  const granted = CLASSES[input.classKey].level1Features.flatMap((feature) => feature.effects)
-    .flatMap((effect) => effect.grants?.spells ?? [])
-    .map((spell) => spell.spellKey);
-  if (granted.some((spell) => chosen.includes(spell))) fail('granted class spells');
 }
 
 function choiceGrantedByBackground(

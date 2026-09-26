@@ -69,10 +69,31 @@ function resetFeatFields(
     ...(removeSpecies ? { speciesFeat: null } : {}),
     featSkills: [], featTools: [], spellcastingAbility: null, spellList: null,
     featCantrips: [], featSpells: [],
-    magicInitiateChoices: context.composition.magicInitiateChoices.filter((choice) =>
-      choice.grantedBy.type !== "background"
-      && (!removeSpecies || choice.grantedBy.type !== "species")),
+    magicInitiateChoices: [
+      ...context.composition.magicInitiateChoices.filter((choice) =>
+        choice.grantedBy.type !== "background"
+        && (!removeSpecies || choice.grantedBy.type !== "species")),
+      ...fixedListChoice(backgroundKey, context.catalog),
+    ],
   };
+}
+
+/**
+ * Le Sage, l'Acolyte et le Guide imposent la liste de leur Initié à la magie :
+ * elle est retenue d'office, il ne reste que la caractéristique à choisir.
+ */
+function fixedListChoice(
+  backgroundKey: BackgroundKey,
+  catalog: DndCatalog,
+): CharacterComposition["magicInitiateChoices"] {
+  const spellList = catalog.backgrounds.find((entry) => entry.key === backgroundKey)
+    ?.originFeatSpellList;
+  if (!spellList) return [];
+
+  return [{
+    grantedBy: { type: "background", key: backgroundKey },
+    spellList, spellcastingAbility: null, cantrips: [], spells: [],
+  }];
 }
 
 function featGrantChanged(

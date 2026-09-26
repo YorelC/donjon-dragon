@@ -7,6 +7,12 @@ import { ORIGIN_FEATS } from '../reference/origin-feats';
 import { SPECIES } from '../reference/species';
 import type { CharacterBuild } from './character-build';
 
+/** Ce qui fait naître des effets : les sources, pas les scores ni l'équipement. */
+export type EffectSources = Pick<
+  CharacterBuild,
+  'speciesKey' | 'lineageKey' | 'classKey' | 'backgroundKey' | 'choices'
+>;
+
 /**
  * Le Collector : il rassemble les effets de toutes les sources et leur attache
  * leur provenance.
@@ -15,7 +21,7 @@ import type { CharacterBuild } from './character-build';
  * (cotte de mailles) » plutôt qu'un 16 que personne ne peut vérifier, et c'est
  * elle qui dira quoi retirer le jour où une source disparaît.
  */
-export function collectEffects(build: CharacterBuild): CollectedEffect[] {
+export function collectEffects(build: EffectSources): CollectedEffect[] {
   return [
     ...collectSpeciesEffects(build),
     ...collectClassEffects(build),
@@ -24,7 +30,7 @@ export function collectEffects(build: CharacterBuild): CollectedEffect[] {
   ];
 }
 
-function collectSpeciesEffects(build: CharacterBuild): CollectedEffect[] {
+function collectSpeciesEffects(build: EffectSources): CollectedEffect[] {
   const species = SPECIES[build.speciesKey];
   const speciesSource: EffectSource = {
     type: 'species',
@@ -45,12 +51,12 @@ function collectSpeciesEffects(build: CharacterBuild): CollectedEffect[] {
   ];
 }
 
-function findLineage(build: CharacterBuild) {
+function findLineage(build: EffectSources) {
   const options = SPECIES[build.speciesKey].lineage?.options ?? [];
   return options.find((lineage) => lineage.key === build.lineageKey);
 }
 
-function collectClassEffects(build: CharacterBuild): CollectedEffect[] {
+function collectClassEffects(build: EffectSources): CollectedEffect[] {
   const characterClass = CLASSES[build.classKey];
 
   return [
@@ -65,7 +71,7 @@ function collectClassEffects(build: CharacterBuild): CollectedEffect[] {
 }
 
 /** Le don de Style de combat que le guerrier choisit au niveau 1. */
-function collectFightingStyle(build: CharacterBuild): CollectedEffect[] {
+function collectFightingStyle(build: EffectSources): CollectedEffect[] {
   const chosen = build.choices.all.flatMap((choice) =>
     choice.fightingStyle ? [choice.fightingStyle] : [],
   )[0];
@@ -80,7 +86,7 @@ function collectFightingStyle(build: CharacterBuild): CollectedEffect[] {
 }
 
 /** L'Ordre divin du clerc, l'Ordre primitif du druide. */
-function collectClassOrder(build: CharacterBuild): CollectedEffect[] {
+function collectClassOrder(build: EffectSources): CollectedEffect[] {
   const order = CLASS_ORDERS[build.classKey];
   const chosen = build.choices.all.flatMap((choice) =>
     choice.classOrder ? [choice.classOrder] : [],
@@ -100,7 +106,7 @@ function collectClassOrder(build: CharacterBuild): CollectedEffect[] {
  * son outil y sont des champs. On les remet en forme d'octroi ici, pour que tout
  * traverse le moteur par le même chemin.
  */
-function collectBackgroundEffects(build: CharacterBuild): CollectedEffect[] {
+function collectBackgroundEffects(build: EffectSources): CollectedEffect[] {
   const background = BACKGROUNDS[build.backgroundKey];
 
   return flatten([backgroundFeature(background)], {
@@ -132,7 +138,7 @@ function backgroundFeature(background: Background): Feature {
  * Les dons octroyés : celui de l'historique, plus ceux qu'un trait a fait
  * choisir — le Polyvalent de l'humain est le seul cas au niveau 1.
  */
-function collectFeatEffects(build: CharacterBuild): CollectedEffect[] {
+function collectFeatEffects(build: EffectSources): CollectedEffect[] {
   const chosen = build.choices.all.flatMap((choice) =>
     choice.originFeat ? [choice.originFeat] : [],
   );

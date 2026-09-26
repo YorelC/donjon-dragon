@@ -37,6 +37,8 @@ export const CatalogFeatureSchema = z.object({
   key: z.string(),
   name: z.string(),
   description: z.string(),
+  /** Les sorts que la capacité accorde sans choix : ils ne se choisissent plus (B01-SOR-006). */
+  grantedSpells: z.array(z.string()),
 });
 
 /**

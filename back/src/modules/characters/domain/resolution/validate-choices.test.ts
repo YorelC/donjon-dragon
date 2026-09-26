@@ -77,6 +77,33 @@ describe('validation autoritaire des choix B01', () => {
       .toThrow(InvalidCharacterChoiceError);
   });
 
+  it('refuse un sort mineur choisi à la fois par la classe et par Initié à la magie', () => {
+    const [first, , , fourth, fifth] = wizardSpells(0, 5);
+
+    expect(() => validateSpellChoices(sageWizardInput([fourth!, fifth!]))).not.toThrow();
+    expect(() => validateSpellChoices(sageWizardInput([first!, fifth!])))
+      .toThrow(InvalidCharacterChoiceError);
+  });
+
+  it('refuse un sort du grimoire repris par Initié à la magie', () => {
+    const [, , , fourth, fifth] = wizardSpells(0, 5);
+    const input = sageWizardInput([fourth!, fifth!], wizardSpells(1, 1)[0]!);
+
+    expect(() => validateSpellChoices(input)).toThrow(InvalidCharacterChoiceError);
+  });
+
+  it('refuse de choisir un sort que l espèce accorde déjà', () => {
+    const cantrips = wizardSpells(0, 2);
+    const choice: CharacterChoice = {
+      source: { type: 'class', key: 'wizard' },
+      spells: [...cantrips, 'light'],
+      spellbook: wizardSpells(1, 6),
+    };
+    const input = { ...spellInput('wizard', [choice]), speciesKey: 'aasimar' as const };
+
+    expect(() => validateSpellChoices(input)).toThrow(InvalidCharacterChoiceError);
+  });
+
   it('distingue les deux Initiés à la magie d un Humain Acolyte', () => {
     const choices = humanAcolyteChoices(true);
 
@@ -150,6 +177,29 @@ function spellInput(classKey: 'wizard', choices: readonly CharacterChoice[]) {
     standardLanguages: ['elvish', 'dwarvish'] as const, classKey,
     backgroundKey: 'farmer' as const, choices: CharacterChoices.create(choices),
   };
+}
+
+/** Un Magicien Sage : ses trois premiers sorts mineurs, et un Initié à la magie. */
+function sageWizardInput(
+  featCantrips: ReturnType<typeof wizardSpells>,
+  featSpell = wizardSpells(1, 7)[6]!,
+) {
+  const choices: CharacterChoice[] = [
+    {
+      source: { type: 'class', key: 'wizard' },
+      spells: wizardSpells(0, 3),
+      spellbook: wizardSpells(1, 6),
+    },
+    {
+      source: {
+        type: 'feat', key: 'magic-initiate',
+        grantedBy: { type: 'background', key: 'sage' },
+      },
+      spellList: 'wizard', spellcastingAbility: 'intelligence',
+      spells: [...featCantrips, featSpell],
+    },
+  ];
+  return { ...spellInput('wizard', choices), backgroundKey: 'sage' as const };
 }
 
 function wizardSpells(level: 0 | 1, count: number) {

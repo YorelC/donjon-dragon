@@ -1,7 +1,7 @@
 import type { CatalogSpell, CatalogSpellList, ClassKey } from "@donjon-dragon/shared";
-import { Badge } from "@/shared/components/atoms/badge";
-import { Button } from "@/shared/components/atoms/button";
 import type { CharacterComposition } from "../types/character-composition";
+import type { SpellSource } from "../types/chosen-spells";
+import { SpellGroup, selectionOf } from "./spell-group.view";
 
 export interface SpellsStep {
   classSpells: CatalogSpellList | null;
@@ -14,6 +14,8 @@ export interface SpellsStep {
   featCantripsKnown: number;
   featSpellsPrepared: number;
   featSpellLists: Partial<Record<ClassKey, CatalogSpellList>>;
+  /** Les sorts que l'espèce, la lignée ou la classe accorde : ils ne se choisissent pas. */
+  grantedSpells: string[];
   tomeSpells: { cantrips: CatalogSpell[]; rituals: CatalogSpell[] };
   isLoading: boolean;
 }
@@ -34,8 +36,8 @@ export function CantripsStepView({ step, composition, onChange }: SpellsStepView
         title="Sorts mineurs de classe"
         spells={step.classSpells?.cantrips ?? []}
         limit={step.classCantripsKnown}
-        selected={composition.classCantrips}
-        onChange={(classCantrips) => onChange({ classCantrips })}
+        selection={selectionOf(sourceOf(step, composition), composition.classCantrips,
+          (classCantrips) => onChange({ classCantrips }))}
       />
       <MagicInitiateGroups kind="cantrips" {...{ step, composition, onChange }} />
     </div>
@@ -52,15 +54,15 @@ export function SpellsStepView({ step, composition, onChange }: SpellsStepViewPr
         title="Sorts préparés"
         spells={withoutInvocationSpells(step.classSpells?.level1 ?? [], composition)}
         limit={step.classSpellsPrepared}
-        selected={composition.classSpells}
-        onChange={(classSpells) => onChange({ classSpells })}
+        selection={selectionOf(sourceOf(step, composition), composition.classSpells,
+          (classSpells) => onChange({ classSpells }))}
       />
       <SpellGroup
         title="Grimoire — sorts préparés plus tard, sur la fiche"
         spells={step.classSpells?.level1 ?? []}
         limit={step.spellbookSize}
-        selected={composition.spellbook}
-        onChange={(spellbook) => onChange({ spellbook })}
+        selection={selectionOf(sourceOf(step, composition), composition.spellbook,
+          (spellbook) => onChange({ spellbook }))}
       />
       <MagicInitiateGroups kind="spells" {...{ step, composition, onChange }} />
     </div>
@@ -78,8 +80,9 @@ function MagicInitiateGroups(props: SpellsStepViewProps & { kind: "cantrips" | "
     const source = choice.grantedBy.type === "background" ? "Historique" : "Espèce";
     return <SpellGroup key={`${choice.grantedBy.type}:${choice.grantedBy.key}`}
       title={`${props.kind === "cantrips" ? "Sorts mineurs" : "Sort de niveau 1"} — ${source}`}
-      spells={spells} limit={limit} selected={selected}
-      onChange={(keys) => updateMagicSpells(props, choice, keys)} />;
+      spells={spells} limit={limit}
+      selection={selectionOf(sourceOf(props.step, props.composition), selected,
+        (keys) => updateMagicSpells(props, choice, keys))} />;
   })}</>;
 }
 
@@ -99,68 +102,10 @@ function updateMagicSpells(
   });
 }
 
+function sourceOf(step: SpellsStep, composition: CharacterComposition): SpellSource {
+  return { composition, grantedSpells: step.grantedSpells };
+}
+
 function Loading() {
   return <p className="text-sm text-muted-foreground">Chargement des sorts...</p>;
-}
-
-interface SpellGroupProps {
-  title: string;
-  spells: readonly CatalogSpell[];
-  limit: number;
-  selected: readonly string[];
-  onChange: (keys: string[]) => void;
-}
-
-export function SpellGroup({ title, spells, limit, selected, onChange }: SpellGroupProps) {
-  if (limit === 0 || spells.length === 0) return null;
-  const chosen = spells.filter((spell) => selected.includes(spell.key));
-
-  return (
-    <div className="grid gap-2">
-      <h3 className="section-title text-sm">
-        {title} <Badge variant="outline">{chosen.length} / {limit}</Badge>
-      </h3>
-      <div className="flex flex-wrap gap-2">
-        {spells.map((spell) => (
-          <SpellToggle
-            key={spell.key}
-            spell={spell}
-            full={chosen.length >= limit}
-            selected={selected}
-            onChange={onChange}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-interface SpellToggleProps {
-  spell: CatalogSpell;
-  full: boolean;
-  selected: readonly string[];
-  onChange: (keys: string[]) => void;
-}
-
-function SpellToggle({ spell, full, selected, onChange }: SpellToggleProps) {
-  const chosen = selected.includes(spell.key);
-
-  return (
-    <Button
-      type="button"
-      size="sm"
-      variant={chosen ? "default" : "outline"}
-      disabled={full && !chosen}
-      title={spell.description}
-      onClick={() => onChange(toggle(selected, spell.key))}
-    >
-      {spell.name}
-    </Button>
-  );
-}
-
-function toggle(selected: readonly string[], key: string): string[] {
-  return selected.includes(key)
-    ? selected.filter((entry) => entry !== key)
-    : [...selected, key];
 }

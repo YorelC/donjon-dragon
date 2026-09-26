@@ -8,6 +8,7 @@ import {
   spellbookSizeOf,
   type StepContext,
 } from "../types/builder-lookups";
+import { grantedSpellsOf } from "../types/chosen-spells";
 
 export function useSpellsStep(context: StepContext | null): SpellsStep {
   const classSpells = useClassSpells(context?.composition.classKey ?? null);
@@ -17,10 +18,8 @@ export function useSpellsStep(context: StepContext | null): SpellsStep {
   const lists = tomeQueries.map((query) => query.data);
 
   return {
+    ...quotasOf(context),
     classSpells: classSpells.data ?? null,
-    classCantripsKnown: context ? classCantripsOf(context) : 0,
-    classSpellsPrepared: context ? classPreparedQuotaOf(context) : 0,
-    spellbookSize: context ? spellbookSizeOf(context) : 0,
     featSpells: featSpells.data ?? null,
     featCantripsKnown: featChoice?.cantripsKnown ?? 0,
     featSpellsPrepared: featChoice?.spellsPrepared ?? 0,
@@ -28,6 +27,16 @@ export function useSpellsStep(context: StepContext | null): SpellsStep {
     tomeSpells: tomeSpellsOf(lists),
     isLoading: [classSpells, featSpells, ...tomeQueries]
       .some((query) => query.isLoading),
+  };
+}
+
+/** Ce que la composition seule détermine, sans attendre une liste de sorts. */
+function quotasOf(context: StepContext | null) {
+  return {
+    classCantripsKnown: context ? classCantripsOf(context) : 0,
+    classSpellsPrepared: context ? classPreparedQuotaOf(context) : 0,
+    spellbookSize: context ? spellbookSizeOf(context) : 0,
+    grantedSpells: context ? grantedSpellsOf(context) : [],
   };
 }
 

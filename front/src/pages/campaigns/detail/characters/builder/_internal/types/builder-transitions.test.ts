@@ -116,7 +116,10 @@ describe("transition d'historique", () => {
       composition,
     });
 
-    expect(patch.magicInitiateChoices).toEqual([speciesChoice]);
+    expect(patch.magicInitiateChoices).toEqual([speciesChoice, {
+      grantedBy: { type: "background", key: "guide" },
+      spellList: "druid", spellcastingAbility: null, cantrips: [], spells: [],
+    }]);
   });
 
   it("retire une expertise devenue orpheline avec les choix du don", () => {
@@ -130,5 +133,20 @@ describe("transition d'historique", () => {
     });
 
     expect(patch).toMatchObject({ featSkills: [], expertise: [] });
+  });
+
+  it("retient d'office la liste que l'historique impose à Initié à la magie", () => {
+    const sage = aBackground({
+      key: "sage", originFeat: "magic-initiate", originFeatSpellList: "wizard",
+    });
+    const context = {
+      catalog: aCatalog({ backgrounds: [sage], originFeats: [MAGIC_INITIATE] }),
+      composition: configured({ backgroundKey: null }),
+    };
+
+    expect(backgroundChangePatch("sage", context).magicInitiateChoices).toEqual([{
+      grantedBy: { type: "background", key: "sage" },
+      spellList: "wizard", spellcastingAbility: null, cantrips: [], spells: [],
+    }]);
   });
 });

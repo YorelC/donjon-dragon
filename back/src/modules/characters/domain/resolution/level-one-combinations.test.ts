@@ -27,7 +27,8 @@ function validInput(speciesKey: SpeciesKey, classKey: ClassKey) {
   const species = SPECIES[speciesKey];
   const lineage = species.lineage?.options[0] ?? null;
   const speciesChoices = choicesForSpecies(speciesKey, lineage?.key ?? null);
-  const choices = [...speciesChoices, classChoice(classKey, speciesChoices)];
+  const granted = grantedSpellsOf(speciesKey, lineage?.key ?? null);
+  const choices = [...speciesChoices, classChoice(classKey, speciesChoices, granted)];
   return {
     speciesKey, lineageKey: lineage?.key ?? null,
     standardLanguages: ['elvish', 'dwarvish'] as const,
@@ -51,14 +52,28 @@ function choicesForSpecies(speciesKey: SpeciesKey, lineageKey: string | null): C
   return [...speciesChoice, ...lineageChoice];
 }
 
-function classChoice(classKey: ClassKey, speciesChoices: CharacterChoice[]): CharacterChoice {
+/** B01-SOR-006 : un sort que l'espèce accorde ne se choisit pas une seconde fois. */
+function grantedSpellsOf(speciesKey: SpeciesKey, lineageKey: string | null): string[] {
+  const species = SPECIES[speciesKey];
+  const lineage = species.lineage?.options.find((option) => option.key === lineageKey);
+  return [...species.traits, ...(lineage?.traits ?? [])]
+    .flatMap((trait) => trait.effects)
+    .flatMap((effect) => effect.grants?.spells ?? [])
+    .map((spell) => spell.spellKey);
+}
+
+function classChoice(
+  classKey: ClassKey,
+  speciesChoices: CharacterChoice[],
+  granted: readonly string[],
+): CharacterChoice {
   const characterClass = CLASSES[classKey];
   const excluded = [...FARMER_SKILLS, ...speciesChoices.flatMap((choice) => choice.skills ?? [])];
   const skills = firstSkills(characterClass.skillChoice.options, characterClass.skillChoice.count, excluded);
   const choice: CharacterChoice = { source: { type: 'class', key: classKey }, skills };
   addTools(choice, classKey);
   addClassOptions(choice, classKey);
-  addSpells(choice, classKey);
+  addSpells(choice, classKey, granted);
   if (classKey === 'rogue') addRogueChoices(choice, [...FARMER_SKILLS, ...skills]);
   return choice;
 }
@@ -78,14 +93,15 @@ function addClassOptions(choice: CharacterChoice, classKey: ClassKey): void {
   if (classKey === 'warlock') choice.invocation = 'armor-of-shadows';
 }
 
-function addSpells(choice: CharacterChoice, classKey: ClassKey): void {
+function addSpells(choice: CharacterChoice, classKey: ClassKey, granted: readonly string[]): void {
   const spellcasting = CLASSES[classKey].spellcasting;
   if (!spellcasting) return;
   const order = CLASS_ORDERS[classKey]?.options[0];
   const extra = order?.effects.reduce(
     (count, effect) => count + (effect.grants?.extraCantrips ?? 0), 0,
   ) ?? 0;
-  const available = Object.values(SPELLS).filter((spell) => spell.classLists.includes(classKey));
+  const available = Object.values(SPELLS).filter((spell) =>
+    spell.classLists.includes(classKey) && !granted.includes(spell.key));
   const cantrips = available.filter((spell) => spell.level === 0)
     .slice(0, spellcasting.cantripsKnown + extra).map((spell) => spell.key);
   const levelOne = available.filter((spell) => spell.level === 1);

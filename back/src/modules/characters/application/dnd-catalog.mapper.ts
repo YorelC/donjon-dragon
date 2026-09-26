@@ -375,7 +375,14 @@ export function toCatalogSpell(spell: Spell): CatalogSpell {
 }
 
 function toCatalogFeature(feature: Feature): CatalogFeature {
-  return { key: feature.key, name: feature.name, description: feature.description };
+  return {
+    key: feature.key,
+    name: feature.name,
+    description: feature.description,
+    grantedSpells: feature.effects
+      .flatMap((effect) => effect.grants?.spells ?? [])
+      .map((spell) => spell.spellKey),
+  };
 }
 
 function toCatalogSkillChoice(choice: SkillChoice): CatalogSkillChoice {
