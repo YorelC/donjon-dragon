@@ -1,4 +1,5 @@
 import type {
+  Ability,
   CatalogBackground,
   CatalogLineage,
   CatalogLineageChoice,
@@ -21,6 +22,9 @@ import {
 } from "./step-detail-parts";
 
 const NO_DARKVISION = "Aucune";
+const ELIGIBLE_BONUS = "+2 ou +1";
+const BONUS_RULE =
+  "Répartissez +2 et +1 entre deux d'entre elles, ou +1 à chacune, à l'étape Caractéristiques.";
 const LINEAGE_PURPOSE = "Ce choix vous confère des pouvoirs surnaturels propres à votre lignée.";
 const LINEAGE_ABILITY_PURPOSE =
   "Elle détermine le degré de difficulté et le bonus d'attaque du sort mineur de votre lignée.";
@@ -112,13 +116,19 @@ function backgroundBlocks(source: DetailSource, background: CatalogBackground): 
   return presentBlocks([
     describedBlock("Don d'origine", feat),
     proseBlock("Compétences accordées", labelsOf(background.skillProficiencies, catalog.skillLabels)),
-    proseBlock(
-      "Bonus de caractéristiques",
-      `+2 et +1, ou +1 partout, entre ${labelsOf(background.abilityBonuses, ABILITY_LABELS)} : ils se placent à l'étape Caractéristiques.`,
-    ),
+    bonusesBlock(background.abilityBonuses),
     describedBlock("Paquetage", background.equipment.options.map((option) => ({
       name: `Option ${option.id}`,
       description: option.label,
     }))),
   ]);
+}
+
+/** Les trois caractéristiques éligibles, une par ligne : c'est ce qu'on cherche des yeux. */
+function bonusesBlock(abilities: readonly Ability[]): DetailBlock {
+  return {
+    heading: "Bonus de caractéristiques",
+    body: BONUS_RULE,
+    items: abilities.map((ability) => ({ name: ABILITY_LABELS[ability], text: ELIGIBLE_BONUS })),
+  };
 }

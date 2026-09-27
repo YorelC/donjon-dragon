@@ -39,7 +39,8 @@ function aSource(composition: Partial<CharacterComposition>, focusKey: string | 
   const catalog = aCatalog({
     species: [DWARF, ELF, aSpeciesWithMagicalLineage("tiefling")],
     classes: [RANGER],
-    backgrounds: [aBackground()],
+    backgrounds: [aBackground({ abilityBonuses: ["dexterity", "wisdom", "charisma"] })],
+    skills: [{ key: "perception", name: "Perception", ability: "wisdom", description: "Repérer ce qui cloche." }],
   });
 
   return {
@@ -91,6 +92,33 @@ describe("fiche détaillée", () => {
 
     expect(alignment?.body).toMatch(/boussole morale/);
     expect(alignment?.items).toEqual([{ name: "Neutre bon", text: "Le bien sans code." }]);
+  });
+
+  it("liste les caractéristiques éligibles au bonus d'historique, une par ligne", () => {
+    const detail = detailOf("background", aSource({ backgroundKey: "acolyte" }));
+    const bonuses = detail.blocks.find((block) => block.heading === "Bonus de caractéristiques");
+
+    expect(bonuses?.items.map((item) => item.name)).toEqual(["Dextérité", "Sagesse", "Charisme"]);
+  });
+
+  it("montre en tête où tombent le +2 et le +1 posés", () => {
+    const detail = detailOf("abilities", aSource({ backgroundKey: "acolyte", backgroundBonuses: { dexterity: 2, wisdom: 1 } }));
+
+    expect(detail.blocks[0]).toMatchObject({
+      heading: "Bonus de caractéristiques",
+      items: [
+        { name: "Dextérité", text: "+2" },
+        { name: "Sagesse", text: "+1" },
+        { name: "Charisme", text: "aucun bonus posé" },
+      ],
+    });
+  });
+
+  it("décrit la compétence survolée et nomme sa caractéristique sans attendre l'aperçu", () => {
+    const detail = detailOf("classSkills", { ...aSource({ classKey: "ranger" }, "perception"), preview: null });
+
+    expect(detail.lede).toBe("Repérer ce qui cloche.");
+    expect(detail.badges).toEqual([{ label: "Caractéristique", value: "Sagesse" }]);
   });
 
   it("montre l'option survolée plutôt que celle retenue", () => {

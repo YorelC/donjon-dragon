@@ -3,7 +3,6 @@ import type {
   CampaignCharacterListItem,
   ComputedCharacter,
   DndCatalog,
-  IssuedAbilityRoll,
   Item,
 } from "@donjon-dragon/shared";
 import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
@@ -15,12 +14,12 @@ import type { BuilderState } from "./use-character-builder";
 import { useCharacterBuilder } from "./use-character-builder";
 import { useCharacterPreview } from "./use-character-preview";
 import { useCharacterBuild } from "../queries/use-character-build";
-import { useRollAbilities } from "../queries/use-character-creation";
 import { useFinishAction } from "./use-finish-action";
 import { isFullyAssigned, type CharacterComposition } from "../types/character-composition";
 import { toComposition } from "../types/character-build-detail";
-import { backgroundOf, type StepContext } from "../types/builder-lookups";
+import type { StepContext } from "../types/builder-lookups";
 import { useSpellsStep } from "./use-spells-step";
+import { useAbilitiesStep } from "./use-abilities-step";
 import { useOptionFocus } from "./use-option-focus";
 import type { BuilderStep } from "../types/builder-steps";
 
@@ -156,30 +155,4 @@ function useExistingCharacter(
   if (!target.characterId) return undefined;
 
   return characters?.find((entry) => entry.id === target.characterId);
-}
-
-/** Seul le MJ de la campagne peut saisir les scores à la main. */
-function useAbilitiesStep(
-  campaignId: string,
-  builder: BuilderState,
-  context: StepContext | null,
-): BuilderScreen["abilities"] {
-  const { data: campaign } = useCampaignDetail(campaignId);
-  const rollAbilities = useRollAbilities(campaignId);
-
-  return {
-    roll: builder.composition.abilityRoll,
-    onRoll: () => rollAbilities.mutate(undefined, { onSuccess: (issued) => keep(builder, issued) }),
-    isRolling: rollAbilities.isPending,
-    background: context ? backgroundOf(context) ?? null : null,
-    canSetManually: campaign?.myRole === "gameMaster",
-  };
-}
-
-/** Les dés servent à l'affichage, l'identité au serveur : on garde les deux. */
-function keep(builder: BuilderState, issued: IssuedAbilityRoll): void {
-  builder.update({
-    abilityRoll: { dice: issued.dice, totals: issued.totals },
-    abilityRollId: issued.rollId,
-  });
 }

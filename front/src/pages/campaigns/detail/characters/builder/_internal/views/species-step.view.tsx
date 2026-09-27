@@ -1,4 +1,5 @@
 import type { CatalogSpecies, SkillName } from "@donjon-dragon/shared";
+import { skillAbilityNamesOf } from "../types/ability-hints";
 import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
 import { knownSkillsExcept } from "../types/builder-lookups";
 import { defaultMeasurementsOf } from "../types/identity-fields";
@@ -101,6 +102,7 @@ function SpeciesSkillChoice({ binding, species }: SpeciesSkillChoiceProps) {
         options: options === "any" ? allSkillsOf(catalog) : options,
         selected: composition.speciesSkills,
         labels: catalog.skillLabels,
+        abilities: skillAbilityNamesOf(catalog),
         alreadyKnown: knownSkillsExcept(binding, "species"),
         onChange: (speciesSkills: SkillName[]) => onChange({ speciesSkills }),
         onPreview: binding.preview,

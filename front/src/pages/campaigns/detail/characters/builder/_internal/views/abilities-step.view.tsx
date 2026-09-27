@@ -5,6 +5,7 @@ import {
   pointBuySpent,
   type CharacterComposition,
 } from "../types/character-composition";
+import type { AbilityHints } from "../types/ability-hints";
 import { GAME_MASTER_ABILITY_METHODS, PLAYER_ABILITY_METHODS } from "../types/ability-methods";
 import { AbilityGridView, type BonusPlan } from "./ability-grid.view";
 import { ChoiceButtonView } from "./choice-button.view";
@@ -21,6 +22,8 @@ export interface AbilitiesStep {
   isRolling: boolean;
   background: CatalogBackground | null;
   canSetManually: boolean;
+  /** Ce que mesure chaque caractéristique, pour l'infobulle de son nom. */
+  hints: AbilityHints;
 }
 
 interface AbilitiesStepViewProps {
@@ -48,6 +51,7 @@ export function AbilitiesStepView(props: AbilitiesStepViewProps) {
             onChange,
           },
           background: step.background,
+          hints: step.hints,
           plan,
         }}
       />

@@ -14,7 +14,7 @@ import {
 function skillsDetail(kicker: string, count: (context: StepContext) => number) {
   return (source: DetailSource): StepDetail => {
     const skill = source.focusKey as SkillName | null;
-    if (skill && source.context.catalog.skillLabels[skill]) return focusedSkillDetail(source, kicker, skill);
+    if (skill && isSkill(source, skill)) return focusedSkillDetail(source, kicker, skill);
 
     return {
       kicker,
@@ -26,26 +26,34 @@ function skillsDetail(kicker: string, count: (context: StepContext) => number) {
   };
 }
 
+/** Le survol peut porter une autre clé (un outil, un don) : seule une compétence a sa fiche. */
+function isSkill({ context }: DetailSource, key: SkillName): boolean {
+  return context.catalog.skills.some((entry) => entry.key === key) || Boolean(context.catalog.skillLabels[key]);
+}
+
 function focusedSkillDetail(source: DetailSource, kicker: string, skill: SkillName): StepDetail {
   const known = knownSkillsExcept(source.context, "class").find((entry) => entry.skill === skill);
   const origin = known ? `Déjà acquise : ${known.source}.` : "Au choix de votre liste.";
 
+  const described = source.context.catalog.skills.find((entry) => entry.key === skill);
+
   return {
     kicker,
-    title: source.context.catalog.skillLabels[skill] ?? skill,
-    lede: null,
+    title: source.context.catalog.skillLabels[skill] ?? described?.name ?? skill,
+    lede: described?.description ?? null,
     badges: skillBadges(source, skill),
     blocks: [proseBlock("Provenance", origin)],
   };
 }
 
-function skillBadges({ preview }: DetailSource, skill: SkillName): DetailBadge[] {
+/** La caractéristique vient du catalogue, le modificateur de l'aperçu serveur. */
+function skillBadges({ context, preview }: DetailSource, skill: SkillName): DetailBadge[] {
+  const ability = context.catalog.skills.find((entry) => entry.key === skill)?.ability;
   const resolved = preview?.skills.find((entry) => entry.skill === skill);
-  if (!resolved) return [];
 
   return [
-    { label: "Caractéristique", value: ABILITY_LABELS[resolved.ability] },
-    { label: "Modificateur", value: formatSigned(resolved.modifier) },
+    ...(ability ? [{ label: "Caractéristique", value: ABILITY_LABELS[ability] }] : []),
+    ...(resolved ? [{ label: "Modificateur", value: formatSigned(resolved.modifier) }] : []),
   ];
 }
 

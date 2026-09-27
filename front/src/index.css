@@ -442,6 +442,16 @@
     @apply flex-1 px-[22px] py-5;
   }
 
+  /* Nom d'une caracteristique dans sa ligne de repartition. */
+  .ability-name {
+    @apply truncate text-left font-display text-note tracking-name text-foreground;
+  }
+
+  /* Terme qui ouvre une infobulle : le pointille dore dit qu'on peut le survoler. */
+  .hint-term {
+    @apply cursor-help underline decoration-gold/60 decoration-dotted underline-offset-4 transition-[color] duration-[.18s] hover:text-gold-value focus-visible:text-gold-value focus-visible:outline-none;
+  }
+
   /* Une liste de choix : l'intitule et son compteur, puis les lignes. */
   .choice-list-header {
     @apply flex items-baseline justify-between px-1 pb-1.5;

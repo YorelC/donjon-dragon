@@ -1,7 +1,8 @@
 import type { Ability, CatalogBackground } from "@donjon-dragon/shared";
 import { Checkbox } from "@/shared/components/atoms/checkbox";
-import { Label } from "@/shared/components/atoms/label";
 import { ABILITIES, ABILITY_LABELS, type CharacterComposition } from "../types/character-composition";
+import type { AbilityHints } from "../types/ability-hints";
+import { AbilityNameView } from "./ability-name.view";
 import { AbilityValueControlView, type ValueControl } from "./ability-value-control.view";
 
 export type BonusPlan = "focused" | "spread";
@@ -9,6 +10,7 @@ export type BonusPlan = "focused" | "spread";
 export interface AbilityGrid {
   control: ValueControl;
   background: CatalogBackground | null;
+  hints: AbilityHints;
   plan: BonusPlan;
 }
 
@@ -57,9 +59,7 @@ function AbilityRow({ ability, grid }: AbilityRowProps) {
 
   return (
     <div className={`${ROW_COLUMNS} panel-flat px-2 py-2`}>
-      <Label className="truncate font-display text-note tracking-name text-foreground">
-        {ABILITY_LABELS[ability]}
-      </Label>
+      <AbilityNameView label={ABILITY_LABELS[ability]} hint={grid.hints[ability]} />
       <AbilityValueControlView ability={ability} control={grid.control} />
       <BonusCell ability={ability} grid={grid} bonus={primaryBonus} />
       {grid.plan === "spread" ? <span /> : <BonusCell ability={ability} grid={grid} bonus={1} />}

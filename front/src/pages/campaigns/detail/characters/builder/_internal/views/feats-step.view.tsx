@@ -4,6 +4,7 @@ import type {
   OriginFeatKey,
   SkillName,
 } from "@donjon-dragon/shared";
+import { skillAbilityNamesOf } from "../types/ability-hints";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/atoms/card";
 import { SectionHeading } from "@/shared/components/molecules/section-heading";
 import { allSkillsOf, type CharacterComposition } from "../types/character-composition";
@@ -141,6 +142,7 @@ function ProficiencyChoice({ catalog, feat, composition, onChange }: FeatCardPro
         options: allSkillsOf(catalog),
         selected: composition.featSkills,
         labels: catalog.skillLabels,
+        abilities: skillAbilityNamesOf(catalog),
         alreadyKnown: knownSkillsExcept({ catalog, composition }, "feat"),
         onChange: (featSkills: SkillName[]) => onChange({
           featSkills,

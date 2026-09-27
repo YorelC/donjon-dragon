@@ -8,7 +8,6 @@ import { spellIndexOf } from "./spell-index";
 import {
   describedBlock,
   itemsBlock,
-  labelsOf,
   plainDetail,
   presentBlocks,
   proseBlock,
@@ -21,6 +20,7 @@ import {
 
 const UNNAMED = "Votre personnage";
 const TO_SPECIFY = "À préciser";
+const NO_PLACED_BONUS = "aucun bonus posé";
 const ALIGNMENT_PURPOSE =
   "La boussole morale de votre personnage. Elle guide son jeu, elle ne le contraint pas.";
 const DESCRIPTION_HINT =
@@ -55,18 +55,33 @@ export function invocationDetail(source: DetailSource): StepDetail {
 export function abilitiesDetail(source: DetailSource): StepDetail {
   const { context, preview } = source;
   const method = GAME_MASTER_ABILITY_METHODS.find((entry) => entry.key === context.composition.abilityMethod);
-  const bonuses = backgroundOf(context)?.abilityBonuses ?? [];
 
   return {
     kicker: "Caractéristiques",
     title: method?.label ?? "Méthode à choisir",
     lede: method?.hint ?? null,
-    badges: [
-      { label: "Bonus d'historique", value: labelsOf(bonuses, ABILITY_LABELS) || TO_SPECIFY },
-      ...(preview ? [{ label: "PV", value: String(preview.maxHitPoints.value) }] : []),
-    ],
-    blocks: presentBlocks([itemsBlock("Profil obtenu", profileOf(source)), consequencesOf(preview)]),
+    badges: preview ? [{ label: "PV", value: String(preview.maxHitPoints.value) }] : [],
+    blocks: presentBlocks([
+      placedBonusesOf(source),
+      itemsBlock("Profil obtenu", profileOf(source)),
+      consequencesOf(preview),
+    ]),
   };
+}
+
+/** Les bonus de l'historique, en tête : où tombent le +2 et le +1, et ce qui reste à poser. */
+function placedBonusesOf({ context }: DetailSource): DetailBlock | null {
+  const background = backgroundOf(context);
+  if (!background) return null;
+
+  return itemsBlock("Bonus de caractéristiques", background.abilityBonuses.map((ability) => ({
+    name: ABILITY_LABELS[ability],
+    text: bonusLabelOf(context.composition.backgroundBonuses[ability]),
+  })));
+}
+
+function bonusLabelOf(bonus: number | undefined): string {
+  return bonus ? `+${bonus}` : NO_PLACED_BONUS;
 }
 
 function profileOf({ context, preview }: DetailSource): DetailItem[] {

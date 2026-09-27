@@ -20,6 +20,8 @@ export interface SkillPicker {
   options: readonly SkillName[];
   selected: readonly SkillName[];
   labels: Partial<Record<SkillName, string>>;
+  /** Le nom de la caractéristique de chaque compétence, en sous-ligne. */
+  abilities: Partial<Record<SkillName, string>>;
   alreadyKnown: readonly KnownSkill[];
   onChange: (skills: SkillName[]) => void;
   /** Montre la compétence dans la fiche détaillée, au survol ou au focus. */
@@ -42,11 +44,9 @@ export function SkillPickerView({ picker }: { picker: SkillPicker }) {
 }
 
 function SkillRow({ skill, picker }: { skill: SkillName; picker: SkillPicker }) {
-  const known = picker.alreadyKnown.find((entry) => entry.skill === skill);
-
   return (
     <SelectableRow
-      entry={{ name: picker.labels[skill] ?? skill, meta: known ? `Déjà acquise · ${known.source}` : "", tag: "" }}
+      entry={{ name: picker.labels[skill] ?? skill, meta: skillMetaOf(skill, picker), tag: "" }}
       state={skillStateOf(skill, picker)}
       actions={{
         select: () => picker.onChange(toggle(picker.selected, skill)),
@@ -54,6 +54,15 @@ function SkillRow({ skill, picker }: { skill: SkillName; picker: SkillPicker }) 
       }}
     />
   );
+}
+
+/** « Sagesse · Déjà acquise : Historique » : de quoi comparer sans ouvrir la fiche. */
+function skillMetaOf(skill: SkillName, picker: SkillPicker): string {
+  const known = picker.alreadyKnown.find((entry) => entry.skill === skill);
+
+  return [picker.abilities[skill], known ? `Déjà acquise : ${known.source}` : null]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 function skillStateOf(skill: SkillName, picker: SkillPicker): SelectableRowState {

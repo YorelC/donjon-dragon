@@ -1,4 +1,5 @@
 import type { SkillName } from "@donjon-dragon/shared";
+import { skillAbilityNamesOf } from "../types/ability-hints";
 import { allSkillsOf } from "../types/character-composition";
 import { classOf, knownSkillNames, knownSkillsExcept } from "../types/builder-lookups";
 import type { StepBinding } from "../types/step-binding";
@@ -17,6 +18,7 @@ export function ClassSkillsStepView({ binding }: { binding: StepBinding }) {
         options: options === "any" ? allSkillsOf(binding.catalog) : options,
         selected: binding.composition.classSkills,
         labels: binding.catalog.skillLabels,
+        abilities: skillAbilityNamesOf(binding.catalog),
         alreadyKnown: knownSkillsExcept(binding, "class"),
         onChange: (classSkills: SkillName[]) => binding.onChange({ classSkills, expertise: [] }),
         onPreview: binding.preview,
@@ -40,6 +42,7 @@ export function ExpertiseStepView({ binding }: { binding: StepBinding }) {
         options: knownSkillNames(binding),
         selected: binding.composition.expertise,
         labels: binding.catalog.skillLabels,
+        abilities: skillAbilityNamesOf(binding.catalog),
         alreadyKnown: [],
         onChange: (expertise: SkillName[]) => binding.onChange({ expertise }),
         onPreview: binding.preview,
