@@ -54,6 +54,8 @@ function StepHeading({ step }: { step: BuilderStep }) {
 
 /** Quitter la liste rend la fiche à ce qui est retenu : le survol ne fait que prêter. */
 function StepSplit({ screen }: { screen: BuilderScreen }) {
+  const detail = stepDetailOf(screen.builder.step, detailSourceOf(screen));
+
   return (
     <div className="builder-split">
       <section
@@ -64,7 +66,8 @@ function StepSplit({ screen }: { screen: BuilderScreen }) {
         <StepContentView screen={screen} />
       </section>
       <div className="flex flex-col lg:min-h-0">
-        <StepDetailView detail={stepDetailOf(screen.builder.step, detailSourceOf(screen))} />
+        {/* Une autre fiche repart du haut : la clé remonte le panneau qui défile. */}
+        <StepDetailView key={`${detail.kicker}:${detail.title}`} detail={detail} />
         <BuilderFooterView screen={screen} />
       </div>
     </div>
