@@ -1,6 +1,12 @@
 import type { CatalogSpell } from "@donjon-dragon/shared";
 import type { CharacterComposition } from "./character-composition";
-import { cantripQuotaOf, classOf, spellQuotaOf, type StepContext } from "./builder-lookups";
+import {
+  cantripQuotaOf,
+  classOf,
+  spellbookSizeOf,
+  spellQuotaOf,
+  type StepContext,
+} from "./builder-lookups";
 import { formatSigned } from "./character-recap";
 import { cantripKeysOf, levelOneKeysOf } from "./chosen-spells";
 import { spellIndexOf } from "./spell-index";
@@ -17,9 +23,15 @@ import {
 const READING_HINT =
   "Survolez un sort : sa fiche complète s'affiche ici. Concentration signifie qu'un seul de ces sorts peut être actif à la fois ; Rituel permet de le lancer sans emplacement, en y consacrant dix minutes de plus.";
 
+const CANTRIP_LEDE = "Un sort mineur ne consomme pas d'emplacement et se lance à volonté.";
+const PREPARED_LEDE =
+  "Ces sorts sont vos sorts préparés de niveau 1, choisis dans la liste de votre classe. Ils consomment un emplacement, récupéré au Repos long.";
+const SPELLBOOK_LEDE =
+  "Vous inscrivez ces sorts dans votre grimoire. Vos sorts préparés se choisiront plus tard, sur la fiche, parmi ceux du grimoire.";
+
 interface SpellKind {
   title: string;
-  lede: string;
+  lede: (context: StepContext) => string;
   retained: (composition: CharacterComposition) => string[];
   quota: (context: StepContext) => number;
 }
@@ -36,14 +48,14 @@ function spellStepDetail(kind: SpellKind) {
 
 export const cantripsDetail = spellStepDetail({
   title: "Sorts mineurs",
-  lede: "Un sort mineur ne consomme pas d'emplacement et se lance à volonté.",
+  lede: () => CANTRIP_LEDE,
   retained: cantripKeysOf,
   quota: cantripQuotaOf,
 });
 
 export const spellsDetail = spellStepDetail({
   title: "Sorts de niveau 1",
-  lede: "Vos sorts de niveau 1 consomment un emplacement, récupéré au Repos long.",
+  lede: levelOneLedeOf,
   retained: levelOneKeysOf,
   quota: spellQuotaOf,
 });
@@ -88,7 +100,7 @@ function spellOverview(source: DetailSource, kind: SpellKind): StepDetail {
   return {
     kicker: classOf(context)?.name ?? "Magie",
     title: kind.title,
-    lede: kind.lede,
+    lede: kind.lede(context),
     badges: [{ label: "À choisir", value: `${retained.length} / ${kind.quota(context)}` }, ...castingBadges(source)],
     blocks: [
       selectionBlock(retained.map((key) => index.get(key)?.name ?? key), kind.quota(context)),
@@ -105,4 +117,9 @@ function castingBadges({ preview }: DetailSource): DetailBadge[] {
     { label: "DD des sauvegardes", value: String(casting.saveDc) },
     { label: "Attaque de sort", value: formatSigned(casting.attackBonus) },
   ];
+}
+
+/** Seul le Magicien remplit un grimoire à la création ; les autres préparent leurs sorts (B01-SOR-005). */
+function levelOneLedeOf(context: StepContext): string {
+  return spellbookSizeOf(context) > 0 ? SPELLBOOK_LEDE : PREPARED_LEDE;
 }

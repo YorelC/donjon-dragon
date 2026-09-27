@@ -22,7 +22,7 @@ export const STEP_HINTS: Record<BuilderStep, string> = {
   invocation: "Votre première manifestation occulte, et ce qu'elle vous fait choisir.",
   abilities: "Choisissez une méthode, fixez vos six scores, puis placez les bonus de votre historique.",
   cantrips: "Les sorts mineurs se lancent à volonté, sans emplacement de sort.",
-  spells: "Préparez vos sorts de niveau 1. Ils changent après chaque Repos long.",
+  spells: "Choisissez vos sorts de niveau 1 dans la liste de votre classe.",
   equipment: "Le paquetage de votre classe et celui de votre historique, ou bien l'or.",
   identity: "Nom, alignement et apparence. C'est la dernière étape avant la fiche.",
 };

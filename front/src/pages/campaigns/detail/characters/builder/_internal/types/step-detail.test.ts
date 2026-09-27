@@ -152,6 +152,12 @@ describe("fiche détaillée", () => {
     expect(detail.blocks[0]?.items[0]?.name).toBe("Retenu");
   });
 
+  it("dit au Rôdeur que ses sorts de niveau 1 sont ses sorts préparés", () => {
+    const detail = detailOf("spells", aSource({ classKey: "ranger" }));
+
+    expect(detail.lede).toMatch(/^Ces sorts sont vos sorts préparés de niveau 1/);
+  });
+
   it("compte la sélection de sorts sans survol", () => {
     const detail = detailOf("spells", aSource({ classKey: "ranger", classSpells: ["hunters-mark"] }));
 
