@@ -16,6 +16,8 @@ export interface BuilderScreen {
   context: StepContext;
   /** L'option que la fiche détaillée montre au survol. */
   focus: OptionFocus;
+  /** La campagne où naît le personnage ; `null` le temps qu'elle se charge. */
+  campaignName: string | null;
   /** Le catalogue d'objets, pour nommer les lignes d'un paquetage. */
   items: Item[];
   builder: BuilderState;

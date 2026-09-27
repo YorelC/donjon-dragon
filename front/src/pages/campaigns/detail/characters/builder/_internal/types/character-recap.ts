@@ -129,6 +129,7 @@ function statsOf(preview: ComputedCharacter | null): RecapStat[] {
     { label: "PV", value: valueOrMissing(preview?.maxHitPoints.value) },
     { label: "Maîtrise", value: preview ? formatSigned(preview.proficiencyBonus) : MISSING_VALUE },
     { label: "CA", value: valueOrMissing(preview?.armorClass.value) },
+    { label: "Init.", value: preview ? formatSigned(preview.initiative.value) : MISSING_VALUE },
   ];
 }
 

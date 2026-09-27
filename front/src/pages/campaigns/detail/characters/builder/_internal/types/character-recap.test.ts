@@ -55,11 +55,12 @@ describe("récapitulatif du personnage", () => {
     expect(primary).toEqual(["dexterity", "wisdom"]);
   });
 
-  it("lit PV, maîtrise et CA dans l'aperçu serveur", () => {
+  it("lit PV, maîtrise, CA et initiative dans l'aperçu serveur", () => {
     expect(aRecap({}).stats).toEqual([
       { label: "PV", value: "13" },
       { label: "Maîtrise", value: "+2" },
       { label: "CA", value: "14" },
+      { label: "Init.", value: "+3" },
     ]);
   });
 
@@ -69,7 +70,7 @@ describe("récapitulatif du personnage", () => {
     const recap = aRecap({ abilityMethod: "manual", manualScores }, null);
 
     expect(recap.abilities[0]).toMatchObject({ score: 17, modifier: "+3" });
-    expect(recap.stats.map((stat) => stat.value)).toEqual(["—", "—", "—"]);
+    expect(recap.stats.map((stat) => stat.value)).toEqual(["—", "—", "—", "—"]);
   });
 
   it("condense traits et aptitudes du catalogue avant l'aperçu serveur", () => {

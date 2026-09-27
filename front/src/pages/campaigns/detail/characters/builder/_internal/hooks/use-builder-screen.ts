@@ -22,6 +22,7 @@ import { toComposition } from "../types/character-build-detail";
 import { backgroundOf, type StepContext } from "../types/builder-lookups";
 import { useSpellsStep } from "./use-spells-step";
 import { useOptionFocus } from "./use-option-focus";
+import type { BuilderStep } from "../types/builder-steps";
 
 export interface BuilderTarget {
   campaignId: string;
@@ -36,14 +37,14 @@ export interface BuilderTarget {
  */
 export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
   const context = useBuilderContext(target);
-  const focus = useOptionFocus(context.builder.step);
+  const surroundings = useScreenSurroundings(target, context.builder.step);
   const { catalog, builder, preview } = context;
   if (!catalog || isBlocked(target, context)) return null;
 
   return {
     catalog,
     context: { catalog, composition: builder.composition },
-    focus,
+    ...surroundings,
     items: context.items,
     builder,
     preview,
@@ -53,6 +54,14 @@ export function useBuilderScreen(target: BuilderTarget): BuilderScreen | null {
     canFinish: canFinish(builder, preview),
     ...context.finish,
   };
+}
+
+/** Ce que l'écran montre sans que la composition en dépende : le survol, la campagne. */
+function useScreenSurroundings(target: BuilderTarget, step: BuilderStep) {
+  const focus = useOptionFocus(step);
+  const { data: campaign } = useCampaignDetail(target.campaignId);
+
+  return { focus, campaignName: campaign?.name ?? null };
 }
 
 /** L'aperçu serveur prouve que la composition franchit le contrat de création. */

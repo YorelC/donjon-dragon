@@ -1,4 +1,9 @@
-import type { CatalogBackground, CatalogSpecies } from "@donjon-dragon/shared";
+import type {
+  CatalogBackground,
+  CatalogLineage,
+  CatalogLineageChoice,
+  CatalogSpecies,
+} from "@donjon-dragon/shared";
 import { SIZE_LABELS } from "@/shared/constants/character-labels";
 import { speciesOf } from "./builder-lookups";
 import { ABILITY_LABELS } from "./character-composition";
@@ -16,6 +21,9 @@ import {
 } from "./step-detail-parts";
 
 const NO_DARKVISION = "Aucune";
+const LINEAGE_PURPOSE = "Ce choix vous confère des pouvoirs surnaturels propres à votre lignée.";
+const LINEAGE_ABILITY_PURPOSE =
+  "Elle détermine le degré de difficulté et le bonus d'attaque du sort mineur de votre lignée.";
 
 /** L'espèce survolée ou retenue : gabarit, vitesse, vision, traits. */
 export function speciesDetail(source: DetailSource): StepDetail {
@@ -27,7 +35,7 @@ export function speciesDetail(source: DetailSource): StepDetail {
   return {
     kicker: "Espèce",
     title: species.name,
-    lede: null,
+    lede: species.description || null,
     badges: [
       { label: "Taille", value: species.sizeOptions.map((size) => SIZE_LABELS[size]).join(" ou ") },
       { label: "Vitesse", value: metersOf(species.speed) },
@@ -43,27 +51,39 @@ function lineagesBlock(species: CatalogSpecies): DetailBlock | null {
   return proseBlock("Lignages disponibles", species.lineage.options.map((option) => option.name).join(" · "));
 }
 
-/** Le lignage survolé ou retenu, et la caractéristique qui incante son sort. */
+/**
+ * Le lignage survolé ou retenu, et la caractéristique qui incante son sort.
+ * Sans lignage, la fiche dit à quoi sert le choix.
+ */
 export function lineageDetail(source: DetailSource): StepDetail {
   const species = speciesOf(source.context);
   const choice = species?.lineage;
+  if (!species || !choice) return plainDetail("Lignage", "Lignage", LINEAGE_PURPOSE);
   const key = shownKey(source, source.context.composition.lineageKey);
-  const lineage = choice?.options.find((option) => option.key === key);
-  if (!species || !choice || !lineage) return plainDetail(species?.name ?? "Lignage", choice?.label ?? "Lignage");
-  const abilities = choice.spellcastingAbilityOptions;
+  const lineage = choice.options.find((option) => option.key === key);
 
   return {
     kicker: species.name,
-    title: lineage.name,
-    lede: lineage.description || null,
+    title: lineage?.name ?? choice.label,
+    lede: lineage ? lineage.description || null : LINEAGE_PURPOSE,
     badges: [],
-    blocks: presentBlocks([
-      describedBlock("Traits spécifiques", lineage.traits),
-      abilities.length > 0
-        ? proseBlock("Caractéristique d'incantation", `Au choix : ${labelsOf(abilities, ABILITY_LABELS)}.`)
-        : null,
-    ]),
+    blocks: lineageBlocks(choice, lineage),
   };
+}
+
+function lineageBlocks(choice: CatalogLineageChoice, lineage: CatalogLineage | undefined): DetailBlock[] {
+  const abilities = choice.spellcastingAbilityOptions;
+
+  return presentBlocks([
+    lineage ? proseBlock(choice.label, LINEAGE_PURPOSE) : null,
+    lineage ? describedBlock("Traits spécifiques", lineage.traits) : null,
+    abilities.length > 0
+      ? proseBlock(
+        "Caractéristique d'incantation",
+        `${LINEAGE_ABILITY_PURPOSE} Au choix : ${labelsOf(abilities, ABILITY_LABELS)}.`,
+      )
+      : null,
+  ]);
 }
 
 /** L'historique survolé ou retenu : don, compétences, outil, bonus, paquetage. */

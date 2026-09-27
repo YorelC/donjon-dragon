@@ -1,6 +1,6 @@
 import type { CatalogSpell, Item } from "@donjon-dragon/shared";
 import { describe, expect, it } from "vitest";
-import { aBackground, aCatalog, aClass, aSpecies } from "./catalog.fixture";
+import { aBackground, aCatalog, aClass, aSpecies, aSpeciesWithMagicalLineage } from "./catalog.fixture";
 import { EMPTY_COMPOSITION, type CharacterComposition } from "./character-composition";
 import { equipmentFocusKey } from "./equipment-detail";
 import { aPreview, noSpells } from "./preview.fixture";
@@ -9,6 +9,7 @@ import type { DetailSource } from "./step-detail-parts";
 import type { BuilderStep } from "./builder-steps";
 
 const DWARF = aSpecies({
+  description: "Façonnés dans la pierre et le fer.",
   traits: [{ key: "toughness", name: "Robustesse naine", description: "+1 PV par niveau.", grantedSpells: [] }],
 });
 const ELF = aSpecies({ key: "elf", name: "Elfe", darkvision: 0 });
@@ -19,6 +20,10 @@ const RANGER = aClass({
   primaryAbilities: ["dexterity", "wisdom"],
   savingThrows: ["strength", "dexterity"],
   weaponProficiencies: ["simple", "martial"],
+  level1Choices: [{
+    key: "fightingStyle", name: "Style de combat", description: "Un don de Style de combat.",
+    options: [{ key: "archery", name: "Archerie", description: "+2 aux attaques à distance.", grantedSpells: [] }],
+  }],
   spellcasting: {
     ability: "wisdom", cantripsKnown: 0, spellsPrepared: 2, spellbookSize: 0,
     level1Slots: 2, focus: "Focaliseur druidique",
@@ -31,7 +36,11 @@ const MARK: CatalogSpell = {
 };
 
 function aSource(composition: Partial<CharacterComposition>, focusKey: string | null = null): DetailSource {
-  const catalog = aCatalog({ species: [DWARF, ELF], classes: [RANGER], backgrounds: [aBackground()] });
+  const catalog = aCatalog({
+    species: [DWARF, ELF, aSpeciesWithMagicalLineage("tiefling")],
+    classes: [RANGER],
+    backgrounds: [aBackground()],
+  });
 
   return {
     context: { catalog, composition: { ...EMPTY_COMPOSITION, speciesKey: "dwarf", ...composition } },
@@ -53,6 +62,35 @@ describe("fiche détaillée", () => {
     expect(detail.title).toBe("Nain");
     expect(detail.badges).toContainEqual({ label: "Vision dans le noir", value: "18 m" });
     expect(detail.blocks[0]?.items).toEqual([{ name: "Robustesse naine", text: "+1 PV par niveau." }]);
+  });
+
+  it("ouvre la fiche d'espèce sur sa description", () => {
+    expect(detailOf("species", aSource({})).lede).toBe("Façonnés dans la pierre et le fer.");
+  });
+
+  // Le texte du choix lui-même restait invisible dès qu'une option était retenue.
+  it("garde la description du Style de combat sous l'option retenue", () => {
+    const detail = detailOf("fightingStyle", aSource({ classKey: "ranger", fightingStyle: "archery" }));
+
+    expect(detail.lede).toBe("+2 aux attaques à distance.");
+    expect(detail.blocks).toContainEqual(expect.objectContaining({
+      heading: "Style de combat", body: "Un don de Style de combat.",
+    }));
+  });
+
+  it("dit à quoi sert le lignage et sa caractéristique d'incantation", () => {
+    const detail = detailOf("lineage", aSource({ speciesKey: "tiefling" }));
+
+    expect(detail.lede).toMatch(/pouvoirs surnaturels/);
+    expect(detail.blocks[0]?.body).toMatch(/^Elle détermine le degré de difficulté/);
+  });
+
+  it("explique l'alignement et décrit celui qui est survolé", () => {
+    const detail = detailOf("identity", aSource({}, "neutralGood"));
+    const alignment = detail.blocks.find((block) => block.heading === "Alignement");
+
+    expect(alignment?.body).toMatch(/boussole morale/);
+    expect(alignment?.items).toEqual([{ name: "Neutre bon", text: "Le bien sans code." }]);
   });
 
   it("montre l'option survolée plutôt que celle retenue", () => {

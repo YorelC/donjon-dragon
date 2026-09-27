@@ -11,6 +11,7 @@ import {
   labelsOf,
   plainDetail,
   presentBlocks,
+  proseBlock,
   shownKey,
   type DetailBlock,
   type DetailSource,
@@ -29,7 +30,7 @@ export function classDetail(source: DetailSource): StepDetail {
   return {
     kicker: "Classe",
     title: characterClass.name,
-    lede: null,
+    lede: characterClass.description || null,
     badges: [
       { label: "Dé de vie", value: `d${characterClass.hitDie}` },
       { label: "Caractéristiques", value: labelsOf(characterClass.primaryAbilities, ABILITY_LABELS) },
@@ -91,7 +92,12 @@ function classChoiceDetail({ choiceOf, retainedOf }: ClassChoiceReader) {
     if (!choice) return plainDetail("Classe", "Aucun choix à faire");
     const key = shownKey(source, retainedOf(source.context.composition));
     const option = choice.options.find((entry) => entry.key === key);
-    if (option) return plainDetail(choice.name, option.name, option.description);
+    if (option) {
+      return {
+        ...plainDetail(choice.name, option.name, option.description),
+        blocks: [proseBlock(choice.name, choice.description)],
+      };
+    }
 
     return {
       ...plainDetail("Classe", choice.name, choice.description),

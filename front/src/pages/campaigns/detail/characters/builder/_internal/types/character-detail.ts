@@ -21,6 +21,8 @@ import {
 
 const UNNAMED = "Votre personnage";
 const TO_SPECIFY = "À préciser";
+const ALIGNMENT_PURPOSE =
+  "La boussole morale de votre personnage. Elle guide son jeu, elle ne le contraint pas.";
 const DESCRIPTION_HINT =
   "Décrivez votre héros dans le champ de gauche : silhouette, port, marques, ce que l'on remarque en premier.";
 
@@ -100,7 +102,11 @@ export function identityDetail(source: DetailSource): StepDetail {
   return {
     ...plainDetail("Récapitulatif", composition.name.trim() || UNNAMED),
     blocks: presentBlocks([
-      alignment ? proseBlock("Alignement", alignment.name) : null,
+      {
+        heading: "Alignement",
+        body: ALIGNMENT_PURPOSE,
+        items: alignment ? [{ name: alignment.name, text: alignment.description }] : [],
+      },
       itemsBlock("Physique", physiqueOf(composition, speciesOf(source.context))),
       proseBlock("Description", composition.description?.trim() || DESCRIPTION_HINT),
     ]),
