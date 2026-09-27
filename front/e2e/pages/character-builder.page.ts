@@ -193,7 +193,7 @@ export class CharacterBuilderPage {
     const labels: string[] = [];
     for (let pressed = 0; pressed < count; pressed += 1) {
       const free = scope.locator('button[aria-pressed="false"]:enabled').first();
-      labels.push(((await free.textContent()) ?? '').trim());
+      labels.push(await accessibleLabelOf(free));
       await free.click();
     }
     return labels;
@@ -222,7 +222,7 @@ export class CharacterBuilderPage {
 
     for (let index = 0; index < count; index += 1) {
       const option = this.availableChoices().nth(index);
-      labels.push(((await option.textContent()) ?? '').trim());
+      labels.push(await accessibleLabelOf(option));
       await option.click();
     }
 
@@ -279,4 +279,16 @@ export class CharacterBuilderPage {
 
     return chosen;
   }
+}
+
+/**
+ * Le libellé d'une option, sans sa sous-ligne : une compétence affiche
+ * « Perception » puis « Sagesse », et c'est « Perception » qui la nomme.
+ */
+async function accessibleLabelOf(option: Locator): Promise<string> {
+  return option.evaluate((node) => {
+    const labelId = node.getAttribute('aria-labelledby');
+    const label = labelId ? node.ownerDocument.getElementById(labelId) : null;
+    return (label ?? node).textContent?.trim() ?? '';
+  });
 }
