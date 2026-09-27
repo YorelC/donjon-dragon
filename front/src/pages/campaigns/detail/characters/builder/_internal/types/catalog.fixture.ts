@@ -23,10 +23,12 @@ export function aCatalog(overrides: Partial<DndCatalog> = {}): DndCatalog {
     backgrounds: [aBackground()],
     originFeats: [],
     skillLabels: {},
+    skills: [],
+    abilities: [],
     toolLabels: {},
     weaponLabels: {},
     languages: { standard: STANDARD_LANGUAGES.map(named), rare: RARE_LANGUAGES.map(named) },
-    alignments: [{ key: "neutralGood", name: "Neutre bon" }],
+    alignments: [{ key: "neutralGood", name: "Neutre bon", description: "Le bien sans code." }],
     trinkets: [],
     invocations: [],
     familiarForms: [],
@@ -57,8 +59,7 @@ function named(key: Language): CatalogLanguage {
 /** Une espèce à taille imposée, sauf si le test demande le contraire. */
 export function aSpecies(overrides: Partial<CatalogSpecies> = {}): CatalogSpecies {
   return {
-    key: "dwarf",
-    name: "Nain",
+    key: "dwarf", name: "Nain", description: "",
     size: "Medium",
     sizeOptions: ["Medium"],
     physicalBounds: {
@@ -118,8 +119,7 @@ const NO_BOUNDED_CHOICE = {
 
 export function aClass(overrides: Partial<CatalogClass> = {}): CatalogClass {
   return {
-    key: "cleric",
-    name: "Clerc",
+    key: "cleric", name: "Clerc", description: "",
     primaryAbilities: ["wisdom"],
     hitDie: 8,
     savingThrows: ["wisdom", "charisma"],

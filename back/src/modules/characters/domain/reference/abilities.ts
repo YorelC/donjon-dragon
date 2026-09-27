@@ -12,6 +12,16 @@ export const ABILITIES = [
 
 export type Ability = (typeof ABILITIES)[number];
 
+/** Libellés français, pour le catalogue du créateur. */
+export const ABILITY_LABELS: Readonly<Record<Ability, string>> = {
+  strength: 'Force',
+  dexterity: 'Dextérité',
+  constitution: 'Constitution',
+  intelligence: 'Intelligence',
+  wisdom: 'Sagesse',
+  charisma: 'Charisme',
+};
+
 /**
  * Un score de 10 vaut un modificateur de 0, et chaque tranche de 2 points en
  * ajoute 1 — arrondi vers le bas, y compris sous 10 (un score de 7 vaut -2).

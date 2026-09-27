@@ -107,6 +107,8 @@ export const CatalogPhysicalBoundsSchema = z.object({
 export const CatalogSpeciesSchema = z.object({
   key: SpeciesKeySchema,
   name: z.string(),
+  /** Le chapeau de la fiche d'espèce : qui sont-ils, en deux phrases. */
+  description: z.string(),
   size: CreatureSizeSchema,
   sizeOptions: z.array(CreatureSizeSchema),
   physicalBounds: CatalogPhysicalBoundsSchema,
@@ -156,6 +158,8 @@ export const CatalogBoundedChoiceSchema = z.object({
 export const CatalogClassSchema = z.object({
   key: ClassKeySchema,
   name: z.string(),
+  /** Le chapeau de la fiche de classe. */
+  description: z.string(),
   primaryAbilities: z.array(AbilitySchema),
   hitDie: z.number().int(),
   savingThrows: z.array(AbilitySchema),
@@ -229,6 +233,21 @@ export const CatalogLanguageSchema = z.object({
 export const CatalogAlignmentSchema = z.object({
   key: AlignmentSchema,
   name: z.string(),
+  description: z.string(),
+});
+
+/** Une compétence : ce qu'elle couvre, et la caractéristique de son test. */
+export const CatalogSkillSchema = z.object({
+  key: SkillNameSchema,
+  name: z.string(),
+  ability: AbilitySchema,
+  description: z.string(),
+});
+
+export const CatalogAbilitySchema = z.object({
+  key: AbilitySchema,
+  name: z.string(),
+  description: z.string(),
 });
 
 /**
@@ -260,6 +279,8 @@ export const DndCatalogSchema = z.object({
   originFeats: z.array(CatalogOriginFeatSchema),
   /** Les libellés français des 18 compétences, pour que le front n'en tienne pas la table. */
   skillLabels: z.record(SkillNameSchema, z.string()),
+  skills: z.array(CatalogSkillSchema),
+  abilities: z.array(CatalogAbilitySchema),
   toolLabels: z.record(z.string(), z.string()),
   weaponLabels: z.record(z.string(), z.string()),
   languages: CatalogLanguagesSchema,
@@ -297,6 +318,8 @@ export type CatalogBoundedChoice = z.infer<typeof CatalogBoundedChoiceSchema>;
 export type CatalogLanguage = z.infer<typeof CatalogLanguageSchema>;
 export type CatalogLanguages = z.infer<typeof CatalogLanguagesSchema>;
 export type CatalogAlignment = z.infer<typeof CatalogAlignmentSchema>;
+export type CatalogSkill = z.infer<typeof CatalogSkillSchema>;
+export type CatalogAbility = z.infer<typeof CatalogAbilitySchema>;
 export type CatalogInvocation = z.infer<typeof CatalogInvocationSchema>;
 export type CatalogSkillChoice = z.infer<typeof CatalogSkillChoiceSchema>;
 export type CatalogFeature = z.infer<typeof CatalogFeatureSchema>;

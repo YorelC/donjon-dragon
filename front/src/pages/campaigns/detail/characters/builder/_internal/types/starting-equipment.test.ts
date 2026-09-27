@@ -64,6 +64,7 @@ const ITEMS: Item[] = [CHAIN_MAIL, SHIELD, JAVELIN];
 const FIGHTER: CatalogClass = {
   key: "fighter",
   name: "Guerrier",
+  description: "",
   primaryAbilities: ["strength"],
   hitDie: 10,
   savingThrows: ["strength", "constitution"],

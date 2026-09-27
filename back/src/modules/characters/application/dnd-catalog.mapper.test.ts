@@ -54,6 +54,26 @@ describe('toDndCatalog', () => {
   });
 
   /**
+   * Le créateur ouvre chaque fiche sur ce texte : une description vide laisserait
+   * la fiche sans chapeau, sans que rien ne le signale.
+   */
+  it('décrit chaque espèce, classe, compétence, caractéristique et alignement', () => {
+    const catalog = toDndCatalog();
+    const described = [
+      ...catalog.species, ...catalog.classes, ...catalog.skills, ...catalog.abilities, ...catalog.alignments,
+    ];
+
+    expect(described.filter((entry) => entry.description.trim() === '')).toEqual([]);
+  });
+
+  it('publie les dix-huit compétences avec la caractéristique de leur test', () => {
+    const skills = toDndCatalog().skills;
+
+    expect(skills).toHaveLength(18);
+    expect(skills).toContainEqual(expect.objectContaining({ key: 'perception', name: 'Perception', ability: 'wisdom' }));
+  });
+
+  /**
    * Le wizard ne doit proposer QUE ce que la validation accepte. Ces bornes
    * sortent des mêmes fonctions que `validate-choices` : les publier depuis un
    * calcul parallèle les ferait diverger au premier errata.

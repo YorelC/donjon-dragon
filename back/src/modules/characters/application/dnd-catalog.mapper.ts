@@ -1,4 +1,5 @@
 import type {
+  CatalogAbility,
   CatalogAlignment,
   CatalogBackground,
   CatalogBoundedChoice,
@@ -9,6 +10,7 @@ import type {
   CatalogLanguages,
   CatalogLineageChoice,
   CatalogOriginFeat,
+  CatalogSkill,
   CatalogSkillChoice,
   CatalogSpecies,
   CatalogSpell,
@@ -46,7 +48,15 @@ import {
   weaponMasteryOptions,
 } from '../domain/resolution/class-options';
 import { LANGUAGE_LABELS, type Language } from '../domain/reference/proficiencies';
-import { SKILL_LABELS } from '../domain/reference/skills';
+import { SKILLS, SKILL_ABILITY, SKILL_LABELS, type SkillName } from '../domain/reference/skills';
+import { ABILITIES, ABILITY_LABELS, type Ability } from '../domain/reference/abilities';
+import {
+  ABILITY_DESCRIPTIONS,
+  ALIGNMENT_DESCRIPTIONS,
+  CLASS_DESCRIPTIONS,
+  SKILL_DESCRIPTIONS,
+  SPECIES_DESCRIPTIONS,
+} from '../domain/reference/descriptions';
 import {
   SPECIES,
   SPECIES_PHYSICAL_BOUNDS,
@@ -90,6 +100,8 @@ export function toDndCatalog(): DndCatalog {
 function catalogLabels() {
   return {
     skillLabels: { ...SKILL_LABELS },
+    skills: SKILLS.map(toCatalogSkill),
+    abilities: ABILITIES.map(toCatalogAbility),
     toolLabels: labelsOf(ALL_CONCRETE_TOOLS, creationItemName),
     weaponLabels: Object.fromEntries(Object.values(WEAPONS).map((weapon) => [weapon.key, weapon.name])),
   };
@@ -136,13 +148,27 @@ function toCatalogLanguage(key: Language): CatalogLanguage {
 }
 
 function toCatalogAlignment(key: Alignment): CatalogAlignment {
-  return { key, name: ALIGNMENT_LABELS[key] };
+  return { key, name: ALIGNMENT_LABELS[key], description: ALIGNMENT_DESCRIPTIONS[key] };
+}
+
+function toCatalogSkill(key: SkillName): CatalogSkill {
+  return {
+    key,
+    name: SKILL_LABELS[key],
+    ability: SKILL_ABILITY[key],
+    description: SKILL_DESCRIPTIONS[key],
+  };
+}
+
+function toCatalogAbility(key: Ability): CatalogAbility {
+  return { key, name: ABILITY_LABELS[key], description: ABILITY_DESCRIPTIONS[key] };
 }
 
 function toCatalogSpecies(species: Species): CatalogSpecies {
   return {
     key: species.key,
     name: species.name,
+    description: SPECIES_DESCRIPTIONS[species.key],
     size: species.size,
     sizeOptions: [...(species.sizeOptions ?? [species.size])],
     physicalBounds: SPECIES_PHYSICAL_BOUNDS[species.key],
@@ -175,6 +201,7 @@ function toCatalogClass(characterClass: CharacterClass): CatalogClass {
   return {
     key: characterClass.key,
     name: characterClass.name,
+    description: CLASS_DESCRIPTIONS[characterClass.key],
     primaryAbilities: [...characterClass.primaryAbilities],
     hitDie: characterClass.hitDie,
     savingThrows: [...characterClass.savingThrows],
