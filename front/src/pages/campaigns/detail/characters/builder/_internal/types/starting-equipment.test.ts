@@ -204,6 +204,14 @@ describe("ce que le personnage peut porter", () => {
     expect(keys).not.toContain("javelin");
   });
 
+  // Le bouclier s'ajoute à l'armure : il ne doit jamais se choisir à sa place.
+  it("ne compte pas le bouclier parmi les armures", () => {
+    const granted = [{ itemKey: "chain-mail", quantity: 1 }, { itemKey: "shield", quantity: 1 }];
+
+    expect(ownedArmors(ITEMS, granted).map((armor) => armor.key)).toEqual(["chain-mail"]);
+    expect(ownedShield(ITEMS, granted)).toEqual(SHIELD);
+  });
+
   it("ne propose le bouclier que si le paquetage en contient un", () => {
     expect(ownedShield(ITEMS, grantedFor(BOTH_CHOSEN))).toBeNull();
     expect(ownedShield(ITEMS, grantedFor(aComposition({ classEquipmentOptionId: "B" })))).toEqual(

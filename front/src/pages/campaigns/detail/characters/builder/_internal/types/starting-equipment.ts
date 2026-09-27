@@ -75,6 +75,8 @@ export function grantedGold(catalog: DndCatalog, composition: CharacterCompositi
   );
 }
 
+const SHIELD_TRAINING = "shields";
+
 /**
  * Les armures que le paquetage donne : on ne porte que ce qu'on possède.
  *
@@ -84,7 +86,16 @@ export function grantedGold(catalog: DndCatalog, composition: CharacterCompositi
  */
 export function ownedArmors(items: Item[], granted: CharacterItem[]): Item[] {
   const owned = new Set(granted.map((item) => item.itemKey));
-  return items.filter((item) => item.armor !== null && owned.has(item.key));
+  return items.filter((item) => isBodyArmor(item) && owned.has(item.key));
+}
+
+/**
+ * Le bouclier a des statistiques d'armure, mais il s'ajoute à l'armure au lieu
+ * de la remplacer : le compter parmi les armures le faisait choisir À LA PLACE
+ * de la chemise de mailles, alors qu'on porte l'un ET l'autre.
+ */
+function isBodyArmor(item: Item): boolean {
+  return item.armor !== null && item.armor.training !== SHIELD_TRAINING;
 }
 
 export const SHIELD_ITEM_KEY = "shield";
