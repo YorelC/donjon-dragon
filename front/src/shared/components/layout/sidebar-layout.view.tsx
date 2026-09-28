@@ -33,8 +33,8 @@ interface SidebarLayoutViewProps {
 }
 
 /**
- * Le cadre à deux colonnes de la charte : une barre latérale en panneau doré, un
- * panneau de premier plan à équerres pour l'écran ouvert. Profil et campagne le
+ * Le cadre à deux colonnes de la charte : une barre latérale et le panneau de
+ * l'écran ouvert, tous deux en panneau doré à équerres. Profil et campagne le
  * partagent — ce sont deux navigations, pas deux mises en page.
  *
  * La zone qui défile s'arrête sous les équerres du haut et au-dessus de celles du
@@ -72,6 +72,7 @@ function SidebarMenuButton({ nav }: { nav: SidebarNav }) {
 function Sidebar({ nav, footer }: SidebarLayoutViewProps) {
   return (
     <aside className={toSidebarClassName(nav.isOpen)}>
+      <OrnateCorners />
       <SectionHeading label={nav.heading} />
       <nav role="navigation" className="flex flex-col gap-1.5">
         {nav.items.map((item) => (
