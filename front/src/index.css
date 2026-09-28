@@ -390,9 +390,10 @@
     @apply border border-gold/14 bg-surface px-3 py-2.5;
   }
 
-  /* Liste a gauche, panneau de detail a droite ; une seule colonne sous xl. */
+  /* Liste a gauche, panneau de detail a droite ; une seule colonne sous xl.
+     Le detail prend deux cinquiemes : une fiche de sort ou d'objet doit se lire. */
   .sheet-tab-split {
-    @apply grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_300px];
+    @apply grid items-start gap-6 xl:grid-cols-[minmax(0,3fr)_minmax(320px,2fr)];
   }
 
   /* Panneau de detail d'un onglet : il suit le defilement de la liste. */

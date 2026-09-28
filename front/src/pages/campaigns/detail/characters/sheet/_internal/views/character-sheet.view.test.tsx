@@ -205,7 +205,7 @@ function aSpellDetail({ level }: { level: number }) {
   return {
     level, school: "divination", castingTime: "Action bonus", range: "27 m",
     components: { verbal: true, somatic: false, material: null },
-    duration: "jusqu'à 1 heure", concentration: true, ritual: false,
+    duration: "Concentration, jusqu'à 1 heure", concentration: true, ritual: false,
     description: "Vous désignez magiquement une créature comme votre proie.",
   };
 }

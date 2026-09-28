@@ -25,7 +25,7 @@ export function toSpellFacts(detail: ResolvedSpellDetail): SpellFact[] {
   const facts = [
     fact("Incantation", detail.castingTime),
     fact("Portée", detail.range),
-    fact("Durée", toDuration(detail)),
+    fact("Durée", detail.duration),
     fact("Composantes", toComponents(detail.components)),
   ];
   const material = detail.components.material;
@@ -35,10 +35,6 @@ export function toSpellFacts(detail: ResolvedSpellDetail): SpellFact[] {
 
 function fact(label: string, value: string): SpellFact {
   return { label, value, wide: false };
-}
-
-function toDuration({ concentration, duration }: ResolvedSpellDetail): string {
-  return concentration ? `Concentration, ${duration}` : duration;
 }
 
 function toComponents({ verbal, somatic, material }: ResolvedSpellDetail["components"]): string {
