@@ -34,8 +34,6 @@ export interface BuilderScreen {
 
 interface CharacterBuilderViewProps {
   screen: BuilderScreen;
-  /** La liste des personnages de la campagne, où ramène la sortie du créateur. */
-  backTo: string;
 }
 
 /**
@@ -43,13 +41,13 @@ interface CharacterBuilderViewProps {
  * Sous `xl` le récapitulatif passe dans un tiroir de la scène ; sous `md`
  * le fil et la scène s'empilent.
  */
-export function CharacterBuilderView({ screen, backTo }: CharacterBuilderViewProps) {
+export function CharacterBuilderView({ screen }: CharacterBuilderViewProps) {
   const recap = recapOf(screen);
 
   return (
     <div className="builder-frame">
       <BuilderRailView screen={screen} />
-      <BuilderStageView screen={screen} backTo={backTo} recap={recap} />
+      <BuilderStageView screen={screen} recap={recap} />
       <aside aria-label="Récapitulatif du personnage" className="panel-surface builder-recap">
         <OrnateCorners />
         <div className="panel-scroll px-[22px] py-6">

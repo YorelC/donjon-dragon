@@ -82,8 +82,15 @@ pour ce que seul le serveur calcule.
 ouvre une confirmation : la création n'est enregistrée qu'à la dernière étape.
 « Quitter sans sauvegarder » ramène à la liste, « Continuer la création »
 referme la modale. La modale est assez large (`max-w-xl`) pour tenir ses deux
-boutons sur une ligne ; au-delà, ils passent à la ligne sans déborder. Les liens du bandeau
-(Campagnes, Profil, Déconnexion) ne sont pas interceptés.
+boutons sur une ligne ; au-delà, ils passent à la ligne sans déborder.
+
+Le bandeau porte le fil d'Ariane : Profil › Campagnes › {campagne} › Personnages ›
+Nouveau personnage (ou le nom du personnage corrigé). Ses étapes et la marque
+ouvrent la **même** confirmation ; « Quitter sans sauvegarder » mène alors à
+l'étape cliquée. Un clic modifié (Ctrl, Cmd, Maj, Alt), qui ouvre un autre
+onglet, n'est pas intercepté. Le bouton Précédent du navigateur ne l'est pas
+non plus : `useBlocker` exige un data router, l'application tourne sous
+`BrowserRouter`.
 
 ## 7. Écarts à la maquette
 

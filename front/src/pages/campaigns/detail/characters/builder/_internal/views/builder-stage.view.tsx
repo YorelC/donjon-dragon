@@ -5,9 +5,9 @@ import type { DetailSource } from "../types/step-detail-parts";
 import { STEP_HINTS } from "../types/builder-step-texts";
 import { stepLabel, type BuilderStep } from "../types/builder-steps";
 import type { CharacterRecap } from "../types/character-recap";
+import { LeaveBuilderContainer } from "../containers/leave-builder.container";
 import { BuilderFooterView } from "./builder-footer.view";
 import type { BuilderScreen } from "./character-builder.view";
-import { LeaveBuilderDialogView } from "./leave-builder-dialog.view";
 import { RecapDrawerView } from "./recap-drawer.view";
 import { StepContentView } from "./step-content.view";
 import { StepDetailView } from "./step-detail.view";
@@ -17,18 +17,17 @@ export const STEP_REGION_LABEL = "Choix de l'étape";
 
 interface BuilderStageViewProps {
   screen: BuilderScreen;
-  backTo: string;
   recap: CharacterRecap;
 }
 
 /** La scène : l'étape ouverte, ses choix à gauche, sa fiche détaillée à droite. */
-export function BuilderStageView({ screen, backTo, recap }: BuilderStageViewProps) {
+export function BuilderStageView({ screen, recap }: BuilderStageViewProps) {
   return (
     <main className="panel-surface builder-stage">
       <OrnateCorners />
       <div className="builder-stage-body">
         <div className="flex flex-wrap items-center justify-between gap-4 pb-3.5">
-          <LeaveBuilderDialogView backTo={backTo} />
+          <LeaveBuilderContainer />
           <RecapDrawerView recap={recap} />
         </div>
         <StepHeading step={screen.builder.step} />
