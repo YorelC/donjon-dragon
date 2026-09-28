@@ -1,27 +1,24 @@
 import type { ComputedCharacter } from "@donjon-dragon/shared";
 import { Diamond } from "@/shared/components/molecules/diamond";
-import { BackLink, type PageBack } from "@/shared/components/molecules/page-header";
 import { SIZE_LABELS } from "@/shared/constants/character-labels";
 import { toInitials } from "@/shared/utils/display-meta";
 import type { CharacterSheetModel } from "../types/character-sheet-model";
 
 interface SheetIdentityViewProps {
   model: CharacterSheetModel;
-  back: PageBack;
 }
 
 /**
- * Qui est le personnage. Le retour se range au-dessus du nom, à côté du blason : la
- * hauteur du bandeau est celle du blason, et chaque ligne gagnée va au bloc des jets.
+ * Qui est le personnage. La hauteur du bandeau est celle du blason : chaque ligne
+ * gagnée va au bloc des jets. D'où l'on vient, le fil d'Ariane le dit.
  */
-export function SheetIdentityView({ model, back }: SheetIdentityViewProps) {
+export function SheetIdentityView({ model }: SheetIdentityViewProps) {
   const { sheet, identity, labels } = model;
 
   return (
     <div className="flex min-w-0 items-center gap-5 pl-2">
       <Diamond size="crest" tone="active">{toInitials(identity.name)}</Diamond>
       <div className="flex min-w-0 flex-col gap-0.5">
-        <BackLink back={back} />
         <h1 className="font-display text-[24px]/[1.15] tracking-meta text-gold-selected">
           {identity.name}
         </h1>

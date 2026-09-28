@@ -3,7 +3,7 @@ import type { CampaignCharacterListItem } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { PageHeader } from "@/shared/components/molecules/page-header";
-import { ROUTES, toCharacterNew } from "@/shared/constants/routes";
+import { toCharacterNew } from "@/shared/constants/routes";
 import type { CharacterViewer } from "../hooks/use-character-viewer";
 import { CharacterRowView } from "./character-row.view";
 import { OwnerRoleToggleView } from "./owner-role-toggle.view";
@@ -25,11 +25,6 @@ interface CampaignCharactersViewProps {
   onUnassign: (target: CharacterAssignmentTarget) => void;
 }
 
-const BACK_TO_CAMPAIGNS = {
-  to: ROUTES.campaigns,
-  label: "Toutes mes campagnes",
-};
-
 const GAME_MASTER_EMPTY_LIST = "Aucun personnage pour le moment.";
 const PLAYER_EMPTY_LIST =
   "Tu n'as pas encore de personnage. Crée-le, ou attends que le MJ t'en attribue un.";
@@ -39,7 +34,7 @@ export function CampaignCharactersView(props: CampaignCharactersViewProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHeader back={BACK_TO_CAMPAIGNS} title={props.campaign.name}>
+      <PageHeader title={props.campaign.name}>
         <CharacterActions
           campaignId={props.campaign.id}
           ownerToggle={ownerToggle}

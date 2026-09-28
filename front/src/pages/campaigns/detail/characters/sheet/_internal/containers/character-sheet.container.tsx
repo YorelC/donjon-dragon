@@ -6,5 +6,5 @@ export function CharacterSheetContainer() {
   const { campaignId = "", characterId = "" } = useParams();
   const page = useCharacterSheetPage(campaignId, characterId);
 
-  return <CharacterSheetPageView page={page} campaignId={campaignId} />;
+  return <CharacterSheetPageView page={page} />;
 }

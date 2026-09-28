@@ -1,7 +1,6 @@
 import type { ComputedCharacter } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Diamond } from "@/shared/components/molecules/diamond";
-import type { PageBack } from "@/shared/components/molecules/page-header";
 import { COMING_SOON } from "../constants/sheet-labels";
 import type { CharacterSheetModel } from "../types/character-sheet-model";
 import { formatMeters, formatSigned } from "../utils/sheet-format";
@@ -20,14 +19,12 @@ const FULL_GAUGE_PERCENT = 100;
  */
 interface SheetHeaderViewProps {
   model: CharacterSheetModel;
-  /** Le retour vit dans le bandeau : une ligne de moins au-dessus de la fiche. */
-  back: PageBack;
 }
 
-export function SheetHeaderView({ model, back }: SheetHeaderViewProps) {
+export function SheetHeaderView({ model }: SheetHeaderViewProps) {
   return (
     <header className="panel flex flex-col gap-4 px-5 py-3 xl:flex-row xl:items-center xl:justify-between">
-      <SheetIdentityView model={model} back={back} />
+      <SheetIdentityView model={model} />
       <SheetStats sheet={model.sheet} />
     </header>
   );

@@ -39,14 +39,15 @@ describe("SheetHeaderView", () => {
   const renderHeader = () =>
     render(
       <MemoryRouter>
-        <SheetHeaderView model={aSheetModel()} back={{ to: "/campaigns/c1/characters", label: "Personnages" }} />
+        <SheetHeaderView model={aSheetModel()} />
       </MemoryRouter>,
     );
 
-  it("porte le retour vers la liste, sans répéter le contexte", () => {
+  // D'où l'on vient, le fil d'Ariane du bandeau le dit : le bandeau de la fiche n'a plus de retour.
+  it("ne porte aucun lien de retour", () => {
     renderHeader();
 
-    expect(screen.getByRole("link", { name: /Personnages/ })).toHaveAttribute("href", "/campaigns/c1/characters");
+    expect(screen.queryByRole("link")).toBeNull();
   });
 
   it("écrit la vitesse à la française", () => {
