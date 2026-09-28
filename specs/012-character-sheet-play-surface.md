@@ -126,6 +126,11 @@ Icônes, choisies par clé de ressource :
 - losange plein ◆ : l'objet est équipé ou porté ; losange vide ◇ : il est seulement
   transporté. Un objet n'apparaît qu'une fois ;
 - l'armure portée garde la mention de son désavantage de Discrétion ;
+- la colonne de droite montre la **fiche de l'objet** telle que le catalogue la
+  décrit : poids, prix, dégâts, portée, propriétés et botte d'une arme, classe
+  d'armure, Force requise et Discrétion d'une armure, texte d'usage. Survol et
+  épinglage comme au Grimoire. Un objet choisi à la création hors catalogue
+  (colifichet, outil) le dit ;
 - avec l'état d'aventure : cliquer le losange équipe ou déséquipe, la CA et les armes
   se recalculent ; « −1 » consomme un consommable ; la bourse suit les cinq
   dénominations (`DR-B04-01`).

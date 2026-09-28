@@ -76,7 +76,7 @@ describe('toCharacterSheetDto', () => {
   const EQUIPMENT = {
     items: [{
       itemKey: 'chain-shirt', name: 'Chemise de mailles', quantity: 1,
-      type: 'armor' as const, worn: true,
+      type: 'armor' as const, worn: true, detail: null,
     }],
     gold: 7,
     armorName: 'Chemise de mailles',

@@ -49,15 +49,17 @@ function keysOf(equipment: CharacterEquipment): string[] {
     .filter((key) => creationItemName(key) === null);
 }
 
-function virtualItemsOf(equipment: CharacterEquipment): CatalogedItem[] {
+function virtualItemsOf(equipment: CharacterEquipment): ResolvableItem[] {
   return equipment.items.flatMap((item) => {
     const name = creationItemName(item.itemKey);
     const type = isCreationTool(item.itemKey) ? 'tool' : 'gear';
-    return name ? [{ key: item.itemKey, name, type, armor: null }] : [];
+    return name ? [{ key: item.itemKey, name, type, armor: null, detail: null }] : [];
   });
 }
 
-type Catalog = Map<string, CatalogedItem>;
+/** Un objet de création n'est pas au catalogue : il n'a pas de fiche à montrer. */
+type ResolvableItem = Omit<CatalogedItem, 'detail'> & { detail: CatalogedItem['detail'] | null };
+type Catalog = Map<string, ResolvableItem>;
 
 function viewOf(equipment: CharacterEquipment, catalog: Catalog): ResolvedEquipment {
   const armor = equipment.armorKey ? catalog.get(equipment.armorKey) : undefined;
@@ -85,6 +87,7 @@ function itemViewOf(
     quantity: item.quantity,
     type: cataloged?.type ?? 'gear',
     worn: isWorn(item.itemKey, equipment),
+    detail: cataloged?.detail ?? null,
   };
 }
 
@@ -103,7 +106,7 @@ function wornOf(equipment: CharacterEquipment, catalog: Catalog): WornEquipment 
  * Un objet sans statistiques d'armure ne protège de rien : porter une corde ne
  * change pas la classe d'armure, et une clé inconnue du catalogue non plus.
  */
-function toWornArmor(item: CatalogedItem | undefined): WornArmor | null {
+function toWornArmor(item: ResolvableItem | undefined): WornArmor | null {
   if (!item?.armor) return null;
 
   return {

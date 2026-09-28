@@ -25,6 +25,7 @@ export class InMemoryItemCatalog implements ItemCatalogPort {
         name: key,
         type: KNOWN_ARMORS[key] ? 'armor' as const : 'weapon' as const,
         armor: KNOWN_ARMORS[key] ?? null,
+        detail: { weightInKg: 1, costInCopper: 100, description: null, weapon: null, armor: null },
       }));
 
     return Promise.resolve(found);

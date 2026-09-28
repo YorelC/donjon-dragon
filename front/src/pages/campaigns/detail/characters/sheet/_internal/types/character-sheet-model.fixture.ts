@@ -2,6 +2,7 @@ import {
   SkillNameSchema,
   type Ability,
   type ComputedCharacter,
+  type ResolvedItem,
   type ResolvedSavingThrow,
   type ResolvedSkill,
 } from "@donjon-dragon/shared";
@@ -48,10 +49,7 @@ function aSheet(): ComputedCharacter {
 function anIdentityCore() {
   return {
     equipment: {
-      items: [
-        { itemKey: "leather", name: "Armure de cuir", quantity: 1, type: "armor" as const, worn: true },
-        { itemKey: "rope", name: "Corde en chanvre", quantity: 1, type: "gear" as const, worn: false },
-      ],
+      items: [aWornLeatherArmor(), aRope()],
       gold: 12,
       armorName: "Armure de cuir", shield: false, stealthDisadvantage: false,
     },
@@ -59,6 +57,29 @@ function anIdentityCore() {
     speciesName: "Elfe", lineageName: "Elfe des bois", className: "Rôdeur",
     backgroundName: "Vagabond", size: "Medium" as const, darkvision: 18,
     abilityMethod: "standardArray" as const,
+  };
+}
+
+function aWornLeatherArmor(): ResolvedItem {
+  return {
+    itemKey: "leather", name: "Armure de cuir", quantity: 1, type: "armor", worn: true,
+    detail: {
+      weightInKg: 5, costInCopper: 1000, description: null, weapon: null,
+      armor: {
+        training: "light", baseArmorClass: 11, dexterityAllowance: "full",
+        strengthRequirement: null, stealthDisadvantage: false,
+      },
+    },
+  };
+}
+
+function aRope(): ResolvedItem {
+  return {
+    itemKey: "rope", name: "Corde en chanvre", quantity: 1, type: "gear", worn: false,
+    detail: {
+      weightInKg: 2.5, costInCopper: 100, description: "Une corde de 15 mètres.",
+      weapon: null, armor: null,
+    },
   };
 }
 

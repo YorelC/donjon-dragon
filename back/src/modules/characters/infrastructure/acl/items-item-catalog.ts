@@ -5,6 +5,7 @@ import { FindItemsByKeysUseCase } from '@modules/items/application/use-cases/fin
 import type {
   CatalogedArmor,
   CatalogedItem,
+  CatalogedItemDetail,
   ItemCatalogPort,
 } from '../../application/ports/item-catalog.port';
 
@@ -20,7 +21,23 @@ export class ItemsItemCatalog implements ItemCatalogPort {
 }
 
 function toCatalogedItem(item: ItemDto): CatalogedItem {
-  return { key: item.key, name: item.name, type: item.type, armor: toCatalogedArmor(item) };
+  return {
+    key: item.key,
+    name: item.name,
+    type: item.type,
+    armor: toCatalogedArmor(item),
+    detail: toCatalogedDetail(item),
+  };
+}
+
+function toCatalogedDetail(item: ItemDto): CatalogedItemDetail {
+  return {
+    weightInKg: item.weightInKg,
+    costInCopper: item.costInCopper,
+    description: item.description,
+    weapon: item.weapon ? { ...item.weapon, properties: [...item.weapon.properties] } : null,
+    armor: item.armor ? { ...item.armor } : null,
+  };
 }
 
 /**

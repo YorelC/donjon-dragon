@@ -9,7 +9,7 @@ import {
   SkillNameSchema,
   WeaponProficiencySchema,
 } from './dnd-reference-schema.js';
-import { ItemTypeSchema } from './item-schema.js';
+import { ItemSchema, ItemTypeSchema } from './item-schema.js';
 
 /**
  * La fiche calculée, telle que l'API la renvoie.
@@ -140,6 +140,15 @@ const abilityRecord = <T extends z.ZodTypeAny>(value: T) =>
  * est pur et synchrone, alors que nommer un objet demande de lire une collection.
  * C'est la couche application qui le remplit, juste avant l'envoi.
  */
+/** Ce que la fiche montre d'un objet survolé : le catalogue, sans sa provenance. */
+export const ResolvedItemDetailSchema = ItemSchema.pick({
+  weightInKg: true,
+  costInCopper: true,
+  description: true,
+  weapon: true,
+  armor: true,
+});
+
 export const ResolvedItemSchema = z.object({
   itemKey: z.string(),
   name: z.string(),
@@ -148,6 +157,8 @@ export const ResolvedItemSchema = z.object({
   type: ItemTypeSchema,
   /** Porté plutôt que transporté : l'armure et le bouclier, seuls, pour l'instant. */
   worn: z.boolean(),
+  /** Nul pour un objet hors catalogue : colifichet ou outil choisi à la création. */
+  detail: ResolvedItemDetailSchema.nullable(),
 });
 
 export const ResolvedEquipmentSchema = z.object({
@@ -218,6 +229,7 @@ export type ResolvedSpellcasting = z.infer<typeof ResolvedSpellcastingSchema>;
 export type ResolvedFeature = z.infer<typeof ResolvedFeatureSchema>;
 export type ResolvedResource = z.infer<typeof ResolvedResourceSchema>;
 export type ResolvedItem = z.infer<typeof ResolvedItemSchema>;
+export type ResolvedItemDetail = z.infer<typeof ResolvedItemDetailSchema>;
 export type ResolvedEquipment = z.infer<typeof ResolvedEquipmentSchema>;
 export type ResolvedAttack = z.infer<typeof ResolvedAttackSchema>;
 export type ComputedCharacter = z.infer<typeof ComputedCharacterSchema>;

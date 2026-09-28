@@ -2,10 +2,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/at
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { SHEET_TABS } from "../constants/sheet-labels";
 import { FeaturesTabContainer } from "../containers/features-tab.container";
+import { GearTabContainer } from "../containers/gear-tab.container";
 import { GrimoireTabContainer } from "../containers/grimoire-tab.container";
 import { WeaponsTabContainer } from "../containers/weapons-tab.container";
 import type { CharacterSheetModel } from "../types/character-sheet-model";
-import { GearTabView } from "./gear-tab.view";
 import { IdentityTabView } from "./identity-tab.view";
 
 type SheetTab = (typeof SHEET_TABS)[keyof typeof SHEET_TABS];
@@ -40,7 +40,7 @@ export function SheetTabsView({ model }: { model: CharacterSheetModel }) {
           </TabsContent>
         ) : null}
         <TabsContent value={SHEET_TABS.gear.value}>
-          <GearTabView equipment={sheet.equipment} />
+          <GearTabContainer equipment={sheet.equipment} />
         </TabsContent>
         <TabsContent value={SHEET_TABS.identity.value}>
           <IdentityTabView model={model} />

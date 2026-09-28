@@ -1,10 +1,10 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { FeaturesTabContainer } from "../containers/features-tab.container";
+import { GearTabContainer } from "../containers/gear-tab.container";
 import { GrimoireTabContainer } from "../containers/grimoire-tab.container";
 import { WeaponsTabContainer } from "../containers/weapons-tab.container";
 import { aSheetModel } from "../types/character-sheet-model.fixture";
-import { GearTabView } from "./gear-tab.view";
 import { IdentityTabView } from "./identity-tab.view";
 import { SheetIdentityPanelView } from "./sheet-identity-panel.view";
 import { SheetTabsView } from "./sheet-tabs.view";
@@ -99,17 +99,19 @@ describe("FeaturesTabContainer", () => {
 
 describe("GearTabView", () => {
   it("annonce les actions sur l'inventaire sans les ouvrir", () => {
-    render(<GearTabView equipment={aSheetModel().sheet.equipment} />);
+    render(<GearTabContainer equipment={aSheetModel().sheet.equipment} />);
 
     const row = screen.getByText("Corde en chanvre").closest("li");
-    within(row as HTMLElement).getAllByRole("button").forEach((button) => {
-      expect(button).toBeDisabled();
-    });
+    within(row as HTMLElement).getAllByRole("button", { name: /Corde en chanvre$/ })
+      .filter((button) => button.getAttribute("aria-label"))
+      .forEach((button) => {
+        expect(button).toBeDisabled();
+      });
     expect(screen.getByRole("button", { name: "Dépenser" })).toBeDisabled();
   });
 
   it("range l'armure portée une seule fois, sous Armures", () => {
-    render(<GearTabView equipment={aSheetModel().sheet.equipment} />);
+    render(<GearTabContainer equipment={aSheetModel().sheet.equipment} />);
 
     const armor = screen.getByText("Armure de cuir").closest("li");
     expect(screen.getAllByText("Armure de cuir")).toHaveLength(1);
@@ -117,6 +119,22 @@ describe("GearTabView", () => {
     expect(screen.getByText("Armures")).toBeInTheDocument();
     expect(screen.getByText("Matériel")).toBeInTheDocument();
     expect(screen.queryByText("Outils")).not.toBeInTheDocument();
+  });
+
+  it("montre la fiche d'un objet survolé et garde celle d'un objet cliqué", () => {
+    render(<GearTabContainer equipment={aSheetModel().sheet.equipment} />);
+    const armor = screen.getByRole("button", { name: /^Armure de cuir/ });
+    const rope = screen.getByText("Corde en chanvre").closest("li") as HTMLElement;
+
+    fireEvent.click(armor);
+    fireEvent.mouseEnter(rope);
+    expect(screen.getByText("Une corde de 15 mètres.")).toBeInTheDocument();
+    expect(screen.getByText("2,5 kg")).toBeInTheDocument();
+
+    fireEvent.mouseLeave(rope);
+    expect(screen.getByText("Armure légère")).toBeInTheDocument();
+    expect(screen.getByText("11 + mod. Dex")).toBeInTheDocument();
+    expect(screen.getByText("10 po")).toBeInTheDocument();
   });
 });
 

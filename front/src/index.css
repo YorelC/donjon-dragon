@@ -391,9 +391,10 @@
   }
 
   /* Liste a gauche, panneau de detail a droite ; une seule colonne sous xl.
-     Le detail prend deux cinquiemes : une fiche de sort ou d'objet doit se lire. */
+     Le detail prend presque la moitie, jamais moins de 340 px : une fiche de sort
+     ou d'objet doit se lire sans colonne etranglee. */
   .sheet-tab-split {
-    @apply grid items-start gap-6 xl:grid-cols-[minmax(0,3fr)_minmax(320px,2fr)];
+    @apply grid items-start gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(340px,4fr)];
   }
 
   /* Panneau de detail d'un onglet : il suit le defilement de la liste. */

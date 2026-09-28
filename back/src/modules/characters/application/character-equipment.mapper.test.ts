@@ -53,6 +53,14 @@ describe('resolveEquipment', () => {
   it("range en matériel une clé que le catalogue ignore", async () => {
     const items = await itemsOf(equipmentWith({ items: [{ itemKey: 'rope', quantity: 1 }], armorKey: null, shield: false }));
 
-    expect(items).toEqual([{ itemKey: 'rope', name: 'rope', quantity: 1, type: 'gear', worn: false }]);
+    expect(items).toEqual([
+      { itemKey: 'rope', name: 'rope', quantity: 1, type: 'gear', worn: false, detail: null },
+    ]);
+  });
+
+  it('joint la fiche du catalogue à chaque objet connu', async () => {
+    const items = await itemsOf(equipmentWith({}));
+
+    expect(items[2]?.detail).toMatchObject({ weightInKg: 1, costInCopper: 100 });
   });
 });

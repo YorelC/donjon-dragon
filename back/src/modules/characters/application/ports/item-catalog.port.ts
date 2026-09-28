@@ -1,4 +1,4 @@
-import type { ItemType } from '@donjon-dragon/shared/item-schema';
+import type { Item, ItemType } from '@donjon-dragon/shared/item-schema';
 
 import type { DexterityAllowance } from '../../domain/reference/armors';
 
@@ -18,12 +18,19 @@ export interface CatalogedItem {
   type: ItemType;
   /** Non nul pour les armures et les boucliers seuls. */
   armor: CatalogedArmor | null;
+  /** Ce que la fiche affiche au survol : poids, prix, statistiques, texte. */
+  detail: CatalogedItemDetail;
 }
+
+export type CatalogedItemDetail = Pick<
+  Item,
+  'weightInKg' | 'costInCopper' | 'description' | 'weapon' | 'armor'
+>;
 
 /**
  * Anti-corruption layer vers `items`, réduite à ce dont un personnage a besoin :
  * ces clés désignent-elles de vrais objets, comment s'appellent-ils, où la fiche
- * les range-t-elle, et que font-ils à la classe d'armure ?
+ * les range-t-elle, que font-ils à la classe d'armure, et que dit leur fiche ?
  *
  * Le module ne connaît ni l'agrégat `Item`, ni sa provenance. Le
  * jour où un MJ inventera des objets dans sa campagne, la réponse changera sans
