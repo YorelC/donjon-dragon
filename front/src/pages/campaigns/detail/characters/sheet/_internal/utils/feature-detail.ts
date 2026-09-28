@@ -28,16 +28,25 @@ export function featureKey(feature: ResolvedFeature): string {
   return `${feature.sourceType}:${feature.source}:${feature.name}`;
 }
 
+/** La ressource qu'une aptitude dépense, s'il y en a une : Rage, Mains guérisseuses… */
+export function resourceOf(
+  feature: ResolvedFeature,
+  resources: readonly ResolvedResource[],
+): ResolvedResource | undefined {
+  return resources.find((entry) => entry.feature === feature.name);
+}
+
 export function toFeatureDetail(
   feature: ResolvedFeature,
   resources: ResolvedResource[],
 ): SheetDetail {
-  const resource = resources.find((entry) => entry.feature === feature.name);
+  const resource = resourceOf(feature, resources);
 
   return {
     name: feature.name,
     meta: [feature.source, ...toApplicationLabels(feature)].join(" · "),
-    lines: [...feature.notes, ...(resource ? [toResourceLine(resource)] : [])],
+    description: feature.description,
+    lines: [...(resource ? [toResourceLine(resource)] : []), ...feature.notes],
   };
 }
 
@@ -46,5 +55,6 @@ function toApplicationLabels(feature: ResolvedFeature): string[] {
 }
 
 function toResourceLine(resource: ResolvedResource): string {
-  return `${resource.max} utilisation(s), récupérées au ${toLabel(RECOVERY_LABELS, resource.recovery)}.`;
+  const recovery = toLabel(RECOVERY_LABELS, resource.recovery);
+  return `Utilisable ${resource.max} fois, puis rechargée par un ${recovery}.`;
 }

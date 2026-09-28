@@ -7,6 +7,7 @@ import { evaluateFormula, type FormulaContext } from './evaluate-formula';
 
 export interface ResolvedFeature {
   name: string;
+  description: string;
   source: string;
   sourceType: EffectSourceType;
   /** Une capacité porte souvent plusieurs modes : Vigilant est passif ET informatif. */
@@ -50,6 +51,7 @@ export function resolveFeatures(effects: readonly CollectedEffect[]): ResolvedFe
 function emptyFeature(collected: CollectedEffect): ResolvedFeature {
   return {
     name: collected.feature,
+    description: collected.description,
     source: collected.source.label,
     sourceType: collected.source.type,
     applications: [],

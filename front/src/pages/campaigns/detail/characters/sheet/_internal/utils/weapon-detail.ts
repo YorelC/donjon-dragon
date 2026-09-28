@@ -36,6 +36,7 @@ export function toWeaponDetail(attack: ResolvedAttack): SheetDetail {
   return {
     name: attack.name,
     meta: `${ABILITY_LABELS[attack.ability]} · ${attack.proficient ? TRAINED_LABEL : UNTRAINED_LABEL}`,
+    description: null,
     lines: [
       `Portée : ${toRangeLabel(attack)}`,
       `Bonus d'attaque : ${formatSigned(attack.attackBonus)}`,

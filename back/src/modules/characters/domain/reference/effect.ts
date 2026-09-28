@@ -277,4 +277,6 @@ export interface CollectedEffect {
   effect: Effect;
   source: EffectSource;
   feature: string;
+  /** Le texte de la capacité : la fiche le montre, le moteur l'ignore. */
+  description: string;
 }

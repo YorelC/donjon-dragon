@@ -129,6 +129,13 @@ describe('barbare torse nu', () => {
     });
   });
 
+  it('donne à chaque aptitude le texte qui dit ce qu’elle fait', () => {
+    const sheet = resolveSheetOf(aBuild({ ...build }));
+    const rage = sheet.features.find((feature) => feature.name === 'Rage');
+
+    expect(rage?.description).toMatch(/^Par une action Bonus, vous entrez en Rage/);
+  });
+
   it('frappe à mains nues en Force, pour 1 plus la Force', () => {
     const sheet = resolveSheetOf(aBuild({ ...build }));
 

@@ -152,6 +152,11 @@ function collectFeatEffects(build: EffectSources): CollectedEffect[] {
 
 function flatten(features: readonly Feature[], source: EffectSource): CollectedEffect[] {
   return features.flatMap((feature) =>
-    feature.effects.map((effect) => ({ effect, source, feature: feature.name })),
+    feature.effects.map((effect) => ({
+      effect,
+      source,
+      feature: feature.name,
+      description: feature.description,
+    })),
   );
 }

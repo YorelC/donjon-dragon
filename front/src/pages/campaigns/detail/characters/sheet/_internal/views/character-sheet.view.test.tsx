@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { FeaturesTabContainer } from "../containers/features-tab.container";
 import { GrimoireTabContainer } from "../containers/grimoire-tab.container";
 import { WeaponsTabContainer } from "../containers/weapons-tab.container";
 import { aSheetModel } from "../types/character-sheet-model.fixture";
 import { GearTabView } from "./gear-tab.view";
 import { IdentityTabView } from "./identity-tab.view";
-import { ResourceStripView } from "./resource-strip.view";
 import { SheetIdentityPanelView } from "./sheet-identity-panel.view";
 import { SheetTabsView } from "./sheet-tabs.view";
 
@@ -69,26 +69,31 @@ describe("WeaponsTabContainer", () => {
   });
 });
 
-describe("ResourceStripView", () => {
-  it("teinte chaque ressource illustrée et garde l'or pour les autres", () => {
-    const { container } = render(
-      <ResourceStripView
-        resources={[
-          { key: "bardicInspiration", feature: "Inspiration bardique", max: 3, recovery: "longRest" },
-          { key: "layOnHands", feature: "Imposition des mains", max: 5, recovery: "longRest" },
-        ]}
+describe("FeaturesTabContainer", () => {
+  const renderFeatures = () =>
+    render(
+      <FeaturesTabContainer
+        features={[aFeature("Inspiration bardique", "active"), aFeature("Vision dans le noir", "passive")]}
+        resources={[{ key: "bardicInspiration", feature: "Inspiration bardique", max: 3, recovery: "longRest" }]}
       />,
     );
 
+  it("porte les utilisations sur la ligne de l'aptitude, sans la répéter", () => {
+    const { container } = renderFeatures();
+
+    expect(screen.getAllByText("Inspiration bardique")).toHaveLength(1);
     expect(container.querySelector('[data-resource="bardicInspiration"]')).toHaveClass("text-resource-bard");
-    expect(container.querySelector('[data-resource="layOnHands"]')).toHaveClass("text-gold");
-    expect(screen.getByText("3 disponible(s) sur 3")).toBeInTheDocument();
+    expect(screen.getByText("3 utilisation(s) disponible(s) sur 3")).toBeInTheDocument();
+    expect(screen.getByText("Barde · repos long")).toBeInTheDocument();
   });
 
-  it("ne s'affiche pas sans ressource", () => {
-    const { container } = render(<ResourceStripView resources={[]} />);
+  it("dit ce que fait l'aptitude survolée, et combien de fois", () => {
+    renderFeatures();
 
-    expect(container).toBeEmptyDOMElement();
+    fireEvent.mouseEnter(screen.getByText("Inspiration bardique"));
+
+    expect(screen.getByText("Texte de Inspiration bardique.")).toBeInTheDocument();
+    expect(screen.getByText("Utilisable 3 fois, puis rechargée par un repos long.")).toBeInTheDocument();
   });
 });
 
@@ -177,6 +182,13 @@ describe("GrimoireTabContainer", () => {
     expect(mark).toHaveAttribute("aria-pressed", "true");
   });
 });
+
+function aFeature(name: string, application: "active" | "passive") {
+  return {
+    name, description: `Texte de ${name}.`, source: "Barde", sourceType: "class" as const,
+    applications: [application], notes: [],
+  };
+}
 
 function anUnarmedStrike() {
   return {

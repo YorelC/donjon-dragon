@@ -50,7 +50,7 @@ la seconde copie finit par diverger ou par brouiller la lecture.
 | Emplacements de sorts | Grimoire, en tête de chaque cercle |
 | Caractéristique, DD et attaque d'une source de sorts | Grimoire, en en-tête de cette source |
 | Armure et bouclier portés | Barda, marqués comme portés |
-| Ressources de classe | Aptitudes |
+| Ressources de classe | Aptitudes, sur la ligne de la capacité qui les dépense |
 
 ## Cible par zone
 
@@ -86,12 +86,13 @@ disponibles, inspiration éteinte. Les contrôles sont visibles et désactivés.
 
 ### Aptitudes
 
-- les capacités de classe, d'espèce, d'historique et de dons, avec leur détail au
-  survol ;
-- un **bandeau « Ressources »** en tête : une ligne par ressource de classe, avec
-  une icône, le nom de la capacité, des pastilles disponibles / max et le repos qui
-  la recharge. Les ressources propres à une sous-classe (manœuvres du Maître de
-  guerre, par exemple) y prennent place quand elles existent.
+- les capacités de classe, d'espèce, d'historique et de dons ; au survol, le panneau
+  de droite dit **ce que fait la capacité** (texte de règle), son mode (Action,
+  Réaction, Passif…) et, si elle s'épuise, combien de fois et quel repos la recharge ;
+- une capacité qui s'épuise ne s'affiche **qu'une fois** : sa propre ligne porte son
+  emblème, ses pastilles disponibles / max et le repos qui la recharge (B04-RES).
+  Pas de bandeau séparé qui répéterait la ligne. Les ressources propres à une
+  sous-classe (manœuvres du Maître de guerre, par exemple) suivront la même règle.
 
 Icônes, choisies par clé de ressource :
 
@@ -203,5 +204,7 @@ puis ressources de classe ; puis tests lancés depuis la fiche.
 - l'armure portée apparaît une seule fois dans le Barda, marquée ◆ ;
 - la Frappe à mains nues figure dans l'onglet Armes de tout personnage ; celle d'un
   Moine utilise la meilleure de Force et Dextérité et le dé d'Arts martiaux ;
-- les ressources d'un Barde, d'un Guerrier et d'un Barbare portent leur icône ;
+- les ressources d'un Barde, d'un Guerrier et d'un Barbare portent leur icône, sur la
+  ligne de leur capacité, sans doublon ;
+- toute capacité survolée affiche son texte de règle ;
 - avant l'état d'aventure, tout contrôle de jeu est visible et désactivé.

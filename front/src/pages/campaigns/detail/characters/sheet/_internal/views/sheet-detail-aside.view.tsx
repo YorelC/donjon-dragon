@@ -22,6 +22,9 @@ function DetailBody({ detail }: { detail: SheetDetail }) {
     <div className="flex flex-col gap-2">
       <span className="font-display text-[15px] tracking-meta text-gold-title">{detail.name}</span>
       <span className="text-meta tracking-title text-gold/72 uppercase">{detail.meta}</span>
+      {detail.description ? (
+        <p className="text-note/[1.7] text-ink-prose text-pretty">{detail.description}</p>
+      ) : null}
       <ul className="flex flex-col gap-1.5 border-t border-gold/16 pt-2.5">
         {detail.lines.map((line) => (
           <DetailLine key={line} line={line} />

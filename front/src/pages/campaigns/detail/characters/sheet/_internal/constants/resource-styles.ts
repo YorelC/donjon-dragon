@@ -19,3 +19,7 @@ export const DEFAULT_RESOURCE_TONE = "text-gold";
 export function isIllustratedResource(key: string): key is IllustratedResource {
   return key in RESOURCE_TONES;
 }
+
+export function resourceToneOf(key: string): string {
+  return isIllustratedResource(key) ? RESOURCE_TONES[key] : DEFAULT_RESOURCE_TONE;
+}

@@ -109,6 +109,8 @@ export const ResolvedSpellcastingSchema = z.object({
 
 export const ResolvedFeatureSchema = z.object({
   name: z.string(),
+  /** Ce que fait la capacité, en clair : le texte du manuel, pas ses effets moteur. */
+  description: z.string(),
   source: z.string(),
   sourceType: EffectSourceTypeSchema,
   /** Une capacité porte souvent plusieurs modes : Vigilant est passif ET informatif. */
