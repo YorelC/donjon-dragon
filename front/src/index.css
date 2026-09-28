@@ -512,26 +512,40 @@
     scrollbar-gutter: stable;
   }
 
+  /* Marges fluides de la charte : a 1280px, le bandeau rend ~12px de hauteur aux pages. */
   .app-header {
-    @apply flex shrink-0 items-center justify-between gap-6 border-b border-gold/22 px-6 py-[22px] md:px-10;
+    @apply flex shrink-0 items-center justify-between gap-6 border-b border-gold/22 px-[clamp(20px,2vw,28px)] pt-[clamp(14px,1.3vw,18px)] pb-[clamp(12px,1.15vw,16px)];
   }
 
   .wordmark {
     @apply font-display text-wordmark tracking-section whitespace-nowrap text-gold-title uppercase;
   }
 
-  /* Onglet du bandeau : le soulignement dore signale la page ouverte. */
-  .nav-link {
-    @apply flex items-center gap-2.5 border-b border-transparent px-3 py-2 font-display text-note tracking-meta text-ink-help transition-[color,border-color] duration-[.18s] hover:text-gold-value;
+  /* Separateur vertical entre la marque et le fil d'Ariane. */
+  .header-divider {
+    @apply mx-[clamp(6px,1vw,18px)] h-[18px] w-px shrink-0 bg-gold/24;
   }
 
-  .nav-link-on {
-    @apply border-gold/75 text-gold-selected hover:text-gold-selected;
+  /* Fil d'Ariane : une ligne, jamais deux. Les etapes trop longues se tronquent. */
+  .breadcrumb {
+    @apply flex min-w-0 items-center gap-[clamp(7px,.7vw,10px)] text-[clamp(13px,1vw,13.5px)] tracking-name whitespace-nowrap;
   }
 
-  /* Separateur vertical entre la navigation et la sortie de session. */
-  .nav-divider {
-    @apply mx-2.5 h-4 w-px bg-gold/24;
+  .breadcrumb-step {
+    @apply flex min-w-0 items-center gap-[clamp(7px,.7vw,10px)];
+  }
+
+  .crumb-link {
+    @apply min-w-0 truncate text-ink-meta transition-colors duration-[.18s] hover:text-gold-value;
+  }
+
+  .crumb-current {
+    @apply min-w-0 truncate text-gold-value;
+  }
+
+  /* Le chevron est un coin de losange : la charte n'a pas d'autre icone. */
+  .crumb-chevron {
+    @apply size-1.5 shrink-0 rotate-45 border-t border-r border-gold/55;
   }
 
   /* --- Mise en page d'authentification ------------------------------------ */

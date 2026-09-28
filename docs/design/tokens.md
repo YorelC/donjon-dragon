@@ -169,9 +169,11 @@ sert à contourner la règle (voir `/design-system`).
 | `.diamond` / `.diamond-content` | Losange et son contenu contre-rotaté |
 | `.selectable` / `.selectable-on` | Les deux états de tout élément qui se choisit |
 | `.name-value` | Paire nom / valeur à liseré gauche |
+| `.sidebar-footer-action` | Sortie posée sous le pied d'une barre latérale (Déconnexion) |
 | `.pill` / `.stat-token` | Pastille, jeton de récapitulatif |
 | `.alert-success` / `.alert-error` | Encarts de retour |
-| `.app-header` / `.wordmark` | Bandeau de tête et marque |
+| `.app-header` / `.wordmark` / `.header-divider` | Bandeau de tête, marque, séparateur marque / fil |
+| `.breadcrumb` / `.breadcrumb-step` / `.crumb-link` / `.crumb-current` / `.crumb-chevron` | Fil d'Ariane du bandeau : étapes, étape ouverte, chevron en coin de losange |
 | `.auth-split` | Accueil : présentation à gauche, panneau d'accès à droite |
 | `.auth-container` / `.auth-footer` / `.auth-links` | Mise en page d'authentification |
 
