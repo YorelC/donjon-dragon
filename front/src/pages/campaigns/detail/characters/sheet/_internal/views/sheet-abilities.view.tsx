@@ -10,15 +10,16 @@ import { SheetSkillsView } from "./sheet-skills.view";
 const PROFICIENT_SAVE_LABEL = "Sauvegarde maîtrisée";
 
 /**
- * Le bloc des jets : les six caractéristiques en cartes, sauvegarde à côté, puis
- * les 18 compétences sur deux colonnes. C'est d'ici qu'on lancera un test (SF-005).
+ * Le bloc des jets : les six caractéristiques en colonne, sauvegarde à côté, et
+ * les 18 compétences dans la colonne voisine. C'est d'ici qu'on lancera un test
+ * (SF-005).
  */
 export function SheetAbilitiesPanelView({ model }: { model: CharacterSheetModel }) {
   return (
-    <section className="panel flex flex-col gap-5 px-5 py-5 lg:min-h-0 lg:overflow-y-auto">
-      <div className="flex flex-col gap-3">
+    <section className="panel grid grid-cols-[minmax(0,6fr)_minmax(0,5fr)] gap-x-5 px-5 py-3 lg:min-h-0 lg:grid-rows-[minmax(0,1fr)] lg:overflow-y-auto">
+      <div className="flex min-w-0 flex-col gap-2">
         <SectionHeading label="Caractéristiques" />
-        <div className="grid grid-cols-2 gap-2">
+        <div className="sheet-ability-list">
           {ABILITIES.map((ability) => (
             <AbilityCard key={ability} ability={ability} sheet={model.sheet} />
           ))}
@@ -39,8 +40,8 @@ function AbilityCard({ ability, sheet }: AbilityCardProps) {
   const { score, modifier } = sheet.abilities[ability];
 
   return (
-    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_52px] border border-gold/16 bg-surface">
-      <div className="flex min-w-0 items-center justify-between gap-2 px-3 py-2.5">
+    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_48px] border border-gold/16 bg-surface">
+      <div className="flex min-w-0 items-center justify-between gap-2 px-2.5 py-1">
         <div className="flex min-w-0 flex-col gap-1">
           <span className="truncate font-display text-overline tracking-label text-gold-dim uppercase">
             {ABILITY_LABELS[ability]}

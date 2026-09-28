@@ -1,12 +1,11 @@
 import type { ComputedCharacter } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Diamond } from "@/shared/components/molecules/diamond";
-import { BackLink, type PageBack } from "@/shared/components/molecules/page-header";
-import { SIZE_LABELS } from "@/shared/constants/character-labels";
-import { toInitials } from "@/shared/utils/display-meta";
+import type { PageBack } from "@/shared/components/molecules/page-header";
 import { COMING_SOON } from "../constants/sheet-labels";
 import type { CharacterSheetModel } from "../types/character-sheet-model";
 import { formatMeters, formatSigned } from "../utils/sheet-format";
+import { SheetIdentityView } from "./sheet-identity.view";
 
 /** Les pas de dégâts et de soin qu'offrira la jauge. */
 const DAMAGE_STEPS = [-5, -1] as const;
@@ -28,49 +27,15 @@ interface SheetHeaderViewProps {
 export function SheetHeaderView({ model, back }: SheetHeaderViewProps) {
   return (
     <header className="panel flex flex-col gap-4 px-5 py-3 xl:flex-row xl:items-center xl:justify-between">
-      <div className="flex min-w-0 flex-col gap-1">
-        <BackLink back={back} />
-        <SheetIdentity model={model} />
-      </div>
+      <SheetIdentityView model={model} back={back} />
       <SheetStats sheet={model.sheet} />
     </header>
   );
 }
 
-function SheetIdentity({ model }: { model: CharacterSheetModel }) {
-  const { sheet, identity, labels } = model;
-
-  return (
-    <div className="flex min-w-0 items-center gap-5 pl-2">
-      <Diamond size="crest" tone="active">{toInitials(identity.name)}</Diamond>
-      <div className="flex min-w-0 flex-col gap-0.5">
-        <h1 className="font-display text-[24px]/[1.15] tracking-meta text-gold-selected">
-          {identity.name}
-        </h1>
-        <span className="font-display text-[15px] tracking-display text-gold-value">
-          {sheet.className}
-        </span>
-        <OriginLine sheet={sheet} alignment={labels.alignment} />
-      </div>
-    </div>
-  );
-}
-
-function OriginLine({ sheet, alignment }: { sheet: ComputedCharacter; alignment: string }) {
-  return (
-    <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm tracking-meta text-ink-meta">
-      <span>{toOrigin(sheet)}</span>
-      <Diamond size="tick" tone="filled" />
-      <span className="text-label tracking-section text-gold/80 uppercase">{alignment}</span>
-      <Diamond size="tick" tone="filled" />
-      <span className="text-foreground">{sheet.backgroundName}</span>
-    </span>
-  );
-}
-
 function SheetStats({ sheet }: { sheet: ComputedCharacter }) {
   return (
-    <div className="flex flex-wrap items-stretch gap-2">
+    <div className="flex flex-wrap items-stretch gap-2 xl:shrink-0 xl:flex-nowrap">
       <HitPointsGauge sheet={sheet} />
       <StatTile label="CA" value={String(sheet.armorClass.value)} />
       <StatTile label="Initiative" value={formatSigned(sheet.initiative.value)} />
@@ -84,7 +49,7 @@ function SheetStats({ sheet }: { sheet: ComputedCharacter }) {
 
 function HitPointsGauge({ sheet }: { sheet: ComputedCharacter }) {
   return (
-    <div className="flex min-w-[220px] flex-col justify-center gap-1.5 border border-gold/40 bg-surface px-3.5 py-2">
+    <div className="flex min-w-[200px] flex-col justify-center gap-1.5 border border-gold/40 bg-surface px-3.5 py-2">
       <div className="flex items-baseline justify-between gap-3">
         <span className="sheet-caption">Points de vie</span>
         <span className="font-display text-gold-title">
@@ -143,7 +108,7 @@ interface StatTileProps {
 
 function StatTile({ label, value, note }: StatTileProps) {
   return (
-    <div className="flex min-w-[74px] flex-col items-center justify-center gap-1.5 border border-gold/16 bg-surface px-3 py-2 text-center">
+    <div className="flex min-w-[68px] flex-col items-center justify-center gap-1.5 border border-gold/16 bg-surface px-2.5 py-2 text-center">
       <span className="sheet-caption">{label}</span>
       <span className="font-display text-[20px]/[1] text-gold-title">{value}</span>
       {note ? <span className="text-meta text-ink-faint">{note}</span> : null}
@@ -157,18 +122,13 @@ function HeroicInspiration() {
     <div
       aria-disabled
       title={COMING_SOON}
-      className="flex min-w-[74px] flex-col items-center justify-center gap-2 border border-gold/16 bg-surface px-3 py-2"
+      className="flex min-w-[68px] flex-col items-center justify-center gap-2 border border-gold/16 bg-surface px-2.5 py-2"
     >
       <span className="sheet-caption">Inspiration</span>
       <Diamond size="box" tone="idle" />
       <span className="sr-only">aucune</span>
     </div>
   );
-}
-
-function toOrigin(sheet: ComputedCharacter): string {
-  const species = sheet.lineageName ? sheet.lineageName : sheet.speciesName;
-  return `${species} · niveau ${sheet.level} · taille ${SIZE_LABELS[sheet.size]}`;
 }
 
 /** Un dé de vie par niveau, tous disponibles tant qu'aucun repos ne les dépense. */

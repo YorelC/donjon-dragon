@@ -11,7 +11,7 @@ interface WeaponsTabViewProps {
   hover: HoverBinding<ResolvedAttack>;
 }
 
-const ATTACK_GRID = "grid grid-cols-[minmax(0,1fr)_48px_150px] items-center gap-2";
+const ATTACK_GRID = "grid grid-cols-[minmax(0,1fr)_48px_128px] items-center gap-2";
 const HINT = "Survolez une attaque pour sa portée, sa maîtrise et le détail de son bonus.";
 
 export function WeaponsTabView({ attacks, hover }: WeaponsTabViewProps) {

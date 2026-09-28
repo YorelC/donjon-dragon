@@ -62,7 +62,8 @@ retour « Personnages », dans l'en-tête, suffit à s'orienter. Le panneau gard
 
 ### En-tête — ce qu'on consulte à chaque tour
 
-- blason, nom, classe ; espèce, niveau, taille, alignement, historique ;
+- blason ; à côté, le lien de retour, le nom, la classe et l'historique, puis espèce,
+  niveau, taille et alignement ;
 - **jauge de points de vie** : PV actuels / maximaux, barre, PV temporaires, et les
   pas de dégâts et de soin (−5, −1, +1, +5) (`B04-FIC-002`) ;
 - CA, initiative, vitesse, bonus de maîtrise ;
@@ -78,12 +79,17 @@ disponibles, inspiration éteinte. Les contrôles sont visibles et désactivés.
 
 ### Bloc des jets
 
-Un seul bloc, assez large pour se lire sans serrer :
+Un seul bloc, deux colonnes côte à côte :
 
-- les six caractéristiques en cartes, deux par ligne : nom en entier et score à
-  gauche, modificateur en grand, sauvegarde et sa maîtrise dans une case à part ;
-- dessous, les 18 compétences sur deux colonnes de neuf, lues de haut en bas dans
-  l'ordre alphabétique français.
+- à gauche, les six caractéristiques en cartes, une par ligne : nom en entier et
+  score à gauche, modificateur en grand, sauvegarde et sa maîtrise dans une case à
+  part ;
+- à droite, les 18 compétences sur une seule colonne, dans l'ordre alphabétique
+  français.
+
+Cartes et lignes prennent la hauteur que la fenêtre leur laisse, jusqu'à un plafond :
+sur l'écran de référence, les six caractéristiques et les 18 compétences se lisent
+sans défiler ; sur un grand écran, elles s'aèrent sans s'étirer au-delà du lisible.
 
 Chaque caractéristique, sauvegarde et compétence deviendra la cible d'un test lancé
 depuis la fiche (`SF-005`).
@@ -95,6 +101,11 @@ défile pas. Seul le contenu des onglets défile, et quand liste et détail sont
 côte, chacun défile de son côté : la fiche d'un sort reste sous les yeux pendant qu'on
 parcourt la liste. Le lien de retour vit dans l'en-tête pour économiser une ligne. Sur
 un écran étroit, les blocs s'empilent et la page défile normalement.
+
+Écran de référence : un portable 1280×800, soit une fenêtre d'environ 1280×700 une
+fois le navigateur ouvert. Sur cette fenêtre, l'en-tête tient sur une ligne, et liste
+et détail des onglets restent côte à côte sans nom coupé ni défilement horizontal. Le
+bloc des jets tient sans défiler ; la page non plus ne défile pas.
 
 ### Armes
 

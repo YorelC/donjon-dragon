@@ -385,16 +385,30 @@
     @apply flex items-baseline justify-between gap-2.5 text-sm;
   }
 
+  /* Colonnes du bloc des jets. Chaque ligne prend la place que la fenetre lui
+     laisse, sans descendre sous son contenu ni s'etirer au-dela d'une ligne
+     confortable : sur un portable tout tient, sur un grand ecran rien ne flotte. */
+  .sheet-ability-list {
+    @apply grid min-h-0 flex-1 content-start gap-1.5;
+    grid-auto-rows: minmax(min-content, 72px);
+  }
+
+  .sheet-skill-list {
+    @apply grid min-h-0 flex-1 content-start;
+    grid-auto-rows: minmax(min-content, 30px);
+  }
+
   /* Ligne d'une liste d'onglet : attaque, aptitude, sort, objet. */
   .sheet-row {
     @apply border border-gold/14 bg-surface px-3 py-2.5;
   }
 
   /* Liste a gauche, panneau de detail a droite ; une seule colonne sous xl.
-     Le detail prend presque la moitie, jamais moins de 340 px : une fiche de sort
-     ou d'objet doit se lire sans colonne etranglee. */
+     Le detail prend presque la moitie : une fiche de sort ou d'objet doit se lire
+     sans colonne etranglee. Sur un portable 1280, la liste a la priorite pour que
+     ses noms tiennent ; le detail a toute sa largeur des 2xl. */
   .sheet-tab-split {
-    @apply grid items-start gap-6 xl:h-full xl:grid-cols-[minmax(0,5fr)_minmax(340px,4fr)] xl:items-stretch;
+    @apply grid items-start gap-6 xl:h-full xl:grid-cols-[minmax(0,4fr)_minmax(260px,3fr)] xl:items-stretch 2xl:grid-cols-[minmax(0,5fr)_minmax(340px,4fr)];
   }
 
   /* Cote a cote, liste et detail defilent chacun de leur cote : la fiche d'un sort
@@ -405,7 +419,7 @@
 
   /* Panneau de detail d'un onglet, separe de la liste par un filet. */
   .sheet-aside {
-    @apply flex min-w-0 flex-col gap-4 xl:border-l xl:border-gold/14 xl:pl-8;
+    @apply flex min-w-0 flex-col gap-4 xl:border-l xl:border-gold/14 xl:pl-6 2xl:pl-8;
   }
 
   /* Texte de regle d'un panneau de detail : sort, objet, aptitude. Aere, il se lit. */

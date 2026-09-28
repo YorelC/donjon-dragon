@@ -22,7 +22,7 @@ const BACK_LABEL = "Personnages";
  */
 export function CharacterSheetPageView({ page, campaignId }: CharacterSheetPageViewProps) {
   return (
-    <div className="flex min-h-0 flex-1 p-5">
+    <div className="flex min-h-0 flex-1 px-5 py-3">
       <FramedPanelView>
         <SheetBody page={page} back={{ to: toCampaignDetailCharacters(campaignId), label: BACK_LABEL }} />
       </FramedPanelView>
@@ -41,7 +41,7 @@ function SheetBody({ page, back }: SheetBodyProps) {
   return (
     <div className="flex flex-col gap-3 lg:h-full lg:min-h-0">
       <SheetHeaderView model={page.data} back={back} />
-      <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[540px_minmax(0,1fr)]">
+      <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[470px_minmax(0,1fr)] 2xl:grid-cols-[540px_minmax(0,1fr)]">
         <SheetAbilitiesPanelView model={page.data} />
         <SheetTabsView model={page.data} />
       </div>
