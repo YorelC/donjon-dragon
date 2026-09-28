@@ -2,8 +2,8 @@ import { useCampaignInvitationCount } from "@/shared/queries/use-campaign-invita
 import { CountBadge } from "@/shared/components/molecules/count-badge";
 
 /**
- * Les invitations de campagne en attente, frappées sur l'onglet Campagnes du
- * bandeau. Rien n'est rendu à zéro : un compteur vide n'appelle à aucune action
+ * Les invitations de campagne en attente, frappées sur l'entrée Campagnes de la
+ * barre du Profil. Rien n'est rendu à zéro : un compteur vide n'appelle à aucune action
  * (INV-007).
  */
 export function CampaignInvitesBadge() {

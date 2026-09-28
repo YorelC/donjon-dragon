@@ -57,14 +57,9 @@ function AppRoutes() {
     <Routes>
       <Route path={ROUTES.home} element={<HomeRoute />} />
       <Route element={<PrivateRoute />}>
-        <Route path={ROUTES.campaigns} element={<CampaignsPage />} />
+        {ProfileRoutes()}
         {CampaignDetailRoutes()}
         {CharacterRoutes()}
-        <Route path={ROUTES.profile} element={<ProfilePage />}>
-          <Route index element={<Navigate to={ROUTES.profileFriends} />} />
-          <Route path={ROUTES.profileFriends} element={<FriendsPage />} />
-          <Route path={ROUTES.profileSettings} element={<SettingsPage />} />
-        </Route>
       </Route>
       {AuthRedirectRoutes()}
       <Route path={ROUTES.verifyEmail} element={<VerifyEmailPage />} />
@@ -92,6 +87,23 @@ function AuthRedirectRoutes() {
   );
 }
 
+/**
+ * La barre du Profil encadre les campagnes, les amis et les paramètres : « Profil »
+ * du fil d'Ariane ramène aux campagnes, l'écran d'arrivée.
+ */
+function ProfileRoutes() {
+  return (
+    <>
+      <Route path={ROUTES.profile} element={<Navigate to={ROUTES.campaigns} replace />} />
+      <Route element={<ProfilePage />}>
+        <Route path={ROUTES.campaigns} element={<CampaignsPage />} />
+        <Route path={ROUTES.profileFriends} element={<FriendsPage />} />
+        <Route path={ROUTES.profileSettings} element={<SettingsPage />} />
+      </Route>
+    </>
+  );
+}
+
 /** Hors du layout de campagne : le builder et la fiche prennent toute la largeur. */
 function CharacterRoutes() {
   return (
@@ -106,7 +118,7 @@ function CharacterRoutes() {
 function CampaignDetailRoutes() {
   return (
     <Route path={ROUTES.campaignDetail} element={<CampaignDetailPage />}>
-      <Route index element={<Navigate to="users" replace />} />
+      <Route index element={<Navigate to="characters" replace />} />
       <Route path={ROUTES.campaignDetailUsers} element={<CampaignUsersPage />} />
       <Route
         path={ROUTES.campaignDetailCharacters}

@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/shared/components/atoms/button";
@@ -10,6 +11,8 @@ export interface SidebarNavItem {
   label: string;
   /** `null` : jalon inerte, l'écran est annoncé mais pas encore ouvert. */
   route: string | null;
+  /** Le compteur de l'entrée, quand elle en porte un : chacune compte autre chose. */
+  Badge?: ComponentType;
 }
 
 export interface SidebarNav {
@@ -26,6 +29,13 @@ export interface SidebarNav {
 export interface SidebarFooter {
   title: string;
   subtitle: string;
+  /** La sortie qui se range sous l'identité : la déconnexion, au Profil. */
+  action?: SidebarFooterAction;
+}
+
+export interface SidebarFooterAction {
+  label: string;
+  onClick: () => void;
 }
 
 interface SidebarLayoutViewProps {
@@ -91,7 +101,8 @@ function SidebarEntry({ item, onNavigate }: SidebarEntryProps) {
 
   return (
     <NavLink to={item.route} onClick={onNavigate} className={toEntryClassName}>
-      {item.label}
+      <span>{item.label}</span>
+      {item.Badge ? <item.Badge /> : null}
     </NavLink>
   );
 }
@@ -112,7 +123,16 @@ function SidebarFooterBlock({ footer }: { footer: SidebarFooter }) {
         {footer.title}
       </span>
       <span className="muted-text-xs">{footer.subtitle}</span>
+      {footer.action ? <FooterAction action={footer.action} /> : null}
     </div>
+  );
+}
+
+function FooterAction({ action }: { action: SidebarFooterAction }) {
+  return (
+    <button type="button" onClick={action.onClick} className="sidebar-footer-action">
+      {action.label}
+    </button>
   );
 }
 

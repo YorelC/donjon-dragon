@@ -41,6 +41,10 @@ function renderLayout(nav: SidebarNav = aNav()) {
   };
 }
 
+function PendingBadge() {
+  return <span>3</span>;
+}
+
 // ── Tests ────────────────────────────────────────────────────────────────────
 
 describe("SidebarLayoutView", () => {
@@ -74,6 +78,32 @@ describe("SidebarLayoutView", () => {
     expect(
       screen.getByText("5 membres · 1 invitation en attente"),
     ).toBeInTheDocument();
+  });
+
+  it("frappe une entrée de son compteur", () => {
+    renderLayout(
+      aNav({
+        items: [{ label: "Amis", route: "/profile/friends", Badge: PendingBadge }],
+      }),
+    );
+
+    expect(screen.getByRole("link", { name: /Amis/ })).toHaveTextContent("3");
+  });
+
+  it("pose l'action de pied et la déclenche", async () => {
+    const onClick = vi.fn();
+    render(
+      <MemoryRouter>
+        <SidebarLayoutView
+          nav={aNav()}
+          footer={{ ...footer, action: { label: "Déconnexion", onClick } }}
+        />
+      </MemoryRouter>,
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Déconnexion" }));
+
+    expect(onClick).toHaveBeenCalled();
   });
 
   it("ouvre le tiroir par le bouton de menu", async () => {

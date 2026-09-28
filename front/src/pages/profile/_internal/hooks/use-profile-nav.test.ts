@@ -42,6 +42,6 @@ describe("useProfileNav", () => {
   it("should return correct items", () => {
     const { result } = renderHook(() => useProfileNav());
     expect(result.current.items).toEqual(PROFILE_NAV_ITEMS);
-    expect(result.current.items).toHaveLength(2);
+    expect(result.current.items).toHaveLength(3);
   });
 });

@@ -16,14 +16,20 @@ export interface ProfileNavigation {
 export interface ProfileLayoutViewProps {
   nav: ProfileNavigation;
   identity: ProfileIdentity;
+  /** La sortie de session vit au pied de la barre : le bandeau ne porte plus que le fil. */
+  onLogout: () => void;
 }
 
 const SIDEBAR_HEADING = "Profil";
 const MENU_LABEL = "Menu du profil";
+const LOGOUT_LABEL = "Déconnexion";
 
-export function ProfileLayoutView({ nav, identity }: ProfileLayoutViewProps) {
+export function ProfileLayoutView({ nav, identity, onLogout }: ProfileLayoutViewProps) {
   return (
-    <SidebarLayoutView nav={toSidebarNav(nav)} footer={toSidebarFooter(identity)} />
+    <SidebarLayoutView
+      nav={toSidebarNav(nav)}
+      footer={toSidebarFooter(identity, onLogout)}
+    />
   );
 }
 
@@ -38,10 +44,11 @@ function toSidebarNav(nav: ProfileNavigation): SidebarNav {
   };
 }
 
-function toSidebarFooter(identity: ProfileIdentity): SidebarFooter {
+function toSidebarFooter(identity: ProfileIdentity, onLogout: () => void): SidebarFooter {
   return {
     title: identity.displayName,
     subtitle: toCompanionsLabel(identity),
+    action: { label: LOGOUT_LABEL, onClick: onLogout },
   };
 }
 

@@ -6,6 +6,14 @@ import { ProfileLayoutView } from "./profile-layout.view";
 import { PROFILE_NAV_ITEMS } from "../constants/profile-nav-items";
 import type { ProfileIdentity } from "../hooks/use-profile-identity";
 
+// Les compteurs interrogent le serveur : la vue n'a qu'à les poser.
+vi.mock("@/shared/components/layout/campaign-invites-badge", () => ({
+  CampaignInvitesBadge: () => null,
+}));
+vi.mock("@/shared/components/layout/profile-requests-badge", () => ({
+  ProfileRequestsBadge: () => null,
+}));
+
 const mockOnNavigate = vi.fn();
 
 const identity: ProfileIdentity = {
@@ -21,10 +29,12 @@ const nav = {
   onNavigate: mockOnNavigate,
 };
 
+const mockOnLogout = vi.fn();
+
 function renderView(overrides: Partial<typeof nav> = {}, id = identity) {
   return render(
     <MemoryRouter>
-      <ProfileLayoutView nav={{ ...nav, ...overrides }} identity={id} />
+      <ProfileLayoutView nav={{ ...nav, ...overrides }} identity={id} onLogout={mockOnLogout} />
     </MemoryRouter>,
   );
 }
@@ -37,6 +47,22 @@ describe("ProfileLayoutView", () => {
       "href",
       "/profile/friends",
     );
+  });
+
+  it("ouvre sur les campagnes, première entrée de la barre", () => {
+    renderView();
+
+    const links = screen.getAllByRole("link");
+    expect(links[0]).toHaveAttribute("href", "/campaigns");
+  });
+
+  it("porte la déconnexion au pied de la barre", async () => {
+    const user = userEvent.setup();
+
+    renderView();
+    await user.click(screen.getByRole("button", { name: "Déconnexion" }));
+
+    expect(mockOnLogout).toHaveBeenCalled();
   });
 
   it("should render the account settings entry without a link", () => {
@@ -81,7 +107,11 @@ describe("ProfileLayoutView", () => {
 
     rerender(
       <MemoryRouter>
-        <ProfileLayoutView nav={{ ...nav, isMenuOpen: true }} identity={identity} />
+        <ProfileLayoutView
+          nav={{ ...nav, isMenuOpen: true }}
+          identity={identity}
+          onLogout={mockOnLogout}
+        />
       </MemoryRouter>,
     );
     expect(screen.queryByRole("navigation")).toBeInTheDocument();

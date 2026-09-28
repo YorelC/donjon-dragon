@@ -347,6 +347,11 @@
     @apply flex flex-col gap-[3px] border-l border-gold/20 pl-[13px];
   }
 
+  /* Sortie posee sous un pied de barre : discrete, elle ne concurrence pas les entrees. */
+  .sidebar-footer-action {
+    @apply mt-2.5 self-start font-display text-label tracking-label text-ink-meta uppercase transition-colors duration-[.18s] hover:text-gold-value;
+  }
+
   .pill {
     @apply inline-flex items-baseline gap-[7px] border border-gold/24 bg-gold/5 px-3 py-1.5 text-xs tracking-value text-ink-help;
   }

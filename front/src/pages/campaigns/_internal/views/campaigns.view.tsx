@@ -4,7 +4,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/atoms/tabs";
-import { OrnateCorners } from "@/shared/components/molecules/ornate-corners";
 import type { CampaignsTab } from "../hooks/use-campaigns-tabs";
 import type { CampaignsCounts } from "../hooks/use-campaigns-counts";
 import { CampaignInvitationsContainer } from "../containers/campaign-invitations.container";
@@ -18,25 +17,22 @@ interface CampaignsViewProps {
   counts: CampaignsCounts;
 }
 
-/** La route n'a pas de layout : elle pose son propre panneau, comme le Profil. */
+/** Le panneau est celui de la barre du Profil : l'écran n'en pose que le contenu. */
 export function CampaignsView({
   activeTab,
   onTabChange,
   counts,
 }: CampaignsViewProps) {
   return (
-    <div className="flex min-h-0 flex-1 p-5">
-      <main className="panel flex min-w-0 flex-1 flex-col gap-[22px]">
-        <OrnateCorners />
-        <CampaignsHeader counts={counts} />
-        <Tabs
-          value={activeTab}
-          onValueChange={(tab) => onTabChange(tab as CampaignsTab)}
-        >
-          <CampaignsTabsList counts={counts} />
-          <CampaignsTabsPanels />
-        </Tabs>
-      </main>
+    <div className="flex flex-col gap-[22px]">
+      <CampaignsHeader counts={counts} />
+      <Tabs
+        value={activeTab}
+        onValueChange={(tab) => onTabChange(tab as CampaignsTab)}
+      >
+        <CampaignsTabsList counts={counts} />
+        <CampaignsTabsPanels />
+      </Tabs>
     </div>
   );
 }

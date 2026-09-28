@@ -3,8 +3,17 @@ import { PROFILE_NAV_ITEMS } from "./profile-nav-items";
 import { ROUTES } from "@/shared/constants/routes";
 
 describe("profile-nav-items", () => {
-  it("should have 2 items", () => {
-    expect(PROFILE_NAV_ITEMS).toHaveLength(2);
+  it("ouvre sur les campagnes, puis les amis et les paramètres", () => {
+    expect(PROFILE_NAV_ITEMS.map((item) => item.label)).toEqual([
+      "Campagnes",
+      "Amis",
+      "Paramètres du compte",
+    ]);
+  });
+
+  it("should point to campaigns route", () => {
+    const campaignsItem = PROFILE_NAV_ITEMS.find((item) => item.label === "Campagnes");
+    expect(campaignsItem?.route).toBe(ROUTES.campaigns);
   });
 
   it("should point to profileFriends route", () => {
@@ -21,8 +30,9 @@ describe("profile-nav-items", () => {
   });
 
   it("should use ROUTES constants, not string literals", () => {
+    const routes: string[] = Object.values(ROUTES);
     PROFILE_NAV_ITEMS.filter((item) => item.route !== null).forEach((item) => {
-      expect(item.route).toMatch(/^\/profile\//);
+      expect(routes).toContain(item.route);
     });
   });
 });

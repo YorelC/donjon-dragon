@@ -8,11 +8,12 @@ export interface CampaignDetailNavItem {
   route: string;
 }
 
+/** Personnages d'abord : c'est l'écran qu'ouvre une campagne. */
 export function toCampaignDetailNavItems(
   campaignId: string,
 ): CampaignDetailNavItem[] {
   return [
-    { label: "Utilisateurs", route: toCampaignDetailUsers(campaignId) },
     { label: "Personnages", route: toCampaignDetailCharacters(campaignId) },
+    { label: "Utilisateurs", route: toCampaignDetailUsers(campaignId) },
   ];
 }
