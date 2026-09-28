@@ -16,7 +16,7 @@ en centimètres et le poids en kilogrammes. Le joueur choisit ces deux mesures s
 défaut le milieu de sa plage, arrondi à l'entier inférieur ; le joueur l'ajuste. La
 catégorie de taille D&D reste une donnée mécanique distincte, mais elle est déduite de
 la taille physique plutôt que demandée au joueur.
-La description physique est facultative.
+La description physique est facultative et limitée à 1 000 caractères.
 
 Les traits de personnalité, idéaux, liens et défauts sont quatre textes libres,
 facultatifs et indépendants, limités à 1 000 caractères chacun. Ils restent

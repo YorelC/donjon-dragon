@@ -437,6 +437,15 @@ describe('Character.updatePersonalDetails', () => {
     )).toThrow(InvalidCharacterIdentityError);
   });
 
+  it('refuse aussi une description physique trop longue dans le domaine', () => {
+    const character = acceptedCharacter();
+
+    expect(() => character.updatePersonalDetails(
+      { age: 34, weightKg: 19, description: 'a'.repeat(1_001) },
+      contextFor({ actorId: frodo }), NOW,
+    )).toThrow(InvalidCharacterIdentityError);
+  });
+
   it('refuse cette commande avant acceptation ou pour un tiers', () => {
     const draft = aCharacter(frodo);
     draft.assignTo(true, frodo, NOW);

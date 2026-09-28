@@ -51,6 +51,8 @@ export interface CharacterComposition {
   age: number | null;
   heightCm: number | null;
   weightKg: number | null;
+  personalityTraits: string | null; ideals: string | null;
+  bonds: string | null; flaws: string | null;
   description: string | null;
 
   speciesKey: SpeciesKey | null;
@@ -144,7 +146,7 @@ export const EMPTY_COMPOSITION: CharacterComposition = {
   age: null,
   heightCm: null,
   weightKg: null,
-  description: null,
+  personalityTraits: null, ideals: null, bonds: null, flaws: null, description: null,
   speciesKey: null,
   lineageKey: null,
   standardLanguages: [],

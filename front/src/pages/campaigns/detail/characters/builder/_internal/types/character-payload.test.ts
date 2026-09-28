@@ -30,6 +30,11 @@ function aCompleteComposition(): CharacterComposition {
     age: 33,
     heightCm: 140,
     weightKg: 70,
+    personalityTraits: "Curieux et prudent.",
+    ideals: "La liberté avant tout.",
+    bonds: "Protéger ses compagnons.",
+    flaws: "Accorde trop facilement sa confiance.",
+    description: "Une silhouette discrète.",
     speciesKey: "dwarf",
     standardLanguages: ["elvish", "dwarvish"],
     classKey: "cleric",
@@ -68,6 +73,18 @@ describe("le wizard produit un corps que le serveur accepte", () => {
 
     expect(payload).toMatchObject({ standardLanguages: ["elvish", "dwarvish"] });
     expect(payload).not.toHaveProperty("size");
+  });
+
+  it("transporte les détails narratifs et la description", () => {
+    const payload = toCreatePayload(CATALOG, aCompleteComposition());
+
+    expect(payload).toMatchObject({
+      personalityTraits: "Curieux et prudent.",
+      ideals: "La liberté avant tout.",
+      bonds: "Protéger ses compagnons.",
+      flaws: "Accorde trop facilement sa confiance.",
+      description: "Une silhouette discrète.",
+    });
   });
 
   // L'édition ne redésigne jamais de tirage : le personnage garde le sien.

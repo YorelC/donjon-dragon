@@ -47,3 +47,30 @@ describe("échelles physiques de l’identité", () => {
     expect(screen.getByRole("slider", { name: "Taille" })).toHaveValue("175");
   });
 });
+
+describe("détails narratifs de l’identité", () => {
+  it("les affiche avant la description avec la limite partagée", () => {
+    render(<StatefulIdentity />);
+
+    const traits = screen.getByLabelText("Traits de personnalité (facultatif)");
+    const ideals = screen.getByLabelText("Idéaux (facultatif)");
+    const bonds = screen.getByLabelText("Liens (facultatif)");
+    const flaws = screen.getByLabelText("Défauts (facultatif)");
+    const description = screen.getByLabelText("Description (facultative)");
+
+    [traits, ideals, bonds, flaws, description].forEach((field) => {
+      expect(field).toHaveAttribute("maxlength", "1000");
+    });
+    expect(traits.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING)
+      .toBeTruthy();
+  });
+
+  it("conserve la saisie d’un trait de personnalité", async () => {
+    render(<StatefulIdentity />);
+
+    const field = screen.getByLabelText("Traits de personnalité (facultatif)");
+    await userEvent.type(field, "Curieux et prudent.");
+
+    expect(field).toHaveValue("Curieux et prudent.");
+  });
+});

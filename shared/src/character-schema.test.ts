@@ -73,6 +73,18 @@ describe('édition des données personnelles après acceptation', () => {
     }).success).toBe(false);
   });
 
+  it('borne et normalise aussi la description physique', () => {
+    const atLimit = 'a'.repeat(CHARACTER_NARRATIVE_DETAIL_RULES.max);
+    const parsed = UpdateCharacterPersonalDetailsSchema.parse({
+      ...valid, description: `  ${atLimit}  `,
+    });
+
+    expect(parsed.description).toBe(atLimit);
+    expect(UpdateCharacterPersonalDetailsSchema.safeParse({
+      ...valid, description: `${atLimit}a`,
+    }).success).toBe(false);
+  });
+
   it('relit un ancien reçu sans champs narratifs', () => {
     const result = CharacterPersonalDetailsCommandResultSchema.parse({
       id: '550e8400-e29b-41d4-a716-446655440000', revision: 4,

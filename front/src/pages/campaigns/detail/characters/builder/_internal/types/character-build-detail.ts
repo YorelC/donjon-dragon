@@ -23,6 +23,10 @@ function identityFieldsOf(dto: CharacterBuildDetailDto) {
     age: dto.age,
     heightCm: dto.heightCm,
     weightKg: dto.weightKg,
+    personalityTraits: dto.personalityTraits ?? null,
+    ideals: dto.ideals ?? null,
+    bonds: dto.bonds ?? null,
+    flaws: dto.flaws ?? null,
     description: dto.description,
   };
 }

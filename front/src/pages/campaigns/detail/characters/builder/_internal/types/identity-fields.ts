@@ -15,6 +15,10 @@ export interface CompleteIdentity {
   age: number;
   heightCm: number;
   weightKg: number;
+  personalityTraits: string | null;
+  ideals: string | null;
+  bonds: string | null;
+  flaws: string | null;
   description: string | null;
 }
 
@@ -31,13 +35,18 @@ export function completeIdentityOf(
   composition: CharacterComposition,
   bounds: CatalogPhysicalBounds | undefined,
 ): CompleteIdentity | null {
-  const { name, alignment, age, heightCm, weightKg, description } = composition;
+  const { name, alignment, age, heightCm, weightKg } = composition;
   if (!name.trim() || !alignment) return null;
   if (age === null || heightCm === null || weightKg === null) return null;
   if (!bounds || !inRange(heightCm, bounds.heightCm)) return null;
   if (!inRange(weightKg, bounds.weightKg)) return null;
 
-  return { name, alignment, age, heightCm, weightKg, description };
+  return { name, alignment, age, heightCm, weightKg, ...narrativesOf(composition) };
+}
+
+function narrativesOf(composition: CharacterComposition) {
+  const { personalityTraits, ideals, bonds, flaws, description } = composition;
+  return { personalityTraits, ideals, bonds, flaws, description };
 }
 
 function inRange(value: number, range: CatalogMeasurementRange): boolean {

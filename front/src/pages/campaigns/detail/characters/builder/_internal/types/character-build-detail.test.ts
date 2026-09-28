@@ -24,6 +24,10 @@ const BASE_DTO: CharacterBuildDetailDto = {
   heightCm: 90,
   weightKg: 18,
   description: null,
+  personalityTraits: "Toujours de bonne humeur.",
+  ideals: "La communauté.",
+  bonds: "La Comté.",
+  flaws: "Trop confiant.",
   speciesKey: "halfling",
   lineageKey: null,
   size: "Small",
@@ -153,6 +157,10 @@ describe("toComposition — reste des champs", () => {
     expect(composition.age).toBe(33);
     expect(composition.heightCm).toBe(90);
     expect(composition.weightKg).toBe(18);
+    expect(composition.personalityTraits).toBe(BASE_DTO.personalityTraits);
+    expect(composition.ideals).toBe(BASE_DTO.ideals);
+    expect(composition.bonds).toBe(BASE_DTO.bonds);
+    expect(composition.flaws).toBe(BASE_DTO.flaws);
     expect(composition.standardLanguages).toEqual(["common", "halfling"]);
   });
 
@@ -176,6 +184,10 @@ describe("aller-retour edition", () => {
       age: BASE_DTO.age,
       heightCm: BASE_DTO.heightCm,
       weightKg: BASE_DTO.weightKg,
+      personalityTraits: BASE_DTO.personalityTraits,
+      ideals: BASE_DTO.ideals,
+      bonds: BASE_DTO.bonds,
+      flaws: BASE_DTO.flaws,
       standardLanguages: BASE_DTO.standardLanguages,
       abilityRollId: null,
     });

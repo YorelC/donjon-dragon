@@ -1,4 +1,5 @@
 import { Button } from "@/shared/components/atoms/button";
+import { CHARACTER_NARRATIVE_DETAIL_RULES } from "@donjon-dragon/shared";
 import {
   Dialog, DialogContent, DialogDescription, DialogFooter,
   DialogHeader, DialogTitle, DialogTrigger,
@@ -8,13 +9,28 @@ import { Label } from "@/shared/components/atoms/label";
 import { Textarea } from "@/shared/components/atoms/textarea";
 
 interface CharacterPersonalDetailsViewProps {
-  values: { age: string; weightKg: string; description: string };
+  values: EditablePersonalDetailsValues;
   isPending: boolean;
-  onAgeChange: (value: string) => void;
-  onWeightChange: (value: string) => void;
-  onDescriptionChange: (value: string) => void;
+  onChange: (field: keyof EditablePersonalDetailsValues, value: string) => void;
   onSubmit: () => void;
 }
+
+export interface EditablePersonalDetailsValues {
+  age: string;
+  weightKg: string;
+  personalityTraits: string;
+  ideals: string;
+  bonds: string;
+  flaws: string;
+  description: string;
+}
+
+const NARRATIVE_FIELDS = [
+  ["personalityTraits", "Traits de personnalité"],
+  ["ideals", "Idéaux"],
+  ["bonds", "Liens"],
+  ["flaws", "Défauts"],
+] as const;
 
 export function CharacterPersonalDetailsView(props: CharacterPersonalDetailsViewProps) {
   return <Dialog>
@@ -36,13 +52,24 @@ export function CharacterPersonalDetailsView(props: CharacterPersonalDetailsView
 
 function PersonalDetailsFields(props: CharacterPersonalDetailsViewProps) {
   return <div className="grid gap-4">
-    <NumberField id="character-age" label="Âge" value={props.values.age} onChange={props.onAgeChange} />
-    <NumberField id="character-weight" label="Poids (kg)" value={props.values.weightKg} onChange={props.onWeightChange} />
-    <div className="grid gap-2">
-      <Label htmlFor="character-description">Description physique</Label>
-      <Textarea id="character-description" value={props.values.description}
-        onChange={(event) => props.onDescriptionChange(event.target.value)} />
-    </div>
+    <NumberField id="character-age" label="Âge" value={props.values.age}
+      onChange={(value) => props.onChange("age", value)} />
+    <NumberField id="character-weight" label="Poids (kg)" value={props.values.weightKg}
+      onChange={(value) => props.onChange("weightKg", value)} />
+    {NARRATIVE_FIELDS.map(([field, label]) => (
+      <TextField key={field} id={`character-${field}`} label={label}
+        value={props.values[field]} onChange={(value) => props.onChange(field, value)} />
+    ))}
+    <TextField id="character-description" label="Description physique"
+      value={props.values.description} onChange={(value) => props.onChange("description", value)} />
+  </div>;
+}
+
+function TextField(props: NumberFieldProps) {
+  return <div className="grid gap-2">
+    <Label htmlFor={props.id}>{props.label} (facultatif)</Label>
+    <Textarea id={props.id} value={props.value} maxLength={CHARACTER_NARRATIVE_DETAIL_RULES.max}
+      onChange={(event) => props.onChange(event.target.value)} />
   </div>;
 }
 
@@ -64,5 +91,12 @@ function NumberField(props: NumberFieldProps) {
 function isValid(values: CharacterPersonalDetailsViewProps["values"]): boolean {
   return Number.isInteger(Number(values.age))
     && Number(values.age) > 0
-    && Number(values.weightKg) > 0;
+    && Number(values.weightKg) > 0
+    && narrativeLengthsAreValid(values);
+}
+
+function narrativeLengthsAreValid(values: EditablePersonalDetailsValues): boolean {
+  const narratives = NARRATIVE_FIELDS.map(([field]) => values[field]);
+  return [...narratives, values.description]
+    .every((value) => value.trim().length <= CHARACTER_NARRATIVE_DETAIL_RULES.max);
 }

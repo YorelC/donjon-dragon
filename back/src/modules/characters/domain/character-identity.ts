@@ -99,13 +99,13 @@ function identitySnapshotOf(input: CompleteIdentityInput): CharacterIdentitySnap
     age: input.age,
     heightCm: input.heightCm,
     weightKg: input.weightKg,
-    description: input.description ?? null,
+    description: normalizeNarrative(input.description),
     ...narrativeDetailsOf(input),
   };
 }
 
 function narrativesAreValid(input: CharacterIdentityInput): boolean {
-  return narrativeValuesOf(input).every(narrativeIsValid);
+  return [input.description, ...narrativeValuesOf(input)].every(narrativeIsValid);
 }
 
 function narrativeIsValid(value: string | null | undefined): boolean {

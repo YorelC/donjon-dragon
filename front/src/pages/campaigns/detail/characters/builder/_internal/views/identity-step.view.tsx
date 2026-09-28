@@ -1,4 +1,4 @@
-import type { Alignment } from "@donjon-dragon/shared";
+import { CHARACTER_NARRATIVE_DETAIL_RULES, type Alignment } from "@donjon-dragon/shared";
 import { Input } from "@/shared/components/atoms/input";
 import { Label } from "@/shared/components/atoms/label";
 import { Textarea } from "@/shared/components/atoms/textarea";
@@ -8,6 +8,7 @@ import {
 } from "../types/identity-fields";
 import { ChoiceStepView } from "./choice-step.view";
 import { MeasurementScaleView } from "./measurement-scale.view";
+import { NarrativeFieldsView } from "./narrative-fields.view";
 import { NumberFieldView } from "./number-field.view";
 
 interface IdentityStepViewProps {
@@ -19,8 +20,8 @@ interface IdentityStepViewProps {
 /**
  * La dernière étape : le personnage est complet, il lui manque son état civil.
  *
- * En édition, tout sauf le nom est en lecture seule. Offrir un champ dont la
- * modification répondrait `200` sans rien changer serait mentir à l'écran.
+ * En édition, les données d'état civil figées passent en lecture seule. Les
+ * textes narratifs et la description restent modifiables conformément à DEC-008.
  */
 export function IdentityStepView(props: IdentityStepViewProps) {
   return (
@@ -29,6 +30,7 @@ export function IdentityStepView(props: IdentityStepViewProps) {
       <FrozenNotice isFrozen={props.isFrozen} />
       <AlignmentField {...props} />
       <MeasurementFields {...props} />
+      <NarrativeFieldsView {...props.binding} />
       <DescriptionField {...props} />
     </div>
   );
@@ -132,14 +134,14 @@ function MeasurementFields({ binding, isFrozen }: IdentityStepViewProps) {
   );
 }
 
-function DescriptionField({ binding: { composition, onChange }, isFrozen }: IdentityStepViewProps) {
+function DescriptionField({ binding: { composition, onChange } }: IdentityStepViewProps) {
   return (
     <div className="grid gap-2">
       <Label htmlFor="character-description">Description (facultative)</Label>
       <Textarea
         id="character-description"
         value={composition.description ?? ""}
-        disabled={isFrozen}
+        maxLength={CHARACTER_NARRATIVE_DETAIL_RULES.max}
         onChange={(event) => onChange({ description: event.target.value || null })}
       />
     </div>

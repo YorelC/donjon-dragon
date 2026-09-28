@@ -9,7 +9,13 @@ describe("CharacterPersonalDetailsView", () => {
 
     expect(screen.getByLabelText("Âge")).toBeInTheDocument();
     expect(screen.getByLabelText("Poids (kg)")).toBeInTheDocument();
-    expect(screen.getByLabelText("Description physique")).toBeInTheDocument();
+    expect(screen.getByLabelText("Traits de personnalité (facultatif)")).toBeInTheDocument();
+    expect(screen.getByLabelText("Idéaux (facultatif)")).toBeInTheDocument();
+    expect(screen.getByLabelText("Liens (facultatif)")).toBeInTheDocument();
+    expect(screen.getByLabelText("Défauts (facultatif)")).toBeInTheDocument();
+    expect(screen.getByLabelText("Description physique (facultatif)")).toHaveAttribute(
+      "maxlength", "1000",
+    );
     expect(screen.queryByLabelText("Nom")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Taille")).not.toBeInTheDocument();
   });
@@ -23,15 +29,21 @@ describe("CharacterPersonalDetailsView", () => {
 });
 
 function props(overrides: Partial<Details> = {}) {
-  const values = { age: "34", weightKg: "19", description: "", ...overrides };
+  const values = {
+    age: "34", weightKg: "19", personalityTraits: "", ideals: "",
+    bonds: "", flaws: "", description: "", ...overrides,
+  };
   return {
-    values, isPending: false, onAgeChange: vi.fn(), onWeightChange: vi.fn(),
-    onDescriptionChange: vi.fn(), onSubmit: vi.fn(),
+    values, isPending: false, onChange: vi.fn(), onSubmit: vi.fn(),
   };
 }
 
 interface Details {
   age: string;
   weightKg: string;
+  personalityTraits: string;
+  ideals: string;
+  bonds: string;
+  flaws: string;
   description: string;
 }

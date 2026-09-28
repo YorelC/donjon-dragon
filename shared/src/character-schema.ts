@@ -243,7 +243,7 @@ const CharacterCompositionSchema = z.object({
   age: z.number().int().positive().optional(),
   heightCm: z.number().positive().optional(),
   weightKg: z.number().positive().optional(),
-  description: z.string().nullable().optional(),
+  description: narrativeTextField().optional(),
   ...optionalNarrativeDetailsShape,
   speciesKey: SpeciesKeySchema,
   lineageKey: z.string().nullable(),
@@ -361,14 +361,14 @@ export const UnassignCharacterSchema = z.object({
 export const CharacterPersonalDetailsSchema = z.object({
   age: z.number().int().positive(),
   weightKg: z.number().positive(),
-  description: z.string().nullable(),
+  description: narrativeTextField(),
   ...narrativeDetailsShape,
 });
 
 export const UpdateCharacterPersonalDetailsSchema = z.object({
   age: z.number().int().positive(),
   weightKg: z.number().positive(),
-  description: z.string().nullable(),
+  description: narrativeTextField(),
   ...optionalNarrativeDetailsShape,
   expectedRevision: CharacterRevisionSchema,
 }).strict();
@@ -408,7 +408,7 @@ export const CharacterBuildDetailSchema = z.object({
   age: z.number().int().positive(),
   heightCm: z.number().positive(),
   weightKg: z.number().positive(),
-  description: z.string().nullable(),
+  description: narrativeTextField(),
   ...narrativeDetailsShape,
 
   speciesKey: SpeciesKeySchema,
