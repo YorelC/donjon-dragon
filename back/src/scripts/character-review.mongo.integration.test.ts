@@ -61,7 +61,7 @@ describeMongo('Character review — MongoDB replica set', () => {
     const state = await persistedCharacter(harness);
     const command = reviewCommand(state, 'character.submitted');
     const competing = Character.restore({ ...state.beforeSubmission });
-    competing.unassign(true, TEST_INSTANT);
+    competing.unassignForCampaignTransition(TEST_INSTANT);
     await harness.characters.save(competing);
 
     await expect(harness.commands.execute(command)).rejects.toThrow(CharacterRevisionConflictError);

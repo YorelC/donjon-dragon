@@ -57,7 +57,7 @@ export class UnassignCharacterUseCase {
     );
     character.assertRevision(dto.expectedRevision);
     const occurredAt = this.clock.now();
-    character.unassign(true, occurredAt);
+    character.reclaimBy({ id: principalId, isGameMaster: true }, occurredAt);
     return this.persist(dto, principalId, intentHash, character, occurredAt);
   }
 

@@ -263,16 +263,53 @@ describe('Character.assignTo', () => {
   });
 });
 
-describe('Character.unassign', () => {
+describe('Character.reclaimBy', () => {
+  const byGandalf = { id: gandalf, isGameMaster: true };
+
   it('refuse un acteur qui n est pas maître du jeu', () => {
     const character = aCharacter();
     character.assignTo(true, frodo, NOW);
 
-    expect(() => character.unassign(false, NOW)).toThrow(OnlyGameMasterCanAssignError);
+    expect(() => character.reclaimBy({ id: sam, isGameMaster: false }, NOW))
+      .toThrow(OnlyGameMasterCanAssignError);
   });
 
   it('refuse un personnage déjà non assigné', () => {
-    expect(() => aCharacter().unassign(true, NOW)).toThrow(NotAssignedError);
+    expect(() => aCharacter().reclaimBy(byGandalf, NOW)).toThrow(NotAssignedError);
+  });
+
+  // DR-007-08 : le joueur ne garde aucun lien avec la fiche qu'on lui reprend.
+  it('donne au MJ le personnage que le joueur avait créé', () => {
+    const character = aCharacter(frodo);
+    character.selfAssignToCreator(NOW);
+
+    character.reclaimBy(byGandalf, NOW);
+
+    expect(character.assignedTo).toBeNull();
+    expect(character.createdBy.equals(gandalf)).toBe(true);
+    expect(() => character.assertEditableBy(contextFor({ actorId: frodo })))
+      .toThrow(NotEditableByActorError);
+  });
+
+  it('laisse son créateur MJ au personnage qu un MJ avait créé', () => {
+    const character = aCharacter(sam);
+    character.assignTo(true, frodo, NOW);
+
+    character.reclaimBy(byGandalf, NOW);
+
+    expect(character.createdBy.equals(sam)).toBe(true);
+  });
+
+  it('réserve le personnage repris au MJ qui l a repris', () => {
+    const character = aCharacter(frodo);
+    character.selfAssignToCreator(NOW);
+    character.reclaimBy(byGandalf, NOW);
+    const asGameMaster = { actorIsGameMaster: true, creatorIsGameMaster: true };
+
+    expect(() => character.assertEditableBy(contextFor({ actorId: gandalf, ...asGameMaster })))
+      .not.toThrow();
+    expect(() => character.assertEditableBy(contextFor({ actorId: sam, ...asGameMaster })))
+      .toThrow(NotEditableByActorError);
   });
 });
 

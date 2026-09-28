@@ -78,7 +78,7 @@ export class AssignCharacterUseCase {
     this.assertAvailableTo(character, playerId);
     const previous = await this.previousCharacter(context.dto.campaignId, playerId, character);
     const occurredAt = this.clock.now();
-    if (previous) previous.unassignForCampaignTransition(occurredAt);
+    previous?.reclaimBy({ id: context.principalId, isGameMaster: true }, occurredAt);
     character.assignTo(true, playerId, occurredAt);
     const players = await this.playersOf(character, previous);
     return command({ context, occurredAt, players }, character, previous);

@@ -91,6 +91,25 @@ describe('attribution transactionnelle d un personnage', () => {
     ]);
   });
 
+  // DR-007-08 : la fiche retirée au joueur appartient désormais au MJ qui agit.
+  it('donne au MJ le personnage que le joueur avait créé, lors d un remplacement', async () => {
+    const own = await ownCharacterOfFrodo();
+    const other = await freeCharacter('Bilbon');
+    await assign.execute(assignCommand(other.id, 'Frodo'));
+
+    const reclaimed = await characters.findById(CharacterId.create(own.id));
+    expect(reclaimed?.assignedTo).toBeNull();
+    expect(reclaimed?.createdBy.value).toBe(gameMasterId);
+  });
+
+  it('donne au MJ le personnage que le joueur avait créé, lors d une désattribution', async () => {
+    const own = await ownCharacterOfFrodo();
+    await unassign.execute(unassignCommand(own.id, own.revision));
+
+    const reclaimed = await characters.findById(CharacterId.create(own.id));
+    expect(reclaimed?.createdBy.value).toBe(gameMasterId);
+  });
+
   it('refuse un acteur joueur avant de résoudre le pseudo', async () => {
     const character = await freeCharacter('Grand-Pas');
     directory.resetLookupCount();
@@ -168,6 +187,13 @@ describe('attribution transactionnelle d un personnage', () => {
   async function freeCharacter(name: string) {
     return create.execute({
       ...aCharacterBody(name), campaignId, actorId: anActor(gameMasterId),
+      idempotencyKey: randomUUID(),
+    });
+  }
+
+  async function ownCharacterOfFrodo() {
+    return create.execute({
+      ...aCharacterBody('Frodon'), campaignId, actorId: anActor(frodoId),
       idempotencyKey: randomUUID(),
     });
   }

@@ -130,11 +130,12 @@ interface CharacterBuildState {
 
 interface CharacterOrigin {
   campaignId: OwningCampaignId;
-  createdBy: UserId;
   createdAt: string;
 }
 
+/** Le créateur n'est pas figé : un MJ qui reprend la fiche d'un joueur en hérite (DR-007-08). */
 interface CharacterState {
+  createdBy: UserId;
   name: CharacterName;
   identity: CharacterIdentity;
   status: CharacterStatus;
@@ -170,6 +171,12 @@ export interface CharacterAccessContext {
   creatorIsGameMaster: boolean;
 }
 
+/** Qui retire un personnage à son joueur, et s'il en a le droit. */
+export interface CharacterReclaimer {
+  id: UserId;
+  isGameMaster: boolean;
+}
+
 /**
  * Une fiche de personnage D&D 2024, rattachée à une campagne.
  *
@@ -196,7 +203,7 @@ export class Character {
 
     return new Character(
       CharacterId.create(randomUUID()),
-      { campaignId: input.campaignId, createdBy: input.createdBy, createdAt },
+      { campaignId: input.campaignId, createdAt },
       initialStateFrom(input, createdAt),
     );
   }
@@ -206,7 +213,6 @@ export class Character {
       CharacterId.create(snapshot.id),
       {
         campaignId: OwningCampaignId.create(snapshot.campaignId),
-        createdBy: UserId.create(snapshot.createdBy),
         createdAt: snapshot.createdAt,
       },
       restoreState(snapshot),
@@ -218,7 +224,7 @@ export class Character {
   }
 
   get createdBy(): UserId {
-    return this.origin.createdBy;
+    return this.state.createdBy;
   }
 
   get createdAt(): string {
@@ -326,7 +332,7 @@ export class Character {
    * de passage par `assignTo`, réservé à l'attribution PAR un maître du jeu.
    */
   selfAssignToCreator(now: Date): void {
-    this.state.assignedTo = this.origin.createdBy;
+    this.state.assignedTo = this.state.createdBy;
     this.touch(now);
   }
 
@@ -340,10 +346,16 @@ export class Character {
     this.touch(now);
   }
 
-  unassign(actorIsGameMaster: boolean, now: Date): void {
-    if (!actorIsGameMaster) throw new OnlyGameMasterCanAssignError();
-    if (!this.state.assignedTo) throw new NotAssignedError();
+  /**
+   * Un MJ retire le personnage à son joueur. Si ce joueur l'avait créé, le MJ
+   * en devient le créateur : le joueur n'y garde aucun lien (DR-007-08).
+   */
+  reclaimBy(reclaimer: CharacterReclaimer, now: Date): void {
+    if (!reclaimer.isGameMaster) throw new OnlyGameMasterCanAssignError();
+    const player = this.state.assignedTo;
+    if (!player) throw new NotAssignedError();
 
+    if (this.state.createdBy.equals(player)) this.state.createdBy = reclaimer.id;
     this.state.assignedTo = null;
     this.touch(now);
   }
@@ -374,7 +386,7 @@ export class Character {
     }
 
     const editable =
-      this.origin.createdBy.equals(context.actorId) ||
+      this.state.createdBy.equals(context.actorId) ||
       this.state.assignedTo !== null ||
       !context.creatorIsGameMaster ||
       context.actorIsCampaignOwner;
@@ -395,7 +407,7 @@ export class Character {
       status: this.state.status,
       abilityRoll: this.state.roll?.snapshot() ?? null,
       build: buildSnapshotOf(this.state.build),
-      createdBy: this.origin.createdBy.value,
+      createdBy: this.state.createdBy.value,
       assignedTo: this.state.assignedTo?.value ?? null,
       revision: this.state.revision,
       review: this.state.review.snapshot(),
@@ -416,6 +428,7 @@ function initialStateFrom(input: CharacterCreationInput, createdAt: string): Cha
   assertSpeciesPhysique(input.build.speciesKey, identity.snapshot());
 
   return {
+    createdBy: input.createdBy,
     name: input.name, identity, status: 'waiting_adventure', roll: input.roll, build,
     assignedTo: null, revision: INITIAL_REVISION, review: CharacterReview.create(),
     updatedAt: createdAt,
@@ -474,6 +487,7 @@ function assignmentFrom(input: CharacterBuildInput, roll: AbilityRoll | null): A
 
 function restoreState(snapshot: CharacterSnapshot): CharacterState {
   return {
+    createdBy: UserId.create(snapshot.createdBy),
     name: CharacterName.create(snapshot.name),
     identity: CharacterIdentity.restore(snapshot.identity),
     status: snapshot.status,
