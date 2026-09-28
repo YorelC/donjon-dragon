@@ -30,6 +30,10 @@ const BACK_TO_CAMPAIGNS = {
   label: "Toutes mes campagnes",
 };
 
+const GAME_MASTER_EMPTY_LIST = "Aucun personnage pour le moment.";
+const PLAYER_EMPTY_LIST =
+  "Tu n'as pas encore de personnage. Crée-le, ou attends que le MJ t'en attribue un.";
+
 export function CampaignCharactersView(props: CampaignCharactersViewProps) {
   const { characters, ownerToggle } = props;
 
@@ -40,6 +44,7 @@ export function CampaignCharactersView(props: CampaignCharactersViewProps) {
           campaignId={props.campaign.id}
           ownerToggle={ownerToggle}
           viewer={props.viewer}
+          canCreate={canCreateCharacter(props.viewer, characters)}
         />
       </PageHeader>
       <CharacterList characters={characters} rest={props} />
@@ -51,12 +56,14 @@ interface CharacterActionsProps {
   campaignId: string;
   ownerToggle: OwnerToggle;
   viewer: CharacterViewer;
+  canCreate: boolean;
 }
 
 function CharacterActions({
   campaignId,
   ownerToggle,
   viewer,
+  canCreate,
 }: CharacterActionsProps) {
   return (
     <>
@@ -68,13 +75,19 @@ function CharacterActions({
           isPending={ownerToggle.isPending}
         />
       ) : null}
-      <Button asChild>
-        <Link to={toCharacterNew(campaignId)}>
-          <Diamond tone="filled" />
-          Créer
-        </Link>
-      </Button>
+      {canCreate ? <CreateCharacterLink campaignId={campaignId} /> : null}
     </>
+  );
+}
+
+function CreateCharacterLink({ campaignId }: { campaignId: string }) {
+  return (
+    <Button asChild>
+      <Link to={toCharacterNew(campaignId)}>
+        <Diamond tone="filled" />
+        Créer
+      </Link>
+    </Button>
   );
 }
 
@@ -85,7 +98,7 @@ interface CharacterListProps {
 
 function CharacterList({ characters, rest }: CharacterListProps) {
   if (characters.length === 0) {
-    return <p className="empty-state-text">Aucun personnage pour le moment.</p>;
+    return <p className="empty-state-text">{toEmptyListText(rest.viewer)}</p>;
   }
 
   return (
@@ -101,4 +114,16 @@ function CharacterList({ characters, rest }: CharacterListProps) {
       ))}
     </ul>
   );
+}
+
+/** Un joueur ne mène qu'un personnage : il n'en crée un que s'il n'en a aucun. */
+function canCreateCharacter(
+  viewer: CharacterViewer,
+  characters: CampaignCharacterListItem[],
+): boolean {
+  return viewer.isGameMaster || characters.length === 0;
+}
+
+function toEmptyListText(viewer: CharacterViewer): string {
+  return viewer.isGameMaster ? GAME_MASTER_EMPTY_LIST : PLAYER_EMPTY_LIST;
 }

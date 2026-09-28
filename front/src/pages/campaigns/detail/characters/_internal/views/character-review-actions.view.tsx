@@ -6,7 +6,7 @@ import {
 } from "@/shared/components/atoms/dialog";
 import { Textarea } from "@/shared/components/atoms/textarea";
 
-type ReviewedCharacter = Exclude<CampaignCharacterListItem, { projection: "pool" }>;
+type ReviewedCharacter = CampaignCharacterListItem;
 
 interface CharacterReviewActionsProps {
   character: ReviewedCharacter;

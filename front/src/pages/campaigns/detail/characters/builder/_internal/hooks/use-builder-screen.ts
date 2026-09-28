@@ -82,8 +82,6 @@ function isExistingBuilderLoading(target: BuilderTarget, context: BuilderContext
 }
 
 function isCorrectable(character: CampaignCharacterListItem): boolean {
-  if (character.projection === "pool") return false;
-
   return character.review.status === "draft" || character.review.status === "refused";
 }
 

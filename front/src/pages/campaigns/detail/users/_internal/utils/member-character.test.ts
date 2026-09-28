@@ -85,24 +85,4 @@ describe("toMemberCharacterLine", () => {
   it("se tait sur un autre membre quand le lecteur ne voit pas les attributions", () => {
     expect(toMemberCharacterLine("Frodon", [aCharacter()], player)).toBeUndefined();
   });
-
-  it("ignore une fiche que le serveur n'a pas rattachée à un meneur", () => {
-    const pooled: CampaignCharacterListItem = {
-      projection: "pool",
-      id: "2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f6a",
-      name: "Inconnu",
-      portrait: null,
-      status: "waiting_adventure",
-      review: { status: "draft" },
-      speciesName: "Nain",
-      lineageName: null,
-      className: "Barbare",
-      level: 1,
-      assignmentStatus: "assigned",
-    };
-
-    expect(toMemberCharacterLine("Legolas", [pooled], player)).toBe(
-      "Aucun personnage associé",
-    );
-  });
 });

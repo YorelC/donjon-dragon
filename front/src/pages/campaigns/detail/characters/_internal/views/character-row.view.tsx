@@ -62,8 +62,6 @@ function RowActions({
   onDelete,
   onUnassign,
 }: CharacterRowProps) {
-  if (character.projection === "pool") return null;
-
   return (
     <div className="flex flex-wrap items-center justify-end gap-2.5">
       <SheetLink campaignId={campaignId} characterId={character.id} />
@@ -128,11 +126,6 @@ function BuilderLink({ campaignId, characterId }: CharacterLinkProps) {
 }
 
 function toAssignmentLabel(character: CampaignCharacterListItem): string {
-  if (character.projection === "pool")
-    return character.assignmentStatus === "assigned"
-      ? "Attribué"
-      : UNASSIGNED_LABEL;
-
   return character.assignedTo?.displayName ?? UNASSIGNED_LABEL;
 }
 
@@ -144,14 +137,10 @@ function toBuildLine(character: CampaignCharacterListItem): string {
   return `${species} · ${character.className} niveau ${character.level}`;
 }
 
-function isCorrectable(
-  character: Exclude<CampaignCharacterListItem, { projection: "pool" }>,
-): boolean {
+function isCorrectable(character: CampaignCharacterListItem): boolean {
   return character.review.status === "draft" || character.review.status === "refused";
 }
 
-function canEditPersonalDetails(
-  character: Exclude<CampaignCharacterListItem, { projection: "pool" }>,
-): boolean {
+function canEditPersonalDetails(character: CampaignCharacterListItem): boolean {
   return character.review.status === "accepted" && character.personalDetails !== undefined;
 }

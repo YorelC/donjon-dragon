@@ -17,6 +17,11 @@ export interface CharacterListViewer {
   isGameMaster: boolean;
 }
 
+/** Un joueur ne voit que son personnage assigné, jamais le vivier (DR-007-07). */
+export function isListedFor(character: Character, viewer: CharacterListViewer): boolean {
+  return viewer.isGameMaster || !!character.assignedTo?.equals(viewer.id);
+}
+
 export function toCharacterListItem(
   character: Character,
   viewer: CharacterListViewer,
@@ -24,8 +29,7 @@ export function toCharacterListItem(
 ): CampaignCharacterListItem {
   const dto = toCharacterDto(character, viewer.id, assignedPlayer);
   if (viewer.isGameMaster) return gameMasterProjection(dto, character);
-  if (character.assignedTo?.equals(viewer.id)) return controlledProjection(dto, character);
-  return poolProjection(dto);
+  return controlledProjection(dto, character);
 }
 
 function gameMasterProjection(dto: CharacterDto, character: Character): CampaignCharacterListItem {
@@ -41,7 +45,7 @@ function controlledProjection(dto: CharacterDto, character: Character): Campaign
 function controlledFields(dto: CharacterDto, character: Character) {
   const identity = character.identity;
   return {
-    ...poolFields(dto), review: dto.review, build: dto.build,
+    ...summaryFields(dto), review: dto.review, build: dto.build,
     personalDetails: {
       age: identity.age, weightKg: identity.weightKg, description: identity.description,
       personalityTraits: identity.personalityTraits, ideals: identity.ideals,
@@ -51,17 +55,12 @@ function controlledFields(dto: CharacterDto, character: Character) {
   };
 }
 
-function poolProjection(dto: CharacterDto): CampaignCharacterListItem {
-  return { projection: 'pool', ...poolFields(dto) };
-}
-
-function poolFields(dto: CharacterDto) {
+function summaryFields(dto: CharacterDto) {
   return {
     id: dto.id,
     name: dto.name,
     portrait: null,
     status: dto.status,
-    review: { status: dto.review.status },
     speciesName: dto.build.speciesName,
     lineageName: dto.build.lineageName,
     className: dto.build.className,

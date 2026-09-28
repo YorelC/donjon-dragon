@@ -22,16 +22,16 @@ describe('contrats d attribution et de projection', () => {
       .toBe(false);
   });
 
-  it('interdit les champs privés dans la projection du vivier', () => {
-    const projection = CampaignCharacterListItemSchema.parse({
+  // DR-007-07 : un joueur ne reçoit plus rien du vivier, pas même un résumé.
+  it('ne connaît plus de projection du vivier', () => {
+    const pooled = CampaignCharacterListItemSchema.safeParse({
       projection: 'pool', id: '550e8400-e29b-41d4-a716-446655440000',
       name: 'Bilbon', portrait: null, status: 'waiting_adventure',
-      review: { status: 'submitted', lastRejectionReason: 'champ privé' },
+      review: { status: 'submitted' },
       speciesName: 'Halfelin', lineageName: null, className: 'Roublard',
-      level: 1, assignmentStatus: 'available', abilityRoll: { totals: [18] },
+      level: 1, assignmentStatus: 'available',
     });
-    expect('abilityRoll' in projection).toBe(false);
-    expect('lastRejectionReason' in projection.review).toBe(false);
+    expect(pooled.success).toBe(false);
   });
 });
 

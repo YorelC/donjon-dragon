@@ -26,7 +26,7 @@ function RejectionReason({
 }: {
   character: CampaignCharacterListItem;
 }) {
-  if (character.projection === "pool" || !character.review.lastRejectionReason) {
+  if (!character.review.lastRejectionReason) {
     return null;
   }
 

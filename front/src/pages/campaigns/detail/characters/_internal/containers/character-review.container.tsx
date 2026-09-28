@@ -9,7 +9,7 @@ import { CharacterReviewActionsView } from "../views/character-review-actions.vi
 
 interface CharacterReviewContainerProps {
   campaignId: string;
-  character: Exclude<CampaignCharacterListItem, { projection: "pool" }>;
+  character: CampaignCharacterListItem;
 }
 
 export function CharacterReviewContainer(props: CharacterReviewContainerProps) {

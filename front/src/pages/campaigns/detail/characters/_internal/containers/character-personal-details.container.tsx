@@ -4,7 +4,7 @@ import { useUpdateCharacterPersonalDetails } from "../queries/use-character-pers
 import { CharacterPersonalDetailsView } from "../views/character-personal-details.view";
 import type { EditablePersonalDetailsValues } from "../views/character-personal-details.view";
 
-type ControlledCharacter = Exclude<CampaignCharacterListItem, { projection: "pool" }>;
+type ControlledCharacter = CampaignCharacterListItem;
 
 interface CharacterPersonalDetailsContainerProps {
   campaignId: string;

@@ -14,7 +14,7 @@ import {
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
 import { indexCharacterDirectoryUsers } from '../directory-index';
-import { toCharacterListItem } from '../character-list.mapper';
+import { isListedFor, toCharacterListItem } from '../character-list.mapper';
 import type { Character } from '../../domain/character';
 import { CharacterNotFoundError } from '../../domain/character.errors';
 import { OwningCampaignId } from '../../domain/owning-campaign-id';
@@ -25,8 +25,9 @@ export interface ListCampaignCharactersDto {
 }
 
 /**
- * Les personnages de la campagne sous une projection calculée pour le lecteur.
- * Les champs privés ne franchissent jamais la frontière HTTP avant filtrage.
+ * Les personnages de la campagne sous une projection calculée pour le lecteur :
+ * tous pour un MJ, le sien seul pour un joueur (DR-007-07). Le tri se fait après
+ * chargement, jamais dans la requête : la règle reste visible et testable.
  */
 @Injectable()
 export class ListCampaignCharactersUseCase {
@@ -50,14 +51,14 @@ export class ListCampaignCharactersUseCase {
     });
     if (!role.isActiveMember) throw new CharacterNotFoundError();
 
-    const characters = await this.characterRepo.findByCampaignId(
+    const viewer = { id: UserId.create(dto.actorId), isGameMaster: role.isGameMaster };
+    const characters = (await this.characterRepo.findByCampaignId(
       OwningCampaignId.create(dto.campaignId),
-    );
+    )).filter((character) => isListedFor(character, viewer));
     const players = await indexCharacterDirectoryUsers(
       this.directory,
       assignedPlayerIds(characters),
     );
-    const viewer = { id: UserId.create(dto.actorId), isGameMaster: role.isGameMaster };
 
     return characters.map((character) =>
       toCharacterListItem(character, viewer, playerOf(players, character)),

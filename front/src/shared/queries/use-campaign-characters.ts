@@ -8,10 +8,9 @@ import { API_ROUTES } from "@/shared/constants/api-routes";
  * maintenant à trois écrans — la table, le builder, et la liste des membres, qui
  * y lit le personnage de chacun.
  *
- * Le serveur projette chaque fiche selon qui la regarde : `pool` pour un joueur
- * qui n'y a pas droit, `controlled` pour la sienne, `gameMaster` pour tout le
- * reste. D'où l'union plutôt que `Character` — les champs sensibles n'arrivent
- * pas toujours.
+ * Le serveur projette chaque fiche selon qui la regarde : un joueur ne reçoit
+ * que la sienne, en `controlled` ; un MJ les reçoit toutes, en `gameMaster`.
+ * D'où l'union plutôt que `Character` — `createdByMe` n'arrive qu'au MJ.
  */
 export const campaignCharactersKey = (campaignId: string) =>
   ["campaigns", "characters", campaignId] as const;

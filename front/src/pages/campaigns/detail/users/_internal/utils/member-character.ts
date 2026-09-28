@@ -35,14 +35,11 @@ function toAbsenceLine(
   return constatable ? NO_CHARACTER : undefined;
 }
 
-/** Les fiches en projection `pool` ne disent pas qui les mène : on les écarte. */
 function toOwnedCharacters(
   displayName: string,
   characters: CampaignCharacterListItem[],
 ): CampaignCharacterListItem[] {
   return characters.filter(
-    (character) =>
-      character.projection !== "pool" &&
-      character.assignedTo?.displayName === displayName,
+    (character) => character.assignedTo?.displayName === displayName,
   );
 }

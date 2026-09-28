@@ -513,20 +513,17 @@ export const CharacterSchema = z.object({
   revision: CharacterRevisionSchema,
 });
 
-export const CharacterPoolProjectionSchema = z.object({
+/** Un joueur ne reçoit que son personnage assigné (DR-007-07) : il n'y a plus de vivier projeté. */
+export const ControlledCharacterProjectionSchema = z.object({
   id: CharacterIdSchema,
   name: characterNameField(),
   portrait: z.string().url().nullable(),
   status: CharacterStatusSchema,
-  review: CharacterPublicReviewSchema,
   speciesName: z.string(),
   lineageName: z.string().nullable(),
   className: z.string(),
   level: z.number().int().min(1).max(20),
   assignmentStatus: z.enum(['assigned', 'available']),
-});
-
-export const ControlledCharacterProjectionSchema = CharacterPoolProjectionSchema.extend({
   review: CharacterReviewSummarySchema,
   build: CharacterBuildSummarySchema,
   personalDetails: CharacterPersonalDetailsSchema,
@@ -540,7 +537,6 @@ export const GameMasterCharacterProjectionSchema =
   });
 
 export const CampaignCharacterListItemSchema = z.discriminatedUnion('projection', [
-  CharacterPoolProjectionSchema.extend({ projection: z.literal('pool') }),
   ControlledCharacterProjectionSchema.extend({ projection: z.literal('controlled') }),
   GameMasterCharacterProjectionSchema.extend({ projection: z.literal('gameMaster') }),
 ]);
