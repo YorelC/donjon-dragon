@@ -10,7 +10,7 @@ import type {
 } from '../reference/effect';
 import type { ClassKey, SpellKey } from '../reference/keys';
 import { SPECIES } from '../reference/species';
-import { SPELLS } from '../reference/spells';
+import { SPELLS, type Spell, type SpellComponents, type SpellSchool } from '../reference/spells';
 import type { CharacterBuild } from './character-build';
 
 /** DD de sauvegarde d'un sort : 8, plus le bonus de maîtrise, plus le modificateur. */
@@ -27,9 +27,23 @@ const LEVEL_ONE = 1;
 export interface NamedSpell {
   spellKey: SpellKey;
   name: string;
+  detail: SpellDetail | null;
   alwaysPrepared: boolean;
   ritualOnly: boolean;
   freeCastFrequency: GrantedSpellFrequency | null;
+}
+
+/** De quoi lancer le sort sans ouvrir le livre : ni listes de classe, ni dégâts moteur. */
+export interface SpellDetail {
+  level: Spell['level'];
+  school: SpellSchool;
+  castingTime: string;
+  range: string;
+  components: SpellComponents;
+  duration: string;
+  concentration: boolean;
+  ritual: boolean;
+  description: string;
 }
 
 export interface ResolvedSpellcasting {
@@ -288,7 +302,22 @@ const RITUAL: SpellFlags = {
 };
 
 function spellNamed(spellKey: SpellKey, flags: SpellFlags): NamedSpell {
-  return { spellKey, name: SPELLS[spellKey]?.name ?? spellKey, ...flags };
+  const spell = SPELLS[spellKey];
+  return { spellKey, name: spell?.name ?? spellKey, detail: spell ? detailOf(spell) : null, ...flags };
+}
+
+function detailOf(spell: Spell): SpellDetail {
+  return {
+    level: spell.level,
+    school: spell.school,
+    castingTime: spell.castingTime,
+    range: spell.range,
+    components: { ...spell.components },
+    duration: spell.duration,
+    concentration: spell.concentration,
+    ritual: spell.ritual,
+    description: spell.description,
+  };
 }
 
 const atWillNamed = (key: SpellKey): NamedSpell => spellNamed(key, AT_WILL);

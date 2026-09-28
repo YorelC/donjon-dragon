@@ -2,10 +2,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/components/at
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { SHEET_TABS } from "../constants/sheet-labels";
 import { FeaturesTabContainer } from "../containers/features-tab.container";
+import { GrimoireTabContainer } from "../containers/grimoire-tab.container";
 import { WeaponsTabContainer } from "../containers/weapons-tab.container";
 import type { CharacterSheetModel } from "../types/character-sheet-model";
 import { GearTabView } from "./gear-tab.view";
-import { GrimoireTabView } from "./grimoire-tab.view";
 import { IdentityTabView } from "./identity-tab.view";
 
 type SheetTab = (typeof SHEET_TABS)[keyof typeof SHEET_TABS];
@@ -36,7 +36,7 @@ export function SheetTabsView({ model }: { model: CharacterSheetModel }) {
         </TabsContent>
         {hasSpellcasting ? (
           <TabsContent value={SHEET_TABS.grimoire.value}>
-            <GrimoireTabView sheet={sheet} />
+            <GrimoireTabContainer sheet={sheet} />
           </TabsContent>
         ) : null}
         <TabsContent value={SHEET_TABS.gear.value}>

@@ -1,5 +1,6 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
+import { GrimoireTabContainer } from "../containers/grimoire-tab.container";
 import { aSheetModel } from "../types/character-sheet-model.fixture";
 import { GearTabView } from "./gear-tab.view";
 import { IdentityTabView } from "./identity-tab.view";
@@ -92,13 +93,65 @@ describe("IdentityTabView", () => {
   });
 });
 
+describe("GrimoireTabContainer", () => {
+  const renderGrimoire = () =>
+    render(<GrimoireTabContainer sheet={aSheetModel({ spellcasting: [aSpellcasting()] }).sheet} />);
+
+  it("porte caractéristique, DD et attaque dans l'en-tête de sa source", () => {
+    renderGrimoire();
+
+    expect(screen.getByText("Rôdeur")).toBeInTheDocument();
+    expect(screen.getByText("Sagesse")).toBeInTheDocument();
+    expect(screen.getByText("13")).toBeInTheDocument();
+    expect(screen.getByText("+5")).toBeInTheDocument();
+  });
+
+  it("montre la fiche complète du sort survolé", () => {
+    renderGrimoire();
+
+    fireEvent.mouseEnter(screen.getByRole("button", { name: /Marque du chasseur/ }));
+
+    expect(screen.getByText("Sort de niveau 1 · Divination")).toBeInTheDocument();
+    expect(screen.getByText("Concentration, jusqu'à 1 heure")).toBeInTheDocument();
+    expect(screen.getByText("V")).toBeInTheDocument();
+  });
+
+  it("garde le sort cliqué quand le survol cesse, et revient à lui après un autre", () => {
+    renderGrimoire();
+    const mark = screen.getByRole("button", { name: /Marque du chasseur/ });
+    const guidance = screen.getByRole("button", { name: /Assistance/ });
+
+    fireEvent.click(mark);
+    fireEvent.mouseLeave(mark);
+    fireEvent.mouseEnter(guidance);
+    expect(screen.getByText("Sort mineur · Divination")).toBeInTheDocument();
+
+    fireEvent.mouseLeave(guidance);
+    expect(screen.getByText("Sort de niveau 1 · Divination")).toBeInTheDocument();
+    expect(mark).toHaveAttribute("aria-pressed", "true");
+  });
+});
+
 function aSpellcasting() {
   return {
     origin: "Rôdeur", ability: "wisdom" as const, saveDc: 13, attackBonus: 5,
-    cantripsKnown: [], level1Slots: 2, slotsRecoverOnShortRest: false,
+    level1Slots: 2, slotsRecoverOnShortRest: false,
+    cantripsKnown: [{
+      spellKey: "guidance", name: "Assistance", detail: aSpellDetail({ level: 0 }),
+      alwaysPrepared: false, ritualOnly: false, freeCastFrequency: null,
+    }],
     spellsPrepared: [{
-      spellKey: "hunters-mark", name: "Marque du chasseur",
+      spellKey: "hunters-mark", name: "Marque du chasseur", detail: aSpellDetail({ level: 1 }),
       alwaysPrepared: true, ritualOnly: false, freeCastFrequency: null,
     }],
+  };
+}
+
+function aSpellDetail({ level }: { level: number }) {
+  return {
+    level, school: "divination", castingTime: "Action bonus", range: "27 m",
+    components: { verbal: true, somatic: false, material: null },
+    duration: "jusqu'à 1 heure", concentration: true, ritual: false,
+    description: "Vous désignez magiquement une créature comme votre proie.",
   };
 }

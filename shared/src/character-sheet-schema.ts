@@ -66,7 +66,26 @@ export const ResolvedSpellSchema = z.object({
   name: z.string(),
 });
 
+/** De quoi lancer le sort sans ouvrir le livre : la fiche l'affiche au survol. */
+export const ResolvedSpellDetailSchema = z.object({
+  level: z.number().int().nonnegative(),
+  school: z.string(),
+  castingTime: z.string(),
+  range: z.string(),
+  components: z.object({
+    verbal: z.boolean(),
+    somatic: z.boolean(),
+    material: z.string().nullable(),
+  }),
+  duration: z.string(),
+  concentration: z.boolean(),
+  ritual: z.boolean(),
+  description: z.string(),
+});
+
 export const ResolvedCastableSpellSchema = ResolvedSpellSchema.extend({
+  /** Nul pour une clé que le domaine ne connaît pas : le sort garde au moins son nom. */
+  detail: ResolvedSpellDetailSchema.nullable(),
   alwaysPrepared: z.boolean(),
   ritualOnly: z.boolean(),
   freeCastFrequency: z.enum([
@@ -186,6 +205,7 @@ export type ResolvedSkill = z.infer<typeof ResolvedSkillSchema>;
 export type ResolvedSavingThrow = z.infer<typeof ResolvedSavingThrowSchema>;
 export type ResolvedProficiencies = z.infer<typeof ResolvedProficienciesSchema>;
 export type ResolvedSpell = z.infer<typeof ResolvedSpellSchema>;
+export type ResolvedSpellDetail = z.infer<typeof ResolvedSpellDetailSchema>;
 export type ResolvedSpellcasting = z.infer<typeof ResolvedSpellcastingSchema>;
 export type ResolvedFeature = z.infer<typeof ResolvedFeatureSchema>;
 export type ResolvedResource = z.infer<typeof ResolvedResourceSchema>;

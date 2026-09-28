@@ -596,10 +596,22 @@ describe('magicien haut-elfe', () => {
     expect(lineage?.cantripsKnown).toEqual([
       {
         spellKey: 'prestidigitation', name: 'Prestidigitation',
+        detail: expect.objectContaining({ level: 0, school: 'transmutation' }),
         alwaysPrepared: false, ritualOnly: false, freeCastFrequency: 'atWill',
       },
     ]);
     expect(sheet.spellcasting.flatMap((entry) => entry.cantripsKnown)).toHaveLength(4);
+  });
+
+  it('détaille chaque sort connu, composantes comprises', () => {
+    const sheet = resolveSheetOf(buildWith([]));
+    const lineage = sheet.spellcasting.find((entry) => entry.origin === 'Haut-elfe');
+
+    expect(lineage?.cantripsKnown[0]?.detail).toMatchObject({
+      castingTime: 'Action',
+      components: { verbal: true, somatic: true, material: null },
+      concentration: false,
+    });
   });
 
   it('n’octroie ni emplacement ni sort préparé', () => {

@@ -84,6 +84,18 @@ export const SPELL_STATUS = {
   prepared: "Préparé",
 } as const;
 
+/** Les écoles arrivent en clés anglaises du domaine ; une clé inconnue s'affiche brute. */
+export const SPELL_SCHOOL_LABELS: Partial<Record<string, string>> = {
+  abjuration: "Abjuration",
+  conjuration: "Invocation",
+  divination: "Divination",
+  enchantment: "Enchantement",
+  evocation: "Évocation",
+  illusion: "Illusion",
+  necromancy: "Nécromancie",
+  transmutation: "Transmutation",
+};
+
 export const PACT_OF_THE_BLADE_LABEL = "Pacte de la Lame";
 
 export const SHEET_TABS = {
