@@ -41,7 +41,7 @@ function SheetBody({ page, back }: SheetBodyProps) {
   return (
     <div className="flex flex-col gap-3 lg:h-full lg:min-h-0">
       <SheetHeaderView model={page.data} back={back} />
-      <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[500px_minmax(0,1fr)]">
+      <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[540px_minmax(0,1fr)]">
         <SheetAbilitiesPanelView model={page.data} />
         <SheetTabsView model={page.data} />
       </div>

@@ -18,13 +18,14 @@ interface LabeledSkill {
 
 /**
  * Les 18 compétences, toujours les 18 : une fiche montre aussi ce qu'on ne
- * maîtrise pas. Une par ligne, dans l'ordre alphabétique de leur nom français.
+ * maîtrise pas. Deux colonnes de neuf, qu'on lit de haut en bas dans l'ordre
+ * alphabétique de leur nom français.
  */
 export function SheetSkillsView({ sheet, labels }: SheetSkillsViewProps) {
   return (
-    <div className="flex min-w-0 flex-col gap-2.5">
+    <div className="flex min-w-0 flex-col gap-3">
       <SectionHeading label="Compétences" />
-      <ul className="flex flex-col">
+      <ul className="grid grid-flow-col grid-cols-2 grid-rows-9 gap-x-8">
         {toLabeledSkills(sheet.skills, labels).map((entry) => (
           <SkillLine key={entry.skill.skill} entry={entry} />
         ))}
@@ -37,7 +38,7 @@ function SkillLine({ entry }: { entry: LabeledSkill }) {
   const { skill, label } = entry;
 
   return (
-    <li className="sheet-pair h-5 items-center px-1" data-proficient={skill.proficient}>
+    <li className="sheet-pair h-7 items-center px-1" data-proficient={skill.proficient}>
       <span className={skill.proficient ? "text-gold-selected" : "text-ink-meta"}>{label}</span>
       <span className="flex items-center gap-2">
         <Diamond size="tick" tone={skill.proficient ? "filled" : "idle"} />

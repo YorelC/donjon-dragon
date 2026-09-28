@@ -78,12 +78,12 @@ disponibles, inspiration éteinte. Les contrôles sont visibles et désactivés.
 
 ### Bloc des jets
 
-Un seul bloc à deux colonnes, assez large pour se lire sans serrer :
+Un seul bloc, assez large pour se lire sans serrer :
 
-- à gauche, les six caractéristiques l'une sous l'autre, en cartes : nom en entier sur
-  sa propre ligne (jamais de débordement), modificateur, score et sauvegarde avec sa
-  maîtrise ;
-- à droite, les 18 compétences, une par ligne, dans l'ordre alphabétique français.
+- les six caractéristiques en cartes, deux par ligne : nom en entier et score à
+  gauche, modificateur en grand, sauvegarde et sa maîtrise dans une case à part ;
+- dessous, les 18 compétences sur deux colonnes de neuf, lues de haut en bas dans
+  l'ordre alphabétique français.
 
 Chaque caractéristique, sauvegarde et compétence deviendra la cible d'un test lancé
 depuis la fiche (`SF-005`).
