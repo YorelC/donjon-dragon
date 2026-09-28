@@ -53,9 +53,10 @@ Les comportements historiques ne constituent pas des décisions.
 ## Parcours utilisateur
 
 Un membre actif ouvre la liste des personnages de sa campagne. Un MJ actif dispose
-d'une projection d'administration. Un joueur voit une projection complète de contrôle
-pour son personnage assigné et seulement une projection minimale des autres dossiers,
-notamment ceux du vivier. Aucun secret n'est envoyé puis masqué par le client.
+d'une projection d'administration de tous les dossiers. Un joueur ne voit que son
+personnage assigné, en projection complète de contrôle : ni les dossiers des autres
+joueurs ni le vivier (DR-007-07). Sans personnage, sa liste est vide ; il en crée un, ou
+un MJ lui en attribue un. Aucun secret n'est envoyé puis masqué par le client.
 
 Un MJ actif attribue un personnage de la campagne à un joueur actif de cette même
 campagne. Les rôles et adhésions sont relus au moment de la commande. Une promotion,
@@ -109,20 +110,26 @@ l'acceptation, qui verrouille les choix selon `DEC-003`.
 |---|---|---|---|
 | MJ actif | projection MJ de tous les personnages | tous les personnages de la campagne | tous les personnages de la campagne |
 | joueur assigné | projection contrôlée de son personnage | son personnage uniquement | son personnage uniquement |
-| joueur actif sans contrôle sur le dossier | projection minimale | `404` | `404` |
+| joueur actif sans contrôle sur le dossier | dossier absent de la liste | `404` | `404` |
 | invité, parti, exclu ou extérieur | aucune donnée, campagne masquée | `404` | `404` |
 
 La projection de combat publique (nom, portrait, classe, niveau et PV) dépend de
 SF-003/SF-004 et reste hors périmètre.
 
-### DÉCISION DR-007-03 — validée le 25 août 2026
+### DÉCISION DR-007-03 — validée le 25 août 2026, remplacée par DR-007-07
 
-Le vivier utilise une projection enrichie contenant : identifiant public du dossier,
-nom, portrait lorsqu'il existe, statut de validation, classe, espèce/lignée, niveau et
-état assigné/non assigné. Elle ne contient jamais donnée mécanique détaillée,
-équipement, sorts, caractéristiques, tirage, identité système, identité du créateur ni
-information privée de l'assignataire. La projection MJ est nommée explicitement plutôt
-que de réutiliser l'agrégat ou le DTO historique.
+Le vivier utilisait une projection minimale envoyée aux joueurs : identifiant public du
+dossier, nom, portrait, statut de validation, classe, espèce/lignée, niveau et état
+assigné/non assigné. DR-007-07 la supprime. La projection MJ reste nommée explicitement
+plutôt que de réutiliser l'agrégat ou le DTO historique.
+
+### DÉCISION DR-007-07 — validée le 28 septembre 2026
+
+La liste d'un joueur actif ne contient que son personnage assigné, en projection de
+contrôle. Elle ne contient ni les dossiers des autres joueurs, ni ceux du vivier : le
+serveur les écarte avant sérialisation. Un joueur sans personnage reçoit une liste vide ;
+il crée son personnage (DR-007-04) ou attend qu'un MJ lui en attribue un. Seuls les MJ
+actifs voient le vivier.
 
 ## Invariants d'appartenance, d'attribution et de visibilité
 
@@ -166,15 +173,24 @@ un joueur.
 Attribuer un personnage déjà contrôlé par un autre joueur est explicitement rejeté,
 sans transfert implicite. Seul un MJ actif peut retirer ce personnage à son joueur,
 même lorsque ce dernier l'a créé. Le créateur joueur en conserve le contrôle et peut le
-modifier jusqu'à son acceptation — le « verrouillage » par le MJ — selon `DEC-003`.
+modifier jusqu'à son acceptation — le « verrouillage » par le MJ — selon `DEC-003`,
+tant qu'un MJ ne le lui a pas repris (DR-007-08).
+
+### DÉCISION DR-007-08 — validée le 28 septembre 2026
+
+Quand un MJ actif retire à un joueur le personnage que ce joueur a créé — par une
+désattribution, ou par le remplacement de DR-007-01 — le personnage retourne au vivier
+et son créateur devient ce MJ. Le joueur perd tout lien avec lui : il ne le voit plus et
+ne peut plus le modifier. Un personnage créé par un MJ garde son créateur lorsqu'il est
+repris. Promotion, départ et exclusion ne changent pas le créateur.
 
 ## Vivier
 
 Le vivier est l'ensemble des personnages non assignés de la campagne. Une promotion,
 un départ, une exclusion et une désattribution acceptés y remettent immédiatement le
 dossier. Il ne constitue pas une collection séparée ni une source d'autorité. Son
-Un dossier non accepté reste éligible à l'attribution. Sa représentation suit
-DR-007-03.
+Un dossier non accepté reste éligible à l'attribution. Il n'est projeté qu'aux MJ
+(DR-007-07).
 
 ## Idempotence, révisions et concurrence
 
@@ -233,11 +249,13 @@ causalité ; aucun troisième type dédié n'est créé.
     une intention divergente sous la même clé répond `409`.
 12. Un MJ voit les projections complètes de la campagne.
 13. Un joueur lit la fiche et le build de son personnage assigné uniquement.
-14. La liste d'un joueur ne contient aucun champ privé d'un autre personnage ou du
-    vivier.
+14. La liste d'un joueur ne contient que son personnage assigné : aucun autre
+    personnage ni aucun dossier du vivier.
 15. Reçu, audit, outbox et toutes les racines modifiées sont commis ou annulés ensemble.
 16. Un joueur actif sans personnage crée un personnage : il lui est attribué dans le
     commit de création ; un joueur déjà assigné ne peut pas créer un second contrôle.
+17. Un MJ qui désattribue ou remplace le personnage créé par un joueur en devient le
+    créateur ; le joueur ne le voit plus et ne peut plus le modifier.
 
 ## Hors périmètre
 
@@ -268,5 +286,6 @@ d'intention et les invariants finaux.
 
 ## Décisions
 
-DR-007-01 à DR-007-06 ont été validées le 25 août 2026. Aucune décision fonctionnelle
+DR-007-01 à DR-007-06 ont été validées le 25 août 2026, DR-007-07 et DR-007-08 le
+28 septembre 2026. Aucune décision fonctionnelle
 de cette spécification ne reste ouverte.

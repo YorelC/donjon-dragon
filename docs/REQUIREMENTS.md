@@ -64,9 +64,13 @@ données privées ni confondre propriété, maîtrise du jeu et contrôle d'un p
   une attribution.
 - Lorsqu'un joueur devient MJ, son personnage est automatiquement désassigné et reste
   disponible dans le vivier de la campagne.
+- Lorsqu'un MJ retire à un joueur le personnage que ce joueur a créé, par une
+  désattribution ou en lui attribuant un autre personnage, le personnage retiré
+  retourne au vivier et appartient désormais à ce MJ : il n'est plus de la création
+  du joueur.
 - Lorsqu'un MJ redevient joueur, ses privilèges sont retirés immédiatement. Il entre
-  dans l'état transitoire « joueur sans personnage » et doit choisir un personnage
-  disponible ou en créer un avant d'accéder au reste de la campagne.
+  dans l'état transitoire « joueur sans personnage » : il en crée un, ou attend qu'un
+  MJ lui en attribue un, avant d'accéder au reste de la campagne.
 - Seul un MJ peut supprimer définitivement un personnage. Lorsqu'une suppression
   ferait perdre un historique utile, l'archivage est privilégié.
 
@@ -75,6 +79,8 @@ données privées ni confondre propriété, maîtrise du jeu et contrôle d'un p
 - Un joueur consulte la fiche complète et le détail de construction de son seul
   personnage assigné.
 - Il ne consulte pas la fiche complète des autres joueurs.
+- Dans la liste des personnages, un joueur ne voit que son personnage assigné : ni ceux
+  des autres joueurs, ni le vivier. Sans personnage, sa liste est vide.
 - Tous les MJ consultent toutes les fiches de la campagne.
 - En combat, les participants peuvent voir pour un allié : nom, portrait, classe,
   niveau, PV actuels et PV maximaux.

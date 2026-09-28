@@ -14,10 +14,14 @@
 - Un joueur contrôle au maximum un personnage assigné par campagne.
 - Seul un MJ attribue ou réattribue un personnage.
 - La promotion joueur vers MJ désassigne son personnage.
-- La rétrogradation MJ vers joueur retire immédiatement ses privilèges et impose le
-  choix ou la création d'un personnage avant le retour au parcours normal.
-- Un joueur voit sa fiche complète, pas celles des autres. Les MJ voient toutes les
-  fiches. Le combat expose seulement le résumé public prévu par la spécification.
+- Un MJ qui retire à un joueur le personnage que ce joueur a créé en devient le
+  créateur ; le personnage retourne au vivier.
+- La rétrogradation MJ vers joueur retire immédiatement ses privilèges et impose la
+  création d'un personnage, ou l'attribution d'un personnage par un MJ, avant le retour
+  au parcours normal.
+- Un joueur voit sa fiche complète, pas celles des autres. Dans la liste des
+  personnages, il ne voit que le sien. Les MJ voient toutes les fiches. Le combat
+  expose seulement le résumé public prévu par la spécification.
 - Toutes les ressources sont isolées par campagne côté serveur.
 
 Lors d'une purge définitive de compte, une campagne possédée qui conserve des membres
