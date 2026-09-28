@@ -12,7 +12,16 @@ const DWARF = aSpecies({
   description: "Façonnés dans la pierre et le fer.",
   traits: [{ key: "toughness", name: "Robustesse naine", description: "+1 PV par niveau.", grantedSpells: [] }],
 });
-const ELF = aSpecies({ key: "elf", name: "Elfe", darkvision: 0 });
+const ELF = aSpecies({
+  key: "elf", name: "Elfe", darkvision: 0,
+  lineage: {
+    label: "Lignage elfique", spellcastingAbilityOptions: [],
+    options: [{
+      key: "drow", name: "Drow", description: "Façonnés dans l'Outreterre.",
+      summary: "Vision dans le noir portée à 36 m.", traits: [],
+    }],
+  },
+});
 const RANGER = aClass({
   key: "ranger",
   name: "Rôdeur",
@@ -77,6 +86,14 @@ describe("fiche détaillée", () => {
     expect(detail.blocks).toContainEqual(expect.objectContaining({
       heading: "Style de combat", body: "Un don de Style de combat.",
     }));
+  });
+
+  it("ouvre le lignage sur sa présentation, puis son résumé en tête des traits", () => {
+    const detail = detailOf("lineage", aSource({ speciesKey: "elf", lineageKey: "drow" }));
+
+    expect(detail.lede).toBe("Façonnés dans l'Outreterre.");
+    expect(detail.blocks.find((block) => block.heading === "Traits spécifiques")?.body)
+      .toBe("Vision dans le noir portée à 36 m.");
   });
 
   it("dit à quoi sert le lignage et sa caractéristique d'incantation", () => {

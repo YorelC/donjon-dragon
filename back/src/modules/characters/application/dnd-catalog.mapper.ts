@@ -54,6 +54,7 @@ import {
   ABILITY_DESCRIPTIONS,
   ALIGNMENT_DESCRIPTIONS,
   CLASS_DESCRIPTIONS,
+  LINEAGE_DESCRIPTIONS,
   SKILL_DESCRIPTIONS,
   SPECIES_DESCRIPTIONS,
 } from '../domain/reference/descriptions';
@@ -191,7 +192,8 @@ function toCatalogLineage(species: Species): CatalogLineageChoice | null {
     options: lineage.options.map((option) => ({
       key: option.key,
       name: option.name,
-      description: option.description,
+      description: LINEAGE_DESCRIPTIONS[option.key] ?? '',
+      summary: option.description,
       traits: option.traits.map(toCatalogFeature),
     })),
   };

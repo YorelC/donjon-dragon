@@ -82,7 +82,10 @@ export const CatalogStartingEquipmentSchema = z.object({
 export const CatalogLineageSchema = z.object({
   key: z.string(),
   name: z.string(),
+  /** La présentation qui ouvre la fiche du lignage, comme celle d'une espèce. */
   description: z.string(),
+  /** Ce que le lignage apporte, en une phrase : vision, vitesse, sort mineur. */
+  summary: z.string(),
   traits: z.array(CatalogFeatureSchema),
 });
 

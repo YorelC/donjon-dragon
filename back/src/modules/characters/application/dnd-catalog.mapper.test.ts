@@ -57,10 +57,12 @@ describe('toDndCatalog', () => {
    * Le créateur ouvre chaque fiche sur ce texte : une description vide laisserait
    * la fiche sans chapeau, sans que rien ne le signale.
    */
-  it('décrit chaque espèce, classe, compétence, caractéristique et alignement', () => {
+  it('décrit chaque espèce, lignage, classe, compétence, caractéristique et alignement', () => {
     const catalog = toDndCatalog();
+    const lineages = catalog.species.flatMap((species) => species.lineage?.options ?? []);
     const described = [
-      ...catalog.species, ...catalog.classes, ...catalog.skills, ...catalog.abilities, ...catalog.alignments,
+      ...catalog.species, ...lineages, ...catalog.classes, ...catalog.skills, ...catalog.abilities,
+      ...catalog.alignments,
     ];
 
     expect(described.filter((entry) => entry.description.trim() === '')).toEqual([]);

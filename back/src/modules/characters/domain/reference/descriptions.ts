@@ -9,7 +9,7 @@
 
 import type { Alignment } from '../character-identity';
 import type { Ability } from './abilities';
-import type { ClassKey, SpeciesKey } from './keys';
+import type { ClassKey, LineageKey, SpeciesKey } from './keys';
 import type { SkillName } from './skills';
 
 export const SPECIES_DESCRIPTIONS: Readonly<Record<SpeciesKey, string>> = {
@@ -31,6 +31,43 @@ export const SPECIES_DESCRIPTIONS: Readonly<Record<SpeciesKey, string>> = {
   orc: "Endurance, élan, refus de tomber. Les orcs portent en eux le don de Gruumsh : celui d'aller plus loin que le corps ne le permet.",
   tiefling:
     "Une ascendance planaire marque votre lignée : cornes, regard, et une magie qui affleure. Les tieffelins vivent avec la réputation qu'on leur prête avant de les connaître.",
+};
+
+/**
+ * Les lignages : la présentation qui ouvre leur fiche. La clé d'un lignage
+ * n'est pas une énumération fermée (`LineageKey` vaut `string`) : le test du
+ * catalogue vérifie que chacun a la sienne.
+ */
+export const LINEAGE_DESCRIPTIONS: Readonly<Record<LineageKey, string>> = {
+  drow: "Les drows vivent généralement dans l'Outreterre, où ils ont été façonnés. Certaines sociétés drows évitent l'Outreterre tout en conservant sa magie.",
+  'high-elf':
+    'Les hauts-elfes ont été imprégnés de la magie issue des croisements entre la Féerie et le plan Matériel. Ils se nomment ailleurs elfes du soleil ou de la lune.',
+  'wood-elf':
+    "Les elfes des bois portent en eux la magie des forêts primitives. On les connaît aussi sous les noms d'elfes sauvages, elfes verts ou elfes sylvestres.",
+  black:
+    "Bien que ces drakéides n'aient aucun lien avec les dragons noirs, ils ont la même couleur d'écailles et possèdent eux aussi un souffle d'acide.",
+  blue: "Écailles d'orage et regard électrique : ces drakéides portent la foudre dans le souffle.",
+  red: "L'ascendance la plus redoutée : le feu couve dans leur gorge comme dans une forge.",
+  green: 'Un souffle acide et corrosif, hérité des dragons des forêts profondes.',
+  white: 'Écailles de givre, souffle de gel : ces drakéides viennent des hautes terres glacées.',
+  brass: "Bavards et curieux, les drakéides d'airain manient un souffle de feu en ligne.",
+  bronze: "Gardiens des côtes, ils exhalent l'éclair de la tempête marine.",
+  copper: 'Farceurs et vifs, leur souffle ronge la pierre comme le métal.',
+  gold: "Une ascendance royale, dont le souffle brûle d'une flamme claire.",
+  silver: 'Descendants des dragons des cimes enneigées, au souffle de gel.',
+  'forest-gnome':
+    'Discrets et proches des bêtes, les gnomes des forêts vivent au creux des bois anciens.',
+  'rock-gnome':
+    'Bricoleurs infatigables, ils creusent, assemblent et rafistolent tout ce qui leur passe entre les mains.',
+  'fire-giant': "L'ardeur des forges volcaniques.",
+  'frost-giant': 'La morsure du nord.',
+  'hill-giant': "La masse tranquille et l'appétit qui va avec.",
+  'stone-giant': 'La patience des montagnes.',
+  'cloud-giant': 'Le caprice des hauteurs.',
+  'storm-giant': "L'orage sous la peau.",
+  abyssal: 'Le chaos des Abysses coule dans vos veines.',
+  chthonian: "Les plans de la mort et de l'ombre ont touché votre sang.",
+  infernal: 'Les Neuf Enfers ont scellé un pacte avec vos ancêtres.',
 };
 
 export const CLASS_DESCRIPTIONS: Readonly<Record<ClassKey, string>> = {

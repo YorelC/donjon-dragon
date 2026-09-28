@@ -80,7 +80,7 @@ function lineageBlocks(choice: CatalogLineageChoice, lineage: CatalogLineage | u
 
   return presentBlocks([
     lineage ? proseBlock(choice.label, LINEAGE_PURPOSE) : null,
-    lineage ? describedBlock("Traits spécifiques", lineage.traits) : null,
+    lineage ? lineageTraitsBlock(lineage) : null,
     abilities.length > 0
       ? proseBlock(
         "Caractéristique d'incantation",
@@ -130,5 +130,14 @@ function bonusesBlock(abilities: readonly Ability[]): DetailBlock {
     heading: "Bonus de caractéristiques",
     body: BONUS_RULE,
     items: abilities.map((ability) => ({ name: ABILITY_LABELS[ability], text: ELIGIBLE_BONUS })),
+  };
+}
+
+/** Le résumé du lignage en tête, puis le détail de chacun de ses traits. */
+function lineageTraitsBlock(lineage: CatalogLineage): DetailBlock {
+  return {
+    heading: "Traits spécifiques",
+    body: lineage.summary || null,
+    items: lineage.traits.map((trait) => ({ name: trait.name, text: trait.description })),
   };
 }

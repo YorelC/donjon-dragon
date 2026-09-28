@@ -87,7 +87,7 @@ export function aSpeciesWithMagicalLineage(
     lineage: {
       label: "Lignée",
       spellcastingAbilityOptions: ["intelligence", "charisma"],
-      options: [{ key: "drow", name: "Drow", description: "", traits: [] }],
+      options: [{ key: "drow", name: "Drow", description: "", summary: "", traits: [] }],
     },
   });
 }
