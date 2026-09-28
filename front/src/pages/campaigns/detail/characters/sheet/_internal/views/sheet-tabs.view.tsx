@@ -20,7 +20,7 @@ export function SheetTabsView({ model }: { model: CharacterSheetModel }) {
       defaultValue={SHEET_TABS.weapons.value}
       className="panel-flat min-w-0 gap-0 bg-white/[.012]"
     >
-      <TabsList variant="panel" className="overflow-x-auto px-[22px]">
+      <TabsList variant="panel" className="justify-start overflow-x-auto px-[22px]">
         <SheetTabTrigger tab={SHEET_TABS.weapons} />
         <SheetTabTrigger tab={SHEET_TABS.features} />
         {hasSpellcasting ? <SheetTabTrigger tab={SHEET_TABS.grimoire} /> : null}
