@@ -1,7 +1,7 @@
-import type { ComponentType } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
 import { Button } from "@/shared/components/atoms/button";
+import { CountBadge } from "@/shared/components/molecules/count-badge";
 import { SectionHeading } from "@/shared/components/molecules/section-heading";
 import { OrnateCorners } from "@/shared/components/molecules/ornate-corners";
 import { cn } from "@/shared/utils/utils";
@@ -11,8 +11,14 @@ export interface SidebarNavItem {
   label: string;
   /** `null` : jalon inerte, l'écran est annoncé mais pas encore ouvert. */
   route: string | null;
-  /** Le compteur de l'entrée, quand elle en porte un : chacune compte autre chose. */
-  Badge?: ComponentType;
+  /** Ce qui attend sur l'écran de l'entrée, quand elle en compte : chacune compte autre chose. */
+  pending?: SidebarPending;
+}
+
+export interface SidebarPending {
+  count: number;
+  /** Ce qui est compté, au pluriel, pour l'intitulé accessible. */
+  label: string;
 }
 
 export interface SidebarNav {
@@ -102,9 +108,16 @@ function SidebarEntry({ item, onNavigate }: SidebarEntryProps) {
   return (
     <NavLink to={item.route} onClick={onNavigate} className={toEntryClassName}>
       <span>{item.label}</span>
-      {item.Badge ? <item.Badge /> : null}
+      <PendingBadge pending={item.pending} />
     </NavLink>
   );
+}
+
+/** Rien n'est rendu à zéro : un compteur vide n'appelle à aucune action (INV-007). */
+function PendingBadge({ pending }: { pending?: SidebarPending }) {
+  if (!pending?.count) return null;
+
+  return <CountBadge count={pending.count} pending={pending.label} />;
 }
 
 /** L'écran est annoncé mais pas encore ouvert : visible, jamais actionnable. */

@@ -41,10 +41,6 @@ function renderLayout(nav: SidebarNav = aNav()) {
   };
 }
 
-function PendingBadge() {
-  return <span>3</span>;
-}
-
 // ── Tests ────────────────────────────────────────────────────────────────────
 
 describe("SidebarLayoutView", () => {
@@ -80,14 +76,29 @@ describe("SidebarLayoutView", () => {
     ).toBeInTheDocument();
   });
 
-  it("frappe une entrée de son compteur", () => {
+  it("frappe une entrée de ce qui l'attend", () => {
     renderLayout(
       aNav({
-        items: [{ label: "Amis", route: "/profile/friends", Badge: PendingBadge }],
+        items: [
+          { label: "Amis", route: "/profile/friends", pending: { count: 3, label: "demandes d'amis" } },
+        ],
       }),
     );
 
-    expect(screen.getByRole("link", { name: /Amis/ })).toHaveTextContent("3");
+    expect(screen.getByLabelText("3 demandes d'amis en attente")).toBeInTheDocument();
+  });
+
+  // INV-007 : un compteur vide n'appelle à aucune action.
+  it("tait un compteur nul", () => {
+    renderLayout(
+      aNav({
+        items: [
+          { label: "Amis", route: "/profile/friends", pending: { count: 0, label: "demandes d'amis" } },
+        ],
+      }),
+    );
+
+    expect(screen.queryByLabelText(/en attente/)).toBeNull();
   });
 
   it("pose l'action de pied et la déclenche", async () => {

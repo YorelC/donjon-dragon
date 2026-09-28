@@ -26,20 +26,7 @@ export function LeaveBuilderDialogView({ leave }: { leave: LeaveBuilder }) {
   return (
     <>
       <LeaveTrigger onClick={() => leave.onRequest(leave.backTo)} />
-      <AlertDialog open={leave.pendingTo !== null} onOpenChange={toCloseHandler(leave)}>
-        {/* Mêmes modificateurs que la largeur de l'atome, pour la remplacer : ses deux boutons n'y tenaient pas. */}
-        <AlertDialogContent className="data-[size=default]:sm:max-w-xl">
-          <AlertDialogHeader>
-            <span className="eyebrow">Quitter la création</span>
-            <AlertDialogTitle>Votre progression ne sera pas sauvegardée</AlertDialogTitle>
-            <AlertDialogDescription>
-              Les choix faits pour ce personnage seront perdus si vous quittez la création
-              maintenant.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <LeaveActions to={leave.pendingTo ?? leave.backTo} />
-        </AlertDialogContent>
-      </AlertDialog>
+      <LeaveDialog leave={leave} />
     </>
   );
 }
@@ -50,6 +37,30 @@ function LeaveTrigger({ onClick }: { onClick: () => void }) {
       <span aria-hidden>←</span>
       Retour aux personnages
     </Button>
+  );
+}
+
+function LeaveDialog({ leave }: { leave: LeaveBuilder }) {
+  return (
+    <AlertDialog open={leave.pendingTo !== null} onOpenChange={toCloseHandler(leave)}>
+      {/* Mêmes modificateurs que la largeur de l'atome, pour la remplacer : ses deux boutons n'y tenaient pas. */}
+      <AlertDialogContent className="data-[size=default]:sm:max-w-xl">
+        <LeaveHeader />
+        <LeaveActions to={leave.pendingTo ?? leave.backTo} />
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function LeaveHeader() {
+  return (
+    <AlertDialogHeader>
+      <span className="eyebrow">Quitter la création</span>
+      <AlertDialogTitle>Votre progression ne sera pas sauvegardée</AlertDialogTitle>
+      <AlertDialogDescription>
+        Les choix faits pour ce personnage seront perdus si vous quittez la création maintenant.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
   );
 }
 

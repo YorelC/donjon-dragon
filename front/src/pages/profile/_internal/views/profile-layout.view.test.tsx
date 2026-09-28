@@ -3,16 +3,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { ProfileLayoutView } from "./profile-layout.view";
-import { PROFILE_NAV_ITEMS } from "../constants/profile-nav-items";
+import { toProfileNavItems } from "../constants/profile-nav-items";
 import type { ProfileIdentity } from "../hooks/use-profile-identity";
-
-// Les compteurs interrogent le serveur : la vue n'a qu'à les poser.
-vi.mock("@/shared/components/layout/campaign-invites-badge", () => ({
-  CampaignInvitesBadge: () => null,
-}));
-vi.mock("@/shared/components/layout/profile-requests-badge", () => ({
-  ProfileRequestsBadge: () => null,
-}));
 
 const mockOnNavigate = vi.fn();
 
@@ -23,7 +15,7 @@ const identity: ProfileIdentity = {
 };
 
 const nav = {
-  items: PROFILE_NAV_ITEMS,
+  items: toProfileNavItems({ campaignInvitations: 0, friendRequests: 2 }),
   isMenuOpen: false,
   onToggleMenu: vi.fn(),
   onNavigate: mockOnNavigate,
@@ -54,6 +46,13 @@ describe("ProfileLayoutView", () => {
 
     const links = screen.getAllByRole("link");
     expect(links[0]).toHaveAttribute("href", "/campaigns");
+  });
+
+  it("frappe l'entrée Amis des demandes en attente, et tait un compteur nul", () => {
+    renderView();
+
+    expect(screen.getByLabelText("2 demandes d'amis en attente")).toBeInTheDocument();
+    expect(screen.queryByLabelText(/demandes de campagne/)).toBeNull();
   });
 
   it("porte la déconnexion au pied de la barre", async () => {

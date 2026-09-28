@@ -4,7 +4,7 @@ const MAX_DISPLAYED_COUNT = 9;
 
 interface CountBadgeViewProps {
   count: number;
-  /** Ce qui est compté, au pluriel : deux compteurs se côtoient dans le bandeau. */
+  /** Ce qui est compté, au pluriel : deux compteurs se côtoient dans une barre. */
   pending: string;
 }
 

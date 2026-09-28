@@ -1,8 +1,10 @@
 import { useState, useCallback } from "react";
-import { PROFILE_NAV_ITEMS } from "../constants/profile-nav-items";
+import { toProfileNavItems } from "../constants/profile-nav-items";
+import { useProfileNavCounts } from "./use-profile-nav-counts";
 
 export function useProfileNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const counts = useProfileNavCounts();
 
   const toggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
@@ -13,7 +15,7 @@ export function useProfileNav() {
   }, []);
 
   return {
-    items: PROFILE_NAV_ITEMS,
+    items: toProfileNavItems(counts),
     isMenuOpen,
     toggleMenu,
     closeMenu,

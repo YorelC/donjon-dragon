@@ -1,6 +1,8 @@
 import { describe, it, expect } from "vitest";
-import { PROFILE_NAV_ITEMS } from "./profile-nav-items";
+import { toProfileNavItems } from "./profile-nav-items";
 import { ROUTES } from "@/shared/constants/routes";
+
+const PROFILE_NAV_ITEMS = toProfileNavItems({ campaignInvitations: 2, friendRequests: 1 });
 
 describe("profile-nav-items", () => {
   it("ouvre sur les campagnes, puis les amis et les paramètres", () => {
@@ -14,6 +16,10 @@ describe("profile-nav-items", () => {
   it("should point to campaigns route", () => {
     const campaignsItem = PROFILE_NAV_ITEMS.find((item) => item.label === "Campagnes");
     expect(campaignsItem?.route).toBe(ROUTES.campaigns);
+  });
+
+  it("frappe chaque entrée de ce qui l'attend", () => {
+    expect(PROFILE_NAV_ITEMS.map((item) => item.pending?.count)).toEqual([2, 1, undefined]);
   });
 
   it("should point to profileFriends route", () => {

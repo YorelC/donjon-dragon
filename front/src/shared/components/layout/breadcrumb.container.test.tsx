@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import { useCampaignDetail } from "@/shared/queries/use-campaign-detail";
 import { useCampaignCharacters } from "@/shared/queries/use-campaign-characters";
+import { PENDING_NAME } from "@/shared/hooks/use-breadcrumb-refs";
 import { useLeaveGuardStore } from "@/shared/stores/leave-guard.store";
 import { AppBreadcrumb } from "./breadcrumb.container";
 
@@ -69,7 +70,13 @@ describe("AppBreadcrumb", () => {
     givenNames();
     renderAt("/campaigns/c1/characters/p1/sheet");
 
-    expect(crumbTexts()).toEqual(["Profil", "Campagnes", "…", "Personnages", "…"]);
+    expect(crumbTexts()).toEqual([
+      "Profil",
+      "Campagnes",
+      PENDING_NAME,
+      "Personnages",
+      PENDING_NAME,
+    ]);
   });
 
   it("ne pose aucun fil hors des écrans qui en ont un", () => {

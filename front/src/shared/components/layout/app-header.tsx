@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { ROUTES } from "@/shared/constants/routes";
 import { AppBreadcrumb } from "@/shared/components/layout/breadcrumb.container";
-import { useGuardedFollow } from "@/shared/hooks/use-guarded-follow";
+import { useGuardedFollow, type FollowHandler } from "@/shared/hooks/use-guarded-follow";
 import { useAuthStore } from "@/shared/stores/auth.store";
 
 const VISITOR_TAGLINE = "Accès à votre table";
@@ -14,37 +14,44 @@ const VISITOR_TAGLINE = "Accès à votre table";
  */
 export function AppHeader() {
   const isAuthenticated = useAuthStore((s) => s.user !== null);
+  const onFollow = useGuardedFollow();
 
   return (
     <header className="app-header">
-      {isAuthenticated ? <MemberHeading /> : <VisitorHeading />}
+      {isAuthenticated ? (
+        <MemberHeading onFollow={onFollow} />
+      ) : (
+        <VisitorHeading onFollow={onFollow} />
+      )}
     </header>
   );
 }
 
-function MemberHeading() {
+interface HeadingProps {
+  onFollow: FollowHandler;
+}
+
+function MemberHeading({ onFollow }: HeadingProps) {
   return (
     <div className="flex min-w-0 items-center">
-      <BrandMark />
+      <BrandMark onFollow={onFollow} />
       <div aria-hidden className="header-divider" />
       <AppBreadcrumb />
     </div>
   );
 }
 
-function VisitorHeading() {
+function VisitorHeading({ onFollow }: HeadingProps) {
   return (
     <>
-      <BrandMark />
+      <BrandMark onFollow={onFollow} />
       <span className="eyebrow whitespace-nowrap">{VISITOR_TAGLINE}</span>
     </>
   );
 }
 
 /** La marque ramène à l'accueil, par la même garde de sortie que le fil. */
-function BrandMark() {
-  const onFollow = useGuardedFollow();
-
+function BrandMark({ onFollow }: HeadingProps) {
   return (
     <Link
       to={ROUTES.home}
