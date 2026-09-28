@@ -4,8 +4,8 @@ import {
   WEAPON_PROFICIENCY_LABELS,
 } from "@/shared/constants/character-labels";
 import { ABILITY_LABELS } from "../constants/sheet-labels";
-import type { SheetLabels } from "../types/character-sheet-model";
-import { formatMeters, toLabelList } from "./sheet-format";
+import type { CharacterIdentity, SheetLabels } from "../types/character-sheet-model";
+import { formatHeight, formatMeters, toLabelList } from "./sheet-format";
 
 export interface ProficiencyRow {
   name: string;
@@ -34,6 +34,15 @@ export function toSenseRows(sheet: ComputedCharacter): ProficiencyRow[] {
   if (sheet.darkvision === 0) return [passive];
 
   return [passive, { name: "Vision dans le noir", value: formatMeters(sheet.darkvision) }];
+}
+
+/** Ce qu'on voit du personnage. Yeux, cheveux et peau n'existent pas encore côté API. */
+export function toPhysicalRows(identity: CharacterIdentity): ProficiencyRow[] {
+  return [
+    { name: "Taille", value: formatHeight(identity.heightCm) },
+    { name: "Poids", value: `${identity.weightKg} kg` },
+    { name: "Âge", value: `${identity.age} ans` },
+  ];
 }
 
 function orNone(value: string): string {

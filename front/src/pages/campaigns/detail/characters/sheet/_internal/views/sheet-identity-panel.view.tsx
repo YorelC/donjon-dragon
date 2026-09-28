@@ -1,25 +1,22 @@
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { DiamondRule } from "@/shared/components/molecules/gold-rule";
 import { toInitials } from "@/shared/utils/display-meta";
-import { SIZE_LABELS } from "@/shared/constants/character-labels";
 import type { CharacterSheetModel } from "../types/character-sheet-model";
-import { formatMeters, formatSigned, toLabelList } from "../utils/sheet-format";
 import { SheetAbilitiesView } from "./sheet-abilities.view";
-import { SheetPhysicalView, SheetSkillsView } from "./sheet-skills.view";
+import { SheetSkillsView } from "./sheet-skills.view";
+import { SheetVitalsView } from "./sheet-vitals.view";
 
 interface SheetIdentityPanelViewProps {
   model: CharacterSheetModel;
 }
 
-/** La colonne d'identité : qui est le personnage, et ce qu'il vaut en un coup d'œil. */
+/** La colonne de jeu : qui est le personnage, et ce qu'il vaut en un coup d'œil. */
 export function SheetIdentityPanelView({ model }: SheetIdentityPanelViewProps) {
   return (
     <section className="panel flex flex-col gap-[18px] px-5 py-[22px]">
       <SheetCrest model={model} />
       <SheetAbilitiesView sheet={model.sheet} />
-      <SheetChips model={model} />
-      <SheetVitals model={model} />
-      <SheetPhysicalView identity={model.identity} />
+      <SheetVitalsView sheet={model.sheet} />
       <SheetSkillsView sheet={model.sheet} labels={model.labels.skills} />
     </section>
   );
@@ -55,52 +52,6 @@ function BackgroundLine({ name }: { name: string }) {
       </span>
       <span className="text-sm tracking-meta text-foreground">{name}</span>
     </span>
-  );
-}
-
-function SheetChips({ model }: SheetIdentityPanelViewProps) {
-  const { sheet } = model;
-
-  return (
-    <div className="flex flex-wrap justify-center gap-3">
-      <SheetChip label="PV" value={String(sheet.maxHitPoints.value)} />
-      <SheetChip label="Maîtrise" value={formatSigned(sheet.proficiencyBonus)} />
-      <SheetChip label="CA" value={String(sheet.armorClass.value)} />
-    </div>
-  );
-}
-
-function SheetChip({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="sheet-chip">
-      <span className="sheet-caption">{label}</span>
-      <span className="font-display text-base text-gold-title">{value}</span>
-    </div>
-  );
-}
-
-function SheetVitals({ model }: SheetIdentityPanelViewProps) {
-  const { sheet, labels } = model;
-
-  return (
-    <div className="flex justify-between gap-2 border-t border-gold/16 pt-3.5">
-      <SheetVital label="Vitesse" value={formatMeters(sheet.speed.value)} />
-      <SheetVital label="Catégorie" value={SIZE_LABELS[sheet.size]} />
-      <SheetVital label="Initiative" value={formatSigned(sheet.initiative.value)} />
-      <SheetVital
-        label="Langues"
-        value={toLabelList(labels.languages, sheet.proficiencies.languages)}
-      />
-    </div>
-  );
-}
-
-function SheetVital({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-0 flex-col items-center gap-[3px] text-center">
-      <span className="sheet-caption">{label}</span>
-      <span className="font-display text-sm text-gold-value">{value}</span>
-    </div>
   );
 }
 

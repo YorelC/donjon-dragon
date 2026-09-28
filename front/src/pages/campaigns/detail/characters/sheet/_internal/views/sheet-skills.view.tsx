@@ -2,21 +2,7 @@ import type { ReactNode } from "react";
 import type { ComputedCharacter, ResolvedSkill, SkillName } from "@donjon-dragon/shared";
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { cn } from "@/shared/utils/utils";
-import type { CharacterIdentity } from "../types/character-sheet-model";
-import { formatHeight, formatSigned, toLabel } from "../utils/sheet-format";
-
-/** Ce qu'on voit du personnage. Yeux, cheveux et peau n'existent pas encore côté API. */
-export function SheetPhysicalView({ identity }: { identity: CharacterIdentity }) {
-  return (
-    <SheetBlock label="Signalement">
-      <div className="grid grid-cols-2 gap-x-[18px] gap-y-2">
-        <SheetPair name="Taille" value={formatHeight(identity.heightCm)} />
-        <SheetPair name="Poids" value={`${identity.weightKg} kg`} />
-        <SheetPair name="Âge" value={`${identity.age} ans`} />
-      </div>
-    </SheetBlock>
-  );
-}
+import { formatSigned, toLabel } from "../utils/sheet-format";
 
 interface SheetSkillsViewProps {
   sheet: ComputedCharacter;
@@ -47,15 +33,6 @@ function SkillLine({ skill, label }: { skill: ResolvedSkill; label: string }) {
         </span>
       </span>
     </li>
-  );
-}
-
-function SheetPair({ name, value }: { name: string; value: string }) {
-  return (
-    <div className="sheet-pair">
-      <span className="text-ink-meta">{name}</span>
-      <span className="text-foreground">{value}</span>
-    </div>
   );
 }
 

@@ -20,11 +20,24 @@ describe("SheetIdentityPanelView", () => {
     expect(container.querySelectorAll('li[data-proficient="true"]')).toHaveLength(2);
   });
 
-  it("écrit taille et vitesse à la française", () => {
+  it("écrit la vitesse à la française", () => {
     render(<SheetIdentityPanelView model={aSheetModel()} />);
 
-    expect(screen.getByText("1,72 m")).toBeInTheDocument();
     expect(screen.getByText("10,5 m")).toBeInTheDocument();
+  });
+
+  it("laisse langues et signalement à l'onglet Identité", () => {
+    render(<SheetIdentityPanelView model={aSheetModel()} />);
+
+    expect(screen.queryByText("Langues")).not.toBeInTheDocument();
+    expect(screen.queryByText("Signalement")).not.toBeInTheDocument();
+  });
+
+  it("montre PV et dés de vie pleins tant que rien ne les dépense", () => {
+    render(<SheetIdentityPanelView model={aSheetModel()} />);
+
+    expect(screen.getByText("12 / 12")).toBeInTheDocument();
+    expect(screen.getByText("1 / 1 · d10")).toBeInTheDocument();
   });
 });
 
@@ -62,6 +75,13 @@ describe("IdentityTabView", () => {
 
     expect(screen.queryByText("Apparence")).not.toBeInTheDocument();
     expect(screen.getByText("Maîtrises et langues")).toBeInTheDocument();
+  });
+
+  it("porte le signalement, écrit à la française", () => {
+    render(<IdentityTabView model={aSheetModel()} />);
+
+    expect(screen.getByText("Signalement")).toBeInTheDocument();
+    expect(screen.getByText("1,72 m")).toBeInTheDocument();
   });
 
   it("nomme les maîtrises au lieu d'afficher leurs clés", () => {
