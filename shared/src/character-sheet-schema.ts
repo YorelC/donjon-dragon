@@ -168,7 +168,8 @@ export const ResolvedAttackSchema = z.object({
   range: z.object({ normal: z.number(), max: z.number() }).nullable(),
   proficient: z.boolean(),
   mastery: z.boolean(),
-  source: z.enum(['pact-of-the-blade']).nullable(),
+  /** D'où vient l'attaque quand ce n'est pas une arme du sac. */
+  source: z.enum(['pact-of-the-blade', 'unarmed']).nullable(),
 });
 
 export const ComputedCharacterSchema = z.object({

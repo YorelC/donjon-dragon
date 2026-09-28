@@ -9,6 +9,7 @@ import { collectEffects } from './collect-effects';
 import type { FormulaContext } from './evaluate-formula';
 import { modifiersOf, resolveAbilities, type ResolvedAbility } from './resolve-abilities';
 import { resolveArmorClass, type ResolvedValue } from './resolve-armor-class';
+import { resolveUnarmedDamage, resolveUnarmedStrike } from './resolve-unarmed-strike';
 import type { WornEquipment } from './worn-equipment';
 import {
   resolveInitiative,
@@ -19,7 +20,6 @@ import {
 import {
   resolveFeatures,
   resolveResources,
-  resolveUnarmedDamage,
   type ResolvedFeature,
   type ResolvedResource,
 } from './resolve-features';
@@ -129,7 +129,7 @@ function resolvedFeaturesOf(
     spellcasting: resolveSpellcasting({ ...context, build, effects }),
     features: resolveFeatures(effects),
     resources: resolveResources(effects, context),
-    attacks: resolveAttacks(build, context),
+    attacks: [resolveUnarmedStrike(effects, context), ...resolveAttacks(build, context)],
     spellbook: spellbookOf(build),
   };
 }

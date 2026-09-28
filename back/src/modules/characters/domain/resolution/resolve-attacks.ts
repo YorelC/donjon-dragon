@@ -14,7 +14,7 @@ export interface ResolvedAttack {
   range: { normal: number; max: number } | null;
   proficient: boolean;
   mastery: boolean;
-  source: 'pact-of-the-blade' | null;
+  source: 'pact-of-the-blade' | 'unarmed' | null;
 }
 
 /** Ce qu'il faut savoir du personnage pour chiffrer une attaque, une fois. */

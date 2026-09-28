@@ -128,6 +128,15 @@ describe('barbare torse nu', () => {
       recovery: 'longRest',
     });
   });
+
+  it('frappe à mains nues en Force, pour 1 plus la Force', () => {
+    const sheet = resolveSheetOf(aBuild({ ...build }));
+
+    expect(sheet.attacks[0]).toMatchObject({
+      weaponKey: 'unarmed-strike', ability: 'strength', attackBonus: 5,
+      damage: '4', damageType: 'bludgeoning', proficient: true, source: 'unarmed',
+    });
+  });
 });
 
 describe('moine, dont la Défense sans armure exclut le bouclier', () => {
@@ -167,6 +176,14 @@ describe('moine, dont la Défense sans armure exclut le bouclier', () => {
     const sheet = resolveSheetOf(aBuild({ ...build, choices: [...build.choices] }));
 
     expect(sheet.unarmedDamage).toBe('1d6');
+  });
+
+  it('frappe à mains nues avec Arts martiaux : 1d6 en Dextérité', () => {
+    const sheet = resolveSheetOf(aBuild({ ...build }));
+
+    expect(sheet.attacks[0]).toMatchObject({
+      weaponKey: 'unarmed-strike', ability: 'dexterity', attackBonus: 4, damage: '1d6 + 2',
+    });
   });
 });
 
@@ -365,6 +382,16 @@ describe('guerrier au Style de combat Défense', () => {
 
     expect(sheet.armorClass.value).toBe(17);
     expect(sheet.armorClass.sources).toEqual(['Cotte de mailles', 'Défense']);
+  });
+
+  it('garde la Force au style Combat à mains nues, avec son 1d6', () => {
+    const [choice] = build.choices ?? [];
+    const sheet = resolveSheetOf(aBuild({
+      ...build,
+      choices: [{ ...choice, source: { type: 'class', key: 'fighter' }, fightingStyle: 'unarmed-fighting' }],
+    }));
+
+    expect(sheet.attacks[0]).toMatchObject({ ability: 'strength', attackBonus: 5, damage: '1d6 + 3' });
   });
 
   // Sans ce filtre, un magicien qui prendrait Défense gagnerait un point de CA

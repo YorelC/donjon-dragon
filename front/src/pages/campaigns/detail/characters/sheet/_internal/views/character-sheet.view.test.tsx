@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { GrimoireTabContainer } from "../containers/grimoire-tab.container";
+import { WeaponsTabContainer } from "../containers/weapons-tab.container";
 import { aSheetModel } from "../types/character-sheet-model.fixture";
 import { GearTabView } from "./gear-tab.view";
 import { IdentityTabView } from "./identity-tab.view";
@@ -54,6 +55,16 @@ describe("SheetTabsView", () => {
     render(<SheetTabsView model={aSheetModel({ spellcasting: [aSpellcasting()] })} />);
 
     expect(screen.getByRole("tab", { name: /Grimoire/ })).toBeInTheDocument();
+  });
+});
+
+describe("WeaponsTabContainer", () => {
+  it("présente la Frappe à mains nues comme une attaque sans arme", () => {
+    render(<WeaponsTabContainer attacks={[anUnarmedStrike()]} />);
+
+    expect(screen.getByText("Corps à corps · Sans arme")).toBeInTheDocument();
+    fireEvent.mouseEnter(screen.getByText("Frappe à mains nues"));
+    expect(screen.getByText(/Empoigner ou Bousculer/)).toBeInTheDocument();
   });
 });
 
@@ -142,6 +153,14 @@ describe("GrimoireTabContainer", () => {
     expect(mark).toHaveAttribute("aria-pressed", "true");
   });
 });
+
+function anUnarmedStrike() {
+  return {
+    weaponKey: "unarmed-strike", name: "Frappe à mains nues", ability: "dexterity" as const,
+    attackBonus: 4, damage: "1d6 + 2", damageType: "bludgeoning", range: null,
+    proficient: true, mastery: false, source: "unarmed" as const,
+  };
+}
 
 function aSpellcasting() {
   return {

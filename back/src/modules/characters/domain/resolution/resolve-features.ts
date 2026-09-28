@@ -80,18 +80,3 @@ export function resolveResources(
     ];
   });
 }
-
-/** La Frappe à mains nues : 1 dégât contondant, sauf si un trait la remplace. */
-const DEFAULT_UNARMED_DAMAGE = '1';
-
-export function resolveUnarmedDamage(effects: readonly CollectedEffect[]): string {
-  const replacement = effects
-    .flatMap((collected) => {
-      const passive = collected.effect.passive;
-      if (passive?.target !== 'unarmedDamage' || !passive.dice) return [];
-      return [passive.dice];
-    })
-    .at(-1);
-
-  return replacement ?? DEFAULT_UNARMED_DAMAGE;
-}

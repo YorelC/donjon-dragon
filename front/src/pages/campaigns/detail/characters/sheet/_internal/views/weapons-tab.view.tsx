@@ -18,7 +18,7 @@ export function WeaponsTabView({ attacks, hover }: WeaponsTabViewProps) {
   return (
     <div className="sheet-tab-split">
       <div className="flex min-w-0 flex-col gap-[11px]">
-        <SectionHeading label="Attaques d'armes" />
+        <SectionHeading label="Attaques" />
         <AttackList attacks={attacks} hover={hover} />
       </div>
       <SheetDetailAsideView

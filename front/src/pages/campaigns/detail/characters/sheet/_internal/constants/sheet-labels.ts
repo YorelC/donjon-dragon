@@ -3,6 +3,7 @@ import type {
   DamageType,
   EffectApplication,
   Language,
+  ResolvedAttack,
   ResolvedSpellcasting,
 } from "@donjon-dragon/shared";
 
@@ -96,7 +97,11 @@ export const SPELL_SCHOOL_LABELS: Partial<Record<string, string>> = {
   transmutation: "Transmutation",
 };
 
-export const PACT_OF_THE_BLADE_LABEL = "Pacte de la Lame";
+/** Une attaque qui ne vient pas d'une arme du sac dit d'où elle vient. */
+export const ATTACK_SOURCE_LABELS: Record<NonNullable<ResolvedAttack["source"]>, string> = {
+  "pact-of-the-blade": "Pacte de la Lame",
+  unarmed: "Sans arme",
+};
 
 export const SHEET_TABS = {
   weapons: { value: "armes", label: "Armes" },
