@@ -28,7 +28,7 @@ export function noSpells(overrides: Partial<SpellsStep> = {}): SpellsStep {
   return {
     classSpells: null, classCantripsKnown: 0, classSpellsPrepared: 0, spellbookSize: 0,
     featSpells: null, featCantripsKnown: 0, featSpellsPrepared: 0, featSpellLists: {},
-    grantedSpells: [], tomeSpells: { cantrips: [], rituals: [] }, isLoading: false,
+    grantedSpells: [], grantedBy: [], tomeSpells: { cantrips: [], rituals: [] }, isLoading: false,
     ...overrides,
   };
 }

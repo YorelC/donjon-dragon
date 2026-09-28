@@ -2,7 +2,7 @@ import type { CatalogInvocation, CatalogSpell } from "@donjon-dragon/shared";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/shared/components/atoms/select";
-import { grantedSpellsOf } from "../types/chosen-spells";
+import { grantedSpellsOf, spellGrantsOf } from "../types/chosen-spells";
 import type { StepBinding } from "../types/step-binding";
 import { SpellGroup, previewing, selectionOf } from "./spell-group.view";
 
@@ -59,15 +59,17 @@ function NamedSelect({ composition, field, options, onChange }: NamedSelectProps
 }
 
 function TomeChoice({ catalog, composition, tomeSpells, onChange, preview }: InvocationProps) {
-  const source = { composition, grantedSpells: grantedSpellsOf({ catalog, composition }) };
+  const context = { catalog, composition };
+  const source = { composition, grantedSpells: grantedSpellsOf(context), grantedBy: spellGrantsOf(context) };
+  const own = { group: "invocationSpells", keys: composition.invocationSpells };
   const cantrips = selectedFrom(composition.invocationSpells, tomeSpells.cantrips);
   const rituals = selectedFrom(composition.invocationSpells, tomeSpells.rituals);
   return <div className="grid gap-6">
     <SpellGroup title="Sorts mineurs du grimoire" spells={tomeSpells.cantrips} limit={3}
-      selection={previewing(selectionOf(source, composition.invocationSpells,
+      selection={previewing(selectionOf(source, own,
         (next) => onChange({ invocationSpells: [...selectedFrom(next, tomeSpells.cantrips), ...rituals] })), preview)} />
     <SpellGroup title="Rituels de niveau 1" spells={tomeSpells.rituals} limit={2}
-      selection={previewing(selectionOf(source, composition.invocationSpells,
+      selection={previewing(selectionOf(source, own,
         (next) => onChange({ invocationSpells: [...cantrips, ...selectedFrom(next, tomeSpells.rituals)] })), preview)} />
   </div>;
 }

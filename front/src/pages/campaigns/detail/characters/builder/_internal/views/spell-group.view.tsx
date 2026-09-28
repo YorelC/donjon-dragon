@@ -3,8 +3,16 @@ import {
   SelectableRow,
   type SelectableRowState,
 } from "@/shared/components/molecules/selectable-row";
-import { spellsTakenElsewhere, type SpellSource } from "../types/chosen-spells";
+import { spellsTakenElsewhere } from "../types/chosen-spells";
+import {
+  spellOriginsOf,
+  type NamedSpellSource,
+  type OwnSpells,
+  type SpellOrigins,
+} from "../types/spell-origins";
+import { takenSpellNotesOf } from "../types/taken-spell-notes";
 import { ChoiceListHeaderView } from "./choice-list-header.view";
+import { TakenSpellsNoteView } from "./taken-spells-note.view";
 
 interface SpellGroupProps {
   title: string;
@@ -17,6 +25,8 @@ interface SpellGroupProps {
 export interface SpellSelection {
   selected: readonly string[];
   unavailable: readonly string[];
+  /** Ce qui a pris chaque sort indisponible, pour le nommer sous le groupe. */
+  origins: SpellOrigins;
   onChange: (keys: string[]) => void;
   /** Montre le sort dans la fiche détaillée, au survol ou au focus. */
   onPreview?: (key: string) => void;
@@ -38,33 +48,8 @@ export function SpellGroup({ title, spells, limit, selection }: SpellGroupProps)
           selection={selection}
         />
       ))}
-      <TakenSpellsNote spells={spells} selection={selection} />
+      <TakenSpellsNoteView notes={takenSpellNotesOf({ spells, ...selection })} />
     </div>
-  );
-}
-
-/**
- * Un bouton désactivé ne reçoit pas le survol : la raison d'un sort grisé ne
- * peut pas vivre dans une infobulle. Elle s'écrit sous le groupe.
- */
-function TakenSpellsNote({ spells, selection }: Omit<SpellGroupProps, "title" | "limit">) {
-  const taken = spells.filter((spell) => selection.unavailable.includes(spell.key));
-  const conflicts = taken.filter((spell) => selection.selected.includes(spell.key));
-  const greyed = taken.filter((spell) => !selection.selected.includes(spell.key));
-
-  return (
-    <>
-      {conflicts.length > 0 ? (
-        <p className="fine-print px-1 text-destructive">
-          À retirer, déjà connu par ailleurs : {namesOf(conflicts)}.
-        </p>
-      ) : null}
-      {greyed.length > 0 ? (
-        <p className="fine-print px-1">
-          Déjà connus, choisis ailleurs ou accordés par l’espèce ou la classe : {namesOf(greyed)}.
-        </p>
-      ) : null}
-    </>
   );
 }
 
@@ -129,10 +114,6 @@ function lockOf(key: string, selection: SpellSelection, full: boolean): SpellLoc
   return rules.find(([applies]) => applies)?.[1] ?? "free";
 }
 
-function namesOf(spells: readonly CatalogSpell[]): string {
-  return spells.map((spell) => spell.name).join(", ");
-}
-
 function toggle(selected: readonly string[], key: string): string[] {
   return selected.includes(key)
     ? selected.filter((entry) => entry !== key)
@@ -140,11 +121,16 @@ function toggle(selected: readonly string[], key: string): string[] {
 }
 
 export function selectionOf(
-  source: SpellSource,
-  selected: readonly string[],
+  source: NamedSpellSource,
+  own: OwnSpells,
   onChange: (keys: string[]) => void,
 ): SpellSelection {
-  return { selected, unavailable: spellsTakenElsewhere(source, selected), onChange };
+  return {
+    selected: own.keys,
+    unavailable: spellsTakenElsewhere(source, own.keys),
+    origins: spellOriginsOf(source, own),
+    onChange,
+  };
 }
 
 /** La même sélection, qui montre en plus chaque sort survolé dans la fiche détaillée. */

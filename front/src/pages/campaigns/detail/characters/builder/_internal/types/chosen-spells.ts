@@ -45,22 +45,41 @@ export function levelOneKeysOf(composition: CharacterComposition): string[] {
   ];
 }
 
-/** Les sorts accordés sans choix par l'espèce, sa lignée, la classe et son ordre. */
-export function grantedSpellsOf(context: StepContext): string[] {
-  return grantingFeatures(context).flatMap((feature) => feature.grantedSpells);
+/** Des sorts accordés sans choix, et ce qui les accorde : « Gnome des roches ». */
+export interface SpellGrant {
+  label: string;
+  keys: readonly string[];
 }
 
-function grantingFeatures(context: StepContext): CatalogFeature[] {
+/** Les sorts accordés sans choix par l'espèce, sa lignée, la classe et son ordre. */
+export function grantedSpellsOf(context: StepContext): string[] {
+  return spellGrantsOf(context).flatMap((grant) => grant.keys);
+}
+
+/** Les mêmes octrois, rangés sous le nom de ce qui les accorde. */
+export function spellGrantsOf(context: StepContext): SpellGrant[] {
+  return grantingSources(context)
+    .map((source) => ({ label: source.label, keys: source.features.flatMap((feature) => feature.grantedSpells) }))
+    .filter((grant) => grant.keys.length > 0);
+}
+
+interface GrantingSource {
+  label: string;
+  features: readonly CatalogFeature[];
+}
+
+function grantingSources(context: StepContext): GrantingSource[] {
   const species = speciesOf(context);
   const lineage = species?.lineage?.options
     .find((option) => option.key === context.composition.lineageKey);
   const order = orderChoiceOf(context)?.options
     .find((option) => option.key === context.composition.classOrder);
+  const characterClass = classOf(context);
   return [
-    ...(species?.traits ?? []),
-    ...(lineage?.traits ?? []),
-    ...(classOf(context)?.level1Features ?? []),
-    ...(order ? [order] : []),
+    ...(species ? [{ label: species.name, features: species.traits }] : []),
+    ...(lineage ? [{ label: lineage.name, features: lineage.traits }] : []),
+    ...(characterClass ? [{ label: characterClass.name, features: characterClass.level1Features }] : []),
+    ...(order ? [{ label: order.name, features: [order] }] : []),
   ];
 }
 

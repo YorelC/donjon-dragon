@@ -8,7 +8,7 @@ import {
   spellbookSizeOf,
   type StepContext,
 } from "../types/builder-lookups";
-import { grantedSpellsOf } from "../types/chosen-spells";
+import { grantedSpellsOf, spellGrantsOf } from "../types/chosen-spells";
 
 export function useSpellsStep(context: StepContext | null): SpellsStep {
   const classSpells = useClassSpells(context?.composition.classKey ?? null);
@@ -37,6 +37,7 @@ function quotasOf(context: StepContext | null) {
     classSpellsPrepared: context ? classPreparedQuotaOf(context) : 0,
     spellbookSize: context ? spellbookSizeOf(context) : 0,
     grantedSpells: context ? grantedSpellsOf(context) : [],
+    grantedBy: context ? spellGrantsOf(context) : [],
   };
 }
 
