@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import type {
   Character,
   CreateCharacterDto,
+  FinalizeCharacterDto,
   IssuedAbilityRoll,
 } from "@donjon-dragon/shared";
 
@@ -13,12 +14,16 @@ vi.mock("sonner", () => ({
 }));
 
 vi.mock("@/shared/api/api", () => ({
-  api: { post: vi.fn() },
+  api: { post: vi.fn(), put: vi.fn() },
 }));
 
 import { api } from "@/shared/api/api";
 import { IDEMPOTENCY_KEY_HEADER } from "@donjon-dragon/shared";
-import { useCreateCharacter, useRollAbilities } from "./use-character-creation";
+import {
+  useCreateCharacter,
+  useFinalizeCharacter,
+  useRollAbilities,
+} from "./use-character-creation";
 
 const CAMPAIGN_ID = "3f1a2b4c-5d6e-4f70-8192-a3b4c5d6e7f8";
 const ROLL_ID = "9f2c6d18-4b7a-4f31-8e05-7c1a3d6b2e40";
@@ -111,5 +116,41 @@ describe("useRollAbilities", () => {
       { [IDEMPOTENCY_KEY_HEADER]: expect.any(String) },
     );
     expect(result.current.data).toEqual(ISSUED);
+  });
+});
+
+describe("useFinalizeCharacter", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  /**
+   * Le créateur quitte l'écran dès que l'enregistrement répond. Si la liste des
+   * personnages n'a pas fini de se recharger, elle s'affiche avec l'ANCIENNE
+   * révision, et « Soumettre » part en 409. La main ne revient qu'une fois la
+   * liste à jour.
+   */
+  it("ne rend la main qu'une fois les données de la campagne rechargées", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    let reloaded: () => void = () => undefined;
+    vi.spyOn(queryClient, "invalidateQueries").mockReturnValue(
+      new Promise<void>((resolve) => { reloaded = resolve; }),
+    );
+    vi.mocked(api.put).mockResolvedValue(CREATED);
+    const { result } = renderHook(() => useFinalizeCharacter(CAMPAIGN_ID, CREATED.id), {
+      wrapper: ({ children }: { children: ReactNode }) => (
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      ),
+    });
+    const leave = vi.fn();
+
+    result.current.mutate({} as FinalizeCharacterDto, { onSuccess: leave });
+
+    await waitFor(() => expect(queryClient.invalidateQueries).toHaveBeenCalled());
+    expect(leave).not.toHaveBeenCalled();
+    reloaded();
+    await waitFor(() => expect(leave).toHaveBeenCalled());
   });
 });

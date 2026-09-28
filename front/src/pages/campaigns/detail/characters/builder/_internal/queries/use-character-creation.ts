@@ -65,9 +65,11 @@ export function useFinalizeCharacter(campaignId: string, characterId: string) {
         payload,
         commandHeaders(),
       ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["campaigns"] });
+    // Attendue, et non lancée : le créateur quitte l'écran juste après. Une liste
+    // pas encore rechargée garde l'ancienne révision, et « Soumettre » part en 409.
+    onSuccess: async () => {
       toast.success("Personnage terminé");
+      await queryClient.invalidateQueries({ queryKey: ["campaigns"] });
     },
     onError: () => toast.error("Impossible de terminer ce personnage"),
   });
