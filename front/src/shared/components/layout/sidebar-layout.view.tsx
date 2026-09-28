@@ -36,6 +36,9 @@ interface SidebarLayoutViewProps {
  * Le cadre à deux colonnes de la charte : une barre latérale en panneau doré, un
  * panneau de premier plan à équerres pour l'écran ouvert. Profil et campagne le
  * partagent — ce sont deux navigations, pas deux mises en page.
+ *
+ * La zone qui défile s'arrête sous les équerres du haut et au-dessus de celles du
+ * bas : le contenu disparaît avant le cadre au lieu de glisser dessous.
  */
 export function SidebarLayoutView({ nav, footer }: SidebarLayoutViewProps) {
   return (
@@ -44,7 +47,7 @@ export function SidebarLayoutView({ nav, footer }: SidebarLayoutViewProps) {
       <Sidebar nav={nav} footer={footer} />
       <main className="panel-surface relative flex min-w-0 flex-1 flex-col">
         <OrnateCorners />
-        <div className="panel-scroll">
+        <div className="panel-scroll my-[30px] py-0">
           <Outlet />
         </div>
       </main>
