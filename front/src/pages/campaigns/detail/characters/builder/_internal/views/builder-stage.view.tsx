@@ -27,7 +27,7 @@ export function BuilderStageView({ screen, backTo, recap }: BuilderStageViewProp
     <main className="panel-surface builder-stage">
       <OrnateCorners />
       <div className="builder-stage-body">
-        <div className="flex items-center justify-between gap-4 pb-3.5">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-3.5">
           <LeaveBuilderDialogView backTo={backTo} />
           <RecapDrawerView recap={recap} />
         </div>

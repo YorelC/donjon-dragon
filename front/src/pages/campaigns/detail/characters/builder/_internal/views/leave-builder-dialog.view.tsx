@@ -10,6 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/shared/components/atoms/alert-dialog";
+import { Button } from "@/shared/components/atoms/button";
 
 /**
  * Le retour à la liste passe par une confirmation : la création n'est
@@ -18,11 +19,9 @@ import {
 export function LeaveBuilderDialogView({ backTo }: { backTo: string }) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="eyebrow inline-flex items-center gap-2 transition-[color] duration-[.18s] hover:text-gold-link-hover">
-        <span aria-hidden>←</span>
-        Retour aux personnages
-      </AlertDialogTrigger>
-      <AlertDialogContent>
+      <LeaveTrigger />
+      {/* Mêmes modificateurs que la largeur de l'atome, pour la remplacer : ses deux boutons n'y tenaient pas. */}
+      <AlertDialogContent className="data-[size=default]:sm:max-w-xl">
         <AlertDialogHeader>
           <span className="eyebrow">Quitter la création</span>
           <AlertDialogTitle>Votre progression ne sera pas sauvegardée</AlertDialogTitle>
@@ -37,9 +36,20 @@ export function LeaveBuilderDialogView({ backTo }: { backTo: string }) {
   );
 }
 
+function LeaveTrigger() {
+  return (
+    <AlertDialogTrigger asChild>
+      <Button type="button" variant="outline" size="sm">
+        <span aria-hidden>←</span>
+        Retour aux personnages
+      </Button>
+    </AlertDialogTrigger>
+  );
+}
+
 function LeaveActions({ backTo }: { backTo: string }) {
   return (
-    <AlertDialogFooter>
+    <AlertDialogFooter className="flex-wrap">
       <AlertDialogAction asChild>
         <Link to={backTo}>Quitter sans sauvegarder</Link>
       </AlertDialogAction>

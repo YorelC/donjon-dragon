@@ -78,9 +78,11 @@ pour ce que seul le serveur calcule.
 
 ## 6. Sortie
 
-« ← Retour aux personnages » ouvre une confirmation : la création n'est
-enregistrée qu'à la dernière étape. « Quitter sans sauvegarder » ramène à la
-liste, « Continuer la création » referme la modale. Les liens du bandeau
+« ← Retour aux personnages », bouton bordé sur la ligne de « Récapitulatif »,
+ouvre une confirmation : la création n'est enregistrée qu'à la dernière étape.
+« Quitter sans sauvegarder » ramène à la liste, « Continuer la création »
+referme la modale. La modale est assez large (`max-w-xl`) pour tenir ses deux
+boutons sur une ligne ; au-delà, ils passent à la ligne sans déborder. Les liens du bandeau
 (Campagnes, Profil, Déconnexion) ne sont pas interceptés.
 
 ## 7. Écarts à la maquette
@@ -98,6 +100,8 @@ liste, « Continuer la création » referme la modale. Les liens du bandeau
 - L'infobulle des caractéristiques n'existe pas dans la maquette : ajoutée à la
   demande de Charly (27/09/2026).
 - Le récapitulatif ajoute l'initiative aux trois pastilles de la maquette.
+- Le retour à la liste est un bouton bordé, et non le libellé discret de la
+  maquette : jugé invisible par Charly (28/09/2026).
 
 ## 8. Textes du catalogue
 
