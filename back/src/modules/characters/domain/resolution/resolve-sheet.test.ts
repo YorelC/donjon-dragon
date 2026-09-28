@@ -139,6 +139,22 @@ describe('barbare torse nu', () => {
   });
 });
 
+describe('barde sans charisme', () => {
+  it('garde au moins une Inspiration bardique', () => {
+    const sheet = resolveSheetOf(aBuild({
+      speciesKey: 'halfling',
+      classKey: 'bard',
+      backgroundKey: 'farmer',
+      base: {
+        strength: 15, dexterity: 14, constitution: 13, intelligence: 10, wisdom: 12, charisma: 8,
+      },
+      backgroundBonuses: { constitution: 2, strength: 1 },
+    }));
+
+    expect(sheet.resources.find((resource) => resource.key === 'bardicInspiration')?.max).toBe(1);
+  });
+});
+
 describe('moine, dont la Défense sans armure exclut le bouclier', () => {
   const build = {
     speciesKey: 'human',

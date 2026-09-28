@@ -14,7 +14,7 @@
 
 import type { Ability } from './abilities';
 import type { Feature, SkillChoice, ToolChoice } from './effect';
-import { abilityMod, constant, sum } from './effect';
+import { abilityMod, atLeast, constant, sum } from './effect';
 import type { ClassKey } from './keys';
 import type { ArmorTraining, WeaponProficiency } from './proficiencies';
 import { goldOnly, type StartingEquipment } from './starting-equipment';
@@ -211,7 +211,8 @@ const CLASS_LIST: readonly CharacterClass[] = [
             application: 'active',
             resource: {
               key: 'bardicInspiration',
-              max: abilityMod('charisma'),
+              // PHB 2024 p. 59 : autant que le modificateur de Charisme, au moins une fois.
+              max: atLeast(1, abilityMod('charisma')),
               recovery: 'longRest',
             },
             trigger: { event: 'onTurnStart', action: 'bonusAction' },
