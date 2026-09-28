@@ -4,67 +4,62 @@ import { Input } from "@/shared/components/atoms/input";
 import { Diamond } from "@/shared/components/molecules/diamond";
 import { SectionHeading } from "@/shared/components/molecules/section-heading";
 import { COMING_SOON } from "../constants/sheet-labels";
+import { toGearCategories, toGearTag, type GearCategory } from "../utils/gear-categories";
 
 const GOLD_LABEL = "PO";
 const GEAR_HINT =
-  "Consommer, ranger, jeter un objet et gérer la bourse arrivent avec l'état d'aventure.";
+  "◆ porté, ◇ transporté. Équiper, consommer, ranger, jeter un objet et gérer la bourse arrivent avec l'état d'aventure.";
 
-/** Ce que le personnage porte et transporte. Les actions sont annoncées, pas encore ouvertes. */
+/** Ce que le personnage porte et transporte, en une seule liste : un objet, une ligne. */
 export function GearTabView({ equipment }: { equipment: ResolvedEquipment }) {
   return (
     <div className="flex min-w-0 flex-col gap-6">
-      <WornSection equipment={equipment} />
-      <InventorySection items={equipment.items} />
+      <InventorySection equipment={equipment} />
       <PurseSection gold={equipment.gold} />
       <p className="fine-print">{GEAR_HINT}</p>
     </div>
   );
 }
 
-function WornSection({ equipment }: { equipment: ResolvedEquipment }) {
-  const { armorName, shield, stealthDisadvantage } = equipment;
-  const stealthTag = stealthDisadvantage ? "Discrétion désavantagée" : "Armure";
+function InventorySection({ equipment }: { equipment: ResolvedEquipment }) {
+  const categories = toGearCategories(equipment.items);
+  if (categories.length === 0) return <p className="empty-state-text">Le sac est vide.</p>;
 
   return (
-    <section className="flex flex-col gap-[11px]">
-      <SectionHeading label="Équipement" />
-      <ul className="flex flex-col gap-1.5">
-        {armorName ? <WornRow name={armorName} tag={stealthTag} /> : null}
-        {shield ? <WornRow name="Bouclier" tag="Bouclier" /> : null}
-      </ul>
-      {!armorName && !shield ? <p className="empty-state-text">Aucune armure portée.</p> : null}
-    </section>
+    <>
+      {categories.map((category) => (
+        <GearCategoryView key={category.label} category={category} equipment={equipment} />
+      ))}
+    </>
   );
 }
 
-function WornRow({ name, tag }: { name: string; tag: string }) {
-  return (
-    <li className="sheet-row grid grid-cols-[10px_minmax(0,1fr)] items-center gap-2 py-[9px]">
-      <Diamond size="tick" tone="filled" />
-      <ItemName name={name} tag={tag} />
-    </li>
-  );
+interface GearCategoryViewProps {
+  category: GearCategory;
+  equipment: ResolvedEquipment;
 }
 
-function InventorySection({ items }: { items: ResolvedItem[] }) {
+function GearCategoryView({ category, equipment }: GearCategoryViewProps) {
   return (
     <section className="flex flex-col gap-[11px]">
-      <SectionHeading label="Inventaire" />
-      {items.length === 0 ? <p className="empty-state-text">Le sac est vide.</p> : null}
+      <SectionHeading label={category.label} />
       <ul className="flex flex-col gap-1.5">
-        {items.map((item) => (
-          <InventoryRow key={item.itemKey} item={item} />
+        {category.items.map((item) => (
+          <GearRow key={item.itemKey} item={item} tag={toGearTag(item, equipment)} />
         ))}
       </ul>
     </section>
   );
 }
 
-function InventoryRow({ item }: { item: ResolvedItem }) {
+function GearRow({ item, tag }: { item: ResolvedItem; tag: string | undefined }) {
   return (
-    <li className="sheet-row grid grid-cols-[10px_minmax(0,1fr)_38px_auto] items-center gap-2 border-gold/10 py-[9px]">
-      <Diamond size="tick" tone="active" />
-      <ItemName name={item.name} />
+    <li
+      data-worn={item.worn}
+      className="sheet-row grid grid-cols-[10px_minmax(0,1fr)_38px_auto] items-center gap-2 border-gold/10 py-[9px]"
+    >
+      <Diamond size="tick" tone={item.worn ? "filled" : "active"} />
+      <ItemName name={item.name} tag={tag} />
       <span className="text-right font-display text-sm text-gold-value tabular-nums">
         {item.quantity}
       </span>

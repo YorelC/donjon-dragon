@@ -20,7 +20,12 @@ export class InMemoryItemCatalog implements ItemCatalogPort {
   findByKeys(keys: string[], _campaignId: string): Promise<CatalogedItem[]> {
     const found = keys
       .filter((key) => this.known.includes(key))
-      .map((key) => ({ key, name: key, armor: KNOWN_ARMORS[key] ?? null }));
+      .map((key) => ({
+        key,
+        name: key,
+        type: KNOWN_ARMORS[key] ? 'armor' as const : 'weapon' as const,
+        armor: KNOWN_ARMORS[key] ?? null,
+      }));
 
     return Promise.resolve(found);
   }

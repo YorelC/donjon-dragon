@@ -20,7 +20,7 @@ export class ItemsItemCatalog implements ItemCatalogPort {
 }
 
 function toCatalogedItem(item: ItemDto): CatalogedItem {
-  return { key: item.key, name: item.name, armor: toCatalogedArmor(item) };
+  return { key: item.key, name: item.name, type: item.type, armor: toCatalogedArmor(item) };
 }
 
 /**

@@ -1,8 +1,11 @@
-import type { ResolvedEquipment } from '@donjon-dragon/shared/character-sheet-schema';
+import type {
+  ResolvedEquipment,
+  ResolvedItem,
+} from '@donjon-dragon/shared/character-sheet-schema';
 
 import type { CatalogedItem, ItemCatalogPort } from './ports/item-catalog.port';
 import { SHIELD_ITEM_KEY, type CharacterEquipment } from '../domain/character-equipment';
-import { creationItemName } from '../domain/reference/creation-options';
+import { creationItemName, isCreationTool } from '../domain/reference/creation-options';
 import type { WornArmor, WornEquipment } from '../domain/resolution/worn-equipment';
 
 export interface EquipmentView {
@@ -49,7 +52,8 @@ function keysOf(equipment: CharacterEquipment): string[] {
 function virtualItemsOf(equipment: CharacterEquipment): CatalogedItem[] {
   return equipment.items.flatMap((item) => {
     const name = creationItemName(item.itemKey);
-    return name ? [{ key: item.itemKey, name, armor: null }] : [];
+    const type = isCreationTool(item.itemKey) ? 'tool' : 'gear';
+    return name ? [{ key: item.itemKey, name, type, armor: null }] : [];
   });
 }
 
@@ -59,16 +63,33 @@ function viewOf(equipment: CharacterEquipment, catalog: Catalog): ResolvedEquipm
   const armor = equipment.armorKey ? catalog.get(equipment.armorKey) : undefined;
 
   return {
-    items: equipment.items.map((item) => ({
-      itemKey: item.itemKey,
-      name: catalog.get(item.itemKey)?.name ?? item.itemKey,
-      quantity: item.quantity,
-    })),
+    items: equipment.items.map((item) => itemViewOf(item, equipment, catalog)),
     gold: equipment.gold,
     armorName: armor?.name ?? null,
     shield: equipment.shield,
     stealthDisadvantage: armor?.armor?.stealthDisadvantage ?? false,
   };
+}
+
+/** Une clé inconnue du catalogue reste listée, rangée dans le matériel. */
+function itemViewOf(
+  item: CharacterEquipment['items'][number],
+  equipment: CharacterEquipment,
+  catalog: Catalog,
+): ResolvedItem {
+  const cataloged = catalog.get(item.itemKey);
+
+  return {
+    itemKey: item.itemKey,
+    name: cataloged?.name ?? item.itemKey,
+    quantity: item.quantity,
+    type: cataloged?.type ?? 'gear',
+    worn: isWorn(item.itemKey, equipment),
+  };
+}
+
+function isWorn(itemKey: string, equipment: CharacterEquipment): boolean {
+  return itemKey === equipment.armorKey || (equipment.shield && itemKey === SHIELD_ITEM_KEY);
 }
 
 function wornOf(equipment: CharacterEquipment, catalog: Catalog): WornEquipment {

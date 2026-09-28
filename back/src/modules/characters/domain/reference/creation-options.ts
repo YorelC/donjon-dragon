@@ -190,6 +190,11 @@ export function isTrinketId(id: number): boolean {
   return Number.isInteger(id) && id >= 1 && id <= TRINKET_COUNT;
 }
 
+/** Un outil choisi à la création n'est pas au catalogue : la fiche le range quand même. */
+export function isCreationTool(key: string): boolean {
+  return key in TOOL_LABELS;
+}
+
 export function creationItemName(key: string): string | null {
   if (key in TOOL_LABELS) return TOOL_LABELS[key] ?? null;
   return trinketName(key);

@@ -48,7 +48,11 @@ function aSheet(): ComputedCharacter {
 function anIdentityCore() {
   return {
     equipment: {
-      items: [{ itemKey: "rope", name: "Corde en chanvre", quantity: 1 }], gold: 12,
+      items: [
+        { itemKey: "leather", name: "Armure de cuir", quantity: 1, type: "armor" as const, worn: true },
+        { itemKey: "rope", name: "Corde en chanvre", quantity: 1, type: "gear" as const, worn: false },
+      ],
+      gold: 12,
       armorName: "Armure de cuir", shield: false, stealthDisadvantage: false,
     },
     level: 1, experiencePoints: 0, proficiencyBonus: 2, hitDie: 10,

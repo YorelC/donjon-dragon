@@ -9,6 +9,7 @@ import {
   SkillNameSchema,
   WeaponProficiencySchema,
 } from './dnd-reference-schema.js';
+import { ItemTypeSchema } from './item-schema.js';
 
 /**
  * La fiche calculée, telle que l'API la renvoie.
@@ -141,6 +142,10 @@ export const ResolvedItemSchema = z.object({
   itemKey: z.string(),
   name: z.string(),
   quantity: z.number().int().positive(),
+  /** Le Barda range par catégorie : armes, armures, outils, matériel. */
+  type: ItemTypeSchema,
+  /** Porté plutôt que transporté : l'armure et le bouclier, seuls, pour l'instant. */
+  worn: z.boolean(),
 });
 
 export const ResolvedEquipmentSchema = z.object({

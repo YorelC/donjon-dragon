@@ -67,6 +67,17 @@ describe("GearTabView", () => {
     });
     expect(screen.getByRole("button", { name: "Dépenser" })).toBeDisabled();
   });
+
+  it("range l'armure portée une seule fois, sous Armures", () => {
+    render(<GearTabView equipment={aSheetModel().sheet.equipment} />);
+
+    const armor = screen.getByText("Armure de cuir").closest("li");
+    expect(screen.getAllByText("Armure de cuir")).toHaveLength(1);
+    expect(armor).toHaveAttribute("data-worn", "true");
+    expect(screen.getByText("Armures")).toBeInTheDocument();
+    expect(screen.getByText("Matériel")).toBeInTheDocument();
+    expect(screen.queryByText("Outils")).not.toBeInTheDocument();
+  });
 });
 
 describe("IdentityTabView", () => {
