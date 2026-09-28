@@ -54,25 +54,38 @@ la seconde copie finit par diverger ou par brouiller la lecture.
 
 ## Cible par zone
 
-### Fiche gauche — jouer
+### Cadre de l'écran
 
-Le visuel actuel est conservé : blason, six caractéristiques, compétences, puces de
-valeurs. La fiche gauche est la zone de jeu permanente : chaque caractéristique,
-sauvegarde et compétence deviendra la cible d'un test lancé depuis la fiche
-(`SF-005`).
+La fiche prend toute la largeur, sans la barre latérale de la campagne : un lien de
+retour « Personnages » suffit à s'orienter. Le panneau garde le cadre doré à
+équerres des autres écrans.
 
-Elle porte en plus la **zone vitale** :
+### En-tête — ce qu'on consulte à chaque tour
 
-- PV actuels / maximaux, et PV temporaires distincts (`B04-FIC-002`) ;
-- dés de vie par type de dé, disponibles / total (`B04-VIE-008`) ;
-- Inspiration héroïque, binaire, avec sa dernière source (`B04-RES-006`) ;
-- CA, initiative, vitesse, catégorie de taille, bonus de maîtrise.
+- blason, nom, classe ; espèce, niveau, taille, alignement, historique ;
+- **jauge de points de vie** : PV actuels / maximaux, barre, PV temporaires, et les
+  pas de dégâts et de soin (−5, −1, +1, +5) (`B04-FIC-002`) ;
+- CA, initiative, vitesse, bonus de maîtrise ;
+- dés de vie disponibles / total et leur type (`B04-VIE-008`) ;
+- Inspiration héroïque, binaire (`B04-RES-006`).
 
-Elle ne porte ni langue ni signalement.
+Aucune langue, aucun signalement. Un « dernier jet » y prendra place quand les tests
+lancés depuis la fiche existeront (`SF-005`).
 
-Tant que l'état d'aventure n'est pas persisté, la zone vitale s'affiche en lecture
+Tant que l'état d'aventure n'est pas persisté, l'en-tête s'affiche en lecture
 seule : PV actuels égaux au maximum, aucun PV temporaire, tous les dés de vie
 disponibles, inspiration éteinte. Les contrôles sont visibles et désactivés.
+
+### Colonne des jets
+
+Largeur fixe et étroite, pour laisser la place aux onglets :
+
+- les six caractéristiques en cartes, nom en entier sur sa propre ligne (jamais de
+  débordement), modificateur, score et sauvegarde avec sa maîtrise ;
+- les 18 compétences, une par ligne, dans l'ordre alphabétique français.
+
+Chaque caractéristique, sauvegarde et compétence deviendra la cible d'un test lancé
+depuis la fiche (`SF-005`).
 
 ### Armes
 

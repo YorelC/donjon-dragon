@@ -23,7 +23,7 @@ function DetailBody({ detail }: { detail: SheetDetail }) {
       <span className="font-display text-[15px] tracking-meta text-gold-title">{detail.name}</span>
       <span className="text-meta tracking-title text-gold/72 uppercase">{detail.meta}</span>
       {detail.description ? (
-        <p className="text-note/[1.7] text-ink-prose text-pretty">{detail.description}</p>
+        <p className="sheet-prose">{detail.description}</p>
       ) : null}
       <ul className="flex flex-col gap-1.5 border-t border-gold/16 pt-2.5">
         {detail.lines.map((line) => (
@@ -35,5 +35,5 @@ function DetailBody({ detail }: { detail: SheetDetail }) {
 }
 
 function DetailLine({ line }: { line: string }) {
-  return <li className="text-note/[1.7] text-ink-prose text-pretty">{line}</li>;
+  return <li className="sheet-prose">{line}</li>;
 }

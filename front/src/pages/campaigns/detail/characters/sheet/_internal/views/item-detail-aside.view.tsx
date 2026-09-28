@@ -31,5 +31,5 @@ function ItemSheet({ item }: { item: ResolvedItem }) {
 function ItemDescription({ text }: { text: string | null }) {
   if (!text) return null;
 
-  return <p className="text-note/[1.7] text-ink-prose text-pretty">{text}</p>;
+  return <p className="sheet-prose">{text}</p>;
 }

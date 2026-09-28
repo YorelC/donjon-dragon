@@ -16,7 +16,7 @@ function DetailFactCell({ entry }: { entry: DetailFact }) {
   return (
     <div
       className={cn(
-        "flex min-w-0 flex-col gap-0.5 bg-card px-2.5 py-2 odd:last:col-span-2",
+        "flex min-w-0 flex-col gap-1 bg-card px-3.5 py-2.5 odd:last:col-span-2",
         entry.wide && "col-span-2",
       )}
     >

@@ -1,34 +1,47 @@
-import type { ReactNode } from "react";
 import type { ComputedCharacter, ResolvedSkill, SkillName } from "@donjon-dragon/shared";
 import { Diamond } from "@/shared/components/molecules/diamond";
+import { SectionHeading } from "@/shared/components/molecules/section-heading";
 import { cn } from "@/shared/utils/utils";
 import { formatSigned, toLabel } from "../utils/sheet-format";
+
+const FRENCH_LOCALE = "fr-FR";
 
 interface SheetSkillsViewProps {
   sheet: ComputedCharacter;
   labels: Partial<Record<SkillName, string>>;
 }
 
-/** Les 18 compétences, toujours les 18 : une fiche montre aussi ce qu'on ne maîtrise pas. */
+interface LabeledSkill {
+  skill: ResolvedSkill;
+  label: string;
+}
+
+/**
+ * Les 18 compétences, toujours les 18 : une fiche montre aussi ce qu'on ne
+ * maîtrise pas. Une par ligne, dans l'ordre alphabétique de leur nom français.
+ */
 export function SheetSkillsView({ sheet, labels }: SheetSkillsViewProps) {
   return (
-    <SheetBlock label="Compétences">
-      <ul className="grid grid-flow-col grid-cols-2 grid-rows-9 gap-x-[18px] gap-y-[7px]">
-        {sheet.skills.map((skill) => (
-          <SkillLine key={skill.skill} skill={skill} label={toLabel(labels, skill.skill)} />
+    <div className="flex flex-col gap-2.5 pt-2">
+      <SectionHeading label="Compétences" />
+      <ul className="flex flex-col">
+        {toLabeledSkills(sheet.skills, labels).map((entry) => (
+          <SkillLine key={entry.skill.skill} entry={entry} />
         ))}
       </ul>
-    </SheetBlock>
+    </div>
   );
 }
 
-function SkillLine({ skill, label }: { skill: ResolvedSkill; label: string }) {
+function SkillLine({ entry }: { entry: LabeledSkill }) {
+  const { skill, label } = entry;
+
   return (
-    <li className="sheet-pair" data-proficient={skill.proficient}>
+    <li className="sheet-pair px-1 py-[5px]" data-proficient={skill.proficient}>
       <span className={skill.proficient ? "text-gold-selected" : "text-ink-meta"}>{label}</span>
-      <span className="flex items-center gap-1.5">
+      <span className="flex items-center gap-2">
         <Diamond size="tick" tone={skill.proficient ? "filled" : "idle"} />
-        <span className={cn("font-display", skill.proficient ? "text-gold-value" : "text-ink-faint")}>
+        <span className={cn("w-6 text-right font-display", skill.proficient ? "text-gold-value" : "text-ink-faint")}>
           {formatSigned(skill.modifier)}
         </span>
       </span>
@@ -36,11 +49,11 @@ function SkillLine({ skill, label }: { skill: ResolvedSkill; label: string }) {
   );
 }
 
-function SheetBlock({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="flex flex-col gap-2.5 border-t border-gold/16 pt-4">
-      <span className="section-label">{label}</span>
-      {children}
-    </div>
-  );
+function toLabeledSkills(
+  skills: readonly ResolvedSkill[],
+  labels: SheetSkillsViewProps["labels"],
+): LabeledSkill[] {
+  return skills
+    .map((skill) => ({ skill, label: toLabel(labels, skill.skill) }))
+    .sort((left, right) => left.label.localeCompare(right.label, FRENCH_LOCALE));
 }

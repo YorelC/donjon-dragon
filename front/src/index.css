@@ -399,7 +399,12 @@
 
   /* Panneau de detail d'un onglet : il suit le defilement de la liste. */
   .sheet-aside {
-    @apply flex min-w-0 flex-col gap-3 xl:sticky xl:top-5 xl:border-l xl:border-gold/14 xl:pl-6;
+    @apply flex min-w-0 flex-col gap-4 xl:sticky xl:top-5 xl:border-l xl:border-gold/14 xl:pl-8;
+  }
+
+  /* Texte de regle d'un panneau de detail : sort, objet, aptitude. Aere, il se lit. */
+  .sheet-prose {
+    @apply text-body/[1.8] text-ink-prose text-pretty;
   }
 
   /* Tag de ligne : source d'une aptitude, statut d'un sort, type d'objet. */

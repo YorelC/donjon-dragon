@@ -31,7 +31,7 @@ function SpellBody({ detail }: { detail: ResolvedSpellDetail }) {
     <>
       <span className="text-meta tracking-title text-gold/72 uppercase">{toSpellKicker(detail)}</span>
       <DetailFactsView facts={toSpellFacts(detail)} />
-      <p className="text-note/[1.7] text-ink-prose text-pretty">{detail.description}</p>
+      <p className="sheet-prose">{detail.description}</p>
     </>
   );
 }

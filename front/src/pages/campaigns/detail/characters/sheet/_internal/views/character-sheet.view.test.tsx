@@ -6,41 +6,62 @@ import { GrimoireTabContainer } from "../containers/grimoire-tab.container";
 import { WeaponsTabContainer } from "../containers/weapons-tab.container";
 import { aSheetModel } from "../types/character-sheet-model.fixture";
 import { IdentityTabView } from "./identity-tab.view";
-import { SheetIdentityPanelView } from "./sheet-identity-panel.view";
+import { SheetAbilitiesPanelView } from "./sheet-abilities.view";
+import { SheetHeaderView } from "./sheet-header.view";
 import { SheetTabsView } from "./sheet-tabs.view";
 
-describe("SheetIdentityPanelView", () => {
-  it("étoile les seules sauvegardes maîtrisées", () => {
-    render(<SheetIdentityPanelView model={aSheetModel()} />);
+describe("SheetAbilitiesPanelView", () => {
+  it("marque les seules sauvegardes maîtrisées", () => {
+    render(<SheetAbilitiesPanelView model={aSheetModel()} />);
 
     expect(screen.getAllByRole("img", { name: "Sauvegarde maîtrisée" })).toHaveLength(2);
   });
 
-  it("montre toujours les 18 compétences, maîtrisées ou non", () => {
-    const { container } = render(<SheetIdentityPanelView model={aSheetModel()} />);
+  it("montre toujours les 18 compétences, maîtrisées ou non, dans l'ordre alphabétique", () => {
+    const { container } = render(<SheetAbilitiesPanelView model={aSheetModel()} />);
+    const rows = [...container.querySelectorAll("li[data-proficient]")];
 
-    expect(container.querySelectorAll("li[data-proficient]")).toHaveLength(18);
+    expect(rows).toHaveLength(18);
     expect(container.querySelectorAll('li[data-proficient="true"]')).toHaveLength(2);
+    expect(rows.map((row) => row.textContent)).toContain("Discrétion+5");
   });
 
+  it("écrit le nom entier de chaque caractéristique", () => {
+    render(<SheetAbilitiesPanelView model={aSheetModel()} />);
+
+    expect(screen.getByText("Constitution")).toBeInTheDocument();
+    expect(screen.getByText("Intelligence")).toBeInTheDocument();
+  });
+});
+
+describe("SheetHeaderView", () => {
   it("écrit la vitesse à la française", () => {
-    render(<SheetIdentityPanelView model={aSheetModel()} />);
+    render(<SheetHeaderView model={aSheetModel()} />);
 
     expect(screen.getByText("10,5 m")).toBeInTheDocument();
   });
 
   it("laisse langues et signalement à l'onglet Identité", () => {
-    render(<SheetIdentityPanelView model={aSheetModel()} />);
+    render(<SheetHeaderView model={aSheetModel()} />);
 
     expect(screen.queryByText("Langues")).not.toBeInTheDocument();
     expect(screen.queryByText("Signalement")).not.toBeInTheDocument();
   });
 
   it("montre PV et dés de vie pleins tant que rien ne les dépense", () => {
-    render(<SheetIdentityPanelView model={aSheetModel()} />);
+    render(<SheetHeaderView model={aSheetModel()} />);
 
-    expect(screen.getByText("12 / 12")).toBeInTheDocument();
-    expect(screen.getByText("1 / 1 · d10")).toBeInTheDocument();
+    expect(screen.getByText("12")).toBeInTheDocument();
+    expect(screen.getByText("/ 12")).toBeInTheDocument();
+    expect(screen.getByText("1 / 1")).toBeInTheDocument();
+    expect(screen.getByText("d10")).toBeInTheDocument();
+  });
+
+  it("annonce les pas de PV sans les ouvrir", () => {
+    render(<SheetHeaderView model={aSheetModel()} />);
+
+    expect(screen.getByRole("button", { name: "-5 PV" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "+1 PV" })).toBeDisabled();
   });
 });
 
