@@ -22,7 +22,7 @@ interface LabeledSkill {
  */
 export function SheetSkillsView({ sheet, labels }: SheetSkillsViewProps) {
   return (
-    <div className="flex flex-col gap-2.5 pt-2">
+    <div className="flex min-w-0 flex-col gap-2.5">
       <SectionHeading label="Compétences" />
       <ul className="flex flex-col">
         {toLabeledSkills(sheet.skills, labels).map((entry) => (
@@ -37,7 +37,7 @@ function SkillLine({ entry }: { entry: LabeledSkill }) {
   const { skill, label } = entry;
 
   return (
-    <li className="sheet-pair px-1 py-[5px]" data-proficient={skill.proficient}>
+    <li className="sheet-pair h-5 items-center px-1" data-proficient={skill.proficient}>
       <span className={skill.proficient ? "text-gold-selected" : "text-ink-meta"}>{label}</span>
       <span className="flex items-center gap-2">
         <Diamond size="tick" tone={skill.proficient ? "filled" : "idle"} />

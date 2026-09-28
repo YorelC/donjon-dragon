@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { FeaturesTabContainer } from "../containers/features-tab.container";
 import { GearTabContainer } from "../containers/gear-tab.container";
@@ -35,21 +36,34 @@ describe("SheetAbilitiesPanelView", () => {
 });
 
 describe("SheetHeaderView", () => {
+  const renderHeader = () =>
+    render(
+      <MemoryRouter>
+        <SheetHeaderView model={aSheetModel()} back={{ to: "/campaigns/c1/characters", label: "Personnages" }} />
+      </MemoryRouter>,
+    );
+
+  it("porte le retour vers la liste, sans répéter le contexte", () => {
+    renderHeader();
+
+    expect(screen.getByRole("link", { name: /Personnages/ })).toHaveAttribute("href", "/campaigns/c1/characters");
+  });
+
   it("écrit la vitesse à la française", () => {
-    render(<SheetHeaderView model={aSheetModel()} />);
+    renderHeader();
 
     expect(screen.getByText("10,5 m")).toBeInTheDocument();
   });
 
   it("laisse langues et signalement à l'onglet Identité", () => {
-    render(<SheetHeaderView model={aSheetModel()} />);
+    renderHeader();
 
     expect(screen.queryByText("Langues")).not.toBeInTheDocument();
     expect(screen.queryByText("Signalement")).not.toBeInTheDocument();
   });
 
   it("montre PV et dés de vie pleins tant que rien ne les dépense", () => {
-    render(<SheetHeaderView model={aSheetModel()} />);
+    renderHeader();
 
     expect(screen.getByText("12")).toBeInTheDocument();
     expect(screen.getByText("/ 12")).toBeInTheDocument();
@@ -58,7 +72,7 @@ describe("SheetHeaderView", () => {
   });
 
   it("annonce les pas de PV sans les ouvrir", () => {
-    render(<SheetHeaderView model={aSheetModel()} />);
+    renderHeader();
 
     expect(screen.getByRole("button", { name: "-5 PV" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "+1 PV" })).toBeDisabled();

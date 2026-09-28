@@ -10,7 +10,7 @@ const NO_CATALOG_ENTRY = "Objet choisi à la création, sans fiche au catalogue.
 /** La fiche d'un objet du barda, telle que le catalogue la décrit. */
 export function ItemDetailAsideView({ item }: { item: ResolvedItem | null }) {
   return (
-    <aside className="sheet-aside xl:max-h-[calc(100vh-40px)] xl:overflow-y-auto" aria-live="polite">
+    <aside className="sheet-aside" aria-live="polite">
       <SectionHeading label="Fiche de l'objet" />
       {item ? <ItemSheet item={item} /> : <p className="fine-print">{HINT}</p>}
     </aside>

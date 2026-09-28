@@ -57,7 +57,7 @@ la seconde copie finit par diverger ou par brouiller la lecture.
 ### Cadre de l'écran
 
 La fiche prend toute la largeur, sans la barre latérale de la campagne : un lien de
-retour « Personnages » suffit à s'orienter. Le panneau garde le cadre doré à
+retour « Personnages », dans l'en-tête, suffit à s'orienter. Le panneau garde le cadre doré à
 équerres des autres écrans.
 
 ### En-tête — ce qu'on consulte à chaque tour
@@ -76,16 +76,25 @@ Tant que l'état d'aventure n'est pas persisté, l'en-tête s'affiche en lecture
 seule : PV actuels égaux au maximum, aucun PV temporaire, tous les dés de vie
 disponibles, inspiration éteinte. Les contrôles sont visibles et désactivés.
 
-### Colonne des jets
+### Bloc des jets
 
-Largeur fixe et étroite, pour laisser la place aux onglets :
+Un seul bloc à deux colonnes, assez large pour se lire sans serrer :
 
-- les six caractéristiques en cartes, nom en entier sur sa propre ligne (jamais de
-  débordement), modificateur, score et sauvegarde avec sa maîtrise ;
-- les 18 compétences, une par ligne, dans l'ordre alphabétique français.
+- à gauche, les six caractéristiques l'une sous l'autre, en cartes : nom en entier sur
+  sa propre ligne (jamais de débordement), modificateur, score et sauvegarde avec sa
+  maîtrise ;
+- à droite, les 18 compétences, une par ligne, dans l'ordre alphabétique français.
 
 Chaque caractéristique, sauvegarde et compétence deviendra la cible d'un test lancé
 depuis la fiche (`SF-005`).
+
+### Hauteur et défilement
+
+Sur un écran d'ordinateur, la fiche tient dans la hauteur de la fenêtre : la page ne
+défile pas. Seul le contenu des onglets défile, et quand liste et détail sont côte à
+côte, chacun défile de son côté : la fiche d'un sort reste sous les yeux pendant qu'on
+parcourt la liste. Le lien de retour vit dans l'en-tête pour économiser une ligne. Sur
+un écran étroit, les blocs s'empilent et la page défile normalement.
 
 ### Armes
 

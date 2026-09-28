@@ -394,12 +394,18 @@
      Le detail prend presque la moitie, jamais moins de 340 px : une fiche de sort
      ou d'objet doit se lire sans colonne etranglee. */
   .sheet-tab-split {
-    @apply grid items-start gap-6 xl:grid-cols-[minmax(0,5fr)_minmax(340px,4fr)];
+    @apply grid items-start gap-6 xl:h-full xl:grid-cols-[minmax(0,5fr)_minmax(340px,4fr)] xl:items-stretch;
   }
 
-  /* Panneau de detail d'un onglet : il suit le defilement de la liste. */
+  /* Cote a cote, liste et detail defilent chacun de leur cote : la fiche d'un sort
+     reste sous les yeux pendant qu'on parcourt la liste. */
+  .sheet-tab-split > * {
+    @apply xl:min-h-0 xl:overflow-y-auto xl:pr-2;
+  }
+
+  /* Panneau de detail d'un onglet, separe de la liste par un filet. */
   .sheet-aside {
-    @apply flex min-w-0 flex-col gap-4 xl:sticky xl:top-5 xl:border-l xl:border-gold/14 xl:pl-8;
+    @apply flex min-w-0 flex-col gap-4 xl:border-l xl:border-gold/14 xl:pl-8;
   }
 
   /* Texte de regle d'un panneau de detail : sort, objet, aptitude. Aere, il se lit. */

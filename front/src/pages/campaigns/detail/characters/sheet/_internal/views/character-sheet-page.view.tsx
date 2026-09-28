@@ -1,5 +1,5 @@
 import { FramedPanelView } from "@/shared/components/layout/framed-panel.view";
-import { BackLink } from "@/shared/components/molecules/page-header";
+import { BackLink, type PageBack } from "@/shared/components/molecules/page-header";
 import { toCampaignDetailCharacters } from "@/shared/constants/routes";
 import type { QueryState } from "@/shared/types/ui-state";
 import type { CharacterSheetModel } from "../types/character-sheet-model";
@@ -17,32 +17,45 @@ const BACK_LABEL = "Personnages";
 
 /**
  * La fiche prend tout l'écran, sans la barre de la campagne : le lien de retour
- * suffit à s'orienter, et chaque colonne gagnée sert à jouer.
+ * suffit à s'orienter, et chaque colonne gagnée sert à jouer. Dès `lg`, elle tient
+ * dans la hauteur de la fenêtre : seul le contenu des onglets défile.
  */
 export function CharacterSheetPageView({ page, campaignId }: CharacterSheetPageViewProps) {
   return (
     <div className="flex min-h-0 flex-1 p-5">
       <FramedPanelView>
-        <div className="flex flex-col gap-5">
-          <BackLink back={{ to: toCampaignDetailCharacters(campaignId), label: BACK_LABEL }} />
-          <SheetBody page={page} />
-        </div>
+        <SheetBody page={page} back={{ to: toCampaignDetailCharacters(campaignId), label: BACK_LABEL }} />
       </FramedPanelView>
     </div>
   );
 }
 
-function SheetBody({ page }: { page: CharacterSheetPageViewProps["page"] }) {
-  if (page.error) return <p className="empty-state-text">Cette fiche n'est pas disponible.</p>;
-  if (!page.data) return <p className="empty-state-text">Chargement de la fiche…</p>;
+interface SheetBodyProps {
+  page: CharacterSheetPageViewProps["page"];
+  back: PageBack;
+}
+
+function SheetBody({ page, back }: SheetBodyProps) {
+  if (!page.data) return <SheetPlaceholder page={page} back={back} />;
 
   return (
-    <div className="flex flex-col gap-5">
-      <SheetHeaderView model={page.data} />
-      <div className="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
+    <div className="flex flex-col gap-3 lg:h-full lg:min-h-0">
+      <SheetHeaderView model={page.data} back={back} />
+      <div className="grid gap-3 lg:min-h-0 lg:flex-1 lg:grid-cols-[500px_minmax(0,1fr)]">
         <SheetAbilitiesPanelView model={page.data} />
         <SheetTabsView model={page.data} />
       </div>
+    </div>
+  );
+}
+
+function SheetPlaceholder({ page, back }: SheetBodyProps) {
+  return (
+    <div className="flex flex-col gap-5">
+      <BackLink back={back} />
+      <p className="empty-state-text">
+        {page.error ? "Cette fiche n'est pas disponible." : "Chargement de la fiche…"}
+      </p>
     </div>
   );
 }

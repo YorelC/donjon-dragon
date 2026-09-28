@@ -10,7 +10,7 @@ const HINT =
 /** La fiche d'un sort, assez longue pour défiler seule sans quitter la liste. */
 export function SpellDetailAsideView({ spell }: { spell: CastableSpell | null }) {
   return (
-    <aside className="sheet-aside xl:max-h-[calc(100vh-40px)] xl:overflow-y-auto" aria-live="polite">
+    <aside className="sheet-aside" aria-live="polite">
       <SectionHeading label="Fiche du sort" />
       {spell ? <SpellSheet spell={spell} /> : <p className="fine-print">{HINT}</p>}
     </aside>

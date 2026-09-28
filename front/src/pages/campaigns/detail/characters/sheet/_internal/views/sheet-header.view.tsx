@@ -1,6 +1,7 @@
 import type { ComputedCharacter } from "@donjon-dragon/shared";
 import { Button } from "@/shared/components/atoms/button";
 import { Diamond } from "@/shared/components/molecules/diamond";
+import { BackLink, type PageBack } from "@/shared/components/molecules/page-header";
 import { SIZE_LABELS } from "@/shared/constants/character-labels";
 import { toInitials } from "@/shared/utils/display-meta";
 import { COMING_SOON } from "../constants/sheet-labels";
@@ -18,10 +19,19 @@ const FULL_GAUGE_PERCENT = 100;
  * tour. Tant que l'état d'aventure n'existe pas, les compteurs restent pleins et
  * leurs boutons se voient sans s'ouvrir.
  */
-export function SheetHeaderView({ model }: { model: CharacterSheetModel }) {
+interface SheetHeaderViewProps {
+  model: CharacterSheetModel;
+  /** Le retour vit dans le bandeau : une ligne de moins au-dessus de la fiche. */
+  back: PageBack;
+}
+
+export function SheetHeaderView({ model, back }: SheetHeaderViewProps) {
   return (
-    <header className="panel flex flex-col gap-5 px-5 py-[18px] xl:flex-row xl:items-center xl:justify-between">
-      <SheetIdentity model={model} />
+    <header className="panel flex flex-col gap-4 px-5 py-3 xl:flex-row xl:items-center xl:justify-between">
+      <div className="flex min-w-0 flex-col gap-1">
+        <BackLink back={back} />
+        <SheetIdentity model={model} />
+      </div>
       <SheetStats sheet={model.sheet} />
     </header>
   );
@@ -31,9 +41,9 @@ function SheetIdentity({ model }: { model: CharacterSheetModel }) {
   const { sheet, identity, labels } = model;
 
   return (
-    <div className="flex min-w-0 items-center gap-5">
+    <div className="flex min-w-0 items-center gap-5 pl-2">
       <Diamond size="crest" tone="active">{toInitials(identity.name)}</Diamond>
-      <div className="flex min-w-0 flex-col gap-1">
+      <div className="flex min-w-0 flex-col gap-0.5">
         <h1 className="font-display text-[24px]/[1.15] tracking-meta text-gold-selected">
           {identity.name}
         </h1>
@@ -74,7 +84,7 @@ function SheetStats({ sheet }: { sheet: ComputedCharacter }) {
 
 function HitPointsGauge({ sheet }: { sheet: ComputedCharacter }) {
   return (
-    <div className="flex min-w-[220px] flex-col gap-2 border border-gold/40 bg-surface px-3.5 py-2.5">
+    <div className="flex min-w-[220px] flex-col justify-center gap-1.5 border border-gold/40 bg-surface px-3.5 py-2">
       <div className="flex items-baseline justify-between gap-3">
         <span className="sheet-caption">Points de vie</span>
         <span className="font-display text-gold-title">
@@ -133,7 +143,7 @@ interface StatTileProps {
 
 function StatTile({ label, value, note }: StatTileProps) {
   return (
-    <div className="flex min-w-[74px] flex-col items-center justify-center gap-1.5 border border-gold/16 bg-surface px-3 py-2.5 text-center">
+    <div className="flex min-w-[74px] flex-col items-center justify-center gap-1.5 border border-gold/16 bg-surface px-3 py-2 text-center">
       <span className="sheet-caption">{label}</span>
       <span className="font-display text-[20px]/[1] text-gold-title">{value}</span>
       {note ? <span className="text-meta text-ink-faint">{note}</span> : null}
@@ -147,7 +157,7 @@ function HeroicInspiration() {
     <div
       aria-disabled
       title={COMING_SOON}
-      className="flex min-w-[74px] flex-col items-center justify-center gap-2 border border-gold/16 bg-surface px-3 py-2.5"
+      className="flex min-w-[74px] flex-col items-center justify-center gap-2 border border-gold/16 bg-surface px-3 py-2"
     >
       <span className="sheet-caption">Inspiration</span>
       <Diamond size="box" tone="idle" />

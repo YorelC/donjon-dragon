@@ -18,7 +18,7 @@ export function SheetTabsView({ model }: { model: CharacterSheetModel }) {
   return (
     <Tabs
       defaultValue={SHEET_TABS.weapons.value}
-      className="panel-flat min-w-0 gap-0 bg-white/[.012]"
+      className="panel-flat min-w-0 gap-0 bg-white/[.012] lg:min-h-0"
     >
       <TabsList variant="panel" className="justify-start overflow-x-auto px-[22px]">
         <SheetTabTrigger tab={SHEET_TABS.weapons} />
@@ -27,22 +27,22 @@ export function SheetTabsView({ model }: { model: CharacterSheetModel }) {
         <SheetTabTrigger tab={SHEET_TABS.gear} />
         <SheetTabTrigger tab={SHEET_TABS.identity} />
       </TabsList>
-      <div className="min-w-0 px-[22px] pt-6 pb-[26px]">
-        <TabsContent value={SHEET_TABS.weapons.value}>
+      <div className="min-w-0 px-[22px] pt-6 pb-[26px] lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+        <TabsContent value={SHEET_TABS.weapons.value} className="xl:h-full">
           <WeaponsTabContainer attacks={sheet.attacks} />
         </TabsContent>
-        <TabsContent value={SHEET_TABS.features.value}>
+        <TabsContent value={SHEET_TABS.features.value} className="xl:h-full">
           <FeaturesTabContainer features={sheet.features} resources={sheet.resources} />
         </TabsContent>
         {hasSpellcasting ? (
-          <TabsContent value={SHEET_TABS.grimoire.value}>
+          <TabsContent value={SHEET_TABS.grimoire.value} className="xl:h-full">
             <GrimoireTabContainer sheet={sheet} />
           </TabsContent>
         ) : null}
-        <TabsContent value={SHEET_TABS.gear.value}>
+        <TabsContent value={SHEET_TABS.gear.value} className="xl:h-full">
           <GearTabContainer equipment={sheet.equipment} />
         </TabsContent>
-        <TabsContent value={SHEET_TABS.identity.value}>
+        <TabsContent value={SHEET_TABS.identity.value} className="xl:h-full">
           <IdentityTabView model={model} />
         </TabsContent>
       </div>
