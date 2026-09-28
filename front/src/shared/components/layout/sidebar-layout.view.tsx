@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/atoms/button";
 import { SectionHeading } from "@/shared/components/molecules/section-heading";
 import { OrnateCorners } from "@/shared/components/molecules/ornate-corners";
 import { cn } from "@/shared/utils/utils";
+import { FramedPanelView } from "./framed-panel.view";
 
 export interface SidebarNavItem {
   label: string;
@@ -36,21 +37,15 @@ interface SidebarLayoutViewProps {
  * Le cadre à deux colonnes de la charte : une barre latérale et le panneau de
  * l'écran ouvert, tous deux en panneau doré à équerres. Profil et campagne le
  * partagent — ce sont deux navigations, pas deux mises en page.
- *
- * La zone qui défile s'arrête sous les équerres du haut et au-dessus de celles du
- * bas : le contenu disparaît avant le cadre au lieu de glisser dessous.
  */
 export function SidebarLayoutView({ nav, footer }: SidebarLayoutViewProps) {
   return (
     <div className="flex min-h-0 flex-1 gap-4 p-5">
       <SidebarMenuButton nav={nav} />
       <Sidebar nav={nav} footer={footer} />
-      <main className="panel-surface relative flex min-w-0 flex-1 flex-col">
-        <OrnateCorners />
-        <div className="panel-scroll my-[30px] py-0">
-          <Outlet />
-        </div>
-      </main>
+      <FramedPanelView>
+        <Outlet />
+      </FramedPanelView>
     </div>
   );
 }

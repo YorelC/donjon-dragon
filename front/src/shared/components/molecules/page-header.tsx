@@ -43,4 +43,5 @@ function BackLink({ back }: { back: PageBack }) {
   );
 }
 
-export { PageHeader };
+export { PageHeader, BackLink };
+export type { PageBack };
