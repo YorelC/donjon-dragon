@@ -5,6 +5,7 @@ import { WeaponsTabContainer } from "../containers/weapons-tab.container";
 import { aSheetModel } from "../types/character-sheet-model.fixture";
 import { GearTabView } from "./gear-tab.view";
 import { IdentityTabView } from "./identity-tab.view";
+import { ResourceStripView } from "./resource-strip.view";
 import { SheetIdentityPanelView } from "./sheet-identity-panel.view";
 import { SheetTabsView } from "./sheet-tabs.view";
 
@@ -65,6 +66,29 @@ describe("WeaponsTabContainer", () => {
     expect(screen.getByText("Corps à corps · Sans arme")).toBeInTheDocument();
     fireEvent.mouseEnter(screen.getByText("Frappe à mains nues"));
     expect(screen.getByText(/Empoigner ou Bousculer/)).toBeInTheDocument();
+  });
+});
+
+describe("ResourceStripView", () => {
+  it("teinte chaque ressource illustrée et garde l'or pour les autres", () => {
+    const { container } = render(
+      <ResourceStripView
+        resources={[
+          { key: "bardicInspiration", feature: "Inspiration bardique", max: 3, recovery: "longRest" },
+          { key: "layOnHands", feature: "Imposition des mains", max: 5, recovery: "longRest" },
+        ]}
+      />,
+    );
+
+    expect(container.querySelector('[data-resource="bardicInspiration"]')).toHaveClass("text-resource-bard");
+    expect(container.querySelector('[data-resource="layOnHands"]')).toHaveClass("text-gold");
+    expect(screen.getByText("3 disponible(s) sur 3")).toBeInTheDocument();
+  });
+
+  it("ne s'affiche pas sans ressource", () => {
+    const { container } = render(<ResourceStripView resources={[]} />);
+
+    expect(container).toBeEmptyDOMElement();
   });
 });
 

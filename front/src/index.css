@@ -65,6 +65,12 @@
   /* Magie — les emplacements de sorts, seul bleu de la charte (maquette de fiche). */
   --color-arcane: #7c84d6;
 
+  /* Ressources de classe — une teinte par classe, pour les reconnaitre d'un coup d'oeil
+     dans les Aptitudes : lyre du barde, epee du guerrier, hache de la rage. */
+  --color-resource-bard: #6fb07e;
+  --color-resource-fighter: #e3c24a;
+  --color-resource-rage: #d4493c;
+
   --color-border: rgba(201, 169, 97, 0.22);
   --color-input: rgba(201, 169, 97, 0.24);
   --color-ring: rgba(201, 169, 97, 0.6);

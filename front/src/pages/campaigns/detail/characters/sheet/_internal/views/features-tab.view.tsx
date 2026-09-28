@@ -4,6 +4,7 @@ import { SectionHeading } from "@/shared/components/molecules/section-heading";
 import { cn } from "@/shared/utils/utils";
 import type { HoverBinding } from "../types/hover-binding";
 import { featureKey, isActive, sortFeatures, toFeatureDetail } from "../utils/feature-detail";
+import { ResourceStripView } from "./resource-strip.view";
 import { SheetDetailAsideView } from "./sheet-detail-aside.view";
 
 interface FeaturesTabViewProps {
@@ -20,13 +21,16 @@ export function FeaturesTabView({ features, resources, hover }: FeaturesTabViewP
 
   return (
     <div className="sheet-tab-split">
-      <div className="flex min-w-0 flex-col gap-[11px]">
-        <SectionHeading label="Aptitudes" />
-        <ul className="flex flex-col gap-[5px]">
-          <FeatureRows features={actives} hover={hover} />
-          <PassivesDivider />
-          <FeatureRows features={passives} hover={hover} />
-        </ul>
+      <div className="flex min-w-0 flex-col gap-6">
+        <ResourceStripView resources={resources} />
+        <div className="flex flex-col gap-[11px]">
+          <SectionHeading label="Aptitudes" />
+          <ul className="flex flex-col gap-[5px]">
+            <FeatureRows features={actives} hover={hover} />
+            <PassivesDivider />
+            <FeatureRows features={passives} hover={hover} />
+          </ul>
+        </div>
       </div>
       <SheetDetailAsideView
         title="Détail"
