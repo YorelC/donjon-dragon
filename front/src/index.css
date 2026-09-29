@@ -437,6 +437,123 @@
     @apply text-[9.5px] tracking-value whitespace-nowrap text-ink-disabled uppercase;
   }
 
+  /* --- Journal de bord ------------------------------------------------- */
+
+  /* Sommaire a gauche, chapitre ouvert a droite (spec 013). Cote a cote, chacun
+     defile de son cote ; sous xl ils s'empilent et l'onglet defile. */
+  .journal-split {
+    @apply grid items-start gap-6 xl:h-full xl:grid-cols-[220px_minmax(0,1fr)] xl:items-stretch;
+  }
+
+  .journal-contents {
+    @apply flex min-w-0 flex-col gap-[11px] xl:min-h-0;
+  }
+
+  .journal-chapter-list {
+    @apply flex flex-col gap-[5px] xl:min-h-0 xl:overflow-y-auto xl:pr-1;
+  }
+
+  .journal-chapter-row {
+    @apply flex items-stretch gap-1;
+  }
+
+  .journal-chapter-handle {
+    @apply flex w-5 shrink-0 items-center justify-center text-ink-faint transition-colors duration-[.18s] outline-none hover:text-gold-value focus-visible:text-gold-value;
+  }
+
+  .journal-chapter-button {
+    @apply flex min-w-0 flex-1 items-center gap-2.5 px-3 py-2 text-left text-sm text-ink-idle outline-none focus-visible:border-gold/60;
+  }
+
+  .journal-chapter {
+    @apply flex min-w-0 flex-col gap-4 xl:min-h-0 xl:border-l xl:border-gold/14 xl:pl-6;
+  }
+
+  .journal-chapter-title {
+    @apply min-w-0 flex-1 truncate font-display text-[17px] tracking-meta text-gold-title;
+  }
+
+  .journal-chapter-body {
+    @apply min-w-0 xl:min-h-0 xl:flex-1 xl:overflow-y-auto xl:pr-2;
+  }
+
+  /* Texte Markdown rendu : titres de la charte, listes, cases, tableaux. */
+  .markdown-prose {
+    @apply flex flex-col gap-3 text-body/[1.8] text-ink-prose text-pretty;
+  }
+
+  .markdown-prose :is(h1, h2, h3, h4) {
+    @apply font-display tracking-meta text-gold-title;
+  }
+
+  .markdown-prose h1 {
+    @apply text-[19px];
+  }
+
+  .markdown-prose h2 {
+    @apply text-[17px];
+  }
+
+  .markdown-prose :is(h3, h4) {
+    @apply text-[15px];
+  }
+
+  .markdown-prose ul {
+    @apply list-disc pl-5;
+  }
+
+  .markdown-prose ol {
+    @apply list-decimal pl-5;
+  }
+
+  .markdown-prose .contains-task-list {
+    @apply list-none pl-0;
+  }
+
+  .markdown-prose input[type="checkbox"] {
+    @apply mr-2 accent-gold;
+  }
+
+  .markdown-prose a {
+    @apply text-gold-link underline underline-offset-2 hover:text-gold-link-hover;
+  }
+
+  .markdown-prose strong {
+    @apply text-foreground;
+  }
+
+  .markdown-prose del {
+    @apply text-ink-faint;
+  }
+
+  .markdown-prose blockquote {
+    @apply border-l border-gold/30 pl-4 text-ink-help italic;
+  }
+
+  .markdown-prose code {
+    @apply bg-gold/8 px-1 text-[0.92em];
+  }
+
+  .markdown-prose pre {
+    @apply overflow-x-auto border border-gold/14 bg-surface p-3;
+  }
+
+  .markdown-prose table {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .markdown-prose :is(th, td) {
+    @apply border border-gold/16 px-2.5 py-1.5 text-left;
+  }
+
+  .markdown-prose th {
+    @apply font-display text-meta tracking-label text-gold/80 uppercase;
+  }
+
+  .markdown-prose hr {
+    @apply border-gold/20;
+  }
+
   /* --- Createur de personnage -------------------------------------------- */
 
   /* Rail, scene, recapitulatif. Des lg l'ecran est fixe et chaque panneau

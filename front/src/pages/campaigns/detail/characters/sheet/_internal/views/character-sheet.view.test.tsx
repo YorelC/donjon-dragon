@@ -85,7 +85,13 @@ describe("SheetTabsView", () => {
     render(<SheetTabsView model={aSheetModel()} />);
 
     expect(screen.queryByRole("tab", { name: /Grimoire/ })).not.toBeInTheDocument();
-    expect(screen.getAllByRole("tab")).toHaveLength(4);
+    expect(screen.getAllByRole("tab")).toHaveLength(5);
+  });
+
+  it("range le journal de bord en dernier onglet", () => {
+    render(<SheetTabsView model={aSheetModel()} />);
+
+    expect(screen.getAllByRole("tab").at(-1)).toHaveTextContent("Journal");
   });
 
   it("ouvre le grimoire dès qu'une incantation existe", () => {

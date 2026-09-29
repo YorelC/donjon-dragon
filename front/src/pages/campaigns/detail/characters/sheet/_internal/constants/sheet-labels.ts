@@ -109,6 +109,7 @@ export const SHEET_TABS = {
   grimoire: { value: "grimoire", label: "Grimoire" },
   gear: { value: "barda", label: "Barda" },
   identity: { value: "identite", label: "Identité" },
+  journal: { value: "journal", label: "Journal" },
 } as const;
 
 export const COMING_SOON = "Bientôt disponible";
