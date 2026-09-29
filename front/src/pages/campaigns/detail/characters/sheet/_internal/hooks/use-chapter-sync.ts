@@ -66,9 +66,15 @@ function flushDraft(state: SyncState, draft: ChapterDraft): void {
   persistDraft(state, draft);
 }
 
-function persistDraft(state: SyncState, draft: ChapterDraft): void {
+type ChapterSender = typeof putJournalChapter;
+
+function persistDraft(
+  state: SyncState,
+  draft: ChapterDraft,
+  send: ChapterSender = putJournalChapter,
+): void {
   settle(state, "saving");
-  putJournalChapter(state.target, { ...draft, expectedRevision: state.server.current.revision })
+  send(state.target, { ...draft, expectedRevision: state.server.current.revision })
     .then((saved) => {
       state.server.current = { revision: saved.revision, draft };
       recordSavedChapter(state.queryClient, state.target, { ...saved, ...draft });
@@ -91,13 +97,18 @@ function sendPending(state: SyncState): void {
   if (next) flushDraft(state, next);
 }
 
-// Une sauvegarde en vol ferait refuser celle-ci pour révision dépassée : on ne l'envoie pas.
+/**
+ * Même chemin qu'une sauvegarde ordinaire, par un transport qui survit à la
+ * fermeture : si la page revient du cache du navigateur, elle connaît la
+ * révision acceptée et la sauvegarde suivante n'ouvre pas de faux conflit. Une
+ * sauvegarde en vol ferait refuser celle-ci pour révision dépassée : on ne
+ * l'envoie pas.
+ */
 function flushOnExit(state: SyncState, draft: ChapterDraft): void {
   const latest = state.pending.current ?? draft;
   if (state.busy.current || sameDraft(latest, state.server.current.draft)) return;
-  void putJournalChapterOnExit(state.target, {
-    ...latest, expectedRevision: state.server.current.revision,
-  }).catch(() => undefined);
+  state.pending.current = null;
+  persistDraft(state, latest, putJournalChapterOnExit);
 }
 
 async function takeTheirs(state: SyncState): Promise<ChapterDraft> {

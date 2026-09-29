@@ -125,6 +125,23 @@ describe("useChapterAutosave", () => {
     );
   });
 
+  it("repart de la révision acceptée à la fermeture si la page revient du cache", async () => {
+    vi.mocked(api.putOnExit).mockResolvedValue(savedAt(1));
+    vi.mocked(api.put).mockResolvedValue(savedAt(2));
+    const { result } = renderAutosave();
+
+    act(() => result.current.setBody("avant"));
+    await act(async () => {
+      window.dispatchEvent(new Event("pagehide"));
+    });
+    act(() => result.current.setBody("après le retour"));
+    await pause(AUTOSAVE_DELAY_MS);
+
+    expect(api.putOnExit).toHaveBeenCalledTimes(1);
+    expect(vi.mocked(api.put).mock.calls[0]?.[1]).toMatchObject({ expectedRevision: 1 });
+    expect(result.current.status).toBe("saved");
+  });
+
   describe("conflit entre deux écrans", () => {
     beforeEach(() => {
       vi.mocked(api.put).mockRejectedValueOnce(modifiedElsewhere());
