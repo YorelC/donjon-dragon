@@ -3,6 +3,10 @@ import { GetCampaignMembershipsUseCase } from '@modules/campaigns/application/us
 import type { ActorId } from '@kernel/domain/actor-id';
 
 import {
+  CHARACTER_DELETION,
+  type CharacterDeletionPort,
+} from '../ports/character-deletion.port';
+import {
   CHARACTER_REPOSITORY,
   type CharacterRepositoryPort,
 } from '../ports/character.repository.port';
@@ -20,6 +24,7 @@ export class DeleteCharacterUseCase {
     @Inject(CHARACTER_REPOSITORY)
     private readonly characterRepo: CharacterRepositoryPort,
     private readonly memberships: GetCampaignMembershipsUseCase,
+    @Inject(CHARACTER_DELETION) private readonly deletion: CharacterDeletionPort,
   ) {}
 
   async execute(dto: DeleteCharacterDto): Promise<void> {
@@ -33,6 +38,6 @@ export class DeleteCharacterUseCase {
     });
 
     character.assertDeletableBy(context);
-    await this.characterRepo.deleteById(character.id);
+    await this.deletion.deleteWithJournal(character.id);
   }
 }

@@ -7,6 +7,7 @@ import type {
 
 import type { CharacterSnapshot } from '../domain/character';
 import type { CharacterCommandAction } from './ports/character-command.repository.port';
+import type { JournalCommandAction } from './ports/journal-command.repository.port';
 
 const HASH_ALGORITHM = 'sha256';
 
@@ -49,6 +50,22 @@ export interface CharacterPersonalDetailsIntent {
 
 export function hashCharacterPersonalDetails(intent: CharacterPersonalDetailsIntent): string {
   return hash({ action: 'character.personal-details-updated', ...intent });
+}
+
+/**
+ * `target` nomme ce que la commande vise : le chapitre, ou le personnage quand
+ * elle porte sur tout le journal. Une même clé rejouée sur un autre chapitre ne
+ * vaut pas la même intention.
+ */
+export interface JournalCommandIntent {
+  action: JournalCommandAction;
+  campaignId: string;
+  target: string;
+  body: object;
+}
+
+export function hashJournalCommand(intent: JournalCommandIntent): string {
+  return hash(intent);
 }
 
 export function hashBuildVersion(snapshot: CharacterSnapshot): string {

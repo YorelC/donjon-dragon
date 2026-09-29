@@ -19,6 +19,10 @@ import { InMemoryItemCatalog } from '../../testing/in-memory-item-catalog';
 import { InMemoryCharacterRepository } from '../../testing/in-memory-character.repository';
 import { InMemoryAbilityRollRepository } from '../../testing/in-memory-ability-roll.repository';
 import { InMemoryCharacterCreationRepository } from '../../testing/in-memory-character-creation.repository';
+import { InMemoryCharacterDeletion } from '../../testing/in-memory-character-deletion';
+import { InMemoryJournalChapterRepository } from '../../testing/in-memory-journal-chapter.repository';
+import { JournalChapter } from '../../domain/journal-chapter';
+import { OwningCampaignId } from '../../domain/owning-campaign-id';
 import { CreateCharacterUseCase } from './create-character.use-case';
 import { DeleteCharacterUseCase } from './delete-character.use-case';
 
@@ -34,6 +38,7 @@ describe('DeleteCharacterUseCase', () => {
   let useCase: DeleteCharacterUseCase;
   let create: CreateCharacterUseCase;
   let characterRepo: InMemoryCharacterRepository;
+  let chapterRepo: InMemoryJournalChapterRepository;
   let campaignId: string;
 
   beforeEach(async () => {
@@ -63,7 +68,10 @@ describe('DeleteCharacterUseCase', () => {
       new InMemoryCharacterCreationRepository(characterRepo),
       rolls,
     );
-    useCase = new DeleteCharacterUseCase(characterRepo, memberships);
+    chapterRepo = new InMemoryJournalChapterRepository();
+    useCase = new DeleteCharacterUseCase(
+      characterRepo, memberships, new InMemoryCharacterDeletion(characterRepo, chapterRepo),
+    );
   });
 
   async function characterCreatedBy(creatorId: string): Promise<string> {
@@ -121,6 +129,18 @@ describe('DeleteCharacterUseCase', () => {
 
     await useCase.execute({ characterId, campaignId, actorId: anActor(secondMasterId) });
     expect(await stillExists(characterId)).toBe(false);
+  });
+
+  it('emporte le journal de bord du personnage supprimé', async () => {
+    const characterId = await characterCreatedBy(frodoId);
+    chapterRepo.save(JournalChapter.create({
+      campaignId: OwningCampaignId.create(campaignId), characterId: CharacterId.create(characterId),
+      title: 'La taverne', position: 0, now: TEST_INSTANT,
+    }));
+
+    await useCase.execute({ characterId, campaignId, actorId: anActor(ownerId) });
+
+    expect(await chapterRepo.listByCharacter(CharacterId.create(characterId))).toEqual([]);
   });
 
   it('refuse un personnage inconnu', async () => {

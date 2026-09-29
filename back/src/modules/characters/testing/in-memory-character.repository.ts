@@ -57,6 +57,7 @@ export class InMemoryCharacterRepository implements CharacterRepositoryPort {
     await this.save(character);
   }
 
+  /** Hors port : la suppression passe par `CharacterDeletionPort`. */
   async deleteById(id: CharacterId): Promise<void> {
     this.characters.delete(id.value);
   }

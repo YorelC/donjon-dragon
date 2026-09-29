@@ -89,10 +89,6 @@ export class MongoCharacterRepository implements CharacterRepositoryPort {
     );
     if (result.matchedCount !== 1) throw new CharacterRevisionConflictError();
   }
-
-  async deleteById(id: CharacterId): Promise<void> {
-    await this.model.deleteOne({ id: id.value });
-  }
 }
 
 const REVISION_INCREMENT = 1;

@@ -29,5 +29,4 @@ export interface CharacterRepositoryPort {
     character: Character,
     transactionHandle: unknown,
   ): Promise<void>;
-  deleteById(id: CharacterId): Promise<void>;
 }

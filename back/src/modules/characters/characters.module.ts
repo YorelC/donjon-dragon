@@ -24,6 +24,9 @@ import { CHARACTER_ASSIGNMENT_REPOSITORY } from './application/ports/character-a
 import { CHARACTER_COMMAND_REPOSITORY } from './application/ports/character-command.repository.port';
 import { CHARACTER_CREATION_REPOSITORY } from './application/ports/character-creation.repository.port';
 import { CHARACTER_REPOSITORY } from './application/ports/character.repository.port';
+import { CHARACTER_DELETION } from './application/ports/character-deletion.port';
+import { JOURNAL_CHAPTER_REPOSITORY } from './application/ports/journal-chapter.repository.port';
+import { JOURNAL_COMMAND_REPOSITORY } from './application/ports/journal-command.repository.port';
 import { ITEM_CATALOG } from './application/ports/item-catalog.port';
 import { AssignCharacterUseCase } from './application/use-cases/assign-character.use-case';
 import { AcceptCharacterReviewUseCase } from './application/use-cases/accept-character-review.use-case';
@@ -45,6 +48,12 @@ import { SubmitCharacterForReviewUseCase } from './application/use-cases/submit-
 import { ValidateOwnCharacterUseCase } from './application/use-cases/validate-own-character.use-case';
 import { UnassignCharacterUseCase } from './application/use-cases/unassign-character.use-case';
 import { UpdateCharacterPersonalDetailsUseCase } from './application/use-cases/update-character-personal-details.use-case';
+import { CreateJournalChapterUseCase } from './application/use-cases/create-journal-chapter.use-case';
+import { DeleteJournalChapterUseCase } from './application/use-cases/delete-journal-chapter.use-case';
+import { GetCharacterJournalUseCase } from './application/use-cases/get-character-journal.use-case';
+import { GetJournalChapterUseCase } from './application/use-cases/get-journal-chapter.use-case';
+import { ReorderJournalChaptersUseCase } from './application/use-cases/reorder-journal-chapters.use-case';
+import { UpdateJournalChapterUseCase } from './application/use-cases/update-journal-chapter.use-case';
 import { ItemsItemCatalog } from './infrastructure/acl/items-item-catalog';
 import { UserCharacterDirectory } from './infrastructure/acl/user-character-directory';
 import {
@@ -60,17 +69,26 @@ import { MongoCharacterAssignmentRepository } from './infrastructure/persistence
 import { MongoAbilityRollRepository } from './infrastructure/persistence/mongo-ability-roll.repository';
 import { MongoCharacterCreationRepository } from './infrastructure/persistence/mongo-character-creation.repository';
 import { MongoCharacterCommandRepository } from './infrastructure/persistence/mongo-character-command.repository';
+import { MongoCharacterDeletionRepository } from './infrastructure/persistence/mongo-character-deletion.repository';
+import {
+  JOURNAL_CHAPTER_MODEL,
+  JournalChapterSchema,
+} from './infrastructure/persistence/journal-chapter.schema';
+import { MongoJournalChapterRepository } from './infrastructure/persistence/mongo-journal-chapter.repository';
+import { MongoJournalCommandRepository } from './infrastructure/persistence/mongo-journal-command.repository';
 import { CharacterController } from './presentation/character.controller';
 import { CampaignCharacterLifecycleController } from './presentation/campaign-character-lifecycle.controller';
 import { DndCatalogController } from './presentation/dnd-catalog.controller';
 import { CharacterReviewController } from './presentation/character-review.controller';
 import { CharacterPersonalDetailsController } from './presentation/character-personal-details.controller';
+import { CharacterJournalController } from './presentation/character-journal.controller';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: CHARACTER_MODEL, schema: CharacterSchema },
       { name: CHARACTER_BUILD_VERSION_MODEL, schema: CharacterBuildVersionSchema },
+      { name: JOURNAL_CHAPTER_MODEL, schema: JournalChapterSchema },
       { name: COMMAND_RECEIPT_MODEL, schema: CommandReceiptSchema },
       { name: FUNCTIONAL_AUDIT_ENTRY_MODEL, schema: FunctionalAuditEntrySchema },
       { name: OUTBOX_MESSAGE_MODEL, schema: OutboxMessageSchema },
@@ -87,6 +105,7 @@ import { CharacterPersonalDetailsController } from './presentation/character-per
     DndCatalogController,
     CharacterReviewController,
     CharacterPersonalDetailsController,
+    CharacterJournalController,
   ],
   providers: [
     { provide: CHARACTER_REPOSITORY, useClass: MongoCharacterRepository },
@@ -102,6 +121,9 @@ import { CharacterPersonalDetailsController } from './presentation/character-per
     { provide: ABILITY_ROLL_REPOSITORY, useClass: MongoAbilityRollRepository },
     { provide: CHARACTER_DIRECTORY, useClass: UserCharacterDirectory },
     { provide: ITEM_CATALOG, useClass: ItemsItemCatalog },
+    { provide: CHARACTER_DELETION, useClass: MongoCharacterDeletionRepository },
+    { provide: JOURNAL_CHAPTER_REPOSITORY, useClass: MongoJournalChapterRepository },
+    { provide: JOURNAL_COMMAND_REPOSITORY, useClass: MongoJournalCommandRepository },
     ListCampaignCharactersUseCase,
     CreateCharacterUseCase,
     RollAbilitiesUseCase,
@@ -122,6 +144,12 @@ import { CharacterPersonalDetailsController } from './presentation/character-per
     ValidateOwnCharacterUseCase,
     RefuseCharacterReviewUseCase,
     UpdateCharacterPersonalDetailsUseCase,
+    GetCharacterJournalUseCase,
+    GetJournalChapterUseCase,
+    CreateJournalChapterUseCase,
+    UpdateJournalChapterUseCase,
+    DeleteJournalChapterUseCase,
+    ReorderJournalChaptersUseCase,
   ],
 })
 export class CharactersModule {}
