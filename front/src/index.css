@@ -554,6 +554,11 @@
     @apply border-gold/20;
   }
 
+  /* Source brute d'un texte que le rendu Markdown n'a pas su afficher. */
+  .markdown-source {
+    @apply font-sans text-body/[1.8] whitespace-pre-wrap break-words text-ink-prose;
+  }
+
   /* --- Createur de personnage -------------------------------------------- */
 
   /* Rail, scene, recapitulatif. Des lg l'ecran est fixe et chaque panneau
