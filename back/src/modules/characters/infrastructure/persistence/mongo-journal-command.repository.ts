@@ -23,7 +23,7 @@ import { JOURNAL_REVISION_STEP, type JournalChapter } from '../../domain/journal
 import { JournalChapterModifiedElsewhereError } from '../../domain/journal-chapter.errors';
 import { toJournalChapterDocument, type JournalChapterDocument } from './journal-chapter.mapper';
 import { JOURNAL_CHAPTER_MODEL } from './journal-chapter.schema';
-import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from './command-envelope';
+import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from '@kernel/infrastructure/command-envelope';
 
 const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignGameMasters;
 const SOURCES = ['SF-002', 'DEC-015', 'DEC-016', 'SPEC-013'];

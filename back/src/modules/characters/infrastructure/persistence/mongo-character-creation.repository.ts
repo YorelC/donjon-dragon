@@ -38,7 +38,7 @@ import {
 import { ABILITY_ROLL_INTENTION, ABILITY_ROLL_STATUS } from '../../application/ability-roll-receipt';
 import { toPersistence, type CharacterDocument } from './character.mapper';
 import { CHARACTER_MODEL } from './character.schema';
-import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from './command-envelope';
+import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from '@kernel/infrastructure/command-envelope';
 
 const SOURCES = ['SF-002', 'B01', 'DEC-015', 'DEC-016', 'SPEC-007', 'SPEC-009'];
 

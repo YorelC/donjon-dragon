@@ -40,7 +40,7 @@ import {
   CHARACTER_BUILD_VERSION_MODEL,
   type CharacterBuildVersionDocument,
 } from './character-build-version.schema';
-import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from './command-envelope';
+import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from '@kernel/infrastructure/command-envelope';
 
 const OWNER_MODULE = CHARACTERS_OWNER_MODULE;
 const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignMembers;

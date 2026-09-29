@@ -1,7 +1,8 @@
 /**
- * Ce que partagent les dépôts de commande du module : un reçu d'idempotence, une
- * entrée d'audit et, selon la commande, les documents écrits dans la même
- * transaction. Déclaré une fois ici plutôt que recopié dans chaque dépôt.
+ * Ce que partagent les dépôts de commande : un reçu d'idempotence, une entrée
+ * d'audit et, selon la commande, les documents écrits dans la même transaction.
+ * Déclaré une fois ici plutôt que recopié dans chaque dépôt. Les dépôts du module
+ * characters s'y branchent ; ceux de campaigns en gardent encore leurs copies.
  */
 
 /** Version des documents qu'une commande écrit : reçu, audit, version de build. */

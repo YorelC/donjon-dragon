@@ -24,7 +24,7 @@ import { CHARACTERS_OWNER_MODULE } from '../../application/realtime-projection';
 import type { AbilityRollSnapshot } from '../../domain/ability-roll';
 import { ABILITY_ROLL_INTENTION, ABILITY_ROLL_STATUS } from '../../application/ability-roll-receipt';
 import { AbilityRollCommandConflictError } from '../../domain/character.errors';
-import { ENVELOPE_SCHEMA_VERSION, isDuplicateKey } from './command-envelope';
+import { ENVELOPE_SCHEMA_VERSION, isDuplicateKey } from '@kernel/infrastructure/command-envelope';
 
 const SOURCES = ['SF-002', 'B01-CAR-002', 'DEC-005', 'SPEC-009'];
 const PLAYER_ROLE = 'player';
