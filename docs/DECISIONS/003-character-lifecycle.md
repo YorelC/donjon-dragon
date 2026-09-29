@@ -84,3 +84,9 @@ déverrouillé et une respécialisation déverrouillée. Cette précision rempla
 l'ambiguïté laissée ouverte par la Phase 5A. Le même jour, il a validé la possibilité
 d'abandonner une respécialisation sans altérer la fiche active, ainsi que son
 déclenchement par le joueur assigné ou tout MJ actif.
+
+Le 29 septembre 2026, le propriétaire a précisé l'acceptation immédiate d'une fiche
+créée par un MJ : ce MJ fait foi sur sa propre création. Il la valide d'un seul geste,
+de brouillon ou refusée à acceptée, sans passer par la soumission puis la décision. Il
+ne se voit jamais proposer de soumettre, d'accepter ou de refuser sa propre fiche. La
+version validée est figée comme une version soumise et reste auditée.

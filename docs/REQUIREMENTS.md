@@ -232,7 +232,10 @@ pendant la revue.
    remplace la version à examiner ; le dernier motif et l'historique des décisions de
    validation restent conservés.
 6. Une fiche créée directement par un MJ peut être validée immédiatement, y compris
-   par son créateur.
+   par son créateur. Le MJ qui a créé la fiche la valide d'un seul geste : elle passe
+   de `BROUILLON` ou `REFUSÉE` à `ACCEPTÉE` sans soumission ni décision. L'interface ne
+   lui propose ni de soumettre, ni d'accepter ou de refuser sa propre fiche. La version
+   validée est figée comme une soumission, pour l'audit.
 7. Il n'existe pas de période de modification libre jusqu'au premier combat : la
    validation du MJ engage le joueur sur ses choix.
 8. Aucune sauvegarde automatique de brouillon supplémentaire n'est exigée ; le
