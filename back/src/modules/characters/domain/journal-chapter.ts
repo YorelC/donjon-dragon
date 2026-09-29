@@ -9,6 +9,9 @@ import {
 } from './journal-chapter.errors';
 import type { OwningCampaignId } from './owning-campaign-id';
 
+/** Ce qu'une réécriture ajoute à la révision : la persistance s'en sert pour retrouver la précédente. */
+export const JOURNAL_REVISION_STEP = 1;
+
 export interface JournalChapterSnapshot {
   id: string;
   campaignId: string;
@@ -105,7 +108,7 @@ export class JournalChapter {
   rewrite(content: JournalChapterContent, now: Date): void {
     this.state.title = content.title;
     this.state.body = content.body;
-    this.state.revision += REVISION_INCREMENT;
+    this.state.revision += JOURNAL_REVISION_STEP;
     this.state.updatedAt = now.toISOString();
   }
 
@@ -157,4 +160,3 @@ function placeChapter(
 }
 
 const INITIAL_REVISION = 0;
-const REVISION_INCREMENT = 1;

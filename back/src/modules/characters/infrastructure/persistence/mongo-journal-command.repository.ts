@@ -19,7 +19,7 @@ import type {
   JournalCommandReceipt,
   JournalCommandRepositoryPort,
 } from '../../application/ports/journal-command.repository.port';
-import type { JournalChapter } from '../../domain/journal-chapter';
+import { JOURNAL_REVISION_STEP, type JournalChapter } from '../../domain/journal-chapter';
 import { JournalChapterModifiedElsewhereError } from '../../domain/journal-chapter.errors';
 import { toJournalChapterDocument, type JournalChapterDocument } from './journal-chapter.mapper';
 import { JOURNAL_CHAPTER_MODEL } from './journal-chapter.schema';
@@ -29,7 +29,6 @@ const ACCEPTED_STATUS = 'accepted';
 const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignGameMasters;
 const SOURCES = ['SF-002', 'DEC-015', 'DEC-016', 'SPEC-013'];
 const DUPLICATE_KEY_ERROR = 11000;
-const REVISION_STEP = 1;
 const SINGLE_MATCH = 1;
 
 type JournalWrite = (session: ClientSession) => Promise<void>;
@@ -68,7 +67,7 @@ export class MongoJournalCommandRepository implements JournalCommandRepositoryPo
   rewrite(command: JournalCommand, chapter: JournalChapter): Promise<JournalCommandReceipt> {
     return this.run(command, async (session) => {
       const replaced = await this.chapters.replaceOne(
-        { id: chapter.id.value, revision: chapter.revision - REVISION_STEP },
+        { id: chapter.id.value, revision: chapter.revision - JOURNAL_REVISION_STEP },
         toJournalChapterDocument(chapter),
         { session },
       );

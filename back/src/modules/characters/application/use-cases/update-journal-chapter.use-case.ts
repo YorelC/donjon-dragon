@@ -30,14 +30,13 @@ import {
   type JournalCommandRepositoryPort,
 } from '../ports/journal-command.repository.port';
 import { assertJournalWriter } from '../../domain/journal-access';
-import type { JournalChapter } from '../../domain/journal-chapter';
+import { JOURNAL_REVISION_STEP, type JournalChapter } from '../../domain/journal-chapter';
 
 export type UpdateJournalChapterDto = UpdateJournalChapterBody & JournalCommandRequest & {
   chapterId: string;
 };
 
 const ACTION = 'journal.chapter-rewritten' as const;
-const REVISION_STEP = 1;
 
 /**
  * La sauvegarde automatique d'un chapitre. Partie d'une révision dépassée, elle
@@ -78,7 +77,7 @@ export class UpdateJournalChapterUseCase {
       principalId, intentHash, occurredAt, action: ACTION,
       result: toJournalChapterCommandResult(chapter),
       actorIsGameMaster: journal.actorIsGameMaster, aggregateId: chapter.id.value,
-      revisionBefore: chapter.revision - REVISION_STEP, revisionAfter: chapter.revision,
+      revisionBefore: chapter.revision - JOURNAL_REVISION_STEP, revisionAfter: chapter.revision,
     });
     return { command, chapter };
   }

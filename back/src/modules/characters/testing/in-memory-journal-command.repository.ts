@@ -5,11 +5,9 @@ import type {
   JournalCommandReceipt,
   JournalCommandRepositoryPort,
 } from '../application/ports/journal-command.repository.port';
-import type { JournalChapter } from '../domain/journal-chapter';
+import { JOURNAL_REVISION_STEP, type JournalChapter } from '../domain/journal-chapter';
 import { JournalChapterModifiedElsewhereError } from '../domain/journal-chapter.errors';
 import type { InMemoryJournalChapterRepository } from './in-memory-journal-chapter.repository';
-
-const REVISION_STEP = 1;
 
 export class InMemoryJournalCommandRepository implements JournalCommandRepositoryPort {
   private readonly receipts = new Map<string, JournalCommandReceipt>();
@@ -32,7 +30,7 @@ export class InMemoryJournalCommandRepository implements JournalCommandRepositor
   rewrite(command: JournalCommand, chapter: JournalChapter): Promise<JournalCommandReceipt> {
     return this.run(command, () => {
       const stored = this.chapters.revisionOf(chapter.id);
-      if (stored !== chapter.revision - REVISION_STEP) throw new JournalChapterModifiedElsewhereError();
+      if (stored !== chapter.revision - JOURNAL_REVISION_STEP) throw new JournalChapterModifiedElsewhereError();
       this.chapters.save(chapter);
     });
   }
