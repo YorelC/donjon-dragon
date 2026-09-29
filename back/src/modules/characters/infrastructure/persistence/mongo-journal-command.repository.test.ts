@@ -62,6 +62,15 @@ describe('MongoJournalCommandRepository', () => {
     expect(written).not.toContain('secret');
   });
 
+  it('range un journal vide sans envoyer de lot vide à Mongo', async () => {
+    const fixture = journalFixture();
+
+    await fixture.repository.reorder(fixture.command, []);
+
+    expect(fixture.chapters.bulkWrite).not.toHaveBeenCalled();
+    expect(fixture.receipts.create).toHaveBeenCalledTimes(1);
+  });
+
   it('rend le reçu déjà écrit sans rien réécrire', async () => {
     const fixture = journalFixture();
     fixture.receipts.findOne.mockReturnValue(leanOf({ intentHash: 'intent-hash', result: {} }));

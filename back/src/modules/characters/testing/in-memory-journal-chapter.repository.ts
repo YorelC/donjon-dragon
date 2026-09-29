@@ -1,4 +1,7 @@
-import type { JournalChapterRepositoryPort } from '../application/ports/journal-chapter.repository.port';
+import type {
+  JournalChapterRepositoryPort,
+  JournalChapterSummaryRecord,
+} from '../application/ports/journal-chapter.repository.port';
 import type { CharacterId } from '../domain/character-id';
 import { JournalChapter, type JournalChapterSnapshot } from '../domain/journal-chapter';
 import type { JournalChapterId } from '../domain/journal-chapter-id';
@@ -11,6 +14,13 @@ export class InMemoryJournalChapterRepository implements JournalChapterRepositor
       .filter((chapter) => chapter.characterId === characterId.value)
       .sort(byJournalOrder)
       .map((snapshot) => JournalChapter.restore(structuredClone(snapshot)));
+  }
+
+  async listSummariesByCharacter(characterId: CharacterId): Promise<JournalChapterSummaryRecord[]> {
+    return (await this.listByCharacter(characterId)).map((chapter) => {
+      const { id, title, position, revision, updatedAt } = chapter.snapshot();
+      return { id, title, position, revision, updatedAt };
+    });
   }
 
   async findByCharacterAndId(

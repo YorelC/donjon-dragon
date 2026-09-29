@@ -73,7 +73,7 @@ export class CreateJournalChapterUseCase {
     title: string,
     now: Date,
   ): Promise<JournalChapter> {
-    const existing = await this.chapters.listByCharacter(journal.character.id);
+    const existing = await this.chapters.listSummariesByCharacter(journal.character.id);
     assertRoomForChapter(existing.length, CHARACTER_JOURNAL_RULES.maxChapters);
     const last = existing.at(-1);
     return JournalChapter.create({

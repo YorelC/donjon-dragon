@@ -86,6 +86,8 @@ export class MongoJournalCommandRepository implements JournalCommandRepositoryPo
     chapters: readonly JournalChapter[],
   ): Promise<JournalCommandReceipt> {
     return this.run(command, async (session) => {
+      // Mongo refuse un lot vide : un journal sans chapitre n'a rien à ranger.
+      if (chapters.length === 0) return;
       await this.chapters.bulkWrite(chapters.map(positionUpdate), { session });
     });
   }

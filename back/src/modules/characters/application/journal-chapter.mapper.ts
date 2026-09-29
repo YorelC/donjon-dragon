@@ -4,19 +4,20 @@ import type {
   JournalChapterSummary,
 } from '@donjon-dragon/shared/character-journal-schema';
 
+import type { JournalChapterSummaryRecord } from './ports/journal-chapter.repository.port';
 import type { JournalChapter } from '../domain/journal-chapter';
 
-export function toJournalChapterSummaryDto(chapter: JournalChapter): JournalChapterSummary {
-  return {
-    id: chapter.id.value,
-    title: chapter.title,
-    revision: chapter.revision,
-    updatedAt: chapter.updatedAt,
-  };
+export function toJournalChapterSummaryDto(
+  record: JournalChapterSummaryRecord,
+): JournalChapterSummary {
+  return { id: record.id, title: record.title, revision: record.revision, updatedAt: record.updatedAt };
 }
 
 export function toJournalChapterDto(chapter: JournalChapter): JournalChapterDto {
-  return { ...toJournalChapterSummaryDto(chapter), body: chapter.body };
+  return {
+    id: chapter.id.value, title: chapter.title, body: chapter.body,
+    revision: chapter.revision, updatedAt: chapter.updatedAt,
+  };
 }
 
 /** Ce que retient le reçu : ni titre ni texte. */

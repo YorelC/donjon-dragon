@@ -24,7 +24,7 @@ export class GetCharacterJournalUseCase {
 
   async execute(query: JournalQuery): Promise<CharacterJournal> {
     const journal = await openJournal(this.lookup, query);
-    const chapters = await this.chapters.listByCharacter(journal.character.id);
+    const chapters = await this.chapters.listSummariesByCharacter(journal.character.id);
     return {
       chapters: chapters.map(toJournalChapterSummaryDto),
       canWrite: journal.access === 'writer',

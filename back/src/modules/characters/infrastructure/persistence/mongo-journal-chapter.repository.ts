@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 
-import type { JournalChapterRepositoryPort } from '../../application/ports/journal-chapter.repository.port';
+import type {
+  JournalChapterRepositoryPort,
+  JournalChapterSummaryRecord,
+} from '../../application/ports/journal-chapter.repository.port';
 import type { CharacterId } from '../../domain/character-id';
 import type { JournalChapter } from '../../domain/journal-chapter';
 import type { JournalChapterId } from '../../domain/journal-chapter-id';
@@ -11,6 +14,7 @@ import { JOURNAL_CHAPTER_MODEL } from './journal-chapter.schema';
 
 // Deux créations simultanées peuvent partager une position : la date les départage.
 const JOURNAL_ORDER = { position: 1, createdAt: 1 } as const;
+const SUMMARY_FIELDS = { _id: 0, id: 1, title: 1, position: 1, revision: 1, updatedAt: 1 } as const;
 
 @Injectable()
 export class MongoJournalChapterRepository implements JournalChapterRepositoryPort {
@@ -27,6 +31,15 @@ export class MongoJournalChapterRepository implements JournalChapterRepositoryPo
     return documents.map(toJournalChapter);
   }
 
+  async listSummariesByCharacter(characterId: CharacterId): Promise<JournalChapterSummaryRecord[]> {
+    const documents = await this.model
+      .find({ characterId: characterId.value })
+      .sort(JOURNAL_ORDER)
+      .select(SUMMARY_FIELDS)
+      .lean<JournalChapterSummaryRecord[]>();
+    return documents.map(toSummaryRecord);
+  }
+
   async findByCharacterAndId(
     characterId: CharacterId,
     id: JournalChapterId,
@@ -37,4 +50,9 @@ export class MongoJournalChapterRepository implements JournalChapterRepositoryPo
       .lean<JournalChapterDocument>();
     return document ? toJournalChapter(document) : null;
   }
+}
+
+function toSummaryRecord(document: JournalChapterSummaryRecord): JournalChapterSummaryRecord {
+  const { id, title, position, revision, updatedAt } = document;
+  return { id, title, position, revision, updatedAt };
 }
