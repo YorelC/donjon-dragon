@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
+import { TooltipProvider } from "@/shared/components/atoms/tooltip";
 import type { CampaignCharacterListItem } from "@donjon-dragon/shared";
 import { CharacterRowView } from "./character-row.view";
 
@@ -19,10 +20,12 @@ function renderRow(character: CampaignCharacterListItem): void {
   render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
-        <CharacterRowView
-          character={character} campaignId="550e8400-e29b-41d4-a716-446655440000"
-          onDelete={vi.fn()} onUnassign={vi.fn()}
-        />
+        <TooltipProvider>
+          <CharacterRowView
+            character={character} campaignId="550e8400-e29b-41d4-a716-446655440000"
+            onDelete={vi.fn()} onUnassign={vi.fn()}
+          />
+        </TooltipProvider>
       </MemoryRouter>
     </QueryClientProvider>,
   );

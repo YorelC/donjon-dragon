@@ -1,10 +1,11 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { TooltipProvider } from "@/shared/components/atoms/tooltip";
 import { CharacterPersonalDetailsView } from "./character-personal-details.view";
 
 describe("CharacterPersonalDetailsView", () => {
   it("n expose que les champs encore modifiables", () => {
-    render(<CharacterPersonalDetailsView {...props()} />);
+    render(<CharacterPersonalDetailsView {...props()} />, { wrapper: TooltipProvider });
     fireEvent.click(screen.getByRole("button", { name: "Détails" }));
 
     expect(screen.getByLabelText("Âge")).toBeInTheDocument();
@@ -21,7 +22,7 @@ describe("CharacterPersonalDetailsView", () => {
   });
 
   it("bloque une saisie non positive", () => {
-    render(<CharacterPersonalDetailsView {...props({ age: "0" })} />);
+    render(<CharacterPersonalDetailsView {...props({ age: "0" })} />, { wrapper: TooltipProvider });
     fireEvent.click(screen.getByRole("button", { name: "Détails" }));
 
     expect(screen.getByRole("button", { name: "Enregistrer" })).toBeDisabled();

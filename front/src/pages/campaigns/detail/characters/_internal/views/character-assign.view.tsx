@@ -1,3 +1,4 @@
+import { UserPlus } from "lucide-react";
 import { Button } from "@/shared/components/atoms/button";
 import {
   Dialog,
@@ -16,19 +17,24 @@ import {
   SelectValue,
 } from "@/shared/components/atoms/select";
 import type { AssignCharacterFormState } from "../hooks/use-assign-character-form";
+import { IconAction } from "./icon-action.view";
 
 interface CharacterAssignViewProps {
   assign: AssignCharacterFormState;
 }
 
+const ASSIGN_LABEL = "Attribuer";
+
 export function CharacterAssignView({ assign }: CharacterAssignViewProps) {
   return (
     <Dialog open={assign.open} onOpenChange={assign.onOpenChange}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          Attribuer
-        </Button>
-      </DialogTrigger>
+      <IconAction label={ASSIGN_LABEL}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="icon-sm" aria-label={ASSIGN_LABEL}>
+            <UserPlus />
+          </Button>
+        </DialogTrigger>
+      </IconAction>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Attribuer ce personnage</DialogTitle>
@@ -53,7 +59,7 @@ export function CharacterAssignView({ assign }: CharacterAssignViewProps) {
             onClick={assign.onSubmit}
             disabled={!assign.playerDisplayName || assign.isSubmitting}
           >
-            {assign.isSubmitting ? "Attribution..." : "Attribuer"}
+            {assign.isSubmitting ? "Attribution..." : ASSIGN_LABEL}
           </Button>
         </DialogFooter>
       </DialogContent>

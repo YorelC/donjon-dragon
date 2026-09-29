@@ -1,3 +1,4 @@
+import { NotebookPen } from "lucide-react";
 import { Button } from "@/shared/components/atoms/button";
 import { CHARACTER_NARRATIVE_DETAIL_RULES } from "@donjon-dragon/shared";
 import {
@@ -7,6 +8,7 @@ import {
 import { Input } from "@/shared/components/atoms/input";
 import { Label } from "@/shared/components/atoms/label";
 import { Textarea } from "@/shared/components/atoms/textarea";
+import { IconAction } from "./icon-action.view";
 
 interface CharacterPersonalDetailsViewProps {
   values: EditablePersonalDetailsValues;
@@ -32,9 +34,15 @@ const NARRATIVE_FIELDS = [
   ["flaws", "Défauts"],
 ] as const;
 
+const DETAILS_LABEL = "Détails";
+
 export function CharacterPersonalDetailsView(props: CharacterPersonalDetailsViewProps) {
   return <Dialog>
-    <DialogTrigger asChild><Button size="sm" variant="outline">Détails</Button></DialogTrigger>
+    <IconAction label={DETAILS_LABEL}>
+      <DialogTrigger asChild>
+        <Button size="icon-sm" variant="outline" aria-label={DETAILS_LABEL}><NotebookPen /></Button>
+      </DialogTrigger>
+    </IconAction>
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Modifier les données personnelles</DialogTitle>
