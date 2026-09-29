@@ -21,7 +21,7 @@ export function useCreateJournalChapter(target: JournalTarget) {
         API_ROUTES.characters.journalChapters(target.campaignId, target.characterId),
         { title }, commandHeaders(),
       ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: characterJournalKey(target) }),
+    onSuccess: () => queryClient.invalidateQueries(journalSummaryOnly(target)),
     onError: () => toast.error(JOURNAL_LABELS.createFailed),
   });
 }
@@ -64,9 +64,11 @@ export function useDeleteJournalChapter(target: ChapterTarget) {
         API_ROUTES.characters.journalChapter(target.campaignId, target.characterId, target.chapterId),
         commandHeaders(),
       ),
-    onSuccess: () => {
+    // Le sommaire d'abord : l'éditeur du chapitre supprimé se ferme avant que son
+    // cache disparaisse, sinon il le relirait et prendrait un 404.
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(journalSummaryOnly(target));
       queryClient.removeQueries({ queryKey: journalChapterKey(target) });
-      queryClient.invalidateQueries({ queryKey: characterJournalKey(target) });
       toast.success(JOURNAL_LABELS.deleted);
     },
     onError: () => toast.error(JOURNAL_LABELS.deleteFailed),
@@ -77,18 +79,30 @@ export function useDeleteJournalChapter(target: ChapterTarget) {
 export function useReorderJournalChapters(target: JournalTarget) {
   const queryClient = useQueryClient();
   const key = characterJournalKey(target);
+  const summaryOnly = journalSummaryOnly(target);
   return useMutation({
     mutationFn: (chapterIds: string[]) =>
       api.put<JournalReorderResult>(
         API_ROUTES.characters.journalOrder(target.campaignId, target.characterId),
         { chapterIds }, commandHeaders(),
       ),
-    onMutate: (chapterIds) =>
+    // Une relecture du sommaire déjà en vol écraserait l'ordre posé : on l'annule.
+    onMutate: async (chapterIds) => {
+      await queryClient.cancelQueries(summaryOnly);
       queryClient.setQueryData<CharacterJournal>(key, (journal) =>
-        journal && { ...journal, chapters: inOrder(journal, chapterIds) }),
+        journal && { ...journal, chapters: inOrder(journal, chapterIds) });
+    },
     onError: () => toast.error(JOURNAL_LABELS.reorderFailed),
-    onSettled: () => queryClient.invalidateQueries({ queryKey: key }),
+    onSettled: () => queryClient.invalidateQueries(summaryOnly),
   });
+}
+
+/**
+ * La clé d'un chapitre prolonge celle du sommaire : sans `exact`, relire le sommaire
+ * relirait aussi le chapitre ouvert — et un chapitre qu'on vient de supprimer.
+ */
+function journalSummaryOnly(target: JournalTarget) {
+  return { queryKey: characterJournalKey(target), exact: true };
 }
 
 function inOrder(journal: CharacterJournal, chapterIds: string[]) {

@@ -47,6 +47,13 @@ describe("JournalChapterListView", () => {
     expect(create).toHaveAttribute("title", `Un journal tient au plus ${CHARACTER_JOURNAL_RULES.maxChapters} chapitres.`);
   });
 
+  it("guide le lecteur d’écran en français pour déplacer un chapitre", () => {
+    render(<JournalChapterListView journal={aJournal()} />);
+
+    expect(screen.getByText(/Pour déplacer cet élément, appuyez sur Espace/)).toBeInTheDocument();
+    expect(screen.queryByText(/To pick up a draggable item/)).not.toBeInTheDocument();
+  });
+
   it("ne laisse à un lecteur que le choix du chapitre", () => {
     render(<JournalChapterListView journal={aJournal({ canWrite: false })} />);
 

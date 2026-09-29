@@ -51,6 +51,7 @@ function ChapterList({ journal }: { journal: JournalTab }) {
     <SortableList
       ids={journal.chapters.map((chapter) => chapter.id)}
       onReorder={journal.reorder}
+      nameOf={(id) => titleOf(journal.chapters.find((chapter) => chapter.id === id) ?? { title: "" })}
       className="journal-chapter-list"
     >
       {journal.chapters.map((chapter) => (
