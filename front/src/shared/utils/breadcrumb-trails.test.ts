@@ -29,7 +29,7 @@ describe("breadcrumb-trails", () => {
       { label: "Profil", to: "/campaigns" },
       { label: "Amis", to: "/profile/friends" },
     ]);
-    expect(labels(SETTINGS_TRAIL)).toEqual(["Profil", "Paramètres du compte"]);
+    expect(labels(SETTINGS_TRAIL)).toEqual(["Profil", "Compte"]);
   });
 
   it("une campagne mène à ses personnages, l'écran qu'elle ouvre", () => {

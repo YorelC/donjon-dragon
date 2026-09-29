@@ -68,9 +68,9 @@ describe("ProfileLayoutView", () => {
     renderView();
 
     expect(
-      screen.queryByRole("link", { name: /Paramètres du compte/i }),
+      screen.queryByRole("link", { name: /^Compte$/i }),
     ).not.toBeInTheDocument();
-    expect(screen.getByText("Paramètres du compte")).toBeInTheDocument();
+    expect(screen.getByText("Compte")).toBeInTheDocument();
   });
 
   it("should render hamburger button on mobile", () => {

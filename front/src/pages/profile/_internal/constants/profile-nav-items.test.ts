@@ -9,7 +9,7 @@ describe("profile-nav-items", () => {
     expect(PROFILE_NAV_ITEMS.map((item) => item.label)).toEqual([
       "Campagnes",
       "Amis",
-      "Paramètres du compte",
+      "Compte",
     ]);
   });
 
@@ -30,7 +30,7 @@ describe("profile-nav-items", () => {
   // L'ecran des parametres est annonce, pas encore ouvert : aucune route.
   it("should leave the account settings entry inert", () => {
     const settingsItem = PROFILE_NAV_ITEMS.find(
-      (item) => item.label === "Paramètres du compte",
+      (item) => item.label === "Compte",
     );
     expect(settingsItem?.route).toBeNull();
   });

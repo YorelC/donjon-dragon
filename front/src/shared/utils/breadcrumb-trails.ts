@@ -27,7 +27,7 @@ const CRUMB_LABELS = {
   profile: "Profil",
   campaigns: "Campagnes",
   friends: "Amis",
-  settings: "Paramètres du compte",
+  settings: "Compte",
   users: "Utilisateurs",
   characters: "Personnages",
   creation: "Nouveau personnage",

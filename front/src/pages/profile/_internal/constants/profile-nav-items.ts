@@ -12,7 +12,7 @@ export interface ProfileNavCounts {
 const ENTRY_LABELS = {
   campaigns: "Campagnes",
   friends: "Amis",
-  settings: "Paramètres du compte",
+  settings: "Compte",
 } as const;
 
 const PENDING_LABELS = {
