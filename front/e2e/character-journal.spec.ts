@@ -21,6 +21,9 @@ const CHARACTER_NAME = 'Journal E2E';
 const SAVED = 'Enregistré';
 const BODY_FIELD = /Écrivez en Markdown/;
 
+// Une flèche prise en compte déplace la ligne voisine presque aussitôt ; au-delà, on la renvoie.
+const ARROW_EFFECT_TIMEOUT_MS = 500;
+
 let sheetUrl: string;
 
 // Supprimer l'homonyme d'un passage précédent emporte aussi son journal.
@@ -143,7 +146,7 @@ async function moveWithKeyboard(
   await expect(handle).toHaveAttribute('aria-pressed', 'true');
   await expect(async () => {
     await page.keyboard.press(arrow);
-    await expect(neighbour).toHaveAttribute('style', /translate3d\(0px, -?[1-9]/, { timeout: 500 });
+    await expect(neighbour).toHaveAttribute('style', /translate3d\(0px, -?[1-9]/, { timeout: ARROW_EFFECT_TIMEOUT_MS });
   }).toPass();
   await page.keyboard.press('Space');
 }

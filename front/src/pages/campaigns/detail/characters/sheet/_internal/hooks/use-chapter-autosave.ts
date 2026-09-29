@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { JournalChapter } from "@donjon-dragon/shared";
-import { AUTOSAVE_DELAY_MS } from "../constants/journal-labels";
+import { AUTOSAVE_DELAY_MS } from "../constants/journal-timing";
 import type { ChapterDraft, ChapterTarget, SaveStatus } from "../types/journal";
 import { draftOf } from "../utils/journal-draft";
 import { useChapterSync, type ChapterSync } from "./use-chapter-sync";

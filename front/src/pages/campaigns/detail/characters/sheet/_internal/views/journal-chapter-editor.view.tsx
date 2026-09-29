@@ -7,6 +7,7 @@ import { Textarea } from "@/shared/components/atoms/textarea";
 import { JOURNAL_LABELS, SAVE_STATUS_LABELS } from "../constants/journal-labels";
 import type { ChapterAutosave } from "../hooks/use-chapter-autosave";
 import type { ChapterEditor, ChapterLockToggle } from "../hooks/use-chapter-editor";
+import { displayTitle } from "../utils/journal-chapters";
 import { ConflictDialog, DeleteChapterButton } from "./journal-chapter-dialogs.view";
 
 interface JournalChapterEditorViewProps {
@@ -19,7 +20,7 @@ export function JournalChapterEditorView({ editor, canWrite }: JournalChapterEdi
   const writing = canWrite && !editor.lock.locked;
 
   return (
-    <section className="journal-chapter" aria-label={titleOf(editor.autosave)}>
+    <section className="journal-chapter" aria-label={displayTitle(editor.autosave.draft.title)}>
       <header className="flex items-center gap-3">
         <ChapterTitle autosave={editor.autosave} writing={writing} />
         {canWrite ? <WriterTools editor={editor} /> : null}
@@ -34,7 +35,7 @@ export function JournalChapterEditorView({ editor, canWrite }: JournalChapterEdi
 }
 
 function ChapterTitle({ autosave, writing }: { autosave: ChapterAutosave; writing: boolean }) {
-  if (!writing) return <h3 className="journal-chapter-title">{titleOf(autosave)}</h3>;
+  if (!writing) return <h3 className="journal-chapter-title">{displayTitle(autosave.draft.title)}</h3>;
 
   return (
     <Input
@@ -55,7 +56,7 @@ function WriterTools({ editor }: { editor: ChapterEditor }) {
     <div className="flex shrink-0 items-center gap-2">
       <span className="meta-line" role="status">{SAVE_STATUS_LABELS[editor.autosave.status]}</span>
       <LockButton lock={editor.lock} />
-      <DeleteChapterButton title={titleOf(editor.autosave)} onDelete={editor.remove} />
+      <DeleteChapterButton title={displayTitle(editor.autosave.draft.title)} onDelete={editor.remove} />
     </div>
   );
 }
@@ -104,8 +105,4 @@ function LimitNotice({ autosave }: { autosave: ChapterAutosave }) {
   ].filter(Boolean);
   if (notices.length === 0) return null;
   return <p className="fine-print" role="alert">{notices.join(" ")}</p>;
-}
-
-function titleOf(autosave: ChapterAutosave): string {
-  return autosave.draft.title || JOURNAL_LABELS.untitled;
 }

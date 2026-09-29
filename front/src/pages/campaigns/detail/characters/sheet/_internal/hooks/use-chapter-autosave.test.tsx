@@ -10,7 +10,7 @@ vi.mock("@/shared/api/api", async (importOriginal) => ({
 }));
 
 import { api, ApiError } from "@/shared/api/api";
-import { AUTOSAVE_DELAY_MS } from "../constants/journal-labels";
+import { AUTOSAVE_DELAY_MS } from "../constants/journal-timing";
 import { useChapterAutosave } from "./use-chapter-autosave";
 
 const TARGET = {

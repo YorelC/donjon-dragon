@@ -12,6 +12,7 @@ import { cn } from "@/shared/utils/utils";
 import { JOURNAL_LABELS } from "../constants/journal-labels";
 import type { JournalTab } from "../hooks/use-journal-tab";
 import type { JournalSelection } from "../hooks/use-journal-selection";
+import { chapterNameOf, displayTitle } from "../utils/journal-chapters";
 
 /** Le sommaire : l'auteur l'ordonne à la poignée, un lecteur ne fait que choisir. */
 export function JournalChapterListView({ journal }: { journal: JournalTab }) {
@@ -51,7 +52,7 @@ function ChapterList({ journal }: { journal: JournalTab }) {
     <SortableList
       ids={journal.chapters.map((chapter) => chapter.id)}
       onReorder={journal.reorder}
-      nameOf={(id) => titleOf(journal.chapters.find((chapter) => chapter.id === id) ?? { title: "" })}
+      nameOf={chapterNameOf(journal.chapters)}
       className="journal-chapter-list"
     >
       {journal.chapters.map((chapter) => (
@@ -82,7 +83,7 @@ function SortableChapterRow({ chapter, selection }: ChapterRowProps) {
   return (
     <SortableItem id={chapter.id} className="journal-chapter-row">
       <SortableHandle
-        aria-label={`${JOURNAL_LABELS.move} ${titleOf(chapter)}`}
+        aria-label={`${JOURNAL_LABELS.move} ${displayTitle(chapter.title)}`}
         className="journal-chapter-handle"
       >
         <GripVertical className="size-3.5" />
@@ -103,7 +104,7 @@ function ChapterButton({ chapter, selection }: ChapterRowProps) {
       className={cn("journal-chapter-button selectable", open && "selectable-on")}
     >
       <Diamond size="tick" tone={open ? "filled" : "idle"} />
-      <span className="truncate">{titleOf(chapter)}</span>
+      <span className="truncate">{displayTitle(chapter.title)}</span>
     </button>
   );
 }
@@ -111,8 +112,4 @@ function ChapterButton({ chapter, selection }: ChapterRowProps) {
 function EmptyJournal({ canWrite }: { canWrite: boolean }) {
   const message = canWrite ? JOURNAL_LABELS.emptyForWriter : JOURNAL_LABELS.emptyForReader;
   return <p className="empty-state-text">{message}</p>;
-}
-
-function titleOf(chapter: Pick<JournalChapterSummary, "title">): string {
-  return chapter.title || JOURNAL_LABELS.untitled;
 }

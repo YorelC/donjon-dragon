@@ -41,14 +41,10 @@ interface SortableListProps {
 
 /** Liste verticale réordonnable à la souris comme au clavier (Espace, flèches, Espace). */
 function SortableList({ ids, onReorder, nameOf, className, children }: SortableListProps) {
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: DRAG_ACTIVATION }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  )
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    if (!over || active.id === over.id) return
-    const from = ids.indexOf(String(active.id))
-    onReorder(arrayMove([...ids], from, ids.indexOf(String(over.id))))
+  const sensors = useListSensors()
+  const handleDragEnd = (event: DragEndEvent) => {
+    const reordered = reorderedIds(ids, event)
+    if (reordered) onReorder(reordered)
   }
 
   return (
@@ -56,10 +52,7 @@ function SortableList({ ids, onReorder, nameOf, className, children }: SortableL
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
-      accessibility={{
-        announcements: frenchAnnouncements(nameOf),
-        screenReaderInstructions: SCREEN_READER_INSTRUCTIONS,
-      }}
+      accessibility={frenchAccessibility(nameOf)}
     >
       <SortableContext items={[...ids]} strategy={verticalListSortingStrategy}>
         <ul data-slot="sortable-list" className={className}>{children}</ul>
@@ -68,7 +61,27 @@ function SortableList({ ids, onReorder, nameOf, className, children }: SortableL
   )
 }
 
+function useListSensors() {
+  return useSensors(
+    useSensor(PointerSensor, { activationConstraint: DRAG_ACTIVATION }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  )
+}
+
+/** Le nouvel ordre après un glisser, ou `null` si la ligne est reposée à sa place. */
+function reorderedIds(ids: readonly string[], { active, over }: DragEndEvent): string[] | null {
+  if (!over || active.id === over.id) return null
+  return arrayMove([...ids], ids.indexOf(String(active.id)), ids.indexOf(String(over.id)))
+}
+
 /** Les annonces de dnd-kit sont en anglais et lisent les identifiants : on les refait. */
+function frenchAccessibility(nameOf: (id: string) => string) {
+  return {
+    announcements: frenchAnnouncements(nameOf),
+    screenReaderInstructions: SCREEN_READER_INSTRUCTIONS,
+  }
+}
+
 function frenchAnnouncements(nameOf: (id: string) => string): Announcements {
   const name = (id: UniqueIdentifier) => nameOf(String(id))
   return {
@@ -88,25 +101,19 @@ type SortableHandleBinding = Pick<
 
 const SortableHandleContext = React.createContext<SortableHandleBinding | null>(null)
 
-function SortableItem({
-  id,
-  className,
-  children,
-}: {
+interface SortableItemProps {
   id: string
   className?: string
   children: React.ReactNode
-}) {
+}
+
+function SortableItem({ id, className, children }: SortableItemProps) {
   const sortable = useSortable({ id })
-  const style = {
-    transform: CSS.Transform.toString(sortable.transform),
-    transition: sortable.transition,
-  }
 
   return (
     <li
       ref={sortable.setNodeRef}
-      style={style}
+      style={sortableStyle(sortable)}
       data-slot="sortable-item"
       data-dragging={sortable.isDragging || undefined}
       className={cn("data-[dragging]:z-10 data-[dragging]:opacity-80", className)}
@@ -114,6 +121,10 @@ function SortableItem({
       <SortableHandleContext.Provider value={sortable}>{children}</SortableHandleContext.Provider>
     </li>
   )
+}
+
+function sortableStyle({ transform, transition }: ReturnType<typeof useSortable>) {
+  return { transform: CSS.Transform.toString(transform), transition }
 }
 
 /** La poignée seule déclenche le glisser : le reste de la ligne reste cliquable. */
