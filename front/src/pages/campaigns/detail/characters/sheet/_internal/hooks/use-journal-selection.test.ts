@@ -22,6 +22,26 @@ describe("useJournalSelection", () => {
     expect(result.current.selectedId).toBe("a");
   });
 
+  it("garde le chapitre ouvert quand l’ordre change, même sans l’avoir choisi", () => {
+    const { result, rerender } = renderHook(({ ids }) => useJournalSelection(ids), {
+      initialProps: { ids: ["a", "b", "c"] },
+    });
+
+    rerender({ ids: ["b", "c", "a"] });
+    expect(result.current.selectedId).toBe("a");
+  });
+
+  it("garde aussi le chapitre ouvert par repli après une suppression", () => {
+    const { result, rerender } = renderHook(({ ids }) => useJournalSelection(ids), {
+      initialProps: { ids: ["a", "b", "c"] },
+    });
+
+    act(() => result.current.select("b"));
+    rerender({ ids: ["a", "c"] });
+    rerender({ ids: ["c", "a"] });
+    expect(result.current.selectedId).toBe("c");
+  });
+
   it("n’ouvre rien dans un journal vide", () => {
     const { result } = renderHook(() => useJournalSelection([]));
 

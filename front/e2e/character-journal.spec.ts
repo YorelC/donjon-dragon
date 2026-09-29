@@ -56,12 +56,22 @@ test.describe.serial('Journal de bord', () => {
     await page.getByRole('textbox', { name: 'Titre du chapitre' }).fill('Le forgeron');
     await expect(chapterButton(page, 'Le forgeron')).toBeVisible();
 
-    await moveUpWithKeyboard(page, 'Le forgeron');
+    await moveWithKeyboard(page, 'Le forgeron', 'ArrowUp');
 
     await expect(page.locator('.journal-chapter-button').first()).toHaveText('Le forgeron');
     await page.reload();
     await openJournal(page);
     await expect(page.locator('.journal-chapter-button').first()).toHaveText('Le forgeron');
+  });
+
+  test('garde le chapitre ouvert quand on le déplace sans l avoir choisi', async ({ page }) => {
+    await openJournal(page);
+    await expect(chapterButton(page, 'Le forgeron')).toHaveAttribute('aria-current', 'true');
+
+    await moveWithKeyboard(page, 'Le forgeron', 'ArrowDown');
+
+    await expect(page.locator('.journal-chapter-button').first()).toHaveText('La taverne');
+    await expect(chapterButton(page, 'Le forgeron')).toHaveAttribute('aria-current', 'true');
   });
 
   test('demande quelle version garder quand un autre onglet a enregistré', async ({ page, context }) => {
@@ -116,18 +126,25 @@ async function createCharacter(page: Page, campaignId: string): Promise<void> {
 }
 
 /**
- * Espace saisit, la flèche déplace, Espace pose. Chaque touche attend l'effet de
- * la précédente : le capteur clavier ne suit la ligne saisie qu'au tick suivant.
+ * Espace saisit, la flèche déplace, Espace pose. Le capteur clavier ne suit la
+ * ligne saisie qu'une fois les lignes mesurées : une flèche partie trop tôt ne
+ * fait rien, on la répète jusqu'à ce que la ligne voisine s'écarte. Contre un
+ * bord, une flèche de trop est sans effet.
  */
-async function moveUpWithKeyboard(page: Page, title: string): Promise<void> {
+async function moveWithKeyboard(
+  page: Page,
+  title: string,
+  arrow: 'ArrowUp' | 'ArrowDown',
+): Promise<void> {
   const handle = page.getByRole('button', { name: `Déplacer ${title}` });
+  const neighbour = page.locator('[data-slot=sortable-item]:not([data-dragging])').first();
   await handle.focus();
   await page.keyboard.press('Space');
   await expect(handle).toHaveAttribute('aria-pressed', 'true');
-  await page.keyboard.press('ArrowUp');
-  // La ligne voisine qui descend prouve que la cible est calculée : poser avant, c'est poser sur place.
-  await expect(page.locator('[data-slot=sortable-item]:not([data-dragging])').first())
-    .toHaveAttribute('style', /translate3d\(0px, \d/);
+  await expect(async () => {
+    await page.keyboard.press(arrow);
+    await expect(neighbour).toHaveAttribute('style', /translate3d\(0px, -?[1-9]/, { timeout: 500 });
+  }).toPass();
   await page.keyboard.press('Space');
 }
 
