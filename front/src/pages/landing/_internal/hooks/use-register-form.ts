@@ -81,7 +81,7 @@ function toRegisterDto(values: RegisterFormValues) {
  * code métier de l'erreur, et non son message : envoyer l'utilisateur changer son
  * email alors que c'est son pseudo qui collisionne le laisse tourner en rond.
  */
-const REGISTER_CONFLICT_MESSAGES: Record<DomainErrorCode, string> = {
+const REGISTER_CONFLICT_MESSAGES: Partial<Record<DomainErrorCode, string>> = {
   [DOMAIN_ERROR_CODE["email-already-in-use"]]:
     "Cette adresse email est déjà utilisée.",
   [DOMAIN_ERROR_CODE["display-name-already-taken"]]:
@@ -92,7 +92,8 @@ const REGISTER_CONFLICT_MESSAGES: Record<DomainErrorCode, string> = {
 export function toRegisterErrorMessage(err: unknown): string {
   if (!(err instanceof ApiError)) return GENERIC_REGISTER_ERROR;
 
-  if (err.code) return REGISTER_CONFLICT_MESSAGES[err.code];
+  const conflictMessage = err.code && REGISTER_CONFLICT_MESSAGES[err.code];
+  if (conflictMessage) return conflictMessage;
 
   // Filet : un 409 sans code reste un doublon, on ne sait juste pas lequel.
   if (err.status === HTTP_CONFLICT) {

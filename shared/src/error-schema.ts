@@ -10,11 +10,13 @@ import { z } from 'zod';
  *
  * On ne déclare donc ici que ce qu'une interface doit réellement distinguer : deux
  * conflits d'inscription qui partagent le statut 409 mais ne désignent pas le même
- * champ du formulaire.
+ * champ du formulaire, et le chapitre de journal modifié sur un autre écran, qui
+ * ouvre le choix entre les deux versions (spec 013).
  */
 export const DomainErrorCodeEnum = z.enum([
   'email-already-in-use',
   'display-name-already-taken',
+  'journal-chapter-modified-elsewhere',
 ]);
 
 /** Objet — pour désigner un code sans l'écrire en dur. */

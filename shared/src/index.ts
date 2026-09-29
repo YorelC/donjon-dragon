@@ -3,6 +3,7 @@ export * from './auth-schema.js';
 export * from './friendship-schema.js';
 export * from './campaign-schema.js';
 export * from './character-schema.js';
+export * from './character-journal-schema.js';
 export * from './dnd-reference-schema.js';
 export * from './dnd-catalog-schema.js';
 export * from './item-schema.js';
