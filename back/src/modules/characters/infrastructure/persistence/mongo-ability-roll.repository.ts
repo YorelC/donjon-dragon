@@ -24,11 +24,10 @@ import { CHARACTERS_OWNER_MODULE } from '../../application/realtime-projection';
 import type { AbilityRollSnapshot } from '../../domain/ability-roll';
 import { ABILITY_ROLL_INTENTION, ABILITY_ROLL_STATUS } from '../../application/ability-roll-receipt';
 import { AbilityRollCommandConflictError } from '../../domain/character.errors';
+import { ENVELOPE_SCHEMA_VERSION, isDuplicateKey } from './command-envelope';
 
-const SCHEMA_VERSION = 1;
 const SOURCES = ['SF-002', 'B01-CAR-002', 'DEC-005', 'SPEC-009'];
 const PLAYER_ROLE = 'player';
-const DUPLICATE_KEY_ERROR = 11000;
 
 /**
  * Un tirage émis est un reçu de commande du kernel : même idempotence, même
@@ -127,7 +126,7 @@ function receiptDocument(
   result: IssuedAbilityRoll,
 ): CommandReceiptDocument {
   return {
-    _id: result.rollId, schemaVersion: SCHEMA_VERSION,
+    _id: result.rollId, schemaVersion: ENVELOPE_SCHEMA_VERSION,
     principalKey: command.principalId.value, idempotencyKey: command.idempotencyKey,
     ownerModule: CHARACTERS_OWNER_MODULE, intentionType: ABILITY_ROLL_INTENTION,
     intentHash: command.intentHash,
@@ -143,7 +142,7 @@ function auditDocument(
   rollId: string,
 ): FunctionalAuditEntryDocument {
   return {
-    _id: randomUUID(), schemaVersion: SCHEMA_VERSION,
+    _id: randomUUID(), schemaVersion: ENVELOPE_SCHEMA_VERSION,
     ownerModule: CHARACTERS_OWNER_MODULE, campaignId: command.campaignId,
     commandReceiptId: rollId, actorKey: command.principalId.value,
     effectiveRole: PLAYER_ROLE, action: ABILITY_ROLL_INTENTION,
@@ -157,9 +156,4 @@ function auditDocument(
 function snapshotOf(receipt: CommandReceiptDocument): AbilityRollSnapshot | null {
   const result = IssuedAbilityRollSchema.safeParse(receipt.result);
   return result.success ? { dice: result.data.dice } : null;
-}
-
-function isDuplicateKey(error: unknown): boolean {
-  return !!error && typeof error === 'object' && 'code' in error
-    && error.code === DUPLICATE_KEY_ERROR;
 }

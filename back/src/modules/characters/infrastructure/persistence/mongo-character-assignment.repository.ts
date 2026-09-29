@@ -35,13 +35,11 @@ import type { Character } from '../../domain/character';
 import { CharacterRevisionConflictError } from '../../domain/character.errors';
 import { toPersistence, type CharacterDocument } from './character.mapper';
 import { CHARACTER_MODEL } from './character.schema';
+import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from './command-envelope';
 
-const SCHEMA_VERSION = 1;
 const OWNER_MODULE = CHARACTERS_OWNER_MODULE;
-const ACCEPTED_STATUS = 'accepted';
 const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignMembers;
 const SOURCES = ['SF-001', 'SF-002', 'DEC-002', 'SPEC-007'];
-const DUPLICATE_KEY_ERROR = 11000;
 
 @Injectable()
 export class MongoCharacterAssignmentRepository
@@ -145,7 +143,7 @@ function receiptDocument(
   receiptId: string,
 ): CommandReceiptDocument {
   return {
-    _id: receiptId, schemaVersion: SCHEMA_VERSION,
+    _id: receiptId, schemaVersion: ENVELOPE_SCHEMA_VERSION,
     principalKey: command.principalId.value, idempotencyKey: command.idempotencyKey,
     ownerModule: OWNER_MODULE, intentionType: command.facts.at(-1) ?? 'character.unassigned',
     intentHash: command.intentHash, status: ACCEPTED_STATUS, result: command.result,
@@ -159,7 +157,7 @@ function auditDocument(
   receiptId: string,
 ): FunctionalAuditEntryDocument {
   return {
-    _id: randomUUID(), schemaVersion: SCHEMA_VERSION, ownerModule: OWNER_MODULE,
+    _id: randomUUID(), schemaVersion: ENVELOPE_SCHEMA_VERSION, ownerModule: OWNER_MODULE,
     campaignId: command.campaignId, commandReceiptId: receiptId,
     actorKey: command.principalId.value, effectiveRole: command.effectiveRole,
     action: command.facts.at(-1) ?? 'character.unassigned',
@@ -202,8 +200,4 @@ function factAggregate(
 function aggregateIds(command: CharacterAssignmentCommand): string[] {
   const previous = command.previousCharacter?.id.value;
   return previous ? [previous, command.character.id.value] : [command.character.id.value];
-}
-
-function isDuplicateKey(error: unknown): boolean {
-  return !!error && typeof error === 'object' && 'code' in error && error.code === DUPLICATE_KEY_ERROR;
 }

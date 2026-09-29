@@ -38,10 +38,8 @@ import {
 import { ABILITY_ROLL_INTENTION, ABILITY_ROLL_STATUS } from '../../application/ability-roll-receipt';
 import { toPersistence, type CharacterDocument } from './character.mapper';
 import { CHARACTER_MODEL } from './character.schema';
+import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from './command-envelope';
 
-const SCHEMA_VERSION = 1;
-const ACCEPTED_STATUS = 'accepted';
-const DUPLICATE_KEY_ERROR = 11000;
 const SOURCES = ['SF-002', 'B01', 'DEC-015', 'DEC-016', 'SPEC-007', 'SPEC-009'];
 
 @Injectable()
@@ -131,7 +129,7 @@ function receiptDocument(
   receiptId: string,
 ): CommandReceiptDocument {
   return {
-    _id: receiptId, schemaVersion: SCHEMA_VERSION,
+    _id: receiptId, schemaVersion: ENVELOPE_SCHEMA_VERSION,
     principalKey: command.principalId.value, idempotencyKey: command.idempotencyKey,
     ownerModule: CHARACTERS_OWNER_MODULE, intentionType: CHARACTER_FACT.created,
     intentHash: command.intentHash, status: ACCEPTED_STATUS, result: command.result,
@@ -146,7 +144,7 @@ function auditDocument(
   receiptId: string,
 ): FunctionalAuditEntryDocument {
   return {
-    _id: randomUUID(), schemaVersion: SCHEMA_VERSION,
+    _id: randomUUID(), schemaVersion: ENVELOPE_SCHEMA_VERSION,
     ownerModule: CHARACTERS_OWNER_MODULE, campaignId: command.campaignId,
     commandReceiptId: receiptId, actorKey: command.principalId.value,
     effectiveRole: command.effectiveRole, action: CHARACTER_FACT.created,
@@ -169,8 +167,4 @@ function outboxDocument(
     deliveryChannel: OUTBOX_DELIVERY_CHANNEL.realtime,
     occurredAt: command.occurredAt,
   });
-}
-
-function isDuplicateKey(error: unknown): boolean {
-  return !!error && typeof error === 'object' && 'code' in error && error.code === DUPLICATE_KEY_ERROR;
 }

@@ -23,12 +23,10 @@ import { JOURNAL_REVISION_STEP, type JournalChapter } from '../../domain/journal
 import { JournalChapterModifiedElsewhereError } from '../../domain/journal-chapter.errors';
 import { toJournalChapterDocument, type JournalChapterDocument } from './journal-chapter.mapper';
 import { JOURNAL_CHAPTER_MODEL } from './journal-chapter.schema';
+import { ENVELOPE_SCHEMA_VERSION, ACCEPTED_STATUS, isDuplicateKey } from './command-envelope';
 
-const SCHEMA_VERSION = 1;
-const ACCEPTED_STATUS = 'accepted';
 const AUDIENCE = OUTBOX_AUDIENCE_POLICY.campaignGameMasters;
 const SOURCES = ['SF-002', 'DEC-015', 'DEC-016', 'SPEC-013'];
-const DUPLICATE_KEY_ERROR = 11000;
 const SINGLE_MATCH = 1;
 
 type JournalWrite = (session: ClientSession) => Promise<void>;
@@ -135,7 +133,7 @@ function positionUpdate(chapter: JournalChapter) {
 
 function receiptDocument(command: JournalCommand, receiptId: string): CommandReceiptDocument {
   return {
-    _id: receiptId, schemaVersion: SCHEMA_VERSION,
+    _id: receiptId, schemaVersion: ENVELOPE_SCHEMA_VERSION,
     principalKey: command.principalId.value, idempotencyKey: command.idempotencyKey,
     ownerModule: CHARACTERS_OWNER_MODULE, intentionType: command.action,
     intentHash: command.intentHash, status: ACCEPTED_STATUS, result: command.result,
@@ -149,15 +147,11 @@ function auditDocument(
   receiptId: string,
 ): FunctionalAuditEntryDocument {
   return {
-    _id: randomUUID(), schemaVersion: SCHEMA_VERSION, ownerModule: CHARACTERS_OWNER_MODULE,
+    _id: randomUUID(), schemaVersion: ENVELOPE_SCHEMA_VERSION, ownerModule: CHARACTERS_OWNER_MODULE,
     campaignId: command.campaignId, commandReceiptId: receiptId,
     actorKey: command.principalId.value, effectiveRole: command.effectiveRole,
     action: command.action, aggregateId: command.aggregateId,
     revisionBefore: command.revisionBefore, revisionAfter: command.revisionAfter,
     reasons: [], sources: SOURCES, audiences: [AUDIENCE], occurredAt: command.occurredAt,
   };
-}
-
-function isDuplicateKey(error: unknown): boolean {
-  return !!error && typeof error === 'object' && 'code' in error && error.code === DUPLICATE_KEY_ERROR;
 }
