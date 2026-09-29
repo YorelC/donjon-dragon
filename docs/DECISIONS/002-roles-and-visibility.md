@@ -22,6 +22,9 @@
 - Un joueur voit sa fiche complète, pas celles des autres. Dans la liste des
   personnages, il ne voit que le sien. Les MJ voient toutes les fiches. Le combat
   expose seulement le résumé public prévu par la spécification.
+- Le journal de bord d'un personnage suit la visibilité de sa fiche. Seul son joueur
+  assigné y écrit ; les MJ le lisent, et n'y écrivent que si le personnage n'est
+  assigné à personne. Il suit le personnage quand il est réattribué (spec 013).
 - Toutes les ressources sont isolées par campagne côté serveur.
 
 Lors d'une purge définitive de compte, une campagne possédée qui conserve des membres

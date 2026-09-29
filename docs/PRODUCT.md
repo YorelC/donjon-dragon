@@ -85,7 +85,8 @@ inscrits. Les destinataires reçoivent une notification dans l'application et un
 
 Un joueur rejoint une campagne, crée un personnage complet de niveau 1, le soumet au MJ
 et utilise sa fiche une fois validée. Un MJ peut créer plusieurs personnages et les
-attribuer.
+attribuer. Au fil de la campagne, le joueur tient dans la fiche le journal de bord de son
+personnage, découpé en chapitres, que les MJ peuvent lire.
 
 ### Combat
 
@@ -137,7 +138,6 @@ avoir à manipuler une carte complète sur petit écran.
 ### Après le cœur du MVP
 
 - rédaction de campagne et import Markdown ;
-- journal de bord et notes ;
 - musique de session ;
 - vagues automatisées ;
 - mode présentiel avec téléphone.

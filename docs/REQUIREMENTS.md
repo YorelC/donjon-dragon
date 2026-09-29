@@ -82,6 +82,8 @@ données privées ni confondre propriété, maîtrise du jeu et contrôle d'un p
 - Dans la liste des personnages, un joueur ne voit que son personnage assigné : ni ceux
   des autres joueurs, ni le vivier. Sans personnage, sa liste est vide.
 - Tous les MJ consultent toutes les fiches de la campagne.
+- Le journal de bord d'un personnage suit la visibilité de sa fiche : son joueur
+  assigné et tous les MJ le lisent, aucun autre joueur.
 - En combat, les participants peuvent voir pour un allié : nom, portrait, classe,
   niveau, PV actuels et PV maximaux.
 - L'administrateur de plateforme n'obtient pas automatiquement accès au contenu des
@@ -427,6 +429,24 @@ objets magiques sont inventoriés dans
   et chaque profil individuel du catalogue A–Z du DMG.
 - Apparence, propriétés découvertes, compteur autorisé, malédiction et texte MJ sont
   des projections distinctes ; aucune réponse ou diffusion ne révèle un secret.
+
+### Journal de bord
+
+Le détail de l'écran et des critères est dans
+[`specs/013-character-journal.md`](../specs/013-character-journal.md).
+
+- Chaque personnage a un journal : une liste ordonnée de chapitres, chacun un titre
+  d'au plus 80 caractères et un texte Markdown GFM d'au plus 20 000 caractères, dans
+  la limite de 200 chapitres.
+- Le journal appartient au personnage et le suit quand il est réattribué.
+- Le joueur assigné écrit dans le journal ; les MJ le lisent. Un MJ n'écrit que dans le
+  journal d'un personnage non assigné.
+- Le verrou de lecture d'un chapitre est un état d'affichage, jamais enregistré.
+- La sauvegarde est automatique. Une sauvegarde partie d'une version dépassée est
+  refusée, et l'auteur choisit entre sa saisie et la version enregistrée.
+- Supprimer un chapitre est définitif, après confirmation. Supprimer le personnage
+  supprime ses chapitres dans la même opération.
+- L'audit des commandes du journal ne contient jamais le titre ni le texte.
 
 ### Critères d'acceptation essentiels
 
@@ -833,7 +853,6 @@ l'import entre campagnes, est postérieure au périmètre d'octobre.
 
 ## Fonctionnalités futures déjà identifiées
 
-- journal de bord des personnages ;
 - rédaction et import Markdown de campagne ;
 - musique de session ;
 - vagues automatisées de combat ;
