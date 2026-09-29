@@ -109,6 +109,13 @@ export const api = {
     request<T>(path, commandInit("PATCH", body, headers)),
   delete: <T>(path: string, headers?: CommandHeaders) =>
     request<T>(path, commandInit("DELETE", undefined, headers)),
+  /**
+   * Un PUT envoyé pendant que la page se ferme : `keepalive` le laisse aboutir
+   * après la fermeture (corps plafonné à 64 Ko par le navigateur). Sans rejeu
+   * après un 401 : il n'y aura plus de page pour renouveler la session.
+   */
+  putOnExit: <T>(path: string, body: unknown, headers?: CommandHeaders) =>
+    request<T>(path, { ...commandInit("PUT", body, headers), keepalive: true }, true),
 };
 
 /**

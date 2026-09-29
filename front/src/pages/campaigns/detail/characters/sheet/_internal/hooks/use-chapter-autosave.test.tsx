@@ -6,7 +6,7 @@ import { DOMAIN_ERROR_CODE, type JournalChapter } from "@donjon-dragon/shared";
 
 vi.mock("@/shared/api/api", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/shared/api/api")>()),
-  api: { get: vi.fn(), put: vi.fn() },
+  api: { get: vi.fn(), put: vi.fn(), putOnExit: vi.fn() },
 }));
 
 import { api, ApiError } from "@/shared/api/api";
@@ -92,6 +92,37 @@ describe("useChapterAutosave", () => {
     unmount();
 
     expect(api.put).toHaveBeenCalledTimes(1);
+  });
+
+  it("enregistre la fin tapée pendant une sauvegarde en vol, même après fermeture", async () => {
+    let finishFirstSave: (saved: ReturnType<typeof savedAt>) => void = () => undefined;
+    vi.mocked(api.put)
+      .mockReturnValueOnce(new Promise((resolve) => { finishFirstSave = resolve; }))
+      .mockResolvedValueOnce(savedAt(2));
+    const { result, unmount } = renderAutosave();
+
+    act(() => result.current.setBody("un"));
+    await pause(AUTOSAVE_DELAY_MS);
+    act(() => result.current.setBody("un deux"));
+    unmount();
+    await act(async () => finishFirstSave(savedAt(1)));
+
+    expect(api.put).toHaveBeenCalledTimes(2);
+    expect(vi.mocked(api.put).mock.calls[1]?.[1]).toMatchObject({ body: "un deux", expectedRevision: 1 });
+  });
+
+  it("envoie le brouillon en attente quand la page se ferme", async () => {
+    vi.mocked(api.putOnExit).mockResolvedValue(savedAt(1));
+    const { result } = renderAutosave();
+
+    act(() => result.current.setBody("dernier mot"));
+    act(() => {
+      window.dispatchEvent(new Event("pagehide"));
+    });
+
+    expect(api.putOnExit).toHaveBeenCalledWith(
+      CHAPTER_URL, { title: "La taverne", body: "dernier mot", expectedRevision: 0 }, expect.any(Object),
+    );
   });
 
   describe("conflit entre deux écrans", () => {

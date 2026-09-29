@@ -203,6 +203,24 @@ describe("api client", () => {
       expect(fetchMock.mock.calls[1][1].headers[IDEMPOTENCY_KEY_HEADER]).toBe(COMMAND_KEY);
       expect(fetchMock.mock.calls[1][1].headers[CSRF_HEADER]).toBe("rotated.signature");
     });
+
+    // La page se ferme : la requête doit survivre à la fermeture, et il n'y aura
+    // plus personne pour renouveler la session après un 401.
+    it("maintient un PUT de fermeture et ne le rejoue jamais", async () => {
+      giveBrowserACsrfCookie();
+      const fetchMock = vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ statusCode: 401, message: "Unauthorized" }), { status: 401 }),
+      );
+      vi.stubGlobal("fetch", fetchMock);
+
+      await expect(api.putOnExit("/api/x", { body: "texte" }, {
+        [IDEMPOTENCY_KEY_HEADER]: COMMAND_KEY,
+      })).rejects.toBeInstanceOf(ApiError);
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      expect(fetchMock.mock.calls[0][1]).toMatchObject({ method: "PUT", keepalive: true });
+      expect(refreshSession).not.toHaveBeenCalled();
+    });
   });
 
   describe("corps d'erreur", () => {

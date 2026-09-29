@@ -34,6 +34,13 @@ export function putJournalChapter(target: ChapterTarget, body: UpdateJournalChap
   );
 }
 
+export function putJournalChapterOnExit(target: ChapterTarget, body: UpdateJournalChapterDto) {
+  return api.putOnExit<JournalChapterCommandResult>(
+    API_ROUTES.characters.journalChapter(target.campaignId, target.characterId, target.chapterId),
+    body, commandHeaders(),
+  );
+}
+
 /** Le sommaire suit le titre enregistré, sans relire tout le journal. */
 export function recordSavedChapter(
   queryClient: QueryClient,

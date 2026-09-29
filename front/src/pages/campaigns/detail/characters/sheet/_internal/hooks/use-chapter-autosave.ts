@@ -46,11 +46,23 @@ function useFlushAfterPause(draft: ChapterDraft, sync: ChapterSync): void {
   }, [draft, sync.status]);
 }
 
-/** Changer de chapitre ou d'onglet démonte l'éditeur : ce qui reste part à ce moment-là. */
+/**
+ * Changer de chapitre ou d'onglet démonte l'éditeur, fermer la page le quitte sans
+ * démontage : dans les deux cas, ce qui reste part à ce moment-là.
+ */
 function useFlushOnClose(draft: ChapterDraft, sync: ChapterSync): void {
   const latest = useRef({ draft, sync });
   useEffect(() => {
     latest.current = { draft, sync };
   });
-  useEffect(() => () => latest.current.sync.flush(latest.current.draft), []);
+  useEffect(() => {
+    const onPageHide = () => latest.current.sync.flushOnExit(latest.current.draft);
+    window.addEventListener(PAGE_HIDE, onPageHide);
+    return () => {
+      window.removeEventListener(PAGE_HIDE, onPageHide);
+      latest.current.sync.flush(latest.current.draft);
+    };
+  }, []);
 }
+
+const PAGE_HIDE = "pagehide";
