@@ -90,6 +90,16 @@ describe("JournalChapterEditorView", () => {
     expect(screen.getByText(/<b>gras<\/b>/)).toBeInTheDocument();
   });
 
+  it("rend une image en lien, sans jamais la charger", () => {
+    const { container } = render(
+      <JournalChapterEditorView editor={anEditor("![carte du Poney](https://exemple.test/carte.png)")} canWrite />,
+    );
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(screen.getByRole("link", { name: "carte du Poney" }))
+      .toHaveAttribute("href", "https://exemple.test/carte.png");
+  });
+
   it("ouvre la source à l’écriture une fois déverrouillé", () => {
     const editor = anEditor("source", false);
     render(<JournalChapterEditorView editor={editor} canWrite />);
