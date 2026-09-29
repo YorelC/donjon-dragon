@@ -107,7 +107,16 @@ Sur l'écran de référence (fenêtre 1280×700) :
 Le Markdown est rendu sans HTML brut : une balise écrite dans le texte s'affiche comme
 du texte et n'est jamais interprétée. Une image Markdown n'est jamais chargée : elle
 s'affiche comme un lien vers son adresse. Un lecteur, le MJ en particulier, ne fait
-ainsi aucune requête vers un site choisi par l'auteur.
+ainsi aucune requête vers un site choisi par l'auteur. Un lien s'ouvre dans un nouvel
+onglet, sans transmettre l'adresse de la fiche.
+
+Le rendu est borné pour qu'aucun texte, même écrit pour nuire, ne fasse tomber la page
+de ses lecteurs :
+
+- au-delà de 24 niveaux d'imbrication (listes, citations), la partie trop profonde
+  s'affiche en texte brut, sans mise en forme et sans rien perdre ;
+- un chapitre que le rendu ne sait pas afficher montre sa source brute ; le reste de la
+  fiche fonctionne, et l'auteur peut toujours le déverrouiller pour le corriger.
 
 ### Sauvegarde
 
@@ -172,6 +181,9 @@ Aucun texte n'est perdu sans ce choix explicite.
 - une case à cocher, un tableau et du barré écrits en Markdown GFM s'affichent rendus ;
 - une balise HTML écrite dans le texte n'est pas interprétée ;
 - une image Markdown s'affiche en lien, sans aucune requête vers son adresse ;
+- 20 000 caractères de listes ou de citations imbriquées s'affichent sans planter la
+  page, la partie au-delà de 24 niveaux en texte brut ;
+- un échec de rendu montre la source du chapitre, jamais une page blanche ;
 - changer de chapitre juste après une pause de frappe ne perd aucun caractère ;
 - réordonner le sommaire ne change pas le chapitre ouvert ;
 - un MJ lit le journal d'un personnage assigné sans pouvoir le modifier ; il écrit dans
