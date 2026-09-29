@@ -173,6 +173,21 @@ describe("useChapterAutosave", () => {
       expect(api.put).toHaveBeenCalledTimes(1);
     });
 
+    it("n’envoie jamais le brouillon local quand l’auteur prend l’autre version après réflexion", async () => {
+      vi.mocked(api.put).mockResolvedValue(savedAt(6));
+      const { result } = renderAutosave();
+      act(() => result.current.setBody("version de l’ordinateur"));
+      await pause(AUTOSAVE_DELAY_MS);
+
+      await pause(AUTOSAVE_DELAY_MS * 3);
+      await act(async () => result.current.takeTheirs());
+      await pause(AUTOSAVE_DELAY_MS * 2);
+
+      const sentBodies = vi.mocked(api.put).mock.calls.map((call) => (call[1] as { body: string }).body);
+      expect(sentBodies).toEqual(["version de l’ordinateur"]);
+      expect(result.current.draft.body).toBe("version du téléphone");
+    });
+
     it("« garder ma version » l’enregistre par-dessus la version la plus récente", async () => {
       vi.mocked(api.put).mockResolvedValueOnce(savedAt(6));
       const { result } = renderAutosave();

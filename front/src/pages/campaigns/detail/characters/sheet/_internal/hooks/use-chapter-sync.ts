@@ -29,12 +29,18 @@ interface ServerCopy {
   draft: ChapterDraft;
 }
 
+/**
+ * `saving` : une sauvegarde est en vol, la suivante attend sa fin. `conflict` : le
+ * choix de l'auteur est ouvert, rien ne part ni n'attend — le brouillon reste à
+ * l'écran, et c'est ce choix qui décide quelle version s'enregistre.
+ */
+type SyncPhase = "free" | "saving" | "conflict";
+
 interface SyncState {
   target: ChapterTarget;
   queryClient: QueryClient;
   server: MutableRefObject<ServerCopy>;
-  // Une sauvegarde en vol ou un conflit ouvert : aucune autre ne part.
-  busy: MutableRefObject<boolean>;
+  phase: MutableRefObject<SyncPhase>;
   // Le brouillon arrivé pendant une sauvegarde en vol, qui part dès qu'elle se termine.
   pending: MutableRefObject<ChapterDraft | null>;
   setStatus: (status: SaveStatus) => void;
@@ -44,9 +50,9 @@ export function useChapterSync(target: ChapterTarget, chapter: JournalChapter): 
   const queryClient = useQueryClient();
   const [status, setStatus] = useState<SaveStatus>("idle");
   const server = useRef<ServerCopy>({ revision: chapter.revision, draft: draftOf(chapter) });
-  const busy = useRef(false);
+  const phase = useRef<SyncPhase>("free");
   const pending = useRef<ChapterDraft | null>(null);
-  const state: SyncState = { target, queryClient, server, busy, pending, setStatus };
+  const state: SyncState = { target, queryClient, server, phase, pending, setStatus };
 
   return {
     status,
@@ -58,8 +64,8 @@ export function useChapterSync(target: ChapterTarget, chapter: JournalChapter): 
 }
 
 function flushDraft(state: SyncState, draft: ChapterDraft): void {
-  if (sameDraft(draft, state.server.current.draft)) return;
-  if (state.busy.current) {
+  if (state.phase.current === "conflict" || sameDraft(draft, state.server.current.draft)) return;
+  if (state.phase.current === "saving") {
     state.pending.current = draft;
     return;
   }
@@ -85,11 +91,19 @@ function persistDraft(
 
 // En conflit, le brouillon reste à l'écran jusqu'au choix : rien n'attend plus.
 function settle(state: SyncState, status: SaveStatus): void {
-  state.busy.current = status === "saving" || status === "conflict";
+  state.phase.current = PHASE_OF_STATUS[status];
   state.setStatus(status);
   if (status === "conflict") state.pending.current = null;
-  if (!state.busy.current) sendPending(state);
+  if (state.phase.current === "free") sendPending(state);
 }
+
+const PHASE_OF_STATUS: Record<SaveStatus, SyncPhase> = {
+  idle: "free",
+  saving: "saving",
+  saved: "free",
+  failed: "free",
+  conflict: "conflict",
+};
 
 function sendPending(state: SyncState): void {
   const next = state.pending.current;
@@ -106,7 +120,7 @@ function sendPending(state: SyncState): void {
  */
 function flushOnExit(state: SyncState, draft: ChapterDraft): void {
   const latest = state.pending.current ?? draft;
-  if (state.busy.current || sameDraft(latest, state.server.current.draft)) return;
+  if (state.phase.current !== "free" || sameDraft(latest, state.server.current.draft)) return;
   state.pending.current = null;
   persistDraft(state, latest, putJournalChapterOnExit);
 }
