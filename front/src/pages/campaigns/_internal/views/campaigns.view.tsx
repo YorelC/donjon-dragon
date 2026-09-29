@@ -4,6 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/atoms/tabs";
+import { SCREEN_LABELS } from "@/shared/constants/screen-labels";
 import type { CampaignsTab } from "../hooks/use-campaigns-tabs";
 import type { CampaignsCounts } from "../hooks/use-campaigns-counts";
 import { CampaignInvitationsContainer } from "../containers/campaign-invitations.container";
@@ -42,7 +43,7 @@ function CampaignsHeader({ counts }: { counts: CampaignsCounts }) {
     <div className="flex items-end justify-between gap-6">
       <div>
         <span className="eyebrow">{counts.campaigns} en cours</span>
-        <h1 className="page-title mt-1.5">Campagnes</h1>
+        <h1 className="page-title mt-1.5">{SCREEN_LABELS.campaigns}</h1>
       </div>
       <CreateCampaignContainer />
     </div>

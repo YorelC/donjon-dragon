@@ -4,6 +4,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/atoms/tabs";
+import { SCREEN_LABELS } from "@/shared/constants/screen-labels";
 import type { FriendsTab } from "../hooks/use-friends-tabs";
 import type { FriendsCounts } from "../hooks/use-friends-counts";
 import { FriendsListContainer } from "../containers/friends-list.container";
@@ -37,7 +38,7 @@ function FriendsHeading() {
   return (
     <div>
       <span className="eyebrow">Gestion des compagnons</span>
-      <h1 className="page-title mt-1.5">Amis</h1>
+      <h1 className="page-title mt-1.5">{SCREEN_LABELS.friends}</h1>
     </div>
   );
 }

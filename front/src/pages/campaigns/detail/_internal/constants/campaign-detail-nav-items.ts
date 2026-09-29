@@ -2,6 +2,7 @@ import {
   toCampaignDetailCharacters,
   toCampaignDetailUsers,
 } from "@/shared/constants/routes";
+import { SCREEN_LABELS } from "@/shared/constants/screen-labels";
 
 export interface CampaignDetailNavItem {
   label: string;
@@ -13,7 +14,7 @@ export function toCampaignDetailNavItems(
   campaignId: string,
 ): CampaignDetailNavItem[] {
   return [
-    { label: "Personnages", route: toCampaignDetailCharacters(campaignId) },
-    { label: "Utilisateurs", route: toCampaignDetailUsers(campaignId) },
+    { label: SCREEN_LABELS.campaignCharacters, route: toCampaignDetailCharacters(campaignId) },
+    { label: SCREEN_LABELS.campaignUsers, route: toCampaignDetailUsers(campaignId) },
   ];
 }

@@ -3,6 +3,7 @@ import {
   type SidebarFooter,
   type SidebarNav,
 } from "@/shared/components/layout/sidebar-layout.view";
+import { SCREEN_LABELS } from "@/shared/constants/screen-labels";
 import type { ProfileNavItem } from "../constants/profile-nav-items";
 import type { ProfileIdentity } from "../hooks/use-profile-identity";
 
@@ -20,7 +21,7 @@ export interface ProfileLayoutViewProps {
   onLogout: () => void;
 }
 
-const SIDEBAR_HEADING = "Profil";
+const SIDEBAR_HEADING = SCREEN_LABELS.profile;
 const MENU_LABEL = "Menu du profil";
 const LOGOUT_LABEL = "Déconnexion";
 
