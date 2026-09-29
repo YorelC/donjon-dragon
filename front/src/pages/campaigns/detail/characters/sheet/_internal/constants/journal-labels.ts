@@ -8,8 +8,6 @@ export const JOURNAL_LABELS = {
   lock: "Verrouiller",
   unlock: "Déverrouiller",
   move: "Déplacer",
-  delete: "Supprimer",
-  cancel: "Annuler",
   titlePlaceholder: "Titre du chapitre",
   bodyPlaceholder: "Écrivez en Markdown : # titre, - liste, - [ ] case à cocher…",
   emptyForWriter: "Aucun chapitre. Commencez le journal de bord de ce personnage.",

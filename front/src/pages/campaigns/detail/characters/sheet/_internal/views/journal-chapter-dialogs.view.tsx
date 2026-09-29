@@ -11,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/shared/components/atoms/alert-dialog";
 import { Button } from "@/shared/components/atoms/button";
+import { ACTION_LABELS } from "@/shared/constants/action-labels";
 import { deleteChapterTitle, JOURNAL_LABELS } from "../constants/journal-labels";
 import type { ChapterAutosave } from "../hooks/use-chapter-autosave";
 
@@ -26,8 +27,8 @@ export function DeleteChapterButton({ title, onDelete }: DeleteChapterButtonProp
         <Button
           variant="outline"
           size="icon-sm"
-          aria-label={JOURNAL_LABELS.delete}
-          title={JOURNAL_LABELS.delete}
+          aria-label={ACTION_LABELS.delete}
+          title={ACTION_LABELS.delete}
         >
           <Trash2 />
         </Button>
@@ -38,9 +39,9 @@ export function DeleteChapterButton({ title, onDelete }: DeleteChapterButtonProp
           <AlertDialogDescription>{JOURNAL_LABELS.deleteDescription}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{JOURNAL_LABELS.cancel}</AlertDialogCancel>
+          <AlertDialogCancel>{ACTION_LABELS.cancel}</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={onDelete}>
-            {JOURNAL_LABELS.delete}
+            {ACTION_LABELS.delete}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

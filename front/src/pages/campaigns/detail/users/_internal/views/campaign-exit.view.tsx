@@ -11,6 +11,7 @@ import {
 } from "@/shared/components/atoms/alert-dialog";
 import { Button } from "@/shared/components/atoms/button";
 import { GoldRule } from "@/shared/components/molecules/gold-rule";
+import { ACTION_LABELS } from "@/shared/constants/action-labels";
 import type { CampaignExit } from "../hooks/use-campaign-exit";
 import { SuccessorPickerView } from "./successor-picker.view";
 
@@ -52,7 +53,7 @@ function LeaveDialog({ exit }: CampaignExitViewProps) {
         </AlertDialogHeader>
         {exit.needsSuccessor ? <SuccessorPickerView exit={exit} /> : null}
         <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogCancel>{ACTION_LABELS.cancel}</AlertDialogCancel>
           <AlertDialogAction
             onClick={exit.onLeave}
             disabled={exit.isBusy || (exit.needsSuccessor && !exit.successor)}
@@ -83,7 +84,7 @@ function TransferDialog({ exit }: CampaignExitViewProps) {
         </AlertDialogHeader>
         <SuccessorPickerView exit={exit} />
         <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogCancel>{ACTION_LABELS.cancel}</AlertDialogCancel>
           <AlertDialogAction
             onClick={exit.onTransfer}
             disabled={exit.isBusy || !exit.successor}
@@ -116,13 +117,13 @@ function DeleteDialog({ exit }: CampaignExitViewProps) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogCancel>{ACTION_LABELS.cancel}</AlertDialogCancel>
           <AlertDialogAction
             variant="destructive"
             onClick={exit.onDelete}
             disabled={exit.isBusy}
           >
-            Supprimer
+            {ACTION_LABELS.delete}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -11,6 +11,7 @@ import {
   AlertDialogTrigger,
 } from "@/shared/components/atoms/alert-dialog";
 import type { QueryState } from "@/shared/types/ui-state";
+import { ACTION_LABELS } from "@/shared/constants/action-labels";
 import type { AcceptedFriend } from "@/shared/types/friend";
 import type { FriendRemoval } from "../hooks/use-friend-removal";
 import { FriendRow } from "./friend-row.view";
@@ -108,13 +109,13 @@ function RemoveFriendConfirmation({
 function RemoveFriendActions({ removal }: { removal: FriendRemoval }) {
   return (
     <AlertDialogFooter>
-      <AlertDialogCancel onClick={removal.onCancel}>Annuler</AlertDialogCancel>
+      <AlertDialogCancel onClick={removal.onCancel}>{ACTION_LABELS.cancel}</AlertDialogCancel>
       <AlertDialogAction
         variant="destructive"
         onClick={removal.onConfirm}
         disabled={removal.isPending}
       >
-        Supprimer
+        {ACTION_LABELS.delete}
       </AlertDialogAction>
     </AlertDialogFooter>
   );

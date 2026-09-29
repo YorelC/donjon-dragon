@@ -1,5 +1,6 @@
 import { Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/atoms/button";
+import { ACTION_LABELS } from "@/shared/constants/action-labels";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,17 +19,15 @@ interface DeleteCharacterButtonProps {
   onDelete: () => void;
 }
 
-const DELETE_LABEL = "Supprimer";
-
 export function DeleteCharacterButton({ characterName, onDelete }: DeleteCharacterButtonProps) {
   return (
     <AlertDialog>
-      <IconAction label={DELETE_LABEL}>
+      <IconAction label={ACTION_LABELS.delete}>
         <AlertDialogTrigger asChild>
           <Button
             variant="outline"
             size="icon-sm"
-            aria-label={DELETE_LABEL}
+            aria-label={ACTION_LABELS.delete}
             className="text-ink-meta hover:text-gold-value"
           >
             <Trash2 />
@@ -43,9 +42,9 @@ export function DeleteCharacterButton({ characterName, onDelete }: DeleteCharact
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogCancel>{ACTION_LABELS.cancel}</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={onDelete}>
-            {DELETE_LABEL}
+            {ACTION_LABELS.delete}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

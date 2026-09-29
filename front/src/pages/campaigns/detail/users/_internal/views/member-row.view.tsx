@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import { Badge } from "@/shared/components/atoms/badge";
 import { Button } from "@/shared/components/atoms/button";
 import { Diamond } from "@/shared/components/molecules/diamond";
+import { ACTION_LABELS } from "@/shared/constants/action-labels";
 import { toInitials } from "@/shared/utils/display-meta";
 import type { MemberManagement } from "../hooks/use-member-management";
 
@@ -143,7 +144,7 @@ function CancelInvitationAction({ member, management }: ActionsProps) {
       disabled={isBusy(member, management)}
       onClick={() => management.onCancelInvitation(member.displayName)}
     >
-      Annuler
+      {ACTION_LABELS.cancel}
     </Button>
   );
 }
