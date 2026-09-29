@@ -42,6 +42,7 @@ import { PromoteCampaignMemberWithCharacterUseCase } from './application/use-cas
 import { PreviewCharacterSheetUseCase } from './application/use-cases/preview-character-sheet.use-case';
 import { RefuseCharacterReviewUseCase } from './application/use-cases/refuse-character-review.use-case';
 import { SubmitCharacterForReviewUseCase } from './application/use-cases/submit-character-for-review.use-case';
+import { ValidateOwnCharacterUseCase } from './application/use-cases/validate-own-character.use-case';
 import { UnassignCharacterUseCase } from './application/use-cases/unassign-character.use-case';
 import { UpdateCharacterPersonalDetailsUseCase } from './application/use-cases/update-character-personal-details.use-case';
 import { ItemsItemCatalog } from './infrastructure/acl/items-item-catalog';
@@ -118,6 +119,7 @@ import { CharacterPersonalDetailsController } from './presentation/character-per
     LeaveCampaignWithCharacterUseCase,
     SubmitCharacterForReviewUseCase,
     AcceptCharacterReviewUseCase,
+    ValidateOwnCharacterUseCase,
     RefuseCharacterReviewUseCase,
     UpdateCharacterPersonalDetailsUseCase,
   ],

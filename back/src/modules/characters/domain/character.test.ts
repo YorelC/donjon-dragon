@@ -24,6 +24,7 @@ import {
   InvalidRejectionReasonError,
   NotAssignedError,
   NotEditableByActorError,
+  OnlyCreatingGameMasterCanValidateError,
   OnlyGameMasterCanDeleteError,
   OnlyGameMasterCanReviewError,
   OnlyGameMasterCanAssignError,
@@ -431,6 +432,51 @@ describe('Character review', () => {
     expect(() => character.refuseReview(asCreator, 'Trop tard', NOW)).toThrow(
       CharacterReviewStateError,
     );
+  });
+});
+
+describe('Character.validateAsCreator', () => {
+  it('accepte d un geste la fiche du MJ créateur et fige sa version', () => {
+    const character = aCharacter(gandalf);
+
+    expect(character.validateAsCreator(asCreator, NOW)).toBe(1);
+    expect(character.review).toMatchObject({ status: 'accepted', submittedVersion: 1 });
+  });
+
+  it('valide une fiche refusée par un autre MJ, une fois corrigée', () => {
+    const character = aCharacter(gandalf);
+    character.submitForReview(asCreator, NOW);
+    character.refuseReview(contextFor({ actorId: sam, actorIsGameMaster: true }), 'Non.', NOW);
+
+    expect(character.validateAsCreator(asCreator, NOW)).toBe(2);
+    expect(character.review.status).toBe('accepted');
+  });
+
+  it('la réserve au MJ qui a créé la fiche', () => {
+    const character = aCharacter(gandalf);
+    const otherGameMaster = contextFor({
+      actorId: sam, actorIsGameMaster: true, actorIsCampaignOwner: true,
+    });
+
+    expect(() => character.validateAsCreator(otherGameMaster, NOW)).toThrow(
+      OnlyCreatingGameMasterCanValidateError,
+    );
+  });
+
+  it('la refuse au joueur qui a créé sa fiche', () => {
+    const character = aCharacter(frodo);
+    character.assignTo(true, frodo, NOW);
+
+    expect(() => character.validateAsCreator(contextFor({ actorId: frodo }), NOW)).toThrow(
+      OnlyCreatingGameMasterCanValidateError,
+    );
+  });
+
+  it('ne revalide pas une fiche déjà acceptée', () => {
+    const character = aCharacter(gandalf);
+    character.validateAsCreator(asCreator, NOW);
+
+    expect(() => character.validateAsCreator(asCreator, NOW)).toThrow(CharacterReviewStateError);
   });
 });
 

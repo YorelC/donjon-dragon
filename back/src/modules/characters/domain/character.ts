@@ -38,6 +38,7 @@ import {
   NotAssignedError,
   NotEditableByActorError,
   OnlyGameMasterCanAssignError,
+  OnlyCreatingGameMasterCanValidateError,
   OnlyGameMasterCanDeleteError,
 } from './character.errors';
 import { OwningCampaignId } from './owning-campaign-id';
@@ -285,6 +286,15 @@ export class Character {
     return version;
   }
 
+  /** Le MJ fait foi sur ce qu'il a créé : il le valide sans se soumettre à lui-même. */
+  validateAsCreator(context: CharacterAccessContext, now: Date): number {
+    this.assertCreatingGameMaster(context);
+    this.assertEditableBy(context);
+    const version = this.state.review.validate();
+    this.touch(now);
+    return version;
+  }
+
   acceptReview(context: CharacterAccessContext, now: Date): void {
     this.state.review.accept(reviewAuthorityOf(context));
     this.touch(now);
@@ -392,6 +402,12 @@ export class Character {
       context.actorIsCampaignOwner;
 
     if (!editable) throw new NotEditableByActorError();
+  }
+
+  private assertCreatingGameMaster(context: CharacterAccessContext): void {
+    const isCreatingGameMaster =
+      context.actorIsGameMaster && this.state.createdBy.equals(context.actorId);
+    if (!isCreatingGameMaster) throw new OnlyCreatingGameMasterCanValidateError();
   }
 
   assertDeletableBy(context: CharacterAccessContext): void {

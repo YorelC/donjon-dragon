@@ -18,6 +18,7 @@ import { ZodBody, ZodHeader, ZodParam } from '@common/decorators/zod-validated.d
 import { AcceptCharacterReviewUseCase } from '../application/use-cases/accept-character-review.use-case';
 import { RefuseCharacterReviewUseCase } from '../application/use-cases/refuse-character-review.use-case';
 import { SubmitCharacterForReviewUseCase } from '../application/use-cases/submit-character-for-review.use-case';
+import { ValidateOwnCharacterUseCase } from '../application/use-cases/validate-own-character.use-case';
 
 @Controller('campaigns/:campaignId/characters/:characterId/review')
 export class CharacterReviewController {
@@ -25,6 +26,7 @@ export class CharacterReviewController {
     @Inject(SubmitCharacterForReviewUseCase) private submit: SubmitCharacterForReviewUseCase,
     @Inject(AcceptCharacterReviewUseCase) private accept: AcceptCharacterReviewUseCase,
     @Inject(RefuseCharacterReviewUseCase) private refuse: RefuseCharacterReviewUseCase,
+    @Inject(ValidateOwnCharacterUseCase) private validate: ValidateOwnCharacterUseCase,
   ) {}
 
   @Post('submit')
@@ -47,6 +49,17 @@ export class CharacterReviewController {
     @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema) idempotencyKey: string,
   ) {
     return this.accept.execute(command({ user, campaignId, characterId, body, idempotencyKey }));
+  }
+
+  @Post('validate')
+  validateCharacter(
+    @CurrentUser() user: AuthenticatedActor,
+    @ZodParam('campaignId', CampaignIdSchema) campaignId: string,
+    @ZodParam('characterId', CharacterIdSchema) characterId: string,
+    @ZodBody(CharacterReviewCommandSchema) body: CharacterReviewCommand,
+    @ZodHeader(IDEMPOTENCY_KEY_HEADER, IdempotencyKeySchema) idempotencyKey: string,
+  ) {
+    return this.validate.execute(command({ user, campaignId, characterId, body, idempotencyKey }));
   }
 
   @Post('refuse')

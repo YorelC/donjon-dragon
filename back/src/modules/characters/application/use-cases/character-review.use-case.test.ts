@@ -10,6 +10,7 @@ import { InMemoryCampaignRepository } from '@modules/campaigns/testing/in-memory
 
 import {
   CharacterReviewCommandConflictError,
+  OnlyCreatingGameMasterCanValidateError,
   OnlyGameMasterCanReviewError,
 } from '../../domain/character.errors';
 import { aCharacterBody, seedAbilityRoll } from '../../testing/character.fixture';
@@ -24,6 +25,7 @@ import { CreateCharacterUseCase } from './create-character.use-case';
 import { RefuseCharacterReviewUseCase } from './refuse-character-review.use-case';
 import { SubmitCharacterForReviewUseCase } from './submit-character-for-review.use-case';
 import { UpdateCharacterPersonalDetailsUseCase } from './update-character-personal-details.use-case';
+import { ValidateOwnCharacterUseCase } from './validate-own-character.use-case';
 
 describe('Character review use cases', () => {
   const gameMasterId = randomUUID();
@@ -33,6 +35,7 @@ describe('Character review use cases', () => {
   let submit: SubmitCharacterForReviewUseCase;
   let accept: AcceptCharacterReviewUseCase;
   let refuse: RefuseCharacterReviewUseCase;
+  let validate: ValidateOwnCharacterUseCase;
   let commands: InMemoryCharacterCommandRepository;
   let updateDetails: UpdateCharacterPersonalDetailsUseCase;
 
@@ -42,7 +45,7 @@ describe('Character review use cases', () => {
     await campaignRepo.save(campaign);
     campaignId = campaign.id.value;
     const repositories = reviewRepositories(campaignRepo);
-    ({ create, submit, accept, refuse, commands, updateDetails } = repositories);
+    ({ create, submit, accept, refuse, validate, commands, updateDetails } = repositories);
   });
 
   it('soumet une version immuable et rejoue la même commande', async () => {
@@ -111,11 +114,35 @@ describe('Character review use cases', () => {
     expect(commands.actions.at(-1)).toBe('character.personal-details-updated');
   });
 
+  it('valide d un geste la fiche du MJ créateur, version figée, et rejoue', async () => {
+    const { id, revision } = await createFor(gameMasterId);
+    const command = reviewCommand(id, gameMasterId, revision);
+
+    const first = await validate.execute(command);
+    const replay = await validate.execute(command);
+
+    expect(replay).toEqual(first);
+    expect(first.review).toMatchObject({ status: 'accepted', submittedVersion: 1 });
+    expect(commands.actions).toEqual(['character.accepted']);
+    expect(commands.versions).toHaveLength(1);
+  });
+
+  it('refuse la validation directe de la fiche d un joueur', async () => {
+    const characterId = await createForPlayer();
+
+    await expect(validate.execute(reviewCommand(characterId, gameMasterId, 1))).rejects.toThrow(
+      OnlyCreatingGameMasterCanValidateError,
+    );
+  });
+
   async function createForPlayer(): Promise<string> {
-    const character = await create.execute({
-      ...aCharacterBody(), campaignId, actorId: anActor(playerId), idempotencyKey: randomUUID(),
+    return (await createFor(playerId)).id;
+  }
+
+  function createFor(creatorId: string) {
+    return create.execute({
+      ...aCharacterBody(), campaignId, actorId: anActor(creatorId), idempotencyKey: randomUUID(),
     });
-    return character.id;
   }
 
   function reviewCommand(characterId: string, actorId: string, expectedRevision: number) {
@@ -133,6 +160,7 @@ describe('Character review use cases', () => {
     const clock = new FixedClock();
     const rolls = new InMemoryAbilityRollRepository();
     seedAbilityRoll(rolls, UserId.create(playerId), campaignId);
+    seedAbilityRoll(rolls, UserId.create(gameMasterId), campaignId);
     const directory = new InMemoryCharacterDirectory();
     return {
       commands: commandRepository,
@@ -147,6 +175,7 @@ describe('Character review use cases', () => {
       refuse: new RefuseCharacterReviewUseCase(
         characters, commandRepository, membership, memberships, clock,
       ),
+      validate: new ValidateOwnCharacterUseCase(characters, commandRepository, memberships, clock),
       updateDetails: new UpdateCharacterPersonalDetailsUseCase(
         characters, commandRepository, memberships, clock,
       ),

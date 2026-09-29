@@ -50,6 +50,13 @@ export class CharacterReview {
     return this.state.lastSubmissionVersion;
   }
 
+  /** Soumission et acceptation d'un même geste : la version reste figée pour l'audit. */
+  validate(): number {
+    const version = this.submit();
+    this.state.status = 'accepted';
+    return version;
+  }
+
   accept(authority: CharacterReviewAuthority): void {
     this.assertReviewable(authority);
     this.state.status = 'accepted';

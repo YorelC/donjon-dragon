@@ -75,6 +75,8 @@ export const API_ROUTES = {
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/review/submit`,
     reviewAccept: (campaignId: string, characterId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/review/accept`,
+    reviewValidate: (campaignId: string, characterId: string) =>
+      `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/review/validate`,
     reviewRefuse: (campaignId: string, characterId: string) =>
       `/api/campaigns/${encodeURIComponent(campaignId)}/characters/${encodeURIComponent(characterId)}/review/refuse`,
     sheet: (campaignId: string, characterId: string) =>

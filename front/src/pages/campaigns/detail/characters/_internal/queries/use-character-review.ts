@@ -41,6 +41,10 @@ export function useAcceptCharacterReview(campaignId: string) {
   return useReviewCommand(campaignId, API_ROUTES.characters.reviewAccept, "Fiche acceptée");
 }
 
+export function useValidateCharacterReview(campaignId: string) {
+  return useReviewCommand(campaignId, API_ROUTES.characters.reviewValidate, "Fiche validée");
+}
+
 export function useRefuseCharacterReview(campaignId: string) {
   const queryClient = useQueryClient();
   return useMutation({

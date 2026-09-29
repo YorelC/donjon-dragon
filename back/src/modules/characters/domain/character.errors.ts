@@ -141,6 +141,12 @@ export class OnlyGameMasterCanReviewError extends ForbiddenDomainError {
   }
 }
 
+export class OnlyCreatingGameMasterCanValidateError extends ForbiddenDomainError {
+  constructor() {
+    super('Only the game master who created a character can validate it directly');
+  }
+}
+
 export class OnlyGameMasterCanSetManualAbilitiesError extends ForbiddenDomainError {
   constructor() {
     super('Only a game master can set ability scores manually');

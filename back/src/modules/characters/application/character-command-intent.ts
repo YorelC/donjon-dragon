@@ -22,6 +22,15 @@ export function hashCharacterReviewCommand(intent: CharacterReviewIntent): strin
   return hash({ ...intent, reason: intent.reason ?? null });
 }
 
+/**
+ * Une validation par le MJ créateur est acceptée sous l'action `character.accepted`,
+ * mais son intention reste distincte : une clé rejouée d'une acceptation ne vaut pas
+ * validation.
+ */
+export function hashCharacterValidation(intent: Omit<CharacterReviewIntent, 'action'>): string {
+  return hash({ ...intent, action: 'character.validated', reason: null });
+}
+
 export interface CharacterCorrectionIntent {
   campaignId: string;
   characterId: string;

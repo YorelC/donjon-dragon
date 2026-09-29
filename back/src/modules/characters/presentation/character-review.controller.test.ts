@@ -15,7 +15,9 @@ describe('CharacterReviewController', () => {
     const submit = command();
     const accept = command();
     const refuse = command();
-    const controller = new CharacterReviewController(submit as never, accept as never, refuse as never);
+    const controller = new CharacterReviewController(
+      submit as never, accept as never, refuse as never, command() as never,
+    );
 
     await controller.refuseCharacter(
       USER, CAMPAIGN_ID, CHARACTER_ID, { expectedRevision: 2, reason: 'À corriger' }, KEY,
@@ -26,10 +28,26 @@ describe('CharacterReviewController', () => {
       expectedRevision: 2, idempotencyKey: KEY, reason: 'À corriger',
     });
   });
+
+  it('transmet la validation du MJ créateur avec l identité du jeton', async () => {
+    const validate = command();
+    const controller = new CharacterReviewController(
+      command() as never, command() as never, command() as never, validate as never,
+    );
+
+    await controller.validateCharacter(USER, CAMPAIGN_ID, CHARACTER_ID, { expectedRevision: 1 }, KEY);
+
+    expect(validate.execute).toHaveBeenCalledWith({
+      campaignId: CAMPAIGN_ID, characterId: CHARACTER_ID, actorId: USER.userId,
+      expectedRevision: 1, idempotencyKey: KEY,
+    });
+  });
 });
 
 describe('CharacterReviewController — protection des routes', () => {
-  const ROUTES = ['submitCharacter', 'acceptCharacter', 'refuseCharacter'] as const;
+  const ROUTES = [
+    'submitCharacter', 'acceptCharacter', 'validateCharacter', 'refuseCharacter',
+  ] as const;
 
   it('ne déclare aucun accès public', () => {
     expect(Reflect.getMetadata(IS_PUBLIC_KEY, CharacterReviewController)).toBeUndefined();
