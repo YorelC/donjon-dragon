@@ -25,6 +25,10 @@ Tests : Vitest (back + front), Playwright pour l'e2e (`front/e2e/`).
 - Noms révélant l'intention. **3 paramètres maximum.** Pas de paramètre booléen de
   contrôle : il cache deux fonctions dans une.
 - Zéro nombre ou chaîne magique : une constante nommée, ou rien.
+- **Une valeur ne se déclare qu'une fois.** Deux fichiers qui ont besoin du même
+  libellé, de la même clé ou du même seuil l'importent d'une source unique : jamais
+  deux constantes locales qui recopient la même chaîne. Au front, les noms d'écrans
+  vivent dans `front/src/shared/constants/screen-labels.ts`.
 - Pas de commentaire qui paraphrase le code. Un commentaire dit *pourquoi*, jamais
   *quoi* : si le code est illisible, on le rend lisible au lieu de l'excuser.
 - Une fonction fait une chose, sans effet de bord caché. Early returns plutôt
