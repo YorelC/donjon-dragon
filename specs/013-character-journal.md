@@ -105,7 +105,9 @@ Sur l'écran de référence (fenêtre 1280×700) :
   de suppression, de création ni de glisser-déposer.
 
 Le Markdown est rendu sans HTML brut : une balise écrite dans le texte s'affiche comme
-du texte et n'est jamais interprétée.
+du texte et n'est jamais interprétée. Une image Markdown n'est jamais chargée : elle
+s'affiche comme un lien vers son adresse. Un lecteur, le MJ en particulier, ne fait
+ainsi aucune requête vers un site choisi par l'auteur.
 
 ### Sauvegarde
 
@@ -114,6 +116,12 @@ La sauvegarde est automatique, comme dans Notes :
 - après une pause de frappe d'environ une seconde ;
 - immédiatement au verrouillage, au changement de chapitre ou d'onglet, et à la
   fermeture de l'écran ;
+- une frappe faite pendant qu'une sauvegarde est en cours part dès qu'elle se termine,
+  même si le chapitre a été fermé entre-temps ;
+- à la fermeture de la page du navigateur, le brouillon non enregistré part en requête
+  maintenue après la fermeture (`keepalive`). Cette requête est plafonnée par le
+  navigateur à 64 Ko : un chapitre plus lourd (texte très accentué proche de la borne)
+  peut perdre sa dernière seconde de frappe ;
 - l'en-tête affiche « Enregistrement… », puis « Enregistré », ou l'échec.
 
 Une limite atteinte (titre, texte) bloque la saisie au-delà et le dit ; le 201ᵉ chapitre
@@ -163,6 +171,9 @@ Aucun texte n'est perdu sans ce choix explicite.
   s'ouvre déverrouillé ;
 - une case à cocher, un tableau et du barré écrits en Markdown GFM s'affichent rendus ;
 - une balise HTML écrite dans le texte n'est pas interprétée ;
+- une image Markdown s'affiche en lien, sans aucune requête vers son adresse ;
+- changer de chapitre juste après une pause de frappe ne perd aucun caractère ;
+- réordonner le sommaire ne change pas le chapitre ouvert ;
 - un MJ lit le journal d'un personnage assigné sans pouvoir le modifier ; il écrit dans
   celui d'un personnage non assigné ;
 - un autre joueur reçoit « introuvable » sur le journal comme sur la fiche ;
